@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'spree_avatax'
   s.version     = '1.2.0'
-  s.summary     = 'TODO: Add gem summary here'
-  s.description = 'TODO: Add (optional) gem description here'
+  s.summary     = 'Spree extension for Avalara tax calculation.'
+  s.description = 'Spree extension for Avalara tax calculation.'
   s.required_ruby_version = '>= 1.8.7'
 
   s.author    = 'Josh Kim'
