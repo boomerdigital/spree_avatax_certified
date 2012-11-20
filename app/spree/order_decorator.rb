@@ -1,6 +1,4 @@
 Spree::Order.class_eval do
-
-
   # Finalizes an in progress order after checkout is complete.
   # Called after transition to complete state when payments will have been processed
   def finalize!
@@ -32,7 +30,7 @@ Spree::Order.class_eval do
     #commit =false, do not create transaction on Avalara side.
 
     #only relevant if we have a billing address
-    if self.billing_address != nil
+    if self.billing_address != nil and self.line_items.length > 0
       response=post_order_to_avalara
       create_avalara_tax_adjustments(response)
     end
@@ -41,8 +39,6 @@ Spree::Order.class_eval do
 
   private
   def post_order_to_avalara(commit=false)
-
-
     #Create array for line items
     tax_line_items=Array.new
 
