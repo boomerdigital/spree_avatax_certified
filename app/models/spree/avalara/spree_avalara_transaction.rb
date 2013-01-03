@@ -29,6 +29,50 @@ class SpreeAvalaraTransaction < ActiveRecord::Base
   end
 
 
+  def create_cart_items
+
+    cart_items.clear
+
+    index = 0
+
+    order.line_items.each do |line_item|
+
+      cart_items.create!({
+
+                             :index => (index += 1),
+
+                             :tax_category => '20020', # TODO   CLOTHING-ACCESSORY
+
+                             :sku => line_item.variant.sku.presence || line_item.variant.id,
+
+                             :quantity => line_item.quantity,
+
+                             :price => line_item.price.to_f,
+
+                             :line_item => line_item
+
+                         })
+
+    end
+
+    cart_items.create!({
+
+                           :index => (index += 1),
+
+                           :tic => '11010',
+
+                           :sku => 'SHIPPING',
+
+                           :quantity => 1,
+
+                           :price => order.ship_total.to_f
+
+                       })
+
+  end
+
+
+
   private
   def post_order_to_avalara(commit=false)
     #Create array for line items
