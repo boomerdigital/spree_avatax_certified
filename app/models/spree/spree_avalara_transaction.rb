@@ -18,4 +18,48 @@ class SpreeAvalaraTransaction < ActiveRecord::Base
     cart_items.sum(&:amount)
   end
 
+
+  def lookup
+
+  end
+
+
+  def commit
+
+  end
+
+
+  private
+  def post_order_to_avalara(commit=false)
+    #Create array for line items
+    tax_line_items=Array.new
+
+    self.line_items.each_with_index do |line_item, i|
+      line_item_total=line_item.price*line_item.quantity
+      line=Avalara::Request::Line.new(:line_no => i, :origin_code => 1, :destination_code => 1, :qty => line_item.quantity, :amount => line_item_total)
+      tax_line_items<<line
+    end
+
+    #Billing Address
+    address=Avalara::Request::Address.new(:address_code => 1)
+    address.line_1=self.order.billing_address.address1
+    address.postal_code=self.order.billing_address.zipcode
+
+    addresses=Array.new
+    addresses<<address
+
+    invoice=Avalara::Request::Invoice.new
+    invoice.doc_code=self.number
+    invoice.customer_code="TheRealReal"
+    invoice.addresses=addresses
+    invoice.lines=tax_line_items
+    #A record is created when commit is true + doc_type is SalesInvoice
+    if commit
+      invoice.commit=true
+      invoice.doc_type="SalesInvoice"
+    end
+    response=Avalara.get_tax(invoice)
+    response
+  end
+
 end
