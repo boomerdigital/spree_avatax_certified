@@ -20,11 +20,12 @@ class SpreeAvalaraTransaction < ActiveRecord::Base
 
 
   def lookup
-
+    post_order_to_avalara(false)
   end
 
 
   def commit
+    post_order_to_avalara(true)
 
   end
 
