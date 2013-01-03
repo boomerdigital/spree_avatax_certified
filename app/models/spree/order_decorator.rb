@@ -1,4 +1,26 @@
 Spree::Order.class_eval do
+
+
+
+  has_one :tax_cloud_transaction
+
+
+  self.state_machine.after_transition :to => 'payment',
+                                      :do => :avalara_lookup,
+                                      :if => :avalara_eligible?
+
+  self.state_machine.after_transition :to => 'complete',
+                                      :do => :avalara_lookup,
+                                      :if => :avalara_eligible?
+
+
+  def tax_cloud_eligible?
+
+    ship_address.try(:state_id?)
+
+  end
+
+
   # Finalizes an in progress order after checkout is complete.
   # Called after transition to complete state when payments will have been processed
   def finalize!
