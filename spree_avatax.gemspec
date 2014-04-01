@@ -17,6 +17,13 @@ Gem::Specification.new do |s|
   s.requirements << 'none'
 
   s.add_dependency 'spree_core', '~> 2.1'
+  s.add_dependency 'json'
+  s.add_dependency 'addressable'
+  s.add_dependency 'rest-client'
+  s.add_dependency 'yettings'
+  s.add_dependency 'psych', '~> 2.0.4'
+  s.add_dependency 'logging'
+
   #add gems here for files
   s.add_development_dependency 'capybara', '~> 2.1'
   s.add_development_dependency 'coffee-rails'
@@ -28,4 +35,10 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'selenium-webdriver'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'sqlite3'
+  s.add_development_dependency 'guard'
+  s.add_development_dependency 'guard-rspec'
+  s.add_development_dependency 'pry'
+  s.add_development_dependency 'pry-remote'
+  s.add_development_dependency 'pry-nav'
+
 end

@@ -2,7 +2,13 @@ PATH
   remote: .
   specs:
     spree_avatax (0.1.0)
+      addressable
+      json
+      logging
+      psych (~> 2.0.4)
+      rest-client
       spree_core (~> 2.1)
+      yettings
 
 GEM
   remote: http://rubygems.org/
