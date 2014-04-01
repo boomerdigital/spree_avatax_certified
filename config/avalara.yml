@@ -5,7 +5,8 @@ endpoint: 'development.avalara.net'
 account: '1100040156'
 servicepathtax: '/1.0/tax/'
 servicepathaddress: '/1.0/address/'
-license_key: ''
+license_key: 'AF70EC411D0EB690'
+iseligible: 'true'
 
 test:
 username: 'testaccount'
