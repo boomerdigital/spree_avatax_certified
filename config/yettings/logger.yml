@@ -1,0 +1,11 @@
+development:
+filename: 'logdev.log'
+logname: 'dev'
+
+test:
+filename: 'logtest.log'
+logname: 'test'
+
+production:
+filename: 'logprd.log'
+logname: 'prd'

@@ -1,3 +1,8 @@
 Spree::Core::Engine.routes.draw do
-  # Add your extension routes here
+  namespace :admin do
+    resource :avatax_settings  do
+      get :ping_my_service
+    end
+
+  end
 end
