@@ -66,7 +66,7 @@ Spree::Order.class_eval do
     rtn_tax = sat.commit_avatax(line_items, self)
     adjustments.create do |adjustment|
       adjustment.source = self
-      #adjustment.originator = avalara_transaction
+      adjustment.originator = avalara_transaction
       adjustment.label = 'Tax'
       adjustment.mandatory = true
       adjustment.eligible = true
@@ -77,7 +77,6 @@ Spree::Order.class_eval do
     logger.debug 'error in a avalara capture'
   end
   end
-
 
 
 

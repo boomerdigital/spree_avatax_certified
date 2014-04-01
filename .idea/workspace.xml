@@ -1,20 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0be18699-2da2-4f23-abbd-9accfe9393ae" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/models/spree/avalara_transaction.rb" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/models/spree/avalara/spree_avalara_transaction.rb" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/models/spree/avalara/spree_avalara_cart_item.rb" afterPath="$PROJECT_DIR$/app/models/spree/spree_avalara_cart_item.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Gemfile" afterPath="$PROJECT_DIR$/Gemfile" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/spree/line_item_decorator.rb" afterPath="$PROJECT_DIR$/app/models/spree/line_item_decorator.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/spree/order_decorator.rb" afterPath="$PROJECT_DIR$/app/models/spree/order_decorator.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config/routes.rb" afterPath="$PROJECT_DIR$/config/routes.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/assets/stylesheets/admin/spree_avatax.css" afterPath="$PROJECT_DIR$/app/assets/stylesheets/admin/spree_avatax.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/assets/stylesheets/store/spree_avatax.css" afterPath="$PROJECT_DIR$/app/assets/stylesheets/store/spree_avatax.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spree_avatax.gemspec" afterPath="$PROJECT_DIR$/spree_avatax.gemspec" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/assets/javascripts/admin/spree_avatax.js" afterPath="$PROJECT_DIR$/app/assets/javascripts/admin/spree_avatax.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/assets/javascripts/store/spree_avatax.js" afterPath="$PROJECT_DIR$/app/assets/javascripts/store/spree_avatax.js" />
-    </list>
+    <list default="true" id="0be18699-2da2-4f23-abbd-9accfe9393ae" name="Default" comment="" />
     <ignored path="spree_avatax.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -66,7 +53,7 @@
       <file leaf-file-name="order_decorator.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/models/spree/order_decorator.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="67" column="30" selection-start="1730" selection-end="1730" vertical-scroll-proportion="2.7162163" vertical-offset="0" max-vertical-offset="1410">
+            <state line="70" column="33" selection-start="1845" selection-end="1845" vertical-scroll-proportion="0.7972973" vertical-offset="755" max-vertical-offset="1395">
               <folding />
             </state>
           </provider>
@@ -665,7 +652,7 @@
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32961783" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32961783" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.36942676" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1008,7 +995,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/models/spree/order_decorator.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="67" column="30" selection-start="1730" selection-end="1730" vertical-scroll-proportion="2.7162163" vertical-offset="0" max-vertical-offset="1410">
+        <state line="70" column="33" selection-start="1845" selection-end="1845" vertical-scroll-proportion="0.7972973" vertical-offset="755" max-vertical-offset="1395">
           <folding />
         </state>
       </provider>
