@@ -3,10 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="0be18699-2da2-4f23-abbd-9accfe9393ae" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/spree/avalara_transaction.rb" afterPath="$PROJECT_DIR$/app/models/spree/avalara_transaction.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/spree/order_decorator.rb" afterPath="$PROJECT_DIR$/app/models/spree/order_decorator.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/spree/admin/avatax_settings/show.html.erb" afterPath="$PROJECT_DIR$/app/views/spree/admin/avatax_settings/show.html.erb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/spree/tax_svc.rb" afterPath="$PROJECT_DIR$/app/models/spree/tax_svc.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="spree_avatax.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -65,15 +61,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Gemfile" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Gemfile">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="18" column="15" selection-start="248" selection-end="326" vertical-scroll-proportion="0.0" vertical-offset="5" max-vertical-offset="375">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="adjustment.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/.rvm/gems/ruby-2.1.0/gems/spree_core-2.2.0/app/models/spree/adjustment.rb">
           <provider selected="true" editor-type-id="text-editor">
@@ -86,7 +73,7 @@
       <file leaf-file-name="avalara_transaction.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/models/spree/avalara_transaction.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="141" column="36" selection-start="3813" selection-end="3813" vertical-scroll-proportion="0.90425533" vertical-offset="1605" max-vertical-offset="3300">
+            <state line="155" column="32" selection-start="4039" selection-end="4039" vertical-scroll-proportion="0.26595744" vertical-offset="2175" max-vertical-offset="3300">
               <folding />
             </state>
           </provider>
@@ -161,8 +148,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="19" />
-    <option name="y" value="34" />
+    <option name="x" value="63" />
+    <option name="y" value="112" />
     <option name="width" value="1312" />
     <option name="height" value="694" />
   </component>
@@ -672,7 +659,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="19" y="34" width="1312" height="694" extended-state="0" />
+    <frame x="63" y="112" width="1312" height="694" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -939,13 +926,6 @@
         <state line="8" column="18" selection-start="243" selection-end="243" vertical-scroll-proportion="0.3243243" vertical-offset="0" max-vertical-offset="370" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Gemfile">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="15" selection-start="248" selection-end="326" vertical-scroll-proportion="0.0" vertical-offset="5" max-vertical-offset="375">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/config/yettings/avalara.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="1" column="0" selection-start="13" selection-end="244" vertical-scroll-proportion="0.050847456" vertical-offset="0" max-vertical-offset="360">
@@ -988,6 +968,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Gemfile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="13" selection-start="209" selection-end="209" vertical-scroll-proportion="0.25996533" vertical-offset="0" max-vertical-offset="577">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/models/spree/order_decorator.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="69" column="30" selection-start="1796" selection-end="1796" vertical-scroll-proportion="0.0" vertical-offset="795" max-vertical-offset="1395">
@@ -997,7 +984,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/models/spree/avalara_transaction.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="141" column="36" selection-start="3813" selection-end="3813" vertical-scroll-proportion="0.90425533" vertical-offset="1605" max-vertical-offset="3300">
+        <state line="155" column="32" selection-start="4039" selection-end="4039" vertical-scroll-proportion="0.26595744" vertical-offset="2175" max-vertical-offset="3300">
           <folding />
         </state>
       </provider>

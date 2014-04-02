@@ -126,7 +126,7 @@ module Spree
         orderitems.each do |line_item|
           #  line_item_total=line_item.price*line_item.quantity
           #  item_id = line_item.id
-          # need to map the taxcodes
+          # need to map the taxcodes to tax cat names
           line = Hash.new
           i += 1
           # Required Parameters
@@ -139,7 +139,7 @@ module Spree
 
           # Best Practice Request Parameters
           line[:Description] = line_item.variant.description
-          line[:TaxCode] = "PC030147" #Spree::Tax_Category.find(line_item.tax_catagory_id).name
+          line[:TaxCode] = line_item.tax_category.name || "PC030147"
 
 
           logger.debug line.to_xml
