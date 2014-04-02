@@ -113,7 +113,7 @@ module Spree
       origin = JSON.parse( Spree::Config.avatax_origin )
       orig_address = Hash.new
       orig_address[:AddressCode] = "Orig"
-      orig_address[:Line1] = origin["Line1"]
+      orig_address[:Line1] = origin["Address1"]
       orig_address[:City] = origin["City"]
       orig_address[:PostalCode] = origin["Zip5"]
       orig_address[:Country] = origin["Country"]
@@ -133,13 +133,13 @@ module Spree
           line[:LineNo] = i
           line[:ItemCode] = line_item.variant.sku
           line[:Qty] = line_item.quantity
-          line[:Amount] = line_item.total
+          line[:Amount] = line_item.total.to_f
           line[:OriginCode] = "Orig"
           line[:DestinationCode] = "Dest"
 
           # Best Practice Request Parameters
           line[:Description] = line_item.variant.description
-          line[:TaxCode] = ""
+          line[:TaxCode] = "PC030147" #Spree::Tax_Category.find(line_item.tax_catagory_id).name
 
 
           logger.debug line.to_xml
@@ -156,12 +156,12 @@ module Spree
       billing_address = Hash.new
 
       billing_address[:AddressCode] = "Dest"
-      billing_address[:Line1] = order_details.billing_address.address1
-      billing_address[:Line2] = order_details.billing_address.address2
-      billing_address[:City] = order_details.billing_address.city
-      billing_address[:Region] = order_details.billing_address.state_name
-      billing_address[:Country] = Country.find(order_details.billing_address.country_id).name
-      billing_address[:PostalCode] = order_details.billing_address.zipcode
+      billing_address[:Line1] = order_details.shipping_address.address1
+      billing_address[:Line2] = order_details.shipping_address.address2
+      billing_address[:City] = order_details.shipping_address.city
+      billing_address[:Region] = order_details.shipping_address.state_text
+      billing_address[:Country] = Country.find(order_details.shipping_address.country_id).iso
+      billing_address[:PostalCode] = order_details.shipping_address.zipcode
 
 
       logger.debug billing_address.to_xml
@@ -176,17 +176,20 @@ module Spree
           :DocDate => Date.current.to_formatted_s(:db),
 
           # Best Practice Request Parameters
-          #:CompanyCode => "APITrialCompany",
+          :CompanyCode => Spree::Config.avatax_api_username,
           #:Client => "AvaTaxSample",
           :DocCode => order_details.number,
           :DetailLevel => "Tax",
-          :Commit => commit,
+          :Commit => false,
           :DocType => "SalesInvoice",
           :Addresses => addresses,
           :Lines => tax_line_items
 
       }
+
+
       logger.debug gettaxes
+
       mytax = TaxSvc.new( Spree::Config.avatax_account || AvalaraYettings['account'],Spree::Config.avatax_license_key || AvalaraYettings['license_key'],Spree::Config.avatax_endpoint || AvalaraYettings['endpoint'])
 
       getTaxResult = mytax.GetTax(gettaxes)
@@ -194,7 +197,7 @@ module Spree
       logger.debug getTaxResult
 
       if getTaxResult =='error in Tax' then
-        myrtntax = "1.00"
+        myrtntax = "0.00"
 
 
       else
