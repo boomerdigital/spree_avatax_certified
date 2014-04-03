@@ -34,6 +34,7 @@ class TaxSvc
     logger.debug uri
     cred = 'Basic '+ Base64.encode64(@account_number + ":"+ @license_key)
     logger.debug cred
+    RestClient.log = logger
     res = RestClient.post uri, JSON.generate(request_hash), :authorization => cred
     logger.debug res
     JSON.parse(res.body)

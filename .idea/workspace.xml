@@ -2,7 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0be18699-2da2-4f23-abbd-9accfe9393ae" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/models/spree/adjustment_decorator.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/spree/app_configuration_decorator.rb" afterPath="$PROJECT_DIR$/app/models/spree/app_configuration_decorator.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/spree/avalara_transaction.rb" afterPath="$PROJECT_DIR$/app/models/spree/avalara_transaction.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/contollers/spree/admin/avatax_settings_controller.rb" afterPath="$PROJECT_DIR$/app/contollers/spree/admin/avatax_settings_controller.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/spree/order_decorator.rb" afterPath="$PROJECT_DIR$/app/models/spree/order_decorator.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/spree/admin/avatax_settings/show.html.erb" afterPath="$PROJECT_DIR$/app/views/spree/admin/avatax_settings/show.html.erb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/spree/tax_svc.rb" afterPath="$PROJECT_DIR$/app/models/spree/tax_svc.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="spree_avatax.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,16 +35,7 @@
       <file leaf-file-name="show.html.erb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/views/spree/admin/avatax_settings/show.html.erb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="44" column="70" selection-start="1485" selection-end="1485" vertical-scroll-proportion="-7.5" vertical-offset="480" max-vertical-offset="1020">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ping_my_service.js.erb" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/views/spree/admin/avatax_settings/ping_my_service.js.erb">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="32" selection-start="133" selection-end="133" vertical-scroll-proportion="0.0" vertical-offset="60" max-vertical-offset="210">
+            <state line="7" column="46" selection-start="246" selection-end="280" vertical-scroll-proportion="-4.375" vertical-offset="0" max-vertical-offset="1080">
               <folding />
             </state>
           </provider>
@@ -46,7 +44,7 @@
       <file leaf-file-name="tax_svc.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/models/spree/tax_svc.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="35" column="4" selection-start="854" selection-end="854" vertical-scroll-proportion="0.0" vertical-offset="390" max-vertical-offset="1305">
+            <state line="38" column="20" selection-start="1003" selection-end="1003" vertical-scroll-proportion="0.0" vertical-offset="348" max-vertical-offset="1320">
               <folding />
             </state>
           </provider>
@@ -55,7 +53,16 @@
       <file leaf-file-name="order_decorator.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/models/spree/order_decorator.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="69" column="30" selection-start="1796" selection-end="1796" vertical-scroll-proportion="0.0" vertical-offset="135" max-vertical-offset="1395">
+            <state line="73" column="28" selection-start="1885" selection-end="1885" vertical-scroll-proportion="0.0" vertical-offset="825" max-vertical-offset="1530">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="adjustment_decorator.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/models/spree/adjustment_decorator.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="1" column="20" selection-start="41" selection-end="52" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="135">
               <folding />
             </state>
           </provider>
@@ -70,10 +77,28 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="avatax_settings_controller.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/contollers/spree/admin/avatax_settings_controller.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="30" column="72" selection-start="1112" selection-end="1112" vertical-scroll-proportion="0.0" vertical-offset="165" max-vertical-offset="870">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="avalara_transaction.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/models/spree/avalara_transaction.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="155" column="32" selection-start="4039" selection-end="4039" vertical-scroll-proportion="0.26595744" vertical-offset="2175" max-vertical-offset="3300">
+            <state line="189" column="32" selection-start="5313" selection-end="5313" vertical-scroll-proportion="0.7180851" vertical-offset="2430" max-vertical-offset="3435">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="checkout_controller_decorator.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/contollers/spree/checkout_controller_decorator.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="10" column="6" selection-start="355" selection-end="355" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="270">
               <folding />
             </state>
           </provider>
@@ -82,7 +107,7 @@
       <file leaf-file-name="edit.html.erb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/views/spree/admin/avatax_settings/edit.html.erb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="56" column="59" selection-start="2694" selection-end="2712" vertical-scroll-proportion="-3.125" vertical-offset="765" max-vertical-offset="1425">
+            <state line="12" column="14" selection-start="489" selection-end="489" vertical-scroll-proportion="-7.5" vertical-offset="0" max-vertical-offset="1425">
               <folding />
             </state>
           </provider>
@@ -91,7 +116,7 @@
       <file leaf-file-name="app_configuration_decorator.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/models/spree/app_configuration_decorator.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="1" column="33" selection-start="52" selection-end="71" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="270">
+            <state line="3" column="34" selection-start="138" selection-end="158" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="285">
               <folding />
             </state>
           </provider>
@@ -118,7 +143,6 @@
         <option value="$PROJECT_DIR$/config/initializers/avalara.rb" />
         <option value="$PROJECT_DIR$/app/models/spree/avalara/Logger.rb" />
         <option value="$PROJECT_DIR$/config/initializers/Logger.rb" />
-        <option value="$PROJECT_DIR$/app/models/spree/app_configuration_decorator.rb" />
         <option value="$PROJECT_DIR$/app/views/spree/admin/avalara_settings/edit.html.erb" />
         <option value="$PROJECT_DIR$/config/yettings/avalara.yml" />
         <option value="$PROJECT_DIR$/app/contollers/spree/checkout_controller_decorator.rb" />
@@ -133,23 +157,25 @@
         <option value="$PROJECT_DIR$/app/models/spree/avalara/TaxSvc.rb" />
         <option value="$PROJECT_DIR$/app/models/spree/avalara/tax_svc.rb" />
         <option value="$PROJECT_DIR$/app/views/spree/admin/avatax_settings/ping_my_service.js.erb" />
-        <option value="$PROJECT_DIR$/app/contollers/spree/admin/avatax_settings_controller.rb" />
         <option value="$PROJECT_DIR$/Gemfile" />
         <option value="$PROJECT_DIR$/app/models/spree/spree_avalara_transaction.rb" />
         <option value="$PROJECT_DIR$/app/models/spree/spree_avalara_cart_item.rb" />
         <option value="$PROJECT_DIR$/app/models/spree/line_item_decorator.rb" />
         <option value="$PROJECT_DIR$/config/avalara.yml" />
         <option value="$PROJECT_DIR$/spree_avatax.gemspec" />
+        <option value="$PROJECT_DIR$/app/models/spree/adjustment_decorator.rb" />
+        <option value="$PROJECT_DIR$/app/models/spree/app_configuration_decorator.rb" />
+        <option value="$PROJECT_DIR$/app/views/spree/admin/avatax_settings/show.html.erb" />
+        <option value="$PROJECT_DIR$/app/contollers/spree/admin/avatax_settings_controller.rb" />
         <option value="$PROJECT_DIR$/app/models/spree/tax_svc.rb" />
         <option value="$PROJECT_DIR$/app/models/spree/order_decorator.rb" />
-        <option value="$PROJECT_DIR$/app/views/spree/admin/avatax_settings/show.html.erb" />
         <option value="$PROJECT_DIR$/app/models/spree/avalara_transaction.rb" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="63" />
-    <option name="y" value="112" />
+    <option name="x" value="127" />
+    <option name="y" value="42" />
     <option name="width" value="1312" />
     <option name="height" value="694" />
   </component>
@@ -354,32 +380,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="spree" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="spree_avatax" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="spree_avatax" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="models" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="spree" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="avalara" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -659,9 +659,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="63" y="112" width="1312" height="694" extended-state="0" />
+    <frame x="127" y="42" width="1312" height="694" extended-state="0" />
     <editor active="true" />
     <layout>
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3280255" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4490446" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -677,7 +678,6 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.36942676" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3280255" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -702,11 +702,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/spec/spec_helper.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="750" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/models/spree/line_item_decorator.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="6" column="12" selection-start="65" selection-end="80" vertical-scroll-proportion="0.0" vertical-offset="90" max-vertical-offset="255" />
@@ -825,7 +820,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/models/spree.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="150" />
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="150">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/models/spree/avalara/address_svr.rb">
@@ -866,16 +863,6 @@
     <entry file="file://$PROJECT_DIR$/config/initializers/logger.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="11" column="0" selection-start="361" selection-end="361" vertical-scroll-proportion="0.28596187" vertical-offset="0" max-vertical-offset="1485" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/contollers/spree/checkout_controller_decorator.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="6" selection-start="355" selection-end="355" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="270" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/contollers/spree/admin/avatax_settings_controller.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="0" selection-start="100" selection-end="100" vertical-scroll-proportion="0.10638298" vertical-offset="0" max-vertical-offset="855" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/helpers/avatax_helper.rb">
@@ -940,34 +927,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/models/spree/tax_svc.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="4" selection-start="854" selection-end="854" vertical-scroll-proportion="0.0" vertical-offset="390" max-vertical-offset="1305">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/models/spree/app_configuration_decorator.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="33" selection-start="52" selection-end="71" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="270">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/views/spree/admin/avatax_settings/edit.html.erb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="56" column="59" selection-start="2694" selection-end="2712" vertical-scroll-proportion="-3.125" vertical-offset="765" max-vertical-offset="1425">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/views/spree/admin/avatax_settings/show.html.erb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="70" selection-start="1485" selection-end="1485" vertical-scroll-proportion="-7.5" vertical-offset="480" max-vertical-offset="1020">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Gemfile">
       <provider selected="true" editor-type-id="text-editor">
         <state line="10" column="13" selection-start="209" selection-end="209" vertical-scroll-proportion="0.25996533" vertical-offset="0" max-vertical-offset="577">
@@ -975,16 +934,65 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/models/spree/app_configuration_decorator.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="34" selection-start="138" selection-end="158" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="285">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/spree/admin/avatax_settings/show.html.erb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="46" selection-start="246" selection-end="280" vertical-scroll-proportion="-4.375" vertical-offset="0" max-vertical-offset="1080">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/contollers/spree/checkout_controller_decorator.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="6" selection-start="355" selection-end="355" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="270">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/contollers/spree/admin/avatax_settings_controller.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="30" column="72" selection-start="1112" selection-end="1112" vertical-scroll-proportion="0.0" vertical-offset="165" max-vertical-offset="870">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/spree/admin/avatax_settings/edit.html.erb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="14" selection-start="489" selection-end="489" vertical-scroll-proportion="-7.5" vertical-offset="0" max-vertical-offset="1425">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/models/spree/tax_svc.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="20" selection-start="1003" selection-end="1003" vertical-scroll-proportion="0.0" vertical-offset="348" max-vertical-offset="1320">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/models/spree/adjustment_decorator.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1" column="20" selection-start="41" selection-end="52" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="135">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/models/spree/order_decorator.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="69" column="30" selection-start="1796" selection-end="1796" vertical-scroll-proportion="0.0" vertical-offset="795" max-vertical-offset="1395">
+        <state line="73" column="28" selection-start="1885" selection-end="1885" vertical-scroll-proportion="0.0" vertical-offset="825" max-vertical-offset="1530">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/models/spree/avalara_transaction.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="155" column="32" selection-start="4039" selection-end="4039" vertical-scroll-proportion="0.26595744" vertical-offset="2175" max-vertical-offset="3300">
+        <state line="189" column="32" selection-start="5313" selection-end="5313" vertical-scroll-proportion="0.7180851" vertical-offset="2430" max-vertical-offset="3435">
           <folding />
         </state>
       </provider>

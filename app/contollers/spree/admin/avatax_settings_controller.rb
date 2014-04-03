@@ -27,7 +27,7 @@ module Spree
       Spree::Config.avatax_origin = {   :Address1 =>  origin[:avatax_address1],
                                           :Address2 => origin[:avatax_address2],
                                           :City => origin[:avatax_city],
-                                          :State => origin[:avatax_state],
+                                          :Region => origin[:avatax_region],
                                           :Zip5 => origin[:avatax_zip5],
                                           :Zip4 => origin[:avatax_zip4],
                                           :Country => origin[:avatax_country]}.to_json
@@ -40,6 +40,7 @@ module Spree
       Spree::Config.avatax_servicepathaddress = taxpref[:avatax_servicepathaddress]
       Spree::Config.avatax_license_key = taxpref[:avatax_license_key]
       Spree::Config.avatax_iseligible = taxpref[:avatax_iseligible]
+      Spree::Config.avatax_customer_code =taxpref[:avatax_customer_code]
 
 
       respond_to do |format|

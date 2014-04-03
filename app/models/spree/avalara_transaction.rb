@@ -28,7 +28,7 @@ module Spree
       @myrtntax
     end
     def amount
-      cart_items.sum(&:amount)
+      @myrtntax
     end
 
 
@@ -39,6 +39,14 @@ module Spree
 
     def commit_avatax(items, order_details)
       post_order_to_avalara(true, items, order_details)
+    end
+
+    def update_adjustment(adjustment, source)
+      #post_order_to_avalara(false, order.line_items, order)
+      #rate = rnt_tax.to_f || 0 / order.item_total
+      #tax  = (order.item_total) * rate
+      #tax  = 0 if tax.nan?
+      #adjustment.update_column(:amount, rnt_tax)
     end
 
 
@@ -138,7 +146,7 @@ module Spree
           line[:DestinationCode] = "Dest"
 
           # Best Practice Request Parameters
-          line[:Description] = line_item.variant.description
+          line[:Description] = ""#line_item.variant.description
           line[:TaxCode] = line_item.tax_category.name || "PC030147"
 
 
@@ -172,15 +180,15 @@ module Spree
 
 
       gettaxes = {
-          :CustomerCode => Spree::Config.avatax_account,
+          :CustomerCode => "APITrialCompany",
           :DocDate => Date.current.to_formatted_s(:db),
 
           # Best Practice Request Parameters
-          :CompanyCode => Spree::Config.avatax_api_username,
+          :CompanyCode => "APITrialCompany", #Spree::Config.avatax_api_username,
           #:Client => "AvaTaxSample",
           :DocCode => order_details.number,
           :DetailLevel => "Tax",
-          :Commit => false,
+          :Commit => false, #commit
           :DocType => "SalesInvoice",
           :Addresses => addresses,
           :Lines => tax_line_items
@@ -196,19 +204,20 @@ module Spree
 
       logger.debug getTaxResult
 
-      if getTaxResult =='error in Tax' then
-        myrtntax = "0.00"
+      if getTaxResult == 'error in Tax' then
+        @myrtntax = "1.00"
 
 
       else
         if getTaxResult["ResultCode"] = "Success"
         logger.debug getTaxResult["TotalTax"].to_s
-        myrtntax = getTaxResult["TotalTax"].to_s
+        @myrtntax = getTaxResult["TotalTax"].to_s
 
 
 
         end
       end
+      return @myrtntax
     end
 
   end

@@ -19,13 +19,14 @@ Spree::Order.class_eval do
                                       :do => :avalara_capture,
                                       :if => :avalara_eligible
 
-  #self.state_machine.after_transition :to => :complete,
-  #                                    :do => :avalara_capture,
-  #                                    :if => :avalara_eligible
-  if (:payment or :complete) and :avalara_eligible
-    #:avalara_lookup
-    :avalara_capture
-  end
+  self.state_machine.after_transition :to => :complete,
+                                      :do => :avalara_capture,
+                                      :if => :avalara_eligible
+  #add below to method
+  #if (payment? || complete?) && :avalara_eligible
+  #  #:avalara_lookup
+  #  :avalara_capture
+  #end
 
 
 
@@ -45,6 +46,7 @@ Spree::Order.class_eval do
   end
 
 
+
   def avalara_lookup
     logger = Logger.new('avalara_order.txt', 'weekly')
     logger.progname = 'order class'
@@ -57,16 +59,23 @@ Spree::Order.class_eval do
 #check here for update or new
   # should destroy when recalc occurs
   def avalara_capture
+    #self.adjustments.each do |adjustment|
+    #  Spree::Adjustment.destroy(adjustment.id)
+    #end
     logger = Logger.new('avalara_order.txt', 'weekly')
     logger.progname = 'order class'
     logger.debug 'avalara capture'
     begin
     create_avalara_transaction
+    #added to clean up the
+    self.adjustments.avalara_tax.destroy_all
     sat = Spree::AvalaraTransaction.new
     rtn_tax = sat.commit_avatax(line_items, self)
+    logger.info 'tax amount'
+    logger.debug rtn_tax
     adjustments.create do |adjustment|
       adjustment.source = self
-      adjustment.originator = self
+      adjustment.originator = avalara_transaction
       adjustment.label = 'Tax'
       adjustment.mandatory = true
       adjustment.eligible = true
