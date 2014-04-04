@@ -11,9 +11,9 @@ module Spree
       pingResult = mytax.Ping
       if pingResult["ResultCode"] == "Success"
         flash[:success] = "Ping Successful"
-      #flash[:success] = 'Message sent!'
+
       else
-        flash[:error] ="Ping Error"
+        flash[:error] = "Ping Error"
       end
 
       respond_to do |format|

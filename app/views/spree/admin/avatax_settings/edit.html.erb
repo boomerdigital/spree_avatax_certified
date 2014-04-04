@@ -8,14 +8,7 @@
       <div class="yui-u first">
         <fieldset>
           <legend><%= t('avatax_api_login_and_key') %></legend>
-          <p>
-            <label><%= t('avatax_api_username') %></label><br />
-            <%= text_field_tag('settings[avatax_api_username]', Spree::Config.avatax_api_username, :size => 46, :maxlength => 256, :class => 'avatax') %>
-          </p>
-          <p>
-            <label><%= t('avatax_api_password') %></label><br />
-            <%= text_field_tag('settings[avatax_api_password]', Spree::Config.avatax_api_password, :maxlength => 256, :class => 'avatax') %>
-          </p>
+
           <p>
             <label><%= t('avatax_license_key') %></label><br />
             <%= text_field_tag('settings[avatax_license_key]', Spree::Config.avatax_license_key, :maxlength => 256, :class => 'avatax') %>

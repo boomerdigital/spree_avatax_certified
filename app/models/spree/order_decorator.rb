@@ -22,6 +22,13 @@ Spree::Order.class_eval do
   self.state_machine.after_transition :to => :complete,
                                       :do => :avalara_capture,
                                       :if => :avalara_eligible
+
+
+  #self.complete? :to => :complete, :do => :avalara_capture, :if => :avalara_eligible
+
+  #self.state_machine[:state]== :complete :do => :avalara_capture, :if => :avalara_eligible
+
+
   #add below to method
   #if (payment? || complete?) && :avalara_eligible
   #  #:avalara_lookup
@@ -40,8 +47,7 @@ Spree::Order.class_eval do
     iseligible = Spree::Config.avatax_iseligible
     if iseligible
       true
-    #else
-     # false
+
     end
   end
 
@@ -87,6 +93,34 @@ Spree::Order.class_eval do
   end
   end
 
+  def avalara_capture_finalize
+    #self.adjustments.each do |adjustment|
+    #  Spree::Adjustment.destroy(adjustment.id)
+    #end
+    logger = Logger.new('avalara_order.txt', 'weekly')
+    logger.progname = 'order class'
+    logger.debug 'avalara capture'
+    begin
+      create_avalara_transaction
+      #added to clean up the
+      self.adjustments.avalara_tax.destroy_all
+      sat = Spree::AvalaraTransaction.new
+      rtn_tax = sat.commit_avatax(line_items, self)
+      logger.info 'tax amount'
+      logger.debug rtn_tax
+      adjustments.create do |adjustment|
+        adjustment.source = self
+        adjustment.originator = avalara_transaction
+        adjustment.label = 'Tax'
+        adjustment.mandatory = true
+        adjustment.eligible = true
+        adjustment.amount = rtn_tax
+      end
+    rescue => e
+      logger.debug e
+      logger.debug 'error in a avalara capture'
+    end
+  end
 
 
 

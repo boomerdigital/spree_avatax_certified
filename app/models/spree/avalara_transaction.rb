@@ -38,15 +38,25 @@ module Spree
 
 
     def commit_avatax(items, order_details)
+      post_order_to_avalara(false, items, order_details)
+    end
+
+    def commit_avatax_final(items, order_details)
       post_order_to_avalara(true, items, order_details)
     end
 
+
     def update_adjustment(adjustment, source)
-      #post_order_to_avalara(false, order.line_items, order)
+      #if order.complete? then
+      #  #now recalc the tax
+      #  post_order_to_avalara(false, order.line_items, order)
+      #  adjustment.update_column(:amount, rnt_tax)
+      #end
+      post_order_to_avalara(false, order.line_items, order)
       #rate = rnt_tax.to_f || 0 / order.item_total
       #tax  = (order.item_total) * rate
       #tax  = 0 if tax.nan?
-      #adjustment.update_column(:amount, rnt_tax)
+      adjustment.update_column(:amount, rnt_tax)
     end
 
 
@@ -146,8 +156,10 @@ module Spree
           line[:DestinationCode] = "Dest"
 
           # Best Practice Request Parameters
-          line[:Description] = ""#line_item.variant.description
-          line[:TaxCode] = line_item.tax_category.name || "PC030147"
+          line[:Description] = ""
+          if line_item.tax_category.name then
+            line[:TaxCode] = line_item.tax_category.name || "PC030147"
+          end
 
 
           logger.debug line.to_xml
@@ -188,7 +200,7 @@ module Spree
           #:Client => "AvaTaxSample",
           :DocCode => order_details.number,
           :DetailLevel => "Tax",
-          :Commit => false, #commit
+          :Commit => commit,
           :DocType => "SalesInvoice",
           :Addresses => addresses,
           :Lines => tax_line_items
