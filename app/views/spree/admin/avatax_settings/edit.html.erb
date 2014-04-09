@@ -8,14 +8,22 @@
       <div class="yui-u first">
         <fieldset>
           <legend><%= t('avatax_api_login_and_key') %></legend>
-
           <p>
-            <label><%= t('avatax_license_key') %></label><br />
-            <%= text_field_tag('settings[avatax_license_key]', Spree::Config.avatax_license_key, :maxlength => 256, :class => 'avatax') %>
+            <label><%= t('avatax_customer_code') %></label><br />
+            <%= text_field_tag('settings[avatax_customer_code]', Spree::Config.avatax_customer_code, :maxlength => 256, :class => 'avatax') %>
           </p>
+          <p>
+            <label><%= t('avatax_company_code') %></label><br />
+            <%= text_field_tag('settings[avatax_company_code]', Spree::Config.avatax_company_code, :maxlength => 256, :class => 'avatax') %>
+          </p>
+
           <p>
             <label><%= t('avatax_account') %></label><br />
             <%= text_field_tag('settings[avatax_account]', Spree::Config.avatax_account, :maxlength => 256, :class => 'avatax') %>
+          </p>
+          <p>
+            <label><%= t('avatax_license_key') %></label><br />
+            <%= text_field_tag('settings[avatax_license_key]', Spree::Config.avatax_license_key, :maxlength => 256, :class => 'avatax') %>
           </p>
         </fieldset>
 
@@ -38,7 +46,7 @@
         <fieldset>
           <legend><%= t('eligible') %></legend>
           <p>
-            <label><%= t('avatax_iseligible') %></label><br />
+            <label><%= t('enable_avatax') %></label><br />
             <%= check_box_tag('settings[avatax_iseligible]','yes' , Spree::Config.avatax_iseligible, :class => 'avatax') %>
           </p>
         </fieldset>

@@ -6,7 +6,7 @@ require_relative 'avalara_transaction'
 Spree::Order.class_eval do
 
 
-  logger = Logger.new('avalara_order.txt', 'weekly')
+  logger = Logger.new('log/avalara_order.txt', 'weekly')
 
   #logger.level = :debug
   logger.progname = 'order class'
@@ -47,14 +47,15 @@ Spree::Order.class_eval do
     iseligible = Spree::Config.avatax_iseligible
     if iseligible
       true
-
+    else
+      false
     end
   end
 
 
 
   def avalara_lookup
-    logger = Logger.new('avalara_order.txt', 'weekly')
+    logger = Logger.new('log/avalara_order.txt', 'weekly')
     logger.progname = 'order class'
     logger.debug 'avalara lookup'
     create_avalara_transaction
@@ -68,7 +69,7 @@ Spree::Order.class_eval do
     #self.adjustments.each do |adjustment|
     #  Spree::Adjustment.destroy(adjustment.id)
     #end
-    logger = Logger.new('avalara_order.txt', 'weekly')
+    logger = Logger.new('log/avalara_order.txt', 'weekly')
     logger.progname = 'order class'
     logger.debug 'avalara capture'
     begin
@@ -97,7 +98,7 @@ Spree::Order.class_eval do
     #self.adjustments.each do |adjustment|
     #  Spree::Adjustment.destroy(adjustment.id)
     #end
-    logger = Logger.new('avalara_order.txt', 'weekly')
+    logger = Logger.new('log/avalara_order.txt', 'weekly')
     logger.progname = 'order class'
     logger.debug 'avalara capture'
     begin

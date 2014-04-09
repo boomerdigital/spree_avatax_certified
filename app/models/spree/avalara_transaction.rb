@@ -6,7 +6,7 @@ require_relative  'tax_svc'
 module Spree
   class AvalaraTransaction < ActiveRecord::Base
     # To change this template use File | Settings | File Templates.
-    logger = Logger.new('post_order_to_avalara.txt', 'weekly')
+    logger = Logger.new('log/post_order_to_avalara.txt', 'weekly')
 
     #logger.level = :debug
 
@@ -47,61 +47,26 @@ module Spree
 
 
     def update_adjustment(adjustment, source)
-      #if order.complete? then
-      #  #now recalc the tax
-      #  post_order_to_avalara(false, order.line_items, order)
-      #  adjustment.update_column(:amount, rnt_tax)
-      #end
+
       post_order_to_avalara(false, order.line_items, order)
       #rate = rnt_tax.to_f || 0 / order.item_total
       #tax  = (order.item_total) * rate
       #tax  = 0 if tax.nan?
       adjustment.update_column(:amount, rnt_tax)
+
+      if order.complete? then
+      #now recalc the tax
+      post_order_to_avalara(true, order.line_items, order)
+      adjustment.update_column(:amount, rnt_tax)
+      end
+
+      if order.cancel? then
+        cancel_order_to_avalara("SalesInvoice", "DocVoided", order)
+      end
+
     end
 
 
-    #def create_cart_items
-    #
-    #  cart_items.clear
-    #
-    #  index = 0
-    #
-    #  order.line_items.each do |line_item|
-    #
-    #    cart_items.create!({
-    #
-    #                           :index => (index += 1),
-    #
-    #                           :tax_category => '20020', # TODO   CLOTHING-ACCESSORY
-    #                           #if not there leave null for test
-    #
-    #                           :sku => line_item.variant.sku.presence || line_item.variant.id,
-    #
-    #                           :quantity => line_item.quantity,
-    #
-    #                           :price => line_item.price.to_f,
-    #
-    #                           :line_item => line_item
-    #
-    #                       })
-    #
-    #  end
-    #
-    #  cart_items.create!({
-    #
-    #                         :index => (index += 1),
-    #
-    #                         :tic => '11010',
-    #
-    #                         :sku => 'SHIPPING',
-    #
-    #                         :quantity => 1,
-    #
-    #                         :price => order.ship_total.to_f
-    #
-    #                     })
-    #
-    #end
 
 
 
@@ -115,8 +80,49 @@ module Spree
       return shipping_address
     end
 
+    def cancel_order_to_avalara(doc_type="SalesInvoice", cancel_code="DocVoided", order_details=nil)
+      logger = Logger.new('log/post_order_to_avalara.txt', 'weekly')
+
+      #logger.level = :debug
+
+      logger.progname = 'avalara_transaction'
+
+      logger.info 'cancel order to avalara'
+
+      cancelTaxRequest = {
+          # Required Request Parameters
+          :CompanyCode => Spree::Config.avatax_company_code,
+          :DocType => doc_type,
+          :DocCode => order_details.number,
+          :CancelCode => cancel_code
+      }
+
+      logger.debug cancelTaxRequest
+
+      cancelTaxResult = taxSvc.CancelTax(cancelTaxRequest)
+
+      logger.debug cancelTaxResult
+
+      if cancelTaxResult == 'error in Tax' then
+        return 'Error in Tax'
+
+
+
+      else
+        if cancelTaxResult["ResultCode"] = "Success"
+          logger.debug cancelTaxResult
+          return cancelTaxResult
+
+
+        end
+      end
+
+
+
+    end
+
     def post_order_to_avalara(commit=false, orderitems=nil, order_details=nil)
-      logger = Logger.new('post_order_to_avalara.txt', 'weekly')
+      logger = Logger.new('log/post_order_to_avalara.txt', 'weekly')
 
       #logger.level = :debug
 
@@ -154,17 +160,62 @@ module Spree
           line[:Amount] = line_item.total.to_f
           line[:OriginCode] = "Orig"
           line[:DestinationCode] = "Dest"
+          line[:CustomerUsageType]= User.use_code
+          line[:ExemptionNo] = User.exemption_number
 
           # Best Practice Request Parameters
-          line[:Description] = ""
-          if line_item.tax_category.name then
-            line[:TaxCode] = line_item.tax_category.name || "PC030147"
-          end
+          line[:Description] = line_item.name
 
+          if line_item.tax_category.name then
+            line[:TaxCode] = line_item.tax_category.description || "PC030147"
+          end
+          #now check to see if there is a shipped from address
+          shipped_from = get_shipped_from_address(line_item.id)
+
+          if shipped_from then
+            orig_ship_address = Hash.new
+            orig_ship_address[:AddressCode] = line_item.id
+            orig_ship_address[:Line1] = shipped_from.address1
+            orig_ship_address[:City] = shipped_from.city
+            orig_ship_address[:PostalCode] = shipped_from.zipcode
+            orig_ship_address[:Country] = Country.find(shipped_from.country_id).iso
+            line[:OriginCode] = line_item.id
+            logger.debug orig_ship_address.to_xml
+            addresses<<orig_ship_address
+          end
 
           logger.debug line.to_xml
 
           tax_line_items<<line
+        end
+      end
+
+      if order_details then
+        order_details.adjustments.shipping.each do |adj|
+
+            line = Hash.new
+            i += 1
+            # Required Parameters
+            line[:LineNo] = i
+            line[:ItemCode] = "Shipping"
+            line[:Qty] = "0"
+            line[:Amount] = adj.amount.to_f
+            line[:OriginCode] = "Orig"
+            line[:DestinationCode] = "Dest"
+            line[:CustomerUsageType]= User.use_code
+            line[:ExemptionNo] = User.exemption_number
+
+            # Best Practice Request Parameters
+            line[:Description] = "Shipping"
+
+            line[:TaxCode] = line_item.tax_category.description || "FR"
+
+
+
+            logger.debug line.to_xml
+
+            tax_line_items<<line
+
         end
       end
 
@@ -192,11 +243,13 @@ module Spree
 
 
       gettaxes = {
-          :CustomerCode => "APITrialCompany",
+          :CustomerCode => Spree::Config.avatax_customer_code,
           :DocDate => Date.current.to_formatted_s(:db),
 
           # Best Practice Request Parameters
-          :CompanyCode => "APITrialCompany", #Spree::Config.avatax_api_username,
+          :CompanyCode => Spree::Config.avatax_company_code,
+           :CustomerUsageType => User.use_code,
+           :ExemptionNo => User.exemption_number,
           #:Client => "AvaTaxSample",
           :DocCode => order_details.number,
           :DetailLevel => "Tax",
@@ -217,7 +270,7 @@ module Spree
       logger.debug getTaxResult
 
       if getTaxResult == 'error in Tax' then
-        @myrtntax = "1.00"
+        @myrtntax = "0.00"
 
 
       else

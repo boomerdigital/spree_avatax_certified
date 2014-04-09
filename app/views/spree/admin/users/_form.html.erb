@@ -35,4 +35,26 @@
         <%= f.error_message_on :password_confirmation %>
     <% end %>
   </div>
+  <div class="omega six columns">
+    <%= f.field_container :customer_code do %>
+        <%= f.label :customer_code, Spree.t(:customer_code) %>
+        <%= f.text_field :customer_code, :class => 'fullwidth' %>
+    <% end %>
+
+   </div>
+  <div class="omega six columns">
+    <%= f.field_container :use_code do %>
+        <%= f.label :use_code, Spree.t(:use_code) %>
+        <%= f.text_field :use_code, :class => 'fullwidth' %>
+    <% end %>
+
+  </div>
+  <div class="omega six columns">
+    <%= f.field_container :exemption_number do %>
+        <%= f.label :exemption_number, Spree.t(:exemption_number) %>
+        <%= f.text_field :exemption_number, :class => 'fullwidth' %>
+    <% end %>
+
+  </div>
+
 </div>

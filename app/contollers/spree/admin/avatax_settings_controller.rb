@@ -6,6 +6,26 @@ module Spree
     def show
     end
 
+    def get_file_content_txt_svc
+      data = open("log/tax_svc.txt")
+
+      send_data data.read, filename: "tax_svc.txt", type: "application/text", disposition: 'inline', stream: 'true'
+      #send_file '/log/tax_svc.txt', :type=>"application/text", :x_sendfile=>true
+    end
+
+    def get_file_content_post_avatax
+      data = open("log/post_order_to_avalara.txt")
+      #data = open("https://s3.amazonaws.com/PATTH TO YOUR FILE")
+      send_data data.read, filename: "post_order_to_avalara.txt", type: "application/text", disposition: 'inline', stream: 'true'
+      #send_file '/log/post_order_to_avalara.txt', :type=>"application/text", :x_sendfile=>true
+    end
+
+    def get_file_content_avatax_ord
+      data = open("log/avalara_order.txt")
+
+      send_data data.read, filename: "avalara_order.txt", type: "application/text", disposition: 'inline', stream: 'true'
+    end
+
     def  ping_my_service
       mytax = TaxSvc.new( Spree::Config.avatax_account || AvalaraYettings['account'],Spree::Config.avatax_license_key || AvalaraYettings['license_key'],Spree::Config.avatax_endpoint || AvalaraYettings['endpoint'])
       pingResult = mytax.Ping
@@ -19,6 +39,10 @@ module Spree
       respond_to do |format|
         format.js
       end
+    end
+
+    def download_txt_svc
+      send_file 'log/tax_svc.txt', :type=>"application/text"
     end
 
     def update
@@ -40,7 +64,9 @@ module Spree
       Spree::Config.avatax_servicepathaddress = taxpref[:avatax_servicepathaddress]
       Spree::Config.avatax_license_key = taxpref[:avatax_license_key]
       Spree::Config.avatax_iseligible = taxpref[:avatax_iseligible]
+      Spree::Config.avatax_company_code =taxpref[:avatax_company_code]
       Spree::Config.avatax_customer_code =taxpref[:avatax_customer_code]
+
 
 
       respond_to do |format|
