@@ -47,20 +47,26 @@ module Spree
 
 
     def update_adjustment(adjustment, source)
+      logger = Logger.new('log/post_order_to_avalara.txt', 'weekly')
 
+      #logger.level = :debug
+
+      logger.progname = 'avalara_transaction'
+
+      logger.info 'update adjustment call'
       post_order_to_avalara(false, order.line_items, order)
       #rate = rnt_tax.to_f || 0 / order.item_total
       #tax  = (order.item_total) * rate
       #tax  = 0 if tax.nan?
       adjustment.update_column(:amount, rnt_tax)
 
-      if order.complete? then
+      if order.complete?
       #now recalc the tax
       post_order_to_avalara(true, order.line_items, order)
       adjustment.update_column(:amount, rnt_tax)
       end
 
-      if order.cancel? then
+      if order.state === 'canceled'
         cancel_order_to_avalara("SalesInvoice", "DocVoided", order)
       end
 
@@ -75,8 +81,15 @@ module Spree
       #now request from the database the item shipping location
       #will link using the spree stock locations and the spree stock items
       #stock items has fk relationship to stock locations
+      logger = Logger.new('log/post_order_to_avalara.txt', 'weekly')
+
+      #logger.level = :debug
+
+      logger.progname = 'avalara_transaction'
+
+      logger.info 'shipping address get'
       stock_item = Stock_Item.find(item_id)
-      shipping_address = Stock_Location.find(stock_item.stock_location_id)
+      shipping_address = stock_item.stock_location || nil #Stock_Location.find(stock_item.stock_location_id)
       return shipping_address
     end
 
@@ -143,7 +156,9 @@ module Spree
       orig_address[:Country] = origin["Country"]
 
       logger.debug orig_address.to_xml
-
+      myuserid = order_details.user_id
+      logger.debug myuserid
+      myuser = User.find(myuserid)
 
       i = 0
       if orderitems then
@@ -160,25 +175,68 @@ module Spree
           line[:Amount] = line_item.total.to_f
           line[:OriginCode] = "Orig"
           line[:DestinationCode] = "Dest"
-          line[:CustomerUsageType]= User.use_code
-          line[:ExemptionNo] = User.exemption_number
+          logger.info 'about to check for User'
+
+          #logger.debug myuser
+          if myuser
+            line[:CustomerUsageType]= myuser.use_code || ""
+            #line[:ExemptionNo] = myuser.exemption_number || ""
+          end
+          logger.info 'after user check'
 
           # Best Practice Request Parameters
           line[:Description] = line_item.name
 
-          if line_item.tax_category.name then
+          if line_item.tax_category.name
             line[:TaxCode] = line_item.tax_category.description || "PC030147"
           end
-          #now check to see if there is a shipped from address
-          shipped_from = get_shipped_from_address(line_item.id)
 
-          if shipped_from then
+          #now check to see if there is a shipped from address
+          logger.info 'about to check for shipped from'
+          #Spree::API::Stock_Location.stock_item.where(:variant_id => line_item.id)
+          shipped_from = order_details.inventory_units.where(:variant_id => line_item.id)
+          #@stock_locations = StockLocation.accessible_by(current_ability, :read).order('name ASC').ransack(params[:q]).result.page(params[:page]).per(params[:per_page])
+          location = Spree::StockLocation.find_by(name: 'default') || Spree::StockLocation.first
+          logger.info 'default location'
+          logger.debug location
+          packages = Spree::Stock::Coordinator.new(order_details).packages
+          logger.info 'packages'
+          logger.debug packages
+          stock_loc = nil
+          packages.each do |package|
+            next unless package.to_shipment.stock_location.stock_items.where(:variant_id => line_item.variant.id).exists?
+            logger.info'to shipment'
+            logger.debug  package.to_shipment
+            logger.info 'stock location'
+            logger.debug  package.to_shipment.stock_location
+            logger.info 'stock loc'
+            stock_loc = package.to_shipment.stock_location
+            logger.debug stock_loc
+          end
+
+
+
+          logger.info 'checked for shipped from'
+
+          if stock_loc
             orig_ship_address = Hash.new
             orig_ship_address[:AddressCode] = line_item.id
-            orig_ship_address[:Line1] = shipped_from.address1
-            orig_ship_address[:City] = shipped_from.city
-            orig_ship_address[:PostalCode] = shipped_from.zipcode
-            orig_ship_address[:Country] = Country.find(shipped_from.country_id).iso
+            orig_ship_address[:Line1] = stock_loc.address1
+            orig_ship_address[:City] = stock_loc.city
+            orig_ship_address[:PostalCode] = stock_loc.zipcode
+            orig_ship_address[:Country] = Country.find(stock_loc.country_id).iso
+            #this will set the shipped from address linking
+            line[:OriginCode] = line_item.id
+            logger.debug orig_ship_address.to_xml
+            addresses<<orig_ship_address
+          elsif location
+            orig_ship_address = Hash.new
+            orig_ship_address[:AddressCode] = line_item.id
+            orig_ship_address[:Line1] = location.address1
+            orig_ship_address[:City] = location.city
+            orig_ship_address[:PostalCode] = location.zipcode
+            orig_ship_address[:Country] = Country.find(location.country_id).iso
+            #this will set the shipped from address linking
             line[:OriginCode] = line_item.id
             logger.debug orig_ship_address.to_xml
             addresses<<orig_ship_address
@@ -190,7 +248,9 @@ module Spree
         end
       end
 
+      logger.info 'running order details'
       if order_details then
+        logger.info 'order adjustments'
         order_details.adjustments.shipping.each do |adj|
 
             line = Hash.new
@@ -202,13 +262,18 @@ module Spree
             line[:Amount] = adj.amount.to_f
             line[:OriginCode] = "Orig"
             line[:DestinationCode] = "Dest"
-            line[:CustomerUsageType]= User.use_code
-            line[:ExemptionNo] = User.exemption_number
+
+            if myuser
+              line[:CustomerUsageType]= myuser.use_code || ""
+              #line[:ExemptionNo] = myuser.exemption_number || ""
+            end
+            #line[:CustomerUsageType]= User.use_code
+            #line[:ExemptionNo] = User.exemption_number
 
             # Best Practice Request Parameters
             line[:Description] = "Shipping"
 
-            line[:TaxCode] = line_item.tax_category.description || "FR"
+            line[:TaxCode] = "FR"
 
 
 
@@ -248,8 +313,8 @@ module Spree
 
           # Best Practice Request Parameters
           :CompanyCode => Spree::Config.avatax_company_code,
-           :CustomerUsageType => User.use_code,
-           :ExemptionNo => User.exemption_number,
+          :CustomerUsageType => myuser.use_code || "",
+          :ExemptionNo => myuser.exemption_number || "",
           #:Client => "AvaTaxSample",
           :DocCode => order_details.number,
           :DetailLevel => "Tax",

@@ -128,7 +128,6 @@ GEM
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
     little-plugger (1.1.3)
-    log4r (1.1.10)
     logging (1.8.2)
       little-plugger (>= 1.1.3)
       multi_json (>= 1.8.4)
@@ -281,7 +280,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  addressable
   capybara (~> 2.1)
   coffee-rails
   database_cleaner
@@ -289,18 +287,12 @@ DEPENDENCIES
   ffaker
   guard
   guard-rspec
-  json
-  log4r
-  logging
   pry
   pry-nav
   pry-remote
-  psych (~> 2.0.4)
-  rest-client
   rspec-rails (~> 2.13)
   sass-rails
   selenium-webdriver
   simplecov
   spree_avatax!
   sqlite3
-  yettings

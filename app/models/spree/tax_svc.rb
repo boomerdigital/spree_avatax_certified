@@ -29,6 +29,7 @@ class TaxSvc
     logger = Logger.new('log/tax_svc.txt', 'weekly')
     logger.info 'GetTax call'
     logger.debug request_hash
+    logger.debug  JSON.generate(request_hash)
     begin
       uri = @service_url + @@service_path + "get"
       logger.debug uri
@@ -36,9 +37,11 @@ class TaxSvc
       logger.debug cred
       RestClient.log = logger
       res = RestClient.post uri, JSON.generate(request_hash), :authorization => cred
+      logger.info 'RestClient call'
       logger.debug res
       JSON.parse(res.body)
     rescue => e
+      logger.info 'Rest Client Error'
       logger.debug e
       logger.debug 'error in Tax'
       'error in Tax'
