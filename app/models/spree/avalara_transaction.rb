@@ -13,6 +13,7 @@ module Spree
     logger.progname = 'avalara_transaction'
 
     belongs_to :order
+    belongs_to :return_authorization
 
     validates :order, :presence => true
 
