@@ -62,13 +62,9 @@ Spree::Order.class_eval do
     :lookup_avatax
 
   end
-#if use originator need to code update adjustment
-#check here for update or new
-  # should destroy when recalc occurs
+
   def avalara_capture
-    #self.adjustments.each do |adjustment|
-    #  Spree::Adjustment.destroy(adjustment.id)
-    #end
+
     logger = Logger.new('log/avalara_order.txt', 'weekly')
     logger.progname = 'order class'
     logger.debug 'avalara capture'

@@ -37,12 +37,12 @@ module Spree
     end
 
 
-    def commit_avatax(items, order_details)
-      post_order_to_avalara(false, items, order_details)
+    def commit_avatax(items, order_details,doc_id=nil,invoice_dt=nil)
+      post_order_to_avalara(false, items, order_details,doc_id,invoice_dt)
     end
 
-    def commit_avatax_final(items, order_details)
-      post_order_to_avalara(true, items, order_details)
+    def commit_avatax_final(items, order_details,doc_id=nil,invoice_dt=nil)
+      post_order_to_avalara(true, items, order_details,doc_id,invoice_dt)
     end
 
 
@@ -54,22 +54,39 @@ module Spree
       logger.progname = 'avalara_transaction'
 
       logger.info 'update adjustment call'
+      if adjustment.state != "finalized"
       post_order_to_avalara(false, order.line_items, order)
-      #rate = rnt_tax.to_f || 0 / order.item_total
-      #tax  = (order.item_total) * rate
-      #tax  = 0 if tax.nan?
       adjustment.update_column(:amount, rnt_tax)
+      end
 
       if order.complete?
       #now recalc the tax
       post_order_to_avalara(true, order.line_items, order)
       adjustment.update_column(:amount, rnt_tax)
+      adjustment.update_column(:state, "finalized")
       end
-
-      if order.state === 'canceled'
+      if order.state == 'canceled'
         cancel_order_to_avalara("SalesInvoice", "DocVoided", order)
       end
+      if adjustment.state == "finalized" && order.adjustments.return_authorization.exists?
 
+        post_order_to_avalara(false, order.line_items, order, order.number.to_s + ":" + order.adjustments.return_authorization.first.id.to_s, order.completed_at)
+        if rnt_tax != "0.00"
+          adjustment.update_column(:amount, rnt_tax)
+          adjustment.update_column(:state, "finalized")
+        end
+      end
+      if adjustment.state == "finalized" && order.adjustments.return_authorization.exists?
+        order.adjustments.return_authorization.each do |adj|
+          if adj.state == "closed" || adj.state == "finalized"
+            post_order_to_avalara(true, order.line_items, order, order.number.to_s + ":"  + adj.id.to_s, order.completed_at )
+          end
+        end
+        if rnt_tax != "0.00"
+          adjustment.update_column(:amount, rnt_tax)
+          adjustment.update_column(:state, "finalized")
+        end
+      end
     end
 
 
@@ -111,8 +128,9 @@ module Spree
       }
 
       logger.debug cancelTaxRequest
+      mytax = TaxSvc.new( Spree::Config.avatax_account || AvalaraYettings['account'],Spree::Config.avatax_license_key || AvalaraYettings['license_key'],Spree::Config.avatax_endpoint || AvalaraYettings['endpoint'])
 
-      cancelTaxResult = taxSvc.CancelTax(cancelTaxRequest)
+      cancelTaxResult = mytax.CancelTax(cancelTaxRequest)
 
       logger.debug cancelTaxResult
 
@@ -134,7 +152,7 @@ module Spree
 
     end
 
-    def post_order_to_avalara(commit=false, orderitems=nil, order_details=nil)
+    def post_order_to_avalara(commit=false, orderitems=nil, order_details=nil, doc_code=nil, org_ord_date=nil)
       logger = Logger.new('log/post_order_to_avalara.txt', 'weekly')
 
       #logger.level = :debug
@@ -159,13 +177,12 @@ module Spree
       myuserid = order_details.user_id
       logger.debug myuserid
       myuser = User.find(myuserid)
+      myusecode = AvalaraUseCodeItem.where(:id => myuser.spree_avalara_use_code_item_id).first
 
       i = 0
       if orderitems then
         orderitems.each do |line_item|
-          #  line_item_total=line_item.price*line_item.quantity
-          #  item_id = line_item.id
-          # need to map the taxcodes to tax cat names
+
           line = Hash.new
           i += 1
           # Required Parameters
@@ -177,10 +194,10 @@ module Spree
           line[:DestinationCode] = "Dest"
           logger.info 'about to check for User'
 
-          #logger.debug myuser
-          if myuser
-            line[:CustomerUsageType]= myuser.use_code || ""
-            #line[:ExemptionNo] = myuser.exemption_number || ""
+          logger.debug myusecode
+          if myusecode
+            line[:CustomerUsageType]= myusecode.use_code || ""
+
           end
           logger.info 'after user check'
 
@@ -205,11 +222,6 @@ module Spree
           stock_loc = nil
           packages.each do |package|
             next unless package.to_shipment.stock_location.stock_items.where(:variant_id => line_item.variant.id).exists?
-            logger.info'to shipment'
-            logger.debug  package.to_shipment
-            logger.info 'stock location'
-            logger.debug  package.to_shipment.stock_location
-            logger.info 'stock loc'
             stock_loc = package.to_shipment.stock_location
             logger.debug stock_loc
           end
@@ -263,17 +275,17 @@ module Spree
             line[:OriginCode] = "Orig"
             line[:DestinationCode] = "Dest"
 
-            if myuser
-              line[:CustomerUsageType]= myuser.use_code || ""
+            if myusecode
+              line[:CustomerUsageType]= myusecode.use_code || ""
               #line[:ExemptionNo] = myuser.exemption_number || ""
             end
             #line[:CustomerUsageType]= User.use_code
             #line[:ExemptionNo] = User.exemption_number
 
             # Best Practice Request Parameters
-            line[:Description] = "Shipping"
+            line[:Description] = adj.label
 
-            line[:TaxCode] = "FR"
+            line[:TaxCode] = Spree::ShippingMethod.where(:id => adj.originator_id).first.tax_use_code
 
 
 
@@ -282,6 +294,70 @@ module Spree
             tax_line_items<<line
 
         end
+        order_details.adjustments.promotion.each do |adj|
+
+          line = Hash.new
+          i += 1
+          # Required Parameters
+          line[:LineNo] = i
+          line[:ItemCode] = "Promotion"
+          line[:Qty] = "0"
+          line[:Amount] = adj.amount.to_f
+          line[:OriginCode] = "Orig"
+          line[:DestinationCode] = "Dest"
+
+          if myusecode
+            line[:CustomerUsageType]= myusecode.use_code || ""
+            #line[:ExemptionNo] = myuser.exemption_number || ""
+          end
+          #line[:CustomerUsageType]= User.use_code
+          #line[:ExemptionNo] = User.exemption_number
+
+          # Best Practice Request Parameters
+          line[:Description] = adj.label
+
+          line[:TaxCode] = ""
+
+
+
+          logger.debug line.to_xml
+
+          tax_line_items<<line
+
+        end
+
+        order_details.adjustments.return_authorization.each do |adj|
+
+          line = Hash.new
+          i += 1
+          # Required Parameters
+          line[:LineNo] = i
+          line[:ItemCode] = "Return Authorization"
+          line[:Qty] = "0"
+          line[:Amount] = adj.amount.to_f
+          line[:OriginCode] = "Orig"
+          line[:DestinationCode] = "Dest"
+
+          if myusecode
+            line[:CustomerUsageType]= myusecode.use_code || ""
+            #line[:ExemptionNo] = myuser.exemption_number || ""
+          end
+          #line[:CustomerUsageType]= User.use_code
+          #line[:ExemptionNo] = User.exemption_number
+
+          # Best Practice Request Parameters
+          line[:Description] = adj.label
+
+          line[:TaxCode] = ""
+
+
+
+          logger.debug line.to_xml
+
+          tax_line_items<<line
+
+        end
+
       end
 
       #OriginationAddress
@@ -309,14 +385,18 @@ module Spree
 
       gettaxes = {
           :CustomerCode => Spree::Config.avatax_customer_code,
-          :DocDate => Date.current.to_formatted_s(:db),
-
+          :DocDate => org_ord_date ? org_ord_date : Date.current.to_formatted_s(:db),#date transaction occurred
+          #Tax Date: returns orig date
           # Best Practice Request Parameters
           :CompanyCode => Spree::Config.avatax_company_code,
-          :CustomerUsageType => myuser.use_code || "",
+          :CustomerUsageType => myusecode ? myusecode.usecode : "",
           :ExemptionNo => myuser.exemption_number || "",
-          #:Client => "AvaTaxSample",
-          :DocCode => order_details.number,
+          :Client =>  Spree::Config.avatax_client_version || "SpreeExtV1.0",
+          :DocCode => doc_code ? doc_code : order_details.number,
+          #send po or inovice  for returns send ref as po
+          #Purchase Order No:
+          #Reference Code:
+          :ReferenceCode => order_details.number,
           :DetailLevel => "Tax",
           :Commit => commit,
           :DocType => "SalesInvoice",

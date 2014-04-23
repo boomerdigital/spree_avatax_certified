@@ -43,10 +43,11 @@
 
    </div>
   <div class="omega six columns">
-    <%= f.field_container :use_code do %>
-        <%= f.label :use_code, Spree.t(:use_code) %>
-        <%= f.text_field :use_code, :class => 'fullwidth' %>
-    <% end %>
+  <%= f.field_container :spree_avalara_use_code_item_id do %>
+      <%= label_tag :spree_avalara_use_code_item_id, t(:avalara_entity_use_code) %><br />
+      <%= hidden_field_tag 'user[spree_avalara_use_code_item_id]', f.object.spree_avalara_use_code_item_id , :class => "use_code_picker fullwidth" %>
+  <% end %>
+
 
   </div>
   <div class="omega six columns">

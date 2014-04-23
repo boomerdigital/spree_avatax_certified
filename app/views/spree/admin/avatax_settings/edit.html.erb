@@ -41,6 +41,10 @@
             <label><%= t('avatax_servicepathaddress') %></label><br />
             <%= text_field_tag('settings[avatax_servicepathaddress]', Spree::Config.avatax_servicepathaddress, :maxlength => 256, :class => 'avatax') %>
           </p>
+          <p>
+            <label><%= t('avatax_client_version') %></label><br />
+            <%= text_field_tag('settings[avatax_client_version]', Spree::Config.avatax_client_version, :maxlength => 256, :class => 'avatax') %>
+          </p>
         </fieldset>
 
         <fieldset>
