@@ -1,13 +1,7 @@
 SpreeAvatax
 ===========
 
-Introduction goes here.
-
-
-Example
-=======
-
-Example goes here.
+For help getting started, please see the wiki: https://github.com/railsdog/spree_avatax.wiki.git
 
 Testing
 -------
