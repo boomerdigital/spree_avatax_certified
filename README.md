@@ -1,7 +1,7 @@
 SpreeAvatax
 ===========
 
-For help getting started, please see the wiki: https://github.com/railsdog/spree_avatax.wiki.git
+For help getting started, please see the wiki: https://github.com/railsdog/spree_avatax/wiki/Getting-Started
 
 Testing
 -------
