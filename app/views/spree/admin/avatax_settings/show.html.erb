@@ -1,0 +1,92 @@
+<%= render :partial => 'spree/admin/shared/configuration_menu' %>
+<% origin = JSON.parse( Spree::Config.avatax_origin )  %>
+<h1><%= "Avalara Settings" %></h1>
+
+<table>
+  <tr>
+    <th scope="row"><%= t("avatax_customer_code") %>:</th>
+    <td><%= Spree::Config.avatax_customer_code %></td>
+  </tr>
+  <tr>
+    <th scope="row"><%= t("avatax_company_code") %>:</th>
+    <td><%= Spree::Config.avatax_company_code %></td>
+  </tr>
+  <tr>
+    <th scope="row"><%= t("avatax_license_key") %>:</th>
+    <td><%= Spree::Config.avatax_license_key %></td>
+  </tr>
+  <tr>
+    <th scope="row"><%= t("avatax_account") %>:</th>
+    <td><%= Spree::Config.avatax_account %></td>
+  </tr>
+  <tr>
+    <th scope="row"><%= t("avatax_endpoint") %>:</th>
+    <td><%= Spree::Config.avatax_endpoint %></td>
+  </tr>
+  <tr>
+    <th scope="row"><%= t("avatax_servicepathtax") %>:</th>
+    <td><%= Spree::Config.avatax_servicepathtax %></td>
+  </tr>
+  <tr>
+    <th scope="row"><%= t("avatax_servicepathaddress") %>:</th>
+    <td><%= Spree::Config.avatax_servicepathaddress %></td>
+  </tr>
+  <tr>
+    <th scope="row"><%= t("enable_avatax") %>:</th>
+    <td><%= Spree::Config.avatax_iseligible %></td>
+  </tr>
+  <tr>
+    <th scope="row"><%= t("client_version") %>:</th>
+    <td><%= Spree::Config.avatax_client_version %></td>
+  </tr>
+
+  <tr>
+    <th scope="row"><%= t("business_address") %>:</th>
+
+    <td><table>
+      <tr><td><%= Spree.t("address1") %>: <%= origin["Address1"]  %> </td></tr>
+      <tr><td><%= Spree.t("address2") %>: <%= origin["Address2"]  %></td></tr>
+      <tr><td><%= Spree.t("city") %>: <%= origin["City"]  %></td></tr>
+      <tr><td><%= Spree.t("state") %>: <%= origin["Region"]  %></td></tr>
+      <tr><td><%= Spree.t("zipcode") %>: <%= origin["Zip5"]  %></td></tr>
+      <tr><td><%= t("zip_plus_4") %>: <%= origin["Zip4"] %></td></tr>
+      <tr><td><%= t("country_code") %>: <%= origin["Country"] %></td></tr>
+    </table></td>
+  </tr>
+  <tr>
+    <th>Connection Status</th>
+    <td>
+      <%= link_to({:controller => :avatax_settings, :action => :ping_my_service, :remote => true }, {:class => 'btn btn-small'}) do %>
+          <i class="icon-plus-sign icon-black"></i> <% end %>
+    </td>
+
+  </tr>
+
+
+
+  <tr>
+   <th>View Log Files</th>
+    <td>
+      Log files are located in the log directory of your spree  website.
+      <br/>
+          Tax Service Calls using REST - file name: tax_svc.txt
+       <br/>
+          Avalara Function calls -  file name: post_order_to_avalara.txt
+        <br/>
+          Spree Order item integration Calls - file name: avalara_order.txt
+        <br/>
+    </td>
+    </tr>
+
+
+
+  <tr>
+    <td>
+      <!--<textarea id="displaytext">-->
+
+      </textarea>
+    </td>
+  </tr>
+</table>
+
+<p><%= link_to_with_icon 'edit', Spree.t("edit"), edit_admin_avatax_settings_path %></p>>
