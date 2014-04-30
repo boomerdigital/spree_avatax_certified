@@ -63,7 +63,7 @@ class TaxSvc
       logger.debug 'error in Estimate Tax'
       'error in Estimate Tax'
     end
-    #You may notice that this is slightly different from CalcTax, etc. The CancelTax result is  nested in this result object - this makes it consumable in a way that is consistant with the other response formats.
+
   end
 
   def EstimateTax(coordinates, sale_amount)
@@ -93,8 +93,7 @@ class TaxSvc
   end
 
   def Ping
-    #There is no actual ping in the REST API, so this is a mockup that calls EstimateTax with
-    #hardcoded values.
+
     logger = Logger.new('log/tax_svc.txt', 'weekly')
     logger.info 'Ping Call'
     self.EstimateTax(

@@ -27,7 +27,7 @@ Spree::ReturnAuthorization.class_eval do
     logger = Logger.new('log/return_authorization.txt', 'weekly')
     logger.progname = 'return_authorization class'
     logger.debug 'avalara lookup return_authorization'
-    #create_avalara_transaction
+
     :lookup_avatax
 
   end
@@ -39,21 +39,14 @@ Spree::ReturnAuthorization.class_eval do
     logger.debug 'avalara capture return_authorization'
     begin
       create_avalara_transaction
-      #added to clean up the
+
       order.adjustments.avalara_tax.destroy_all
       sat = Spree::AvalaraTransaction.new
       rtn_tax = sat.commit_avatax(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"))
       logger.info 'tax amount'
       logger.debug rtn_tax
       Spree::Adjustment.create(amount: rtn_tax, label: 'Tax',adjustable: order, source: order, originator: avalara_transaction, mandatory: true, eligible: true)
-      # adjustment = Spree::Adjustment.new(amount: rtn_tax, label: 'Tax')
-      # adjustment.source = order
-      # adjustment.originator = Spree::AvalaraTransaction
-      # adjustment.label = 'Tax'
-      # adjustment.mandatory = true
-      # adjustment.eligible = true
-      # adjustment.adjustable = order
-      # adjustment.save
+
     rescue => e
       logger.debug e
       logger.debug 'error in a avalara capture return_authorization'
@@ -67,20 +60,14 @@ Spree::ReturnAuthorization.class_eval do
     logger.debug 'avalara capture return_authorization avalara_capture_finalize'
     begin
       create_avalara_transaction
-      #added to clean up the
+
       order.adjustments.avalara_tax.destroy_all
       sat = Spree::AvalaraTransaction.new
       rtn_tax = sat.commit_avatax_final(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"))
       logger.info 'tax amount'
       logger.debug rtn_tax
        Spree::Adjustment.create(amount: rtn_tax, label: 'Tax',adjustable: order, source: order, originator: avalara_transaction, mandatory: true, eligible: true)
-      # adjustment.source = order
-      # adjustment.originator = Spree::AvalaraTransaction
-      # adjustment.label = 'Tax'
-      # adjustment.mandatory = true
-      # adjustment.eligible = true
-      # adjustment.adjustable = order
-      # adjustment.save
+
 
 
 

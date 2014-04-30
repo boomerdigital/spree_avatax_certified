@@ -10,14 +10,14 @@ module Spree
       data = open("log/tax_svc.txt")
 
       send_data data.read, filename: "tax_svc.txt", type: "application/text", disposition: 'inline', stream: 'true'
-      #send_file '/log/tax_svc.txt', :type=>"application/text", :x_sendfile=>true
+
     end
 
     def get_file_content_post_avatax
       data = open("log/post_order_to_avalara.txt")
-      #data = open("https://s3.amazonaws.com/PATTH TO YOUR FILE")
+
       send_data data.read, filename: "post_order_to_avalara.txt", type: "application/text", disposition: 'inline', stream: 'true'
-      #send_file '/log/post_order_to_avalara.txt', :type=>"application/text", :x_sendfile=>true
+
     end
 
     def get_file_content_avatax_ord

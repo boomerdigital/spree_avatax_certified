@@ -24,26 +24,11 @@ Spree::Order.class_eval do
                                       :if => :avalara_eligible
 
 
-  #self.complete? :to => :complete, :do => :avalara_capture, :if => :avalara_eligible
 
-  #self.state_machine[:state]== :complete :do => :avalara_capture, :if => :avalara_eligible
-
-
-  #add below to method
-  #if (payment? || complete?) && :avalara_eligible
-  #  #:avalara_lookup
-  #  :avalara_capture
-  #end
-
-
-
-  # the complete is not running
-  # after save call add payment greater change to line item
-  # if payment? or if compelte?
 
 
   def avalara_eligible
-   #temporarily return true
+
     iseligible = Spree::Config.avatax_iseligible
     if iseligible
       true
@@ -70,7 +55,7 @@ Spree::Order.class_eval do
     logger.debug 'avalara capture'
     begin
     create_avalara_transaction
-    #added to clean up the
+
     self.adjustments.avalara_tax.destroy_all
     sat = Spree::AvalaraTransaction.new
     rtn_tax = sat.commit_avatax(line_items, self)
@@ -91,15 +76,13 @@ Spree::Order.class_eval do
   end
 
   def avalara_capture_finalize
-    #self.adjustments.each do |adjustment|
-    #  Spree::Adjustment.destroy(adjustment.id)
-    #end
+
     logger = Logger.new('log/avalara_order.txt', 'weekly')
     logger.progname = 'order class'
     logger.debug 'avalara capture'
     begin
       create_avalara_transaction
-      #added to clean up the
+
       self.adjustments.avalara_tax.destroy_all
       sat = Spree::AvalaraTransaction.new
       rtn_tax = sat.commit_avatax(line_items, self)
