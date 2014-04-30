@@ -2,11 +2,12 @@ require 'logging'
 require_dependency 'spree/order'
 require_relative  'tax_svc'
 
+POSTED_ORDER_LOG = Rails.root.join('log', 'post_order_to_avalara.txt')
 
 module Spree
   class AvalaraTransaction < ActiveRecord::Base
 
-    logger = Logger.new('log/post_order_to_avalara.txt', 'weekly')
+    logger = Logger.new(POSTED_ORDER_LOG, 'weekly')
 
 
 
@@ -45,7 +46,7 @@ module Spree
 
 
     def update_adjustment(adjustment, source)
-      logger = Logger.new('log/post_order_to_avalara.txt', 'weekly')
+      logger = Logger.new(POSTED_ORDER_LOG, 'weekly')
 
 
       logger.progname = 'avalara_transaction'
@@ -92,7 +93,7 @@ module Spree
     private
     def get_shipped_from_address(item_id)
 
-      logger = Logger.new('log/post_order_to_avalara.txt', 'weekly')
+      logger = Logger.new(POSTED_ORDER_LOG, 'weekly')
 
 
       logger.progname = 'avalara_transaction'
@@ -104,7 +105,7 @@ module Spree
     end
 
     def cancel_order_to_avalara(doc_type="SalesInvoice", cancel_code="DocVoided", order_details=nil)
-      logger = Logger.new('log/post_order_to_avalara.txt', 'weekly')
+      logger = Logger.new(POSTED_ORDER_LOG, 'weekly')
 
       logger.progname = 'avalara_transaction'
 
@@ -144,7 +145,7 @@ module Spree
     end
 
     def post_order_to_avalara(commit=false, orderitems=nil, order_details=nil, doc_code=nil, org_ord_date=nil)
-      logger = Logger.new('log/post_order_to_avalara.txt', 'weekly')
+      logger = Logger.new(POSTED_ORDER_LOG, 'weekly')
 
 
 

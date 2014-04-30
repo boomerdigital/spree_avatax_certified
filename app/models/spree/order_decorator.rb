@@ -1,12 +1,12 @@
 require 'logger'
 require_relative 'avalara_transaction'
 
-
+AVALARA_ORDER_LOG = Rails.root.join('log','avalara_order.txt')
 
 Spree::Order.class_eval do
 
 
-  logger = Logger.new('log/avalara_order.txt', 'weekly')
+  logger = Logger.new(AVALARA_ORDER_LOG, 'weekly')
 
   #logger.level = :debug
   logger.progname = 'order class'
@@ -40,7 +40,7 @@ Spree::Order.class_eval do
 
 
   def avalara_lookup
-    logger = Logger.new('log/avalara_order.txt', 'weekly')
+    logger = Logger.new(AVALARA_ORDER_LOG, 'weekly')
     logger.progname = 'order class'
     logger.debug 'avalara lookup'
     create_avalara_transaction
@@ -50,7 +50,7 @@ Spree::Order.class_eval do
 
   def avalara_capture
 
-    logger = Logger.new('log/avalara_order.txt', 'weekly')
+    logger = Logger.new(AVALARA_ORDER_LOG, 'weekly')
     logger.progname = 'order class'
     logger.debug 'avalara capture'
     begin
@@ -77,7 +77,7 @@ Spree::Order.class_eval do
 
   def avalara_capture_finalize
 
-    logger = Logger.new('log/avalara_order.txt', 'weekly')
+    logger = Logger.new(AVALARA_ORDER_LOG, 'weekly')
     logger.progname = 'order class'
     logger.debug 'avalara capture'
     begin

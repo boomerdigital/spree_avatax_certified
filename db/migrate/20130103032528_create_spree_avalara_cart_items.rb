@@ -9,6 +9,7 @@ class CreateSpreeAvalaraCartItems < ActiveRecord::Migration
       t.decimal :amount, :precision => 8, :scale => 5, :default => 0
       t.decimal :ship_total, :precision => 8, :scale => 5, :default => 0
       t.references :line_item
+      t.references :tax_cloud_transaction
       t.references :avalara_transaction
       t.string :type
 

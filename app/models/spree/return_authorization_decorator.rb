@@ -1,8 +1,11 @@
 require 'logger'
 require_relative 'avalara_transaction'
+
+RETURN_AUTH_LOG = Rails.root.join('log', 'return_authorization.txt')
+
 Spree::ReturnAuthorization.class_eval do
   has_one :avalara_transaction, :dependent => :destroy
-  logger = Logger.new('log/return_authorization.txt', 'weekly')
+  logger = Logger.new(RETURN_AUTH_LOG, 'weekly')
   logger.progname = 'ReturnAuthorization class'
   logger.info 'start ReturnAuthorization processing'
 
@@ -24,7 +27,7 @@ Spree::ReturnAuthorization.class_eval do
   end
 
   def avalara_lookup
-    logger = Logger.new('log/return_authorization.txt', 'weekly')
+    logger = Logger.new(RETURN_AUTH_LOG, 'weekly')
     logger.progname = 'return_authorization class'
     logger.debug 'avalara lookup return_authorization'
 
@@ -34,7 +37,7 @@ Spree::ReturnAuthorization.class_eval do
 
   def avalara_capture
 
-    logger = Logger.new('log/return_authorization.txt', 'weekly')
+    logger = Logger.new(RETURN_AUTH_LOG, 'weekly')
     logger.progname = 'return_authorization class'
     logger.debug 'avalara capture return_authorization'
     begin
@@ -55,7 +58,7 @@ Spree::ReturnAuthorization.class_eval do
 
   def avalara_capture_finalize
 
-    logger = Logger.new('log/return_authorization.txt', 'weekly')
+    logger = Logger.new(RETURN_AUTH_LOG, 'weekly')
     logger.progname = 'return_authorization class'
     logger.debug 'avalara capture return_authorization avalara_capture_finalize'
     begin

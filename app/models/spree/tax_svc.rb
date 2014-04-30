@@ -5,12 +5,14 @@ require 'base64'
 require 'rest-client'
 require 'logging'
 
+TAX_SVC_LOGFILE = Rails.root.join('log','tax_svc.txt')
+
 class TaxSvc
   @@service_path = "/1.0/tax/"
   attr_accessor :account_number
   attr_accessor :license_key
   attr_accessor :service_url
-  @@logger = Logger.new('log/tax_svc.txt', 'weekly')
+  @@logger = Logger.new(TAX_SVC_LOGFILE, 'weekly')
 
   #logger.level = :debug
 
@@ -26,7 +28,7 @@ class TaxSvc
   end
 
   def GetTax(request_hash)
-    logger = Logger.new('log/tax_svc.txt', 'weekly')
+    logger = Logger.new(TAX_SVC_LOGFILE, 'weekly')
     logger.info 'GetTax call'
     logger.debug request_hash
     logger.debug  JSON.generate(request_hash)
@@ -50,7 +52,7 @@ class TaxSvc
 
 
   def CancelTax(request_hash)
-    logger = Logger.new('log/tax_svc.txt', 'weekly')
+    logger = Logger.new(TAX_SVC_LOGFILE, 'weekly')
     logger.info 'CancelTax call'
     begin
     uri = @service_url + @@service_path + "cancel"
@@ -69,7 +71,7 @@ class TaxSvc
   def EstimateTax(coordinates, sale_amount)
     # coordinates should be a hash with latitude and longitude
     # sale_amount should be a decimal
-    logger = Logger.new('log/tax_svc.txt', 'weekly')
+    logger = Logger.new(TAX_SVC_LOGFILE, 'weekly')
     logger.info 'EstimateTax call'
     return nil if coordinates.nil?
     sale_amount = 0 if sale_amount.nil?
@@ -94,7 +96,7 @@ class TaxSvc
 
   def Ping
 
-    logger = Logger.new('log/tax_svc.txt', 'weekly')
+    logger = Logger.new(TAX_SVC_LOGFILE, 'weekly')
     logger.info 'Ping Call'
     self.EstimateTax(
         { :latitude => "40.714623",
