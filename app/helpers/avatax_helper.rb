@@ -1,7 +1,5 @@
-require_relative '~/app/models/spree/avalara/TaxSvc'
 Spree::BaseHelper.module_eval do
 
-  alias_method :ping_my_service, :get_file_content
 
   def  ping_my_service
     mytax = TaxSvc.new( Spree::Config.avatax_account || AvalaraYettings['account'],Spree::Config.avatax_license_key || AvalaraYettings['license_key'],Spree::Config.avatax_endpoint || AvalaraYettings['endpoint'])
