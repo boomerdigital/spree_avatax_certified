@@ -1,5 +1,5 @@
 <%= render :partial => 'spree/admin/shared/configuration_menu' %>
-<% origin = JSON.parse( Spree::Config.avatax_origin )  %>
+<% origin = JSON.parse( Spree::Config.avatax_origin.to_s )  %>
 <h1><%= t('avatax_settings') %></h1>
 
 <%= form_tag(admin_avatax_settings_path, :method => :put, :id => :avatax_settings_form) do %>
