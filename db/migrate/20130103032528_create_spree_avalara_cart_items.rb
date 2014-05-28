@@ -15,6 +15,6 @@ class CreateSpreeAvalaraCartItems < ActiveRecord::Migration
       t.timestamps
     end
     add_index :spree_avalara_cart_items, :line_item_id
-    add_index :spree_avalara_cart_items, :tax_cloud_transaction_id
+    add_index :spree_avalara_cart_items, :avalara_transaction_id
   end
 end
