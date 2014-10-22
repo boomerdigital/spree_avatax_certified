@@ -8,8 +8,8 @@ module SpreeAvatax
       end
 
       def add_stylesheets
-        inject_into_file 'app/assets/stylesheets/spree/frontend/all.css', " *= require spree/frontend/spree_avatax\n", :before => /\*\//, :verbose => true
-        inject_into_file 'app/assets/stylesheets/spree/backend/all.css', " *= require spree/backend/spree_avatax\n", :before => /\*\//, :verbose => true
+        inject_into_file 'app/assets/stylesheets/spree/frontend/frontend.css', " *= require spree/frontend/spree_avatax\n", :before => /\*\//, :verbose => true
+        inject_into_file 'app/assets/stylesheets/spree/backend/backend.css', " *= require spree/backend/spree_avatax\n", :before => /\*\//, :verbose => true
       end
 
       def add_migrations
