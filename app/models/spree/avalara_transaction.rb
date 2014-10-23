@@ -156,7 +156,7 @@ module Spree
 
       addresses=Array.new
 
-      origin = JSON.parse( Spree::Config.avatax_origin )
+      origin = Spree::Config.avatax_origin
       orig_address = Hash.new
       orig_address[:AddressCode] = "Orig"
       orig_address[:Line1] = origin["Address1"]

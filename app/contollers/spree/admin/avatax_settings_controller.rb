@@ -54,7 +54,7 @@ module Spree
                                           :Region => origin[:avatax_region],
                                           :Zip5 => origin[:avatax_zip5],
                                           :Zip4 => origin[:avatax_zip4],
-                                          :Country => origin[:avatax_country]}.to_json
+                                          :Country => origin[:avatax_country]}
 
       Spree::Config.avatax_api_username = taxpref[:avatax_api_username]
       Spree::Config.avatax_api_password = taxpref[:avatax_api_password]
