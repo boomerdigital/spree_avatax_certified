@@ -19,7 +19,7 @@ module Spree
 
       end
       def show
-        @use_codes = AvalaraUseCodeItem.find(params[:id])
+        @use_code = AvalaraUseCodeItem.find(params[:id])
       end
     end
   end

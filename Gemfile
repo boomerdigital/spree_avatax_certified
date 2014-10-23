@@ -10,7 +10,6 @@ gemspec
 # gem 'psych', '~> 2.0.4'
 # gem 'logging'
 
-#binding pry
 # group :development do
 #   gem 'guard'
 #   gem 'guard-rspec'
