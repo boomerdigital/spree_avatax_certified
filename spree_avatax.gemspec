@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'json'
   s.add_dependency 'addressable'
   s.add_dependency 'rest-client'
-  s.add_dependency 'yettings'
   s.add_dependency 'psych', '~> 2.0.4'
   s.add_dependency 'logging'
 
