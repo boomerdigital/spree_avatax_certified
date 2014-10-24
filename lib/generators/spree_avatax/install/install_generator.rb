@@ -16,12 +16,18 @@ module SpreeAvatax
         run 'bundle exec rake railties:install:migrations FROM=spree_avatax'
       end
 
-      def run_migrations
+      def run_migrations_and_seeds
         res = ask 'Would you like to run the migrations now? [Y/n]'
         if res == '' || res.downcase == 'y'
           run 'bundle exec rake db:migrate'
         else
           puts 'Skipping rake db:migrate, don\'t forget to run it!'
+        end
+        res = ask 'Would you like to populate use codes now? [Y/n]'
+        if res == '' || res.downcase == 'y'
+          run 'bundle exec rake db:seed'
+        else
+          puts 'Skipping rake db:seed, don\'t forget to run it!'
         end
       end
     end
