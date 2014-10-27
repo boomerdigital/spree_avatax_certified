@@ -9,7 +9,6 @@ module Spree
     has_one :adjustment
     validates :order, presence: true
 
-
     def rnt_tax
       @myrtntax
     end
