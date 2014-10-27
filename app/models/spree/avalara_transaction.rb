@@ -119,7 +119,7 @@ module Spree
       }
 
       logger.debug cancelTaxRequest
-      mytax = TaxSvc.new( Spree::Config.avatax_account || AvalaraYettings['account'],Spree::Config.avatax_license_key || AvalaraYettings['license_key'],Spree::Config.avatax_endpoint || AvalaraYettings['endpoint'])
+      mytax = TaxSvc.new( Spree::Config.avatax_account, Spree::Config.avatax_license_key, Spree::Config.avatax_endpoint)
 
       cancelTaxResult = mytax.CancelTax(cancelTaxRequest)
 
@@ -383,7 +383,7 @@ module Spree
 
       logger.debug gettaxes
 
-      mytax = TaxSvc.new( Spree::Config.avatax_account || AvalaraYettings['account'],Spree::Config.avatax_license_key || AvalaraYettings['license_key'],Spree::Config.avatax_endpoint || AvalaraYettings['endpoint'])
+      mytax = TaxSvc.new( Spree::Config.avatax_account, Spree::Config.avatax_license_key, Spree::Config.avatax_endpoint)
 
       getTaxResult = mytax.GetTax(gettaxes)
 

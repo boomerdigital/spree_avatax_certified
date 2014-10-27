@@ -6,7 +6,6 @@ gemspec
 # gem 'addressable'
 # gem 'rest-client'
 # gem 'log4r' #this has to be installed first using gem install -r log4r
-# gem 'yettings'
 # gem 'psych', '~> 2.0.4'
 # gem 'logging'
 
