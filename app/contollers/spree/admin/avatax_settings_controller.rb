@@ -56,24 +56,24 @@ module Spree
           :Zip4 => origin[:avatax_zip4],
           :Country => origin[:avatax_country]}.to_json
 
-        Spree::Config.avatax_api_username = taxpref[:avatax_api_username]
-        Spree::Config.avatax_api_password = taxpref[:avatax_api_password]
-        Spree::Config.avatax_endpoint = taxpref[:avatax_endpoint]
-        Spree::Config.avatax_account = taxpref[:avatax_account]
-        Spree::Config.avatax_servicepathtax = taxpref[:avatax_servicepathtax]
-        Spree::Config.avatax_servicepathaddress = taxpref[:avatax_servicepathaddress]
-        Spree::Config.avatax_license_key = taxpref[:avatax_license_key]
-        Spree::Config.avatax_iseligible = taxpref[:avatax_iseligible]
-        Spree::Config.avatax_company_code =taxpref[:avatax_company_code]
-        Spree::Config.avatax_customer_code =taxpref[:avatax_customer_code]
-        Spree::Config.avatax_client_version = taxpref[:avatax_client_version]
+          Spree::Config.avatax_api_username = taxpref[:avatax_api_username]
+          Spree::Config.avatax_api_password = taxpref[:avatax_api_password]
+          Spree::Config.avatax_endpoint = taxpref[:avatax_endpoint]
+          Spree::Config.avatax_account = taxpref[:avatax_account]
+          Spree::Config.avatax_servicepathtax = taxpref[:avatax_servicepathtax]
+          Spree::Config.avatax_servicepathaddress = taxpref[:avatax_servicepathaddress]
+          Spree::Config.avatax_license_key = taxpref[:avatax_license_key]
+          Spree::Config.avatax_iseligible = taxpref[:avatax_iseligible]
+          Spree::Config.avatax_company_code =taxpref[:avatax_company_code]
+          Spree::Config.avatax_customer_code =taxpref[:avatax_customer_code]
+          Spree::Config.avatax_client_version = taxpref[:avatax_client_version]
 
-        respond_to do |format|
-          format.html {
-            redirect_to admin_avatax_settings_path
-          }
+          respond_to do |format|
+            format.html {
+              redirect_to admin_avatax_settings_path
+            }
+          end
         end
       end
     end
   end
-end
