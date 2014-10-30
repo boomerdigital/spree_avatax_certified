@@ -185,8 +185,8 @@ module Spree
           logger.debug myusecode
           if myusecode
             line[:CustomerUsageType]= myusecode.use_code || ""
-
           end
+
           logger.info 'after user check'
 
 
@@ -265,7 +265,6 @@ module Spree
 
             if myusecode
               line[:CustomerUsageType]= myusecode.use_code || ""
-
             end
 
             line[:Description] = adj.label
