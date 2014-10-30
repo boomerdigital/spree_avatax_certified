@@ -343,12 +343,12 @@ module Spree
       billing_address = Hash.new
 
       billing_address[:AddressCode] = "Dest"
-      billing_address[:Line1] = order_details.user.shipping_address.address1
-      billing_address[:Line2] = order_details.user.shipping_address.address2
-      billing_address[:City] = order_details.user.shipping_address.city
-      billing_address[:Region] = order_details.user.shipping_address.state_text
-      billing_address[:Country] = Country.find(order_details.user.shipping_address.country_id).iso
-      billing_address[:PostalCode] = order_details.user.shipping_address.zipcode
+      billing_address[:Line1] = order_details.bill_address.address1
+      billing_address[:Line2] = order_details.bill_address.address2
+      billing_address[:City] = order_details.bill_address.city
+      billing_address[:Region] = order_details.bill_address.state_text
+      billing_address[:Country] = Country.find(order_details.bill_address.country_id).iso
+      billing_address[:PostalCode] = order_details.bill_address.zipcode
 
 
       logger.debug billing_address.to_xml
