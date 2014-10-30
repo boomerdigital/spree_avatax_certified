@@ -154,14 +154,13 @@ module Spree
 
       addresses=Array.new
 
-      origin = Spree::Config.avatax_origin
+      origin = JSON.parse(Spree::Config.avatax_origin)
       orig_address = Hash.new
       orig_address[:AddressCode] = "Orig"
       orig_address[:Line1] = origin["Address1"]
       orig_address[:City] = origin["City"]
       orig_address[:PostalCode] = origin["Zip5"]
       orig_address[:Country] = origin["Country"]
-
       logger.debug orig_address.to_xml
       myuserid = order_details.user_id
       logger.debug myuserid
@@ -344,12 +343,12 @@ module Spree
       billing_address = Hash.new
 
       billing_address[:AddressCode] = "Dest"
-      billing_address[:Line1] = order_details.shipping_address.address1
-      billing_address[:Line2] = order_details.shipping_address.address2
-      billing_address[:City] = order_details.shipping_address.city
-      billing_address[:Region] = order_details.shipping_address.state_text
-      billing_address[:Country] = Country.find(order_details.shipping_address.country_id).iso
-      billing_address[:PostalCode] = order_details.shipping_address.zipcode
+      billing_address[:Line1] = order_details.user.shipping_address.address1
+      billing_address[:Line2] = order_details.user.shipping_address.address2
+      billing_address[:City] = order_details.user.shipping_address.city
+      billing_address[:Region] = order_details.user.shipping_address.state_text
+      billing_address[:Country] = Country.find(order_details.user.shipping_address.country_id).iso
+      billing_address[:PostalCode] = order_details.user.shipping_address.zipcode
 
 
       logger.debug billing_address.to_xml
@@ -377,8 +376,6 @@ module Spree
           :Lines => tax_line_items
 
       }
-
-
       logger.debug gettaxes
 
       mytax = TaxSvc.new( Spree::Config.avatax_account, Spree::Config.avatax_license_key, Spree::Config.avatax_endpoint)
