@@ -76,18 +76,19 @@ Spree::Order.class_eval do
     logger.debug 'avalara capture'
     begin
       create_avalara_transaction
-      self.adjustments.avalara_tax.destroy_all
-      sat = Spree::AvalaraTransaction.new
-      rtn_tax = sat.commit_avatax(line_items, self)
+
+      self.adjustments.destroy_all
+      @sat = Spree::AvalaraTransaction.new
+      @rtn_tax = sat.commit_avatax(line_items, self)
       logger.info 'tax amount'
       logger.debug rtn_tax
       adjustments.create do |adjustment|
         adjustment.source = self
-        adjustment.originator = avalara_transaction
+        # adjustment.originator = avalara_transaction
         adjustment.label = 'Tax'
         adjustment.mandatory = true
         adjustment.eligible = true
-        adjustment.amount = rtn_tax
+        adjustment.amount = @rtn_tax
       end
     rescue => e
       logger.debug e
