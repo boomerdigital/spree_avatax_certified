@@ -1,5 +1,5 @@
 require 'logger'
-require_relative 'avalara_transaction'
+
 Spree::ReturnAuthorization.class_eval do
   has_one :avalara_transaction, :dependent => :destroy
   logger = Logger.new('log/return_authorization.txt', 'weekly')

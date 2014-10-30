@@ -1,7 +1,5 @@
 require 'logging'
 require_dependency 'spree/order'
-require_relative  'tax_svc'
-
 
 module Spree
   class AvalaraTransaction < ActiveRecord::Base

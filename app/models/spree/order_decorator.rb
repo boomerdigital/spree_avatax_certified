@@ -1,8 +1,4 @@
 require 'logger'
-require 'logger'
-require_relative 'avalara_transaction'
-
-
 
 Spree::Order.class_eval do
 
