@@ -2,10 +2,7 @@ require 'logger'
 
 Spree::Order.class_eval do
 
-
   logger = Logger.new('log/avalara_order.txt', 'weekly')
-
-  #logger.level = :debug
   logger.progname = 'order class'
   logger.info 'start order processing'
 
@@ -32,29 +29,29 @@ Spree::Order.class_eval do
     end
   end
 
-
-
   def avalara_lookup
     logger = Logger.new('log/avalara_order.txt', 'weekly')
     logger.progname = 'order class'
     logger.debug 'avalara lookup'
     create_avalara_transaction
     :lookup_avatax
-
   end
 
   def avalara_capture
     logger = Logger.new('log/avalara_order.txt', 'weekly')
     logger.debug 'avalara capture'
     logger.progname = 'order class'
+
     begin
       create_avalara_transaction
 
       self.adjustments.destroy_all
       @sat = Spree::AvalaraTransaction.new
       @rtn_tax = @sat.commit_avatax(line_items, self)
+
       logger.info 'tax amount'
       logger.debug @rtn_tax
+
       adjustments.create do |adjustment|
         adjustment.source = self
         # adjustment.originator = avalara_transaction
@@ -74,14 +71,17 @@ Spree::Order.class_eval do
     logger = Logger.new('log/avalara_order.txt', 'weekly')
     logger.progname = 'order class'
     logger.debug 'avalara capture'
+
     begin
       create_avalara_transaction
 
       self.adjustments.destroy_all
       @sat = Spree::AvalaraTransaction.new
       @rtn_tax = sat.commit_avatax(line_items, self)
+
       logger.info 'tax amount'
       logger.debug rtn_tax
+
       adjustments.create do |adjustment|
         adjustment.source = self
         # adjustment.originator = avalara_transaction
@@ -90,15 +90,10 @@ Spree::Order.class_eval do
         adjustment.eligible = true
         adjustment.amount = @rtn_tax
       end
+
     rescue => e
       logger.debug e
       logger.debug 'error in a avalara capture'
     end
   end
-
-
-
-
-
-
 end
