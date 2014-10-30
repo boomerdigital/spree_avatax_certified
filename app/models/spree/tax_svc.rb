@@ -11,9 +11,6 @@ class TaxSvc
   attr_accessor :license_key
   attr_accessor :service_url
   @@logger = Logger.new('log/tax_svc.txt', 'weekly')
-
-  #logger.level = :debug
-
   @@logger.progname = 'tax_service'
   @@logger.info 'call to tax service'
 
@@ -30,18 +27,18 @@ class TaxSvc
     logger.info 'GetTax call'
     logger.debug request_hash
     logger.debug  JSON.generate(request_hash)
-    begin
 
+    begin
       uri = @service_url + @@service_path + "get"
       logger.debug uri
       cred = 'Basic '+ Base64.encode64(@account_number + ":"+ @license_key)
       logger.debug cred
       RestClient.log = logger
       res = RestClient.post(uri, JSON.generate(request_hash), :authorization => cred, :content_type => 'application/json'){|response, request, result| response}
-      p res
       logger.info 'RestClient call'
       logger.debug res
       JSON.parse(res.body)
+
     rescue => e
       logger.info 'Rest Client Error'
       logger.debug e
@@ -55,17 +52,16 @@ class TaxSvc
     logger = Logger.new('log/tax_svc.txt', 'weekly')
     logger.info 'CancelTax call'
     begin
-    uri = @service_url + @@service_path + "cancel"
-    cred = 'Basic '+ Base64.encode64(@account_number + ":"+ @license_key)
-    res = RestClient.post uri, JSON.generate(request_hash), :authorization => cred
-    logger.debug res
-    JSON.parse(res.body)["CancelTaxResult"]
+      uri = @service_url + @@service_path + "cancel"
+      cred = 'Basic '+ Base64.encode64(@account_number + ":"+ @license_key)
+      res = RestClient.post(uri, JSON.generate(request_hash), :authorization => cred, :content_type => 'application/json'){|response, request, result| response}
+      logger.debug res
+      JSON.parse(res.body)["CancelTaxResult"]
     rescue => e
       logger.debug e
       logger.debug 'error in Estimate Tax'
       'error in Estimate Tax'
     end
-
   end
 
   def EstimateTax(coordinates, sale_amount)
@@ -73,20 +69,21 @@ class TaxSvc
     # sale_amount should be a decimal
     logger = Logger.new('log/tax_svc.txt', 'weekly')
     logger.info 'EstimateTax call'
+
     return nil if coordinates.nil?
     sale_amount = 0 if sale_amount.nil?
-    begin
-    uri = URI(@service_url + @@service_path  +
-                  coordinates[:latitude].to_s + "," + coordinates[:longitude].to_s +
-                  "/get?saleamount=" + sale_amount.to_s )
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-    cred = 'Basic '+ Base64.encode64(@account_number + ":"+ @license_key)
-    res = http.get(uri.request_uri, 'Authorization' => cred)
-    #logger.debug res
-    JSON.parse(res.body)
+    begin
+      uri = URI(@service_url + @@service_path  +
+        coordinates[:latitude].to_s + "," + coordinates[:longitude].to_s +
+        "/get?saleamount=" + sale_amount.to_s )
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+      cred = 'Basic '+ Base64.encode64(@account_number + ":"+ @license_key)
+      res = http.get(uri.request_uri, 'Authorization' => cred, 'Content-Type' => 'application/json')
+      JSON.parse(res.body)
     rescue => e
       logger.debug e
       logger.debug 'error in Estimate Tax'
@@ -95,12 +92,12 @@ class TaxSvc
   end
 
   def Ping
-
     logger = Logger.new('log/tax_svc.txt', 'weekly')
     logger.info 'Ping Call'
+
     self.EstimateTax(
-        { :latitude => "40.714623",
-          :longitude => "-74.006605"},
+      { :latitude => "40.714623",
+        :longitude => "-74.006605"},
         0 )
   end
 
