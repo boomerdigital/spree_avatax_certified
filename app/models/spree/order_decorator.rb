@@ -15,7 +15,6 @@ Spree::Order.class_eval do
   self.state_machine.after_transition :to => :complete,
                                       :do => :avalara_capture,
                                       :if => :avalara_eligible
-
   def avalara_eligible
     iseligible = Spree::Config.avatax_iseligible
     if iseligible
@@ -62,7 +61,6 @@ Spree::Order.class_eval do
   end
 
   def avalara_capture_finalize
-
     logger = Logger.new('log/avalara_order.txt', 'weekly')
     logger.progname = 'order class'
     logger.debug 'avalara capture'
