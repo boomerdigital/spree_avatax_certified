@@ -9,9 +9,7 @@ module Spree
 
     belongs_to :order
     belongs_to :return_authorization
-
     validates :order, :presence => true
-
     has_one :adjustment, :as => :originator
 
 
@@ -150,7 +148,7 @@ module Spree
         orderitems.each do |line_item|
           line = Hash.new
           i += 1
-          # Required Parameters
+
           line[:LineNo] = i
           line[:ItemCode] = line_item.variant.sku
           line[:Qty] = line_item.quantity
@@ -321,41 +319,39 @@ module Spree
 
       gettaxes = {
         :CustomerCode => Spree::Config.avatax_customer_code,
-          :DocDate => org_ord_date ? org_ord_date : Date.current.to_formatted_s(:db),#date transaction occurred
+        :DocDate => org_ord_date ? org_ord_date : Date.current.to_formatted_s(:db),
 
-          :CompanyCode => Spree::Config.avatax_company_code,
-          :CustomerUsageType => myusecode ? myusecode.usecode : "",
-          :ExemptionNo => myuser.exemption_number || "",
-          :Client =>  Spree::Config.avatax_client_version || "SpreeExtV1.0",
-          :DocCode => doc_code ? doc_code : order_details.number,
+        :CompanyCode => Spree::Config.avatax_company_code,
+        :CustomerUsageType => myusecode ? myusecode.usecode : "",
+        :ExemptionNo => myuser.exemption_number || "",
+        :Client =>  Spree::Config.avatax_client_version || "SpreeExtV1.0",
+        :DocCode => doc_code ? doc_code : order_details.number,
 
-          :ReferenceCode => order_details.number,
-          :DetailLevel => "Tax",
-          :Commit => commit,
-          :DocType => "SalesInvoice",
-          :Addresses => addresses,
-          :Lines => tax_line_items
-        }
+        :ReferenceCode => order_details.number,
+        :DetailLevel => "Tax",
+        :Commit => commit,
+        :DocType => "SalesInvoice",
+        :Addresses => addresses,
+        :Lines => tax_line_items
+      }
 
-        logger.debug gettaxes
+      logger.debug gettaxes
 
-        mytax = TaxSvc.new( Spree::Config.avatax_account, Spree::Config.avatax_license_key, Spree::Config.avatax_endpoint)
+      mytax = TaxSvc.new( Spree::Config.avatax_account, Spree::Config.avatax_license_key, Spree::Config.avatax_endpoint)
 
-        getTaxResult = mytax.GetTax(gettaxes)
+      getTaxResult = mytax.GetTax(gettaxes)
 
-        logger.debug getTaxResult
+      logger.debug getTaxResult
 
-        if getTaxResult == 'error in Tax' then
-          @myrtntax = "0.00"
-        else
-
-          if getTaxResult["ResultCode"] = "Success"
-            logger.debug getTaxResult["TotalTax"].to_s
-            @myrtntax = getTaxResult["TotalTax"].to_s
-          end
-
+      if getTaxResult == 'error in Tax' then
+        @myrtntax = "0.00"
+      else
+        if getTaxResult["ResultCode"] = "Success"
+          logger.debug getTaxResult["TotalTax"].to_s
+          @myrtntax = getTaxResult["TotalTax"].to_s
         end
-        return @myrtntax
       end
+      return @myrtntax
     end
   end
+end

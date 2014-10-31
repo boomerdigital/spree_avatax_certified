@@ -1,10 +1,11 @@
 require 'logger'
 
 Spree::ReturnAuthorization.class_eval do
-  has_one :avalara_transaction, :dependent => :destroy
   logger = Logger.new('log/return_authorization.txt', 'weekly')
   logger.progname = 'ReturnAuthorization class'
   logger.info 'start ReturnAuthorization processing'
+
+  has_one :avalara_transaction, :dependent => :destroy
 
   self.state_machine.after_transition :to => :authorized,
                                       :do => :avalara_capture,
@@ -65,7 +66,7 @@ Spree::ReturnAuthorization.class_eval do
       @rtn_tax = sat.commit_avatax_final(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"))
       logger.info 'tax amount'
       logger.debug @rtn_tax
-       Spree::Adjustment.create(amount: @rtn_tax, label: 'Tax',adjustable: order, source: order, originator: avalara_transaction, mandatory: true, eligible: true)
+      Spree::Adjustment.create(amount: @rtn_tax, label: 'Tax',adjustable: order, source: order, originator: avalara_transaction, mandatory: true, eligible: true)
 
     rescue => e
       logger.debug e
