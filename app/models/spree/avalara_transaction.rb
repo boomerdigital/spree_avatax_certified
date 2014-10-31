@@ -137,9 +137,12 @@ module Spree
       orig_address[:Country] = origin["Country"]
       logger.debug orig_address.to_xml
       myuserid = order_details.user_id
-      logger.debug myuserid
-      myuser = User.find(myuserid)
-      myusecode = AvalaraUseCodeItem.where(:id => myuser.spree_avalara_use_code_item_id).first
+
+      if myuserid != nil
+        logger.debug myuserid
+        myuser = User.find(myuserid)
+        myusecode = AvalaraUseCodeItem.where(:id => myuser.spree_avalara_use_code_item_id).first
+      end
 
       i = 0
       if orderitems then
