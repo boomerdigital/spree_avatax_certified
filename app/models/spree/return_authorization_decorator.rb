@@ -29,14 +29,13 @@ Spree::ReturnAuthorization.class_eval do
     logger.debug 'avalara lookup return_authorization'
 
     :lookup_avatax
-
   end
 
   def avalara_capture
-
     logger = Logger.new('log/return_authorization.txt', 'weekly')
     logger.progname = 'return_authorization class'
     logger.debug 'avalara capture return_authorization'
+
     begin
       create_avalara_transaction
 
@@ -54,10 +53,10 @@ Spree::ReturnAuthorization.class_eval do
   end
 
   def avalara_capture_finalize
-
     logger = Logger.new('log/return_authorization.txt', 'weekly')
     logger.progname = 'return_authorization class'
     logger.debug 'avalara capture return_authorization avalara_capture_finalize'
+
     begin
       create_avalara_transaction
 

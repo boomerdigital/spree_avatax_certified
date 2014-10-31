@@ -241,7 +241,7 @@ module Spree
           line[:DestinationCode] = "Dest"
 
           if myusecode
-            line[:CustomerUsageType]= myusecode.use_code || ""
+            line[:CustomerUsageType] = myusecode.use_code || ""
           end
 
           line[:Description] = adj.label
@@ -265,7 +265,7 @@ module Spree
           line[:DestinationCode] = "Dest"
 
           if myusecode
-            line[:CustomerUsageType]= myusecode.use_code || ""
+            line[:CustomerUsageType] = myusecode.use_code || ""
           end
 
           line[:Description] = adj.label
@@ -289,7 +289,7 @@ module Spree
           line[:DestinationCode] = "Dest"
 
           if myusecode
-            line[:CustomerUsageType]= myusecode.use_code || ""
+            line[:CustomerUsageType] = myusecode.use_code || ""
           end
 
           line[:Description] = adj.label
@@ -301,7 +301,6 @@ module Spree
         end
       end
 
-
       billing_address = Hash.new
 
       billing_address[:AddressCode] = "Dest"
@@ -312,9 +311,7 @@ module Spree
       billing_address[:Country] = Country.find(order_details.bill_address.country_id).iso
       billing_address[:PostalCode] = order_details.bill_address.zipcode
 
-
       logger.debug billing_address.to_xml
-
 
       addresses<<billing_address
       addresses<<orig_address

@@ -18,8 +18,6 @@ Spree::Order.class_eval do
   :if => :avalara_eligible
 
 
-
-
   def avalara_eligible
     iseligible = Spree::Config.avatax_iseligible
     if iseligible

@@ -10,14 +10,12 @@ module Spree
       data = open("log/tax_svc.txt")
 
       send_data data.read, filename: "tax_svc.txt", type: "application/text", disposition: 'inline', stream: 'true'
-
     end
 
     def get_file_content_post_avatax
       data = open("log/post_order_to_avalara.txt")
 
       send_data data.read, filename: "post_order_to_avalara.txt", type: "application/text", disposition: 'inline', stream: 'true'
-
     end
 
     def get_file_content_avatax_ord
@@ -68,8 +66,6 @@ module Spree
       Spree::Config.avatax_company_code =taxpref[:avatax_company_code]
       Spree::Config.avatax_customer_code =taxpref[:avatax_customer_code]
       Spree::Config.avatax_client_version = taxpref[:avatax_client_version]
-
-
 
       respond_to do |format|
         format.html {

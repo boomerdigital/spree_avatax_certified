@@ -12,4 +12,3 @@ Spree::AppConfiguration.class_eval do
   preference :avatax_origin, :string, default: {}
   preference :avatax_client_version, :string, default: 'SpreeExtV1.0'
 end
-
