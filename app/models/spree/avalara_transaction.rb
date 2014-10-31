@@ -323,7 +323,7 @@ module Spree
 
         :CompanyCode => Spree::Config.avatax_company_code,
         :CustomerUsageType => myusecode ? myusecode.usecode : "",
-        :ExemptionNo => myuser.exemption_number || "",
+        :ExemptionNo => myuser ? myuser.exemption_number : "",
         :Client =>  Spree::Config.avatax_client_version || "SpreeExtV1.0",
         :DocCode => doc_code ? doc_code : order_details.number,
 
