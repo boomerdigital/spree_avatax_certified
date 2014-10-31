@@ -27,15 +27,6 @@ module SpreeAvatax
         end
       end
 
-      # def run_seed
-      #   res = ask 'Would you like to populate use codes now? [Y/n]'
-      #   if res == '' || res.downcase == 'y'
-      #     use_code_seeds
-      #   else
-      #     puts 'Skipping rake db:seed, don\'t forget to run it!'
-      #   end
-      # end
-
       def use_code_seeds
 
         use_codes = {
@@ -59,6 +50,7 @@ module SpreeAvatax
         unless Spree::AvalaraUseCodeItem.count >= 16
           use_codes.each do |key, value|
             Spree::AvalaraUseCodeItem.create(use_code: key, use_code_description: value)
+            Spree::Config.avatax_origin = {}
           end
         end
       end
