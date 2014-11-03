@@ -282,6 +282,7 @@ DEPENDENCIES
   capybara (~> 2.1)
   coffee-rails
   database_cleaner
+  deface
   factory_girl (~> 4.2)
   ffaker
   guard

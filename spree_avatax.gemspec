@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'logging'
 
   #add gems here for files
+  s.add_development_dependency 'deface'
   s.add_development_dependency 'capybara', '~> 2.1'
   s.add_development_dependency 'coffee-rails'
   s.add_development_dependency 'database_cleaner'
