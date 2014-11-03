@@ -50,8 +50,8 @@ module SpreeAvatax
         unless Spree::AvalaraUseCodeItem.count >= 16
           use_codes.each do |key, value|
             Spree::AvalaraUseCodeItem.create(use_code: key, use_code_description: value)
-            Spree::Config.avatax_origin = {}
           end
+          Spree::Config.avatax_origin = {}
         end
       end
     end

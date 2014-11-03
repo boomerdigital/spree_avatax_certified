@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   s.requirements << 'none'
 
   s.add_dependency 'spree_core', '~> 2.3'
+  s.add_dependency 'spree_backend', '~> 2.3'
   s.add_dependency 'json'
   s.add_dependency 'addressable'
   s.add_dependency 'rest-client'
