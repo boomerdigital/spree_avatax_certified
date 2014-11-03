@@ -2,7 +2,7 @@ module Spree
   module Admin
     class AvalaraUseCodeItemsController < Spree::Admin::ResourceController
 
-      respond_to  :html
+      respond_to :html
 
       def index
         if params[:ids]

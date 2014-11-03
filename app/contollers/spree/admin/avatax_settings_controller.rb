@@ -2,7 +2,7 @@ module Spree
   module Admin
     class AvataxSettingsController < Spree::Admin::BaseController
 
-      respond_to  :html
+      respond_to :html
 
       def show
       end
@@ -25,7 +25,7 @@ module Spree
         send_data data.read, filename: "avalara_order.txt", type: "application/text", disposition: 'inline', stream: 'true'
       end
 
-      def  ping_my_service
+      def ping_my_service
         mytax = TaxSvc.new( Spree::Config.avatax_account, Spree::Config.avatax_license_key, Spree::Config.avatax_endpoint)
         pingResult = mytax.Ping
         if pingResult["ResultCode"] == "Success"
@@ -48,7 +48,7 @@ module Spree
         origin = params[:address]
         taxpref = params[:settings]
 
-        Spree::Config.avatax_origin = {   :Address1 =>  origin[:avatax_address1],
+        Spree::Config.avatax_origin = { :Address1 =>  origin[:avatax_address1],
           :Address2 => origin[:avatax_address2],
           :City => origin[:avatax_city],
           :Region => origin[:avatax_region],
