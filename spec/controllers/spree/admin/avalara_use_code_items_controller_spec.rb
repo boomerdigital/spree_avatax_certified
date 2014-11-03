@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Spree::AvalaraUseCodeItemsController do
+describe Spree::Admin::AvalaraUseCodeItemsController, :type => :controller do
   describe "#index" do
     it "shows all use code items" do
       get :index
