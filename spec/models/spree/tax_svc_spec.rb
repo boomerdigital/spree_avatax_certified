@@ -55,6 +55,15 @@ describe TaxSvc, :type => :model do
           ]
         }
       )
+    expect(result).to eq(something)
+    # Something is just placeholder for now until I set up VCR
+    end
+  end
+  describe "ping" do
+    it "should return estimate" do
+      tax_svc = TaxSvc.new
+      result = tax_svc.ping
+      expect(result).to eq(something)
     end
   end
 end
