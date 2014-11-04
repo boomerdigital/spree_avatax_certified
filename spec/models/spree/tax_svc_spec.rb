@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe TaxSvc, :type => :model do
-  describe "GetTax" do
+  describe "get_tax" do
     it "gets tax" do
-      taxsvc = TaxSvc.new(ENV['AVALARA_ACCOUNT'], ENV['AVALARA_LISENCE_KEY'], ENV['AVALARA_ENDPOINT'])
-      taxsvc.GetTax(
+      taxsvc = TaxSvc.new(Spree::Config.avatax_account, Spree::Config.avatax_license, Spree::Config.avatax_endpoint)
+      taxsvc.get_tax(
         { :CustomerCode => "1",
           :DocDate => "2014-11-03",
           :CompanyCode => "54321",

@@ -22,9 +22,9 @@ class TaxSvc
     @service_url = service_url
   end
 
-  def GetTax(request_hash)
+  def get_tax(request_hash)
     logger = Logger.new('log/tax_svc.txt', 'weekly')
-    logger.info 'GetTax call'
+    logger.info 'get_tax call'
     logger.debug request_hash
     logger.debug  JSON.generate(request_hash)
 
@@ -48,9 +48,9 @@ class TaxSvc
   end
 
 
-  def CancelTax(request_hash)
+  def cancel_tax(request_hash)
     logger = Logger.new('log/tax_svc.txt', 'weekly')
-    logger.info 'CancelTax call'
+    logger.info 'cancel_tax call'
     begin
       uri = @service_url + @@service_path + "cancel"
       cred = 'Basic '+ Base64.encode64(@account_number + ":"+ @license_key)
@@ -64,11 +64,11 @@ class TaxSvc
     end
   end
 
-  def EstimateTax(coordinates, sale_amount)
+  def estimate_tax(coordinates, sale_amount)
     # coordinates should be a hash with latitude and longitude
     # sale_amount should be a decimal
     logger = Logger.new('log/tax_svc.txt', 'weekly')
-    logger.info 'EstimateTax call'
+    logger.info 'estimate_tax call'
 
     return nil if coordinates.nil?
     sale_amount = 0 if sale_amount.nil?
@@ -91,11 +91,11 @@ class TaxSvc
     end
   end
 
-  def Ping
+  def ping
     logger = Logger.new('log/tax_svc.txt', 'weekly')
     logger.info 'Ping Call'
 
-    self.EstimateTax(
+    self.estimate_tax(
       { :latitude => "40.714623",
         :longitude => "-74.006605"},
         0 )

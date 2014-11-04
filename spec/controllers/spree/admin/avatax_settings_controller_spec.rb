@@ -5,9 +5,7 @@ module Spree
       stub_authorization!
       describe "/avatax_settings" do
         subject { spree_get :show }
-        it 'should be successful' do
-          expect(subject).to be_success
-        end
+        it { should be_success }
       end
     end
   end
