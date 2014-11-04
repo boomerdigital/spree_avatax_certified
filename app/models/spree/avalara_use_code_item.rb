@@ -1,5 +1,5 @@
 module Spree
   class AvalaraUseCodeItem < ActiveRecord::Base
-    belongs_to :spree_user_decorator
+    belongs_to :user, class_name: 'Spree::User'
   end
 end
