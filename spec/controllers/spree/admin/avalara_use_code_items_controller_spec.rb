@@ -11,9 +11,7 @@ module Spree
       describe "#index" do
         subject { spree_get :index }
 
-        it 'should be successful' do
-          expect(subject).to be_success
-        end
+        it { should be_success }
       end
 
       describe "#show" do
