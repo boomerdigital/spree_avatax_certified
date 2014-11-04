@@ -18,26 +18,20 @@ module Spree
         use_code = Spree::AvalaraUseCodeItem.create(use_code: "A", use_code_description: "Federal government")
         subject { spree_get :show, id: use_code.id }
 
-        it "shows the use code of the id parameter" do
-          expect(subject).to be_success
-        end
+        it { should be_success }
       end
 
       describe "#new" do
         subject {spree_get :new}
 
-        it "blah" do
-          expect(subject).to be_success
-        end
+        it { should be_success }
       end
 
       describe "#edit" do
         use_code = Spree::AvalaraUseCodeItem.create(use_code: "A", use_code_description: "Federal government")
         subject {spree_get :edit, id: use_code.id}
 
-        it "shows edit form" do
-          expect(subject).to be_success
-        end
+        it { should be_success }
       end
 
       describe "#update" do
