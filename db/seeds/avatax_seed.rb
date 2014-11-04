@@ -1,4 +1,3 @@
-
 use_codes = {
   "A" => "Federal government",
   "B" => "State government",
@@ -17,6 +16,7 @@ use_codes = {
   "Q" => "Commercial fishery (Canada only)",
   "R" => "Non-resident (Canada only)"
 }
+
 unless Spree::AvalaraUseCodeItem.count >= 16
   use_codes.each do |key, value|
     Spree::AvalaraUseCodeItem.create(use_code: key, use_code_description: value)
