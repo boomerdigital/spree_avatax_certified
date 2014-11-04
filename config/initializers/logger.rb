@@ -11,8 +11,7 @@ module SpreeAvataxCertified
       end
 
       def context
-        c = Thread.current[:spree_avatax_certified_context]
-        c ? " #{c}" : ''
+        Thread.current[:spree_avatax_certified_context] ? " #{c}" : ''
       end
     end
 
