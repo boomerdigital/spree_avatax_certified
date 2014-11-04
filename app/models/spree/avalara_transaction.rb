@@ -104,7 +104,7 @@ module Spree
 
       logger.debug cancelTaxRequest
 
-      mytax = TaxSvc.new( Spree::Config.avatax_account, Spree::Config.avatax_license_key, Spree::Config.avatax_endpoint)
+      mytax = TaxSvc.new
       cancelTaxResult = mytax.cancel_tax(cancelTaxRequest)
 
       logger.debug cancelTaxResult
@@ -338,7 +338,7 @@ module Spree
 
       logger.debug gettaxes
 
-      mytax = TaxSvc.new( Spree::Config.avatax_account, Spree::Config.avatax_license_key, Spree::Config.avatax_endpoint)
+      mytax = TaxSvc.new
 
       getTaxResult = mytax.get_tax(gettaxes)
 
