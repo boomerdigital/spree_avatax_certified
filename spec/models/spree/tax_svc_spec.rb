@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe TaxSvc, :type => :model do
+describe TaxSvc do
   describe "get_tax" do
     it "gets tax" do
       taxsvc = TaxSvc.new(Spree::Config.avatax_account, Spree::Config.avatax_license, Spree::Config.avatax_endpoint)
