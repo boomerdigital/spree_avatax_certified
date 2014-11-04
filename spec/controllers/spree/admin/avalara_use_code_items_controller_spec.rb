@@ -1,7 +1,9 @@
 require 'spec_helper'
 module Spree
   module Admin
-    describe AvalaraUseCodeItemsController, :type => :controller do
+    describe AvalaraUseCodeItemsController, type: :controller do
+      let(:use_code) { Spree::AvalaraUseCodeItem.create(use_code: "A", use_code_description: "Federal government") }
+
       stub_authorization!
 
       before :each do
@@ -15,7 +17,6 @@ module Spree
       end
 
       describe "#show" do
-        use_code = Spree::AvalaraUseCodeItem.create(use_code: "A", use_code_description: "Federal government")
         subject { spree_get :show, id: use_code.id }
 
         it { should be_success }
@@ -28,7 +29,6 @@ module Spree
       end
 
       describe "#edit" do
-        use_code = Spree::AvalaraUseCodeItem.create(use_code: "A", use_code_description: "Federal government")
         subject {spree_get :edit, id: use_code.id}
 
         it { should be_success }
