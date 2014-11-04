@@ -10,23 +10,19 @@ class TaxSvc
   attr_accessor :account_number
   attr_accessor :license_key
   attr_accessor :service_url
-  @@logger = Logger.new('log/tax_svc.txt', 'weekly')
-  @@logger.progname = 'tax_service'
-  @@logger.info 'call to tax service'
-
-
+  logger.progname = 'tax_service'
+  logger.info 'call to tax service'
 
   def initialize
     @account_number = Spree::Config.avatax_account
-    @license_key = Spree::Config.avatax_license_key
-    @service_url = Spree::Config.avatax_endpoint
+    @license_key    = Spree::Config.avatax_license_key
+    @service_url    = Spree::Config.avatax_endpoint
   end
 
   def get_tax(request_hash)
-    logger = Logger.new('log/tax_svc.txt', 'weekly')
     logger.info 'get_tax call'
     logger.debug request_hash
-    logger.debug  JSON.generate(request_hash)
+    logger.debug JSON.generate(request_hash)
 
     begin
       uri = @service_url + @@service_path + "get"
@@ -38,18 +34,14 @@ class TaxSvc
       logger.info 'RestClient call'
       logger.debug res
       JSON.parse(res.body)
-
     rescue => e
       logger.info 'Rest Client Error'
-      logger.debug e
-      logger.debug 'error in Tax'
-      'error in Tax'
+      debug 'error in Tax'
     end
   end
 
 
   def cancel_tax(request_hash)
-    logger = Logger.new('log/tax_svc.txt', 'weekly')
     logger.info 'cancel_tax call'
     begin
       uri = @service_url + @@service_path + "cancel"
@@ -58,16 +50,13 @@ class TaxSvc
       logger.debug res
       JSON.parse(res.body)["CancelTaxResult"]
     rescue => e
-      logger.debug e
-      logger.debug 'error in Estimate Tax'
-      'error in Estimate Tax'
+      debug 'error in Estimate Tax'
     end
   end
 
   def estimate_tax(coordinates, sale_amount)
     # coordinates should be a hash with latitude and longitude
     # sale_amount should be a decimal
-    logger = Logger.new('log/tax_svc.txt', 'weekly')
     logger.info 'estimate_tax call'
 
     return nil if coordinates.nil?
@@ -85,14 +74,11 @@ class TaxSvc
       res = http.get(uri.request_uri, 'Authorization' => cred, 'Content-Type' => 'application/json')
       JSON.parse(res.body)
     rescue => e
-      logger.debug e
-      logger.debug 'error in Estimate Tax'
-      'error in Estimate Tax'
+      debug 'error in Estimate Tax'
     end
   end
 
   def ping
-    logger = Logger.new('log/tax_svc.txt', 'weekly')
     logger.info 'Ping Call'
 
     self.estimate_tax(
@@ -101,4 +87,15 @@ class TaxSvc
         0 )
   end
 
+  private
+
+  def logger
+    Logger.new('log/tax_svc.txt', 'weekly')
+  end
+
+  def debug(text)
+    logger.debug e
+    logger.debug text
+    text
+  end
 end
