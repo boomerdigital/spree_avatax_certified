@@ -31,13 +31,13 @@ RSpec.configure do |config|
 
   config.infer_spec_type_from_file_location!
 
-  DatabaseCleaner.strategy = :transaction
-
+  config.before :suite do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with :truncation
+  end
   config.before :each do
-    DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
     DatabaseCleaner.start
   end
-
   config.after :each do
     DatabaseCleaner.clean
   end
