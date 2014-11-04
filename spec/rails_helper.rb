@@ -2,6 +2,7 @@ ENV["RAILS_ENV"] ||= 'test'
 require 'spec_helper'
 require File.expand_path("../dummy/config/environment", __FILE__)
 require 'rspec/rails'
+require 'rspec/its'
 require 'ffaker'
 require 'factory_girl'
 require 'database_cleaner'
