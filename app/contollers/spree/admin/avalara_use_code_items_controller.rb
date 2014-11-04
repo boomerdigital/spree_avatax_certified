@@ -1,7 +1,6 @@
 module Spree
   module Admin
     class AvalaraUseCodeItemsController < Spree::Admin::ResourceController
-
       respond_to :html
 
       def index
@@ -16,8 +15,8 @@ module Spree
           format.html
           format.json { render json: @use_codes }
         end
-
       end
+
       def show
         @use_code = Spree::AvalaraUseCodeItem.find(params[:id])
       end
