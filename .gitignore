@@ -3,6 +3,7 @@
 .bundle
 .config
 .env
+.rspec
 coverage
 InstalledFiles
 lib/bundler/man
