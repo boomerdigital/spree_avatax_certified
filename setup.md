@@ -7,6 +7,6 @@ Setup Steps
 
 Avatax Gem Setup
 ================
-* bundle exec rails g spree_avatax:install
+* bundle exec rails g spree_avatax_certified:install
 * Stock location needs to be set up in order for gem to work
 * Fill in Avalara Settings information
