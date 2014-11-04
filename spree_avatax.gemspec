@@ -7,9 +7,9 @@ Gem::Specification.new do |s|
   s.description = 'Spree extension for Avalara tax calculation.'
   s.required_ruby_version = '>= 1.9.3'
 
-  s.author    = 'Jason King'
-  s.email     = 'jason.king@railsdog.com'
-  s.homepage  = 'http://www.spreecommerce.com'
+  s.author    = 'Allison Reilly'
+  s.email     = 'allison@railsdog.com'
+  s.homepage  = 'http://railsdog.com'
 
   #s.files       = `git ls-files`.split("\n")
   #s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
