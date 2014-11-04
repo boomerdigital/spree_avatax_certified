@@ -7,4 +7,6 @@ describe Spree::AvalaraTransaction do
   it { should have_one :adjustment }
 
   it { should validate_presence_of :order }
+
+  it { should have_db_index :order_id }
 end

@@ -12,4 +12,8 @@ describe Spree::AvalaraCartItem do
 
   it { should have_db_index :line_item_id }
   it { should have_db_index :avalara_transaction_id }
+
+  it { accept_nested_attributes_for :line_item }
+
+  its(:to_hash) { should be_kind_of Hash }
 end

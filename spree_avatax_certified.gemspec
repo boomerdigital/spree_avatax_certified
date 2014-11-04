@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'factory_girl', '~> 4.5'
   s.add_development_dependency 'ffaker', '~> 1.23'
   s.add_development_dependency 'rspec-rails',  '~> 3.1'
+  s.add_development_dependency 'rspec-its', '~> 1.0'
   s.add_development_dependency 'sass-rails', '~> 4.0'
   s.add_development_dependency 'selenium-webdriver', '~> 2.40'
   s.add_development_dependency 'simplecov', '~> 0.8'
