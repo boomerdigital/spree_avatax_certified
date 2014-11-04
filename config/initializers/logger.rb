@@ -38,7 +38,7 @@ module SpreeAvataxCertified
     end
 
     def self.logger=(log)
-      @logger = (log ? log : Logger.new('spree_avatax_certified'))
+      @logger = log || Logger.new('spree_avatax_certified')
     end
 
     # This reopens ALL logfiles in the process that have been rotated
