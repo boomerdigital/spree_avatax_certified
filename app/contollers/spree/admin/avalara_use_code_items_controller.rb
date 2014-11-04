@@ -6,11 +6,11 @@ module Spree
 
       def index
         if params[:ids]
-          @use_codes = AvalaraUseCodeItem.where(:id => params[:ids])
+          @use_codes = Spree::AvalaraUseCodeItem.where(:id => params[:ids])
         elsif params[:q]
-          @use_codes = AvalaraUseCodeItem.ransack(:use_code_cont => params[:q]).result
+          @use_codes = Spree::AvalaraUseCodeItem.ransack(:use_code_cont => params[:q]).result
         else
-          @use_codes = AvalaraUseCodeItem.all
+          @use_codes = Spree::AvalaraUseCodeItem.all
         end
         respond_to do |format|
           format.html
@@ -19,7 +19,7 @@ module Spree
 
       end
       def show
-        @use_code = AvalaraUseCodeItem.find(params[:id])
+        @use_code = Spree::AvalaraUseCodeItem.find(params[:id])
       end
     end
   end
