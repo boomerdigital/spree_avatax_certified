@@ -56,7 +56,7 @@ module Spree
         end
 
         it "should update use_code" do
-          expect { subject }.to change { use_code.reload.use_code }.from('A').to('55')
+          expect(subject).to change { use_code.reload.use_code }.from('A').to('55')
         end
       end
     end
