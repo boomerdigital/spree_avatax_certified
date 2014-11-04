@@ -20,3 +20,6 @@ tmp
 _yardoc
 doc/
 spec/dummy
+/log/avalara_order.txt
+/log/return_authorization.txt
+/log/tax_svc.txt
