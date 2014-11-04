@@ -7,10 +7,5 @@ Spree::Core::Engine.routes.draw do
     resources :avalara_use_code_items do
 
     end
-
   end
- # get '/admin/log/tax_svc', :to => send_file('/log/tax_svc.txt')
-#redirect('../log/tax_svc.txt')
-
-
 end
