@@ -247,6 +247,8 @@ GEM
       multi_json (~> 1.0)
       rubyzip (~> 1.0)
       websocket (~> 1.0.4)
+    shoulda-matchers (2.7.0)
+      activesupport (>= 3.0.0)
     simplecov (0.8.2)
       docile (~> 1.1.0)
       multi_json
@@ -332,6 +334,7 @@ DEPENDENCIES
   rspec-rails (~> 2.13)
   sass-rails
   selenium-webdriver
+  shoulda-matchers
   simplecov
   spree_avatax!
   sqlite3
