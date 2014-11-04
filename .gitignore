@@ -20,3 +20,4 @@ tmp
 _yardoc
 doc/
 spec/dummy
+log/
