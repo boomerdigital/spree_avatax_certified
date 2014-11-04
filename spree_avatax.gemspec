@@ -31,12 +31,10 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'database_cleaner', '~> 1.2'
   s.add_development_dependency 'factory_girl', '~> 4.5'
   s.add_development_dependency 'ffaker', '~> 1.23'
-  s.add_development_dependency 'rspec-rails',  '~> 2.13'
+  s.add_development_dependency 'rspec-rails',  '~> 3.1'
   s.add_development_dependency 'sass-rails', '~> 4.0'
   s.add_development_dependency 'selenium-webdriver', '~> 2.40'
   s.add_development_dependency 'simplecov', '~> 0.8'
   s.add_development_dependency 'sqlite3', '~> 1.3'
-  s.add_development_dependency 'guard', '~> 2.5'
-  s.add_development_dependency 'guard-rspec', '~> 4.2'
   s.add_development_dependency 'shoulda-matchers', '~> 2.7'
 end

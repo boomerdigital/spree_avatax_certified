@@ -28,14 +28,11 @@ RSpec.configure do |config|
 
   config.mock_with :rspec
 
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  config.use_transactional_fixtures = false
+
   config.infer_spec_type_from_file_location!
 
-  config.use_transactional_fixtures = false
-  config.before :suite do
-    DatabaseCleaner.strategy = :transaction
-    DatabaseCleaner.clean_with :truncation
-  end
+  DatabaseCleaner.strategy = :transaction
 
   config.before :each do
     DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
