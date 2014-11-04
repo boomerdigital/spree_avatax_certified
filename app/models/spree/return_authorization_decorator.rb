@@ -16,12 +16,7 @@ Spree::ReturnAuthorization.class_eval do
                                       :if => :avalara_eligible
 
   def avalara_eligible
-    iseligible = Spree::Config.avatax_iseligible
-    if iseligible
-      true
-    else
-      false
-    end
+    Spree::Config.avatax_iseligible
   end
 
   def avalara_lookup
