@@ -3,8 +3,8 @@ require 'spec_helper'
 describe TaxSvc, :type => :model do
   describe "get_tax" do
     it "gets tax" do
-      taxsvc = TaxSvc.new(Spree::Config.avatax_account, Spree::Config.avatax_license, Spree::Config.avatax_endpoint)
-      taxsvc.get_tax(
+      taxsvc = TaxSvc.new
+      result = taxsvc.get_tax(
         { :CustomerCode => "1",
           :DocDate => "2014-11-03",
           :CompanyCode => "54321",

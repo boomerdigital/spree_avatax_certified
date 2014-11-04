@@ -16,10 +16,10 @@ class TaxSvc
 
 
 
-  def initialize(account_number, license_key, service_url)
-    @account_number = account_number
-    @license_key = license_key
-    @service_url = service_url
+  def initialize
+    @account_number = Spree::Config.avatax_account
+    @license_key = Spree::Config.avatax_license_key
+    @service_url = Spree::Config.avatax_endpoint
   end
 
   def get_tax(request_hash)
