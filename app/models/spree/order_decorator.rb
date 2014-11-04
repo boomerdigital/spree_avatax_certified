@@ -1,12 +1,11 @@
 require 'logger'
 
 Spree::Order.class_eval do
+  include Spree::Avalara
 
   logger = Logger.new('log/avalara_order.txt', 'weekly')
   logger.progname = 'order class'
   logger.info 'start order processing'
-
-  has_one :avalara_transaction, :dependent => :destroy
 
   self.state_machine.after_transition :to => :payment,
                                       :do => :avalara_capture,
@@ -15,14 +14,6 @@ Spree::Order.class_eval do
   self.state_machine.after_transition :to => :complete,
                                       :do => :avalara_capture,
                                       :if => :avalara_eligible
-  def avalara_eligible
-    iseligible = Spree::Config.avatax_iseligible
-    if iseligible
-      true
-    else
-      false
-    end
-  end
 
   def avalara_lookup
     logger = Logger.new('log/avalara_order.txt', 'weekly')
