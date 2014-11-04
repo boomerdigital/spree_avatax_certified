@@ -1,7 +1,7 @@
 require 'time'
 require 'logger'
 
-module SpreeAvatax
+module SpreeAvataxCertified
   module Logging
 
     class Pretty < Logger::Formatter
@@ -11,17 +11,17 @@ module SpreeAvatax
       end
 
       def context
-        c = Thread.current[:spree_avatax_context]
+        c = Thread.current[:spree_avatax_certified_context]
         c ? " #{c}" : ''
       end
     end
 
     def self.with_context(msg)
       begin
-        Thread.current[:spree_avatax_context] = msg
+        Thread.current[:spree_avatax_certified_context] = msg
         yield
       ensure
-        Thread.current[:spree_avatax_context] = nil
+        Thread.current[:spree_avatax_certified_context] = nil
       end
     end
 
@@ -39,7 +39,7 @@ module SpreeAvatax
     end
 
     def self.logger=(log)
-      @logger = (log ? log : Logger.new('spree_avatax'))
+      @logger = (log ? log : Logger.new('spree_avatax_certified'))
     end
 
     # This reopens ALL logfiles in the process that have been rotated
@@ -88,7 +88,7 @@ module SpreeAvatax
     end
 
     def logger
-      SpreeAvatax::Logging.logger
+      SpreeAvataxCertified::Logging.logger
     end
   end
 end

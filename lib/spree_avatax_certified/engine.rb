@@ -1,9 +1,9 @@
-module SpreeAvatax
+module SpreeAvataxCertified
   class Engine < Rails::Engine
     require 'spree/core'
     require 'spree/backend'
     isolate_namespace Spree
-    engine_name 'spree_avatax'
+    engine_name 'spree_avatax_certified'
 
     config.autoload_paths += %W(#{config.root}/lib)
 

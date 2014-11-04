@@ -1,3 +1,3 @@
 require 'spree_core'
 require 'spree_backend'
-require 'spree_avatax/engine'
+require 'spree_avatax_certified/engine'
