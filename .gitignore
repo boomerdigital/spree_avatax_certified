@@ -21,3 +21,7 @@ _yardoc
 doc/
 spec/dummy
 log/
+/log/avalara_order.txt
+/log/post_order_to_avalara.txt
+/log/return_authorization.txt
+/log/tax_svc.txt
