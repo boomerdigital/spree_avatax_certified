@@ -1,44 +1,17 @@
-ENV['RAILS_ENV'] ||= 'test'
-
-require File.expand_path('../dummy/config/environment.rb',  __FILE__)
-
-require 'rspec/rails'
-require 'ffaker'
-require 'factory_girl'
-require 'database_cleaner'
-require 'capybara/rspec'
-require 'capybara/rails'
-require 'shoulda/matchers'
-
-Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each { |f| require f }
-
-require 'spree/testing_support/preferences'
-require 'spree/testing_support/url_helpers'
-require 'spree/testing_support/controller_requests'
-require 'spree/testing_support/authorization_helpers'
-require 'spree_avatax/factories'
-
 RSpec.configure do |config|
-  config.include Spree::TestingSupport::Preferences
-  config.include Spree::TestingSupport::UrlHelpers
-  config.include Spree::TestingSupport::AuthorizationHelpers
-  config.include Spree::TestingSupport::ControllerRequests
-  config.include FactoryGirl::Syntax::Methods
-
-  config.mock_with :rspec
-
-  config.use_transactional_fixtures = false
-
-  config.infer_spec_type_from_file_location!
-
-  config.before :suite do
-    DatabaseCleaner.strategy = :transaction
-    DatabaseCleaner.clean_with :truncation
+  config.expect_with :rspec do |expectations|
+    expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
-  config.before :each do
-    DatabaseCleaner.start
+
+  config.mock_with :rspec do |mocks|
+    mocks.verify_partial_doubles = true
   end
-  config.after :each do
-    DatabaseCleaner.clean
+
+  if config.files_to_run.one?
+    config.default_formatter = 'doc'
   end
+
+  config.order = :random
+
+  Kernel.srand config.seed
 end

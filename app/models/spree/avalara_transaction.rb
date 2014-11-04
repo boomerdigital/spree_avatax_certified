@@ -9,9 +9,10 @@ module Spree
 
     belongs_to :order
     belongs_to :return_authorization
-    validates :order, :presence => true
-    has_one :adjustment, :as => :originator
 
+    has_one :adjustment, as: :originator
+
+    validates :order, presence: true
 
     def rnt_tax
       @myrtntax

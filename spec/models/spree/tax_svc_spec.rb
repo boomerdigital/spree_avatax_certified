@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe TaxSvc, :type => :model do
   Spree::Config.avatax_account = "1100113096"
