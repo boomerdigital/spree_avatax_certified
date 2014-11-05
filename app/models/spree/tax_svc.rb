@@ -6,64 +6,56 @@ require 'rest-client'
 require 'logging'
 
 class TaxSvc
-  logger.progname = 'tax_service'
-  logger.info 'call to tax service'
-
   def get_tax(request_hash)
-    logger.info 'get_tax call'
-    logger.debug request_hash
-    logger.debug JSON.generate(request_hash)
-
-    begin
-      RestClient.log = logger
-      res = response("get", request_hash)
-      logger.info 'RestClient call'
-      logger.debug res
-      JSON.parse(res.body)
-    rescue => e
-      logger.info 'Rest Client Error'
-      debug 'error in Tax'
-    end
+    log(__method__, request_hash)
+    RestClient.log = logger
+    res = response("get", request_hash)
+    logger.info 'RestClient call'
+    logger.debug res
+    JSON.parse(res.body)
+  rescue => e
+    logger.info 'Rest Client Error'
+    debug e, 'error in Tax'
   end
 
-
   def cancel_tax(request_hash)
-    logger.info 'cancel_tax call'
-    begin
-      res = response("cancel", request_hash)
-      logger.debug res
-      JSON.parse(res.body)["CancelTaxResult"]
-    rescue => e
-      debug 'error in Estimate Tax'
-    end
+    log(__method__, request_hash)
+    res = response("cancel", request_hash)
+    logger.debug res
+    JSON.parse(res.body)["CancelTaxResult"]
+  rescue => e
+    debug e, 'error in Cancel Tax'
   end
 
   def estimate_tax(coordinates, sale_amount)
-    # coordinates should be a hash with latitude and longitude
-    # sale_amount should be a decimal
-    logger.info 'estimate_tax call'
+    log(__method__)
 
     return nil if coordinates.nil?
-    sale_amount = 0 if sale_amount.nil?
+    sale_amount ? sale_amount.to_s : '0'
 
-    begin
-      uri = URI(service_url +
-        coordinates[:latitude].to_s + "," + coordinates[:longitude].to_s +
-        "/get?saleamount=" + sale_amount.to_s )
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    uri = URI(service_url + coordinates[:latitude].to_s + "," + coordinates[:longitude].to_s + "/get?saleamount=" + sale_amount )
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-      res = http.get(uri.request_uri, 'Authorization' => credential, 'Content-Type' => 'application/json')
-      JSON.parse(res.body)
-    rescue => e
-      debug 'error in Estimate Tax'
-    end
+    res = http.get(uri.request_uri, 'Authorization' => credential, 'Content-Type' => 'application/json')
+    JSON.parse(res.body)
+  rescue => e
+    debug e, 'error in Estimate Tax'
   end
 
   def ping
     logger.info 'Ping Call'
     self.estimate_tax({ latitude: "40.714623", longitude: "-74.006605"}, 0)
+  end
+
+  protected
+
+  def logger
+    @logger ||= Logger.new('log/tax_svc.txt', 'weekly')
+    @logger.progname ||= 'tax_service'
+    @logger.info 'call to tax service'
+    @logger
   end
 
   private
@@ -90,13 +82,17 @@ class TaxSvc
     end
   end
 
-  def logger
-    Logger.new('log/tax_svc.txt', 'weekly')
-  end
-
-  def debug(text)
-    logger.debug e
+  def debug(error, text)
+    logger.debug error
     logger.debug text
     text
+  end
+
+  def log(method, request_hash)
+    logger.info method + ' call'
+    unless request_hash.nil?
+      logger.debug request_hash
+      logger.debug JSON.generate(request_hash)
+    end
   end
 end

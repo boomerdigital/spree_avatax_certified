@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    spree_avatax (0.2.0)
+    spree_avatax_certified (0.2.0)
       addressable (~> 2.3)
       json (~> 1.7)
       logging (~> 1.8)
@@ -298,5 +298,5 @@ DEPENDENCIES
   selenium-webdriver (~> 2.40)
   shoulda-matchers (~> 2.7)
   simplecov (~> 0.8)
-  spree_avatax!
+  spree_avatax_certified!
   sqlite3 (~> 1.3)
