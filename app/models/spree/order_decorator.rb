@@ -74,6 +74,6 @@ Spree::Order.class_eval do
   private
 
   def logger
-    AvataxLog.new("avalara_order", "order class", 'start order processing')
+    AvataxHelper::AvataxLog.new("avalara_order", "order class", 'start order processing')
   end
 end

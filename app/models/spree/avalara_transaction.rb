@@ -348,6 +348,6 @@ module Spree
   private
 
   def logger
-    AvataxLog.new("post_order_to_avalara", __FILE__)
+    AvataxHelper::AvataxLog.new("post_order_to_avalara", __FILE__)
   end
 end

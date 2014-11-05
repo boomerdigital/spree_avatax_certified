@@ -62,6 +62,6 @@ Spree::ReturnAuthorization.class_eval do
   private
 
   def logger
-    AvataxLog.new("return_authorization", "return_authorization class" )
+    AvataxHelper::AvataxLog.new("return_authorization", "return_authorization class")
   end
 end

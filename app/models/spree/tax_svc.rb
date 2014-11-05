@@ -6,7 +6,6 @@ require 'rest-client'
 require 'logging'
 
 class TaxSvc
-  include AvataxHelper
   def get_tax(request_hash)
     log(__method__, request_hash)
     RestClient.log = logger.logger
@@ -53,7 +52,7 @@ class TaxSvc
   protected
 
   def logger
-    AvataxLog.new("tax_svc", "tax_service", 'call to tax service')
+    AvataxHelper::AvataxLog.new("tax_svc", "tax_service", 'call to tax service')
   end
 
   private
