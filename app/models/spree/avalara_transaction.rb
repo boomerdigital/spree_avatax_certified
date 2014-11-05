@@ -10,7 +10,7 @@ module Spree
     belongs_to :order
     belongs_to :return_authorization
 
-    has_one :adjustment, as: :originator
+    has_one :adjustment
 
     validates :order, presence: true
 

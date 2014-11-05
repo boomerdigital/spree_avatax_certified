@@ -33,7 +33,6 @@ Spree::Order.class_eval do
 
       adjustments.create do |adjustment|
         adjustment.source = self
-        # adjustment.originator = avalara_transaction
         adjustment.label = 'Tax'
         adjustment.mandatory = true
         adjustment.eligible = true
@@ -59,7 +58,6 @@ Spree::Order.class_eval do
 
       adjustments.create do |adjustment|
         adjustment.source = self
-        # adjustment.originator = avalara_transaction
         adjustment.label = 'Tax'
         adjustment.mandatory = true
         adjustment.eligible = true
