@@ -1,4 +1,4 @@
-Spree::BaseHelper.module_eval do
+module AvataxHelper
   class AvataxLog
     def initialize(path_name, file_name, log_info = nil, schedule = nil)
       schedule = "weekly" unless schedule != nil

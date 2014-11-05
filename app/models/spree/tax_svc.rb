@@ -6,6 +6,8 @@ require 'rest-client'
 require 'logging'
 
 class TaxSvc
+  include AvataxHelper
+
   def get_tax(request_hash)
     logger.info_and_debug(__method__.to_s + " call", request_hash)
     RestClient.log = logger
@@ -15,7 +17,7 @@ class TaxSvc
     JSON.parse(res.body)
   rescue => e
     logger.info 'Rest Client Error'
-    debug e, 'error in Tax'
+    logger.debug e, 'error in Tax'
   end
 
   def cancel_tax(request_hash)
@@ -24,7 +26,7 @@ class TaxSvc
     logger.debug res
     JSON.parse(res.body)["CancelTaxResult"]
   rescue => e
-    debug e, 'error in Cancel Tax'
+    logger.debug e, 'error in Cancel Tax'
   end
 
   def estimate_tax(coordinates, sale_amount)
@@ -42,7 +44,7 @@ class TaxSvc
       res = http.get(uri.request_uri, 'Authorization' => credential, 'Content-Type' => 'application/json')
       JSON.parse(res.body)
     rescue => e
-      debug e, 'error in Estimate Tax'
+      logger.debug e, 'error in Estimate Tax'
     end
   end
 
@@ -51,13 +53,11 @@ class TaxSvc
     self.estimate_tax({ latitude: "40.714623", longitude: "-74.006605"}, 0)
   end
 
-  protected
 
+  private
   def logger
     AvataxLog.new("tax_svc", "tax_service", 'call to tax service')
   end
-
-  private
 
   def credential
     'Basic ' + Base64.encode64(account_number + ":" + license_key)
