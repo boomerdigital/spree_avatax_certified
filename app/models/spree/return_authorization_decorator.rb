@@ -3,8 +3,7 @@ require 'logger'
 Spree::ReturnAuthorization.class_eval do
   include Spree::Avalara
 
-  logger.progname = 'ReturnAuthorization class'
-  logger.info 'start ReturnAuthorization processing'
+  logger.info('start ReturnAuthorization processing')
 
   self.state_machine.after_transition :to => :authorized,
                                       :do => :avalara_capture,
@@ -15,14 +14,11 @@ Spree::ReturnAuthorization.class_eval do
                                       :if => :avalara_eligible
 
   def avalara_lookup
-    logger.progname = 'return_authorization class'
     logger.debug 'avalara lookup return_authorization'
-
     :lookup_avatax
   end
 
   def avalara_capture
-    logger.progname = 'return_authorization class'
     logger.debug 'avalara capture return_authorization'
 
     begin
@@ -42,7 +38,6 @@ Spree::ReturnAuthorization.class_eval do
   end
 
   def avalara_capture_finalize
-    logger.progname = 'return_authorization class'
     logger.debug 'avalara capture return_authorization avalara_capture_finalize'
 
     begin
@@ -64,6 +59,6 @@ Spree::ReturnAuthorization.class_eval do
   private
 
   def logger
-    @logger ||= Logger.new('log/return_authorization.txt', 'weekly')
+    AvataxLog.new("return_authorization", "return_authorization class" )
   end
 end

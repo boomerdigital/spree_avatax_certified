@@ -4,15 +4,11 @@ require_dependency 'spree/order'
 module Spree
   class AvalaraTransaction < ActiveRecord::Base
 
-    logger = Logger.new('log/post_order_to_avalara.txt', 'weekly')
-    logger.progname = 'avalara_transaction'
-
     belongs_to :order
     belongs_to :return_authorization
-
     has_one :adjustment
-
     validates :order, presence: true
+
 
     def rnt_tax
       @myrtntax
@@ -35,9 +31,7 @@ module Spree
     end
 
     def update_adjustment(adjustment, source)
-      logger = Logger.new('log/post_order_to_avalara.txt', 'weekly')
-      logger.progname = 'avalara_transaction'
-      logger.info 'update adjustment call'
+      logger.info("update adjustment call")
 
       if adjustment.state != "finalized"
         post_order_to_avalara(false, order.line_items, order)
@@ -81,19 +75,15 @@ module Spree
     private
 
     def get_shipped_from_address(item_id)
-      logger = Logger.new('log/post_order_to_avalara.txt', 'weekly')
-      logger.progname = 'avalara_transaction'
-      logger.info 'shipping address get'
+      logger.info("shipping address get")
 
       stock_item = Stock_Item.find(item_id)
-      shipping_address = stock_item.stock_location || nil #Stock_Location.find(stock_item.stock_location_id)
+      shipping_address = stock_item.stock_location || nil
       return shipping_address
     end
 
     def cancel_order_to_avalara(doc_type="SalesInvoice", cancel_code="DocVoided", order_details=nil)
-      logger = Logger.new('log/post_order_to_avalara.txt', 'weekly')
-      logger.progname = 'avalara_transaction'
-      logger.info 'cancel order to avalara'
+      logger.info("cancel order to avalara")
 
       cancelTaxRequest = {
         :CompanyCode => Spree::Config.avatax_company_code,
@@ -120,9 +110,7 @@ module Spree
     end
 
     def post_order_to_avalara(commit=false, orderitems=nil, order_details=nil, doc_code=nil, org_ord_date=nil)
-      logger = Logger.new('log/post_order_to_avalara.txt', 'weekly')
-      logger.progname = 'avalara_transaction'
-      logger.info 'post order to avalara'
+      logger.info("post order to avalara")
 
       tax_line_items = Array.new
       addresses = Array.new
@@ -135,6 +123,7 @@ module Spree
       orig_address[:PostalCode] = origin["Zip5"]
       orig_address[:Country] = origin["Country"]
       logger.debug orig_address.to_xml
+
       myuserid = order_details.user_id
 
       if myuserid != nil
@@ -157,14 +146,14 @@ module Spree
           line[:OriginCode] = "Orig"
           line[:DestinationCode] = "Dest"
 
-          logger.info 'about to check for User'
+          logger.info('about to check for User')
           logger.debug myusecode
 
           if myusecode
             line[:CustomerUsageType] = myusecode.use_code || ""
           end
 
-          logger.info 'after user check'
+          logger.info('after user check')
 
           line[:Description] = line_item.name
 
@@ -172,17 +161,17 @@ module Spree
             line[:TaxCode] = line_item.tax_category.description || "PC030147"
           end
 
-          logger.info 'about to check for shipped from'
+          logger.info('about to check for shipped from')
 
           shipped_from = order_details.inventory_units.where(:variant_id => line_item.id)
           location = Spree::StockLocation.find_by(name: 'default') || Spree::StockLocation.first
 
-          logger.info 'default location'
+          logger.info('default location')
           logger.debug location
 
           packages = Spree::Stock::Coordinator.new(order_details).packages
 
-          logger.info 'packages'
+          logger.info('packages')
           logger.debug packages
 
           stock_loc = nil
@@ -193,7 +182,7 @@ module Spree
             logger.debug stock_loc
           end
 
-          logger.info 'checked for shipped from'
+          logger.info('checked for shipped from')
 
           if stock_loc
             orig_ship_address = Hash.new
@@ -226,9 +215,9 @@ module Spree
         end
       end
 
-      logger.info 'running order details'
+      logger.info('running order details')
       if order_details then
-        logger.info 'order adjustments'
+        logger.info('order adjustments')
 
         order_details.adjustments.shipping.each do |adj|
 
@@ -354,5 +343,11 @@ module Spree
       end
       return @myrtntax
     end
+  end
+
+  private
+
+  def logger
+    AvataxLog.new("post_order_to_avalara", __FILE__)
   end
 end

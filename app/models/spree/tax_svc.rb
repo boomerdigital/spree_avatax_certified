@@ -7,7 +7,7 @@ require 'logging'
 
 class TaxSvc
   def get_tax(request_hash)
-    log(__method__, request_hash)
+    logger.info_and_debug(__method__.to_s + " call", request_hash)
     RestClient.log = logger
     res = response("get", request_hash)
     logger.info 'RestClient call'
@@ -19,7 +19,7 @@ class TaxSvc
   end
 
   def cancel_tax(request_hash)
-    log(__method__, request_hash)
+    logger.info_and_debug(__method__.to_s + " call", request_hash)
     res = response("cancel", request_hash)
     logger.debug res
     JSON.parse(res.body)["CancelTaxResult"]
@@ -28,7 +28,7 @@ class TaxSvc
   end
 
   def estimate_tax(coordinates, sale_amount)
-    log(__method__)
+    logger.info __method__.to_s + " call"
 
     return nil if coordinates.nil?
     sale_amount = 0 if sale_amount.nil?
@@ -54,10 +54,7 @@ class TaxSvc
   protected
 
   def logger
-    @logger ||= Logger.new('log/tax_svc.txt', 'weekly')
-    @logger.progname ||= 'tax_service'
-    @logger.info 'call to tax service'
-    @logger
+    AvataxLog.new("tax_svc", "tax_service", 'call to tax service')
   end
 
   private
@@ -81,20 +78,6 @@ class TaxSvc
   def response(uri, request_hash)
     RestClient.post(service_url + uri, JSON.generate(request_hash), authorization: credential, content_type: 'application/json') do |response, request, result|
       response
-    end
-  end
-
-  def debug(error, text)
-    logger.debug error
-    logger.debug text
-    text
-  end
-
-  def log(method, request_hash = nil)
-    logger.info method.to_s + ' call'
-    unless request_hash.nil?
-      logger.debug request_hash
-      logger.debug JSON.generate(request_hash)
     end
   end
 end

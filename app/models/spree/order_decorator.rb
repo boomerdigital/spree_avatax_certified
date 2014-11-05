@@ -3,8 +3,6 @@ require 'logger'
 Spree::Order.class_eval do
   include Spree::Avalara
 
-  logger.info 'start order processing'
-
   self.state_machine.after_transition :to => :payment,
                                       :do => :avalara_capture,
                                       :if => :avalara_eligible
@@ -72,8 +70,6 @@ Spree::Order.class_eval do
   private
 
   def logger
-    @logger ||= Logger.new('log/avalara_order.txt', 'weekly')
-    @logger.progname = 'order class'
-    @logger
+    AvataxLog.new("avalara_order", "order class", 'start order processing')
   end
 end
