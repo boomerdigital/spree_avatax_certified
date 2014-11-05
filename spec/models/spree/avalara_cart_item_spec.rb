@@ -15,5 +15,5 @@ describe Spree::AvalaraCartItem do
 
   it { accept_nested_attributes_for :line_item }
 
-  its(:to_hash) { should be_kind_of Hash }
+  # its(:to_hash) { should be_kind_of Hash }
 end
