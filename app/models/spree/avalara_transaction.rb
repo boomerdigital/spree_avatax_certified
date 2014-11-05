@@ -139,8 +139,8 @@ module Spree
 
       if myuserid != nil
         logger.debug myuserid
-        myuser = User.find(myuserid)
-        myusecode = AvalaraUseCodeItem.where(:id => myuser.spree_avalara_use_code_item_id).first
+        myuser = Spree::User.find(myuserid)
+        myusecode = Spree::AvalaraUseCodeItem.where(:id => myuser.spree_avalara_use_code_item_id).first
       end
 
       i = 0
