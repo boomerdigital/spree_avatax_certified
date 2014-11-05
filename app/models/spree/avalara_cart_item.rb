@@ -16,7 +16,7 @@ module Spree
         'ItemID' => sku,
         'Price' => price.to_s,
         'Qty' => quantity,
-        'TaxCategory' => tax_category,
+        'TaxCategory' => tax_category
       }
     end
   end
