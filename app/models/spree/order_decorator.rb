@@ -1,8 +1,8 @@
 require 'logger'
 
 Spree::Order.class_eval do
-  include Spree::Avalara
 
+  has_one :avalara_transaction, dependent: :destroy
   self.state_machine.after_transition :to => :payment,
                                       :do => :avalara_capture,
                                       :if => :avalara_eligible
@@ -10,6 +10,10 @@ Spree::Order.class_eval do
   self.state_machine.after_transition :to => :complete,
                                       :do => :avalara_capture,
                                       :if => :avalara_eligible
+
+  def avalara_eligible
+    Spree::Config.avatax_iseligible
+  end
 
   def avalara_lookup
     logger.debug 'avalara lookup'

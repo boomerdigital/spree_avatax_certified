@@ -1,10 +1,10 @@
 require 'logger'
 
 Spree::ReturnAuthorization.class_eval do
-  include Spree::Avalara
 
   logger.info('start ReturnAuthorization processing')
 
+  has_one :avalara_transaction, dependent: :destroy
   self.state_machine.after_transition :to => :authorized,
                                       :do => :avalara_capture,
                                       :if => :avalara_eligible
@@ -12,6 +12,9 @@ Spree::ReturnAuthorization.class_eval do
   self.state_machine.after_transition :to => :received,
                                       :do => :avalara_capture_finalize,
                                       :if => :avalara_eligible
+  def avalara_eligible
+    Spree::Config.avatax_iseligible
+  end
 
   def avalara_lookup
     logger.debug 'avalara lookup return_authorization'
