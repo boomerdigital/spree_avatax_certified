@@ -31,17 +31,19 @@ class TaxSvc
     log(__method__)
 
     return nil if coordinates.nil?
-    sale_amount ? sale_amount.to_s : '0'
+    sale_amount = 0 if sale_amount.nil?
 
-    uri = URI(service_url + coordinates[:latitude].to_s + "," + coordinates[:longitude].to_s + "/get?saleamount=" + sale_amount )
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    begin
+      uri = URI(service_url + coordinates[:latitude].to_s + "," + coordinates[:longitude].to_s + "/get?saleamount=" + sale_amount.to_s )
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-    res = http.get(uri.request_uri, 'Authorization' => credential, 'Content-Type' => 'application/json')
-    JSON.parse(res.body)
-  rescue => e
-    debug e, 'error in Estimate Tax'
+      res = http.get(uri.request_uri, 'Authorization' => credential, 'Content-Type' => 'application/json')
+      JSON.parse(res.body)
+    rescue => e
+      debug e, 'error in Estimate Tax'
+    end
   end
 
   def ping
