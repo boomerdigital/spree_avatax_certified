@@ -1,5 +1,5 @@
 Spree::BaseHelper.module_eval do
-class AvataxLog
+  class AvataxLog
     def initialize(path_name, file_name, log_info = nil, schedule = nil)
       schedule = "weekly" unless schedule != nil
       @logger ||= Logger.new('log/' + path_name + '.txt', schedule)
