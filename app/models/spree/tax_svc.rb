@@ -9,7 +9,7 @@ class TaxSvc
   include AvataxHelper
   def get_tax(request_hash)
     log(__method__, request_hash)
-    RestClient.log = logger
+    RestClient.log = logger.logger
     res = response("get", request_hash)
     logger.info 'RestClient call'
     logger.debug res
