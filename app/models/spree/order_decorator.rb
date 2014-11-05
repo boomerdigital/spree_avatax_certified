@@ -51,7 +51,7 @@ Spree::Order.class_eval do
 
       self.adjustments.destroy_all
       @sat = Spree::AvalaraTransaction.new
-      @rtn_tax = sat.commit_avatax(line_items, self)
+      @rtn_tax = @sat.commit_avatax(line_items, self)
 
       logger.info 'tax amount'
       logger.debug rtn_tax
