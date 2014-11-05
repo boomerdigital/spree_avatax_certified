@@ -70,7 +70,7 @@ class TaxSvc
     Spree::Config.avatax_endpoint + '/1.0/tax/'
   end
 
-  def license_number
+  def license_key
     Spree::Config.avatax_license_key
   end
 
