@@ -90,8 +90,8 @@ class TaxSvc
     text
   end
 
-  def log(method, request_hash)
-    logger.info method + ' call'
+  def log(method, request_hash = nil)
+    logger.info method.to_s + ' call'
     unless request_hash.nil?
       logger.debug request_hash
       logger.debug JSON.generate(request_hash)
