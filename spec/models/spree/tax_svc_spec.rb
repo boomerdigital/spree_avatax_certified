@@ -1,9 +1,7 @@
-require 'rails_helper'
+require 'spec_helper'
 
 describe TaxSvc, :type => :model do
-  Spree::Config.avatax_account = "1100113096"
-  Spree::Config.avatax_license_key = "1D13EDA2DCCC7E4A"
-  Spree::Config.avatax_endpoint = "https://development.avalara.net"
+  MyConfigPreferences.set_preferences
 
   describe "get_tax" do
     it "gets tax" do

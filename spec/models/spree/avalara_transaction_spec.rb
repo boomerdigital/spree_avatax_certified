@@ -1,6 +1,8 @@
-require 'rails_helper'
+require 'spec_helper'
 
 describe Spree::AvalaraTransaction, :type => :model do
+  MyConfigPreferences.set_preferences
+
   it { should belong_to :order }
   it { should belong_to :return_authorization }
   it { should have_one :adjustment }

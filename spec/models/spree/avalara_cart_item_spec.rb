@@ -1,4 +1,4 @@
-# require 'rails_helper'
+# require 'spec_helper'
 
 # describe Spree::AvalaraCartItem do
 #   it { should belong_to :line_item }
