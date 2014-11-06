@@ -15,6 +15,7 @@ require 'spree/testing_support/preferences'
 require 'spree/testing_support/url_helpers'
 require 'spree/testing_support/controller_requests'
 require 'spree/testing_support/authorization_helpers'
+require 'spree/testing_support/factories'
 require 'spree_avatax_certified/factories'
 
 Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each { |f| require f }
@@ -36,10 +37,13 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with :truncation
   end
+
   config.before :each do
     DatabaseCleaner.start
   end
   config.after :each do
     DatabaseCleaner.clean
   end
+  require 'support/config_preferences'
+
 end

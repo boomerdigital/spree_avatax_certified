@@ -33,7 +33,7 @@ Spree::Order.class_eval do
       logger.info 'tax amount'
       logger.debug @rtn_tax
 
-      adjustments.create do |adjustment|
+      self.adjustments.create do |adjustment|
         adjustment.source = self
         adjustment.label = 'Tax'
         adjustment.mandatory = true
@@ -58,7 +58,7 @@ Spree::Order.class_eval do
       logger.info 'tax amount'
       logger.debug rtn_tax
 
-      adjustments.create do |adjustment|
+      self.adjustments.create do |adjustment|
         adjustment.source = self
         adjustment.label = 'Tax'
         adjustment.mandatory = true
