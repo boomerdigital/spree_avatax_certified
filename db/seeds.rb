@@ -17,8 +17,15 @@ use_codes = {
   "R" => "Non-resident (Canada only)"
 }
 
-unless Spree::AvalaraUseCodeItem.count >= 16
-  use_codes.each do |key, value|
-    Spree::AvalaraUseCodeItem.create(use_code: key, use_code_description: value)
+res = ask 'Would you like to seed use codes? [Y/n]'
+if res == '' || res.downcase == 'y'
+
+  unless Spree::AvalaraUseCodeItem.count >= 16
+    use_codes.each do |key, value|
+      Spree::AvalaraUseCodeItem.create(use_code: key, use_code_description: value)
+    end
   end
+  puts "Use codes seeded."
+else
+  puts 'Skipping use code seeds!'
 end
