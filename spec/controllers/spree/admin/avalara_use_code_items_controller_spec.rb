@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'spec_helper'
 
 describe Spree::Admin::AvalaraUseCodeItemsController do
   let(:use_code) { Spree::AvalaraUseCodeItem.create(use_code: "A", use_code_description: "Federal government") }
