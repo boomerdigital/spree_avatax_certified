@@ -47,7 +47,7 @@ Spree::Order.class_eval do
   end
 
   def avalara_capture_finalize
-    logger.debug 'avalara capture'
+    logger.debug 'avalara capture finalize'
     begin
       create_avalara_transaction
 
@@ -56,7 +56,7 @@ Spree::Order.class_eval do
       @rtn_tax = @sat.commit_avatax(line_items, self)
 
       logger.info 'tax amount'
-      logger.debug rtn_tax
+      logger.debug @rtn_tax
 
       self.adjustments.create do |adjustment|
         adjustment.source = self
@@ -67,7 +67,7 @@ Spree::Order.class_eval do
       end
     rescue => e
       logger.debug e
-      logger.debug 'error in a avalara capture'
+      logger.debug 'error in a avalara capture finalize'
     end
   end
 

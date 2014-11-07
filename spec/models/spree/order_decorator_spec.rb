@@ -19,4 +19,9 @@ describe Spree::Order, type: :model do
       expect(@order.avalara_capture).to be_kind_of(Spree::Adjustment)
     end
   end
+  describe "#avalara_capture_finalize" do
+    it "should response with Spree::Adjustment object" do
+      expect(@order.avalara_capture_finalize).to be_kind_of(Spree::Adjustment)
+    end
+  end
 end
