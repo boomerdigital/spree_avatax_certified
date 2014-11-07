@@ -19,7 +19,8 @@ module Spree
     end
 
     def lookup_avatax
-      post_order_to_avalara(false)
+      order_details = Spree::Order.find(self.order_id)
+      post_order_to_avalara(false, order.line_items, order)
     end
 
     def commit_avatax(items, order_details,doc_id=nil,invoice_dt=nil)
