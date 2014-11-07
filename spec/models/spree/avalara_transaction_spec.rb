@@ -9,18 +9,22 @@ describe Spree::AvalaraTransaction, :type => :model do
   it { should have_db_index :order_id }
 
   before :each do
-    order = FactoryGirl.create(:order)
+    @order = FactoryGirl.create(:order)
     @avalara_transaction = Spree::AvalaraTransaction.new
   end
 
   describe "rnt_tax" do
     it "should return @myrnttax variable" do
-      expect(@avalara_transaction.rnt_tax).to eq(@rnt_tax)
+      expect(@order.avalara_transaction.rnt_tax).to eq(@rnt_tax)
     end
   end
   describe "amount" do
     it "should return @myrnttax variable" do
       expect(@avalara_transaction.amount).to eq(@rnt_tax)
     end
+  end
+  describe "avalara_lookup" do
+    it "returns lookup_avatax"
+    it "creates new avalara_transaction"
   end
 end

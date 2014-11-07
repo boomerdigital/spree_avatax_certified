@@ -14,6 +14,7 @@ describe TaxSvc, :type => :model do
   end
   describe "cancel_tax" do
     it "should raise error" do
+      taxsvc = TaxSvc.new
       result = taxsvc.cancel_tax({
         :CompanyCode=> "54321",
         :DocType => "SalesInvoice",
