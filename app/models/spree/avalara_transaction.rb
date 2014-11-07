@@ -125,10 +125,12 @@ module Spree
       logger.debug orig_address.to_xml
 
       begin
+        if order_details.user_id != nil
         myuserid = order_details.user_id
         logger.debug myuserid
         myuser = Spree::User.find(myuserid)
         myusecode = Spree::AvalaraUseCodeItem.where(:id => myuser.spree_avalara_use_code_item_id).first
+      end
       rescue => e
         logger.debug e
         logger.debug "error with order's user id"
