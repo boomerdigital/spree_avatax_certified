@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Spree::AvalaraTransaction, :type => :model do
-  MyConfigPreferences.set_preferences
 
   it { should belong_to :order }
   it { should belong_to :return_authorization }
@@ -9,22 +8,42 @@ describe Spree::AvalaraTransaction, :type => :model do
   it { should have_db_index :order_id }
 
   before :each do
+    MyConfigPreferences.set_preferences
+    stock_location = FactoryGirl.create(:stock_location)
     @order = FactoryGirl.create(:order)
-    @avalara_transaction = Spree::AvalaraTransaction.new
+    line_item = FactoryGirl.create(:line_item)
+    line_item.tax_category.update_attributes(name: "Clothing", description: "PC030000")
+    @order.line_items << line_item
   end
 
   describe "rnt_tax" do
     it "should return @myrnttax variable" do
+      @order.avalara_lookup
       expect(@order.avalara_transaction.rnt_tax).to eq(@rnt_tax)
     end
   end
   describe "amount" do
     it "should return @myrnttax variable" do
-      expect(@avalara_transaction.amount).to eq(@rnt_tax)
+      @order.avalara_lookup
+      expect(@order.avalara_transaction.amount).to eq(@rnt_tax)
     end
   end
-  describe "avalara_lookup" do
-    it "returns lookup_avatax"
-    it "creates new avalara_transaction"
+  describe "lookup_avatax" do
+    it "should look up avatax" do
+      @order.avalara_capture
+      expect(@order.avalara_transaction.lookup_avatax).to eq("0.4")
+    end
+  end
+
+  describe "commit_avatax" do
+
+  end
+
+  describe "commit_avatax_final" do
+
+  end
+
+  describe "update_adjustment" do
+
   end
 end

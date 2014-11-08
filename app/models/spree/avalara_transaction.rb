@@ -20,7 +20,7 @@ module Spree
 
     def lookup_avatax
       order_details = Spree::Order.find(self.order_id)
-      post_order_to_avalara(false, order.line_items, order)
+      post_order_to_avalara(false, order_details.line_items, order_details)
     end
 
     def commit_avatax(items, order_details,doc_id=nil,invoice_dt=nil)
@@ -138,6 +138,7 @@ module Spree
       end
 
       i = 0
+
       if orderitems then
 
         orderitems.each do |line_item|
@@ -161,7 +162,6 @@ module Spree
           logger.info('after user check')
 
           line[:Description] = line_item.name
-
           if line_item.tax_category.name
             line[:TaxCode] = line_item.tax_category.description || "PC030147"
           end

@@ -6,7 +6,11 @@ describe Spree::Order, type: :model do
   it { should have_one :avalara_transaction }
 
   before :each do
-      @order = FactoryGirl.create(:order)
+    stock_location = FactoryGirl.create(:stock_location)
+    @order = FactoryGirl.create(:order)
+    line_item = FactoryGirl.create(:line_item)
+    line_item.tax_category.update_attributes(name: "Clothing", description: "PC030000")
+    @order.line_items << line_item
   end
 
   describe "#avalara_eligible" do
@@ -14,19 +18,28 @@ describe Spree::Order, type: :model do
       expect(@order.avalara_eligible).to eq(true)
     end
   end
-    describe "#avalara_lookup" do
-    it "should return true" do
+  describe "#avalara_lookup" do
+    it "should return lookup_avatax" do
       expect(@order.avalara_lookup).to eq(:lookup_avatax)
+    end
+    it "creates new avalara_transaction" do
+      expect{@order.avalara_lookup}.to change{Spree::AvalaraTransaction.count}.by(1)
     end
   end
   describe "#avalara_capture" do
     it "should response with Spree::Adjustment object" do
       expect(@order.avalara_capture).to be_kind_of(Spree::Adjustment)
     end
+    it "creates new avalara_transaction" do
+      expect{@order.avalara_capture}.to change{Spree::AvalaraTransaction.count}.by(1)
+    end
   end
   describe "#avalara_capture_finalize" do
     it "should response with Spree::Adjustment object" do
       expect(@order.avalara_capture_finalize).to be_kind_of(Spree::Adjustment)
+    end
+    it "creates new avalara_transaction" do
+      expect{@order.avalara_capture_finalize}.to change{Spree::AvalaraTransaction.count}.by(1)
     end
   end
 end
