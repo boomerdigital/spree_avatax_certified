@@ -1,5 +1,5 @@
 <%= render :partial => 'spree/admin/shared/configuration_menu' %>
-<% origin = JSON.parse(Spree::Config.avatax_origin)  %>
+<% origin = Spree::Config.avatax_origin  %>
 <h1><%= "Avalara Settings" %></h1>
 
 <table>
@@ -44,13 +44,13 @@
     <th scope="row"><%= t("business_address") %>:</th>
 
     <td><table>
-      <tr><td><%= Spree.t("address1") %>: <%= origin["Address1"]  %> </td></tr>
-      <tr><td><%= Spree.t("address2") %>: <%= origin["Address2"]  %></td></tr>
-      <tr><td><%= Spree.t("city") %>: <%= origin["City"]  %></td></tr>
-      <tr><td><%= Spree.t("state") %>: <%= origin["Region"]  %></td></tr>
-      <tr><td><%= Spree.t("zipcode") %>: <%= origin["Zip5"]  %></td></tr>
-      <tr><td><%= t("zip_plus_4") %>: <%= origin["Zip4"] %></td></tr>
-      <tr><td><%= t("country_code") %>: <%= origin["Country"] %></td></tr>
+      <tr><td><%= Spree.t("address1") %>: <%= Avalara.origin["address1"]  %> </td></tr>
+      <tr><td><%= Spree.t("address2") %>: <%= Avalara.origin["address2"]  %></td></tr>
+      <tr><td><%= Spree.t("city") %>: <%= Avalara.origin["city"]  %></td></tr>
+      <tr><td><%= Spree.t("state") %>: <%= Avalara.origin["region"]  %></td></tr>
+      <tr><td><%= Spree.t("zipcode") %>: <%= Avalara.origin["zip5"]  %></td></tr>
+      <tr><td><%= t("zip_plus_4") %>: <%= Avalara.origin["zip4"] %></td></tr>
+      <tr><td><%= t("country_code") %>: <%= Avalara.origin["country"] %></td></tr>
     </table></td>
   </tr>
   <tr>
