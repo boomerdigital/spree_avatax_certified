@@ -4,8 +4,8 @@ Spree::Order.class_eval do
 
   has_one :avalara_transaction, dependent: :destroy
   self.state_machine.after_transition :to => :payment,
-  :do => :avalara_capture,
-  :if => :avalara_eligible
+                                      :do => :avalara_capture,
+                                      :if => :avalara_eligible
 
   self.state_machine.after_transition :to => :complete,
                                       :do => :avalara_capture,
