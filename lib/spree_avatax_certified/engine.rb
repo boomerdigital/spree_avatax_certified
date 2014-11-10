@@ -6,6 +6,7 @@ module SpreeAvataxCertified
     engine_name 'spree_avatax_certified'
 
     config.autoload_paths += %W(#{config.root}/lib)
+    config.autoload_paths+=%W(#{config.root}/app/models)
 
     config.generators do |g|
       g.test_framework :rspec
