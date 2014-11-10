@@ -1,6 +1,7 @@
 require 'builder'
 
-class Spree::Avalara::SpreeAvalaraCartItem < ActiveRecord::Base
+module Spree
+  class SpreeAvalaraCartItem < ActiveRecord::Base
 
 
 
@@ -16,12 +17,13 @@ class Spree::Avalara::SpreeAvalaraCartItem < ActiveRecord::Base
 
     def to_hash
       {
-          'Index' => index,
-          'TIC' => tic,
-          'ItemID' => sku,
-          'Price' => price.to_s,
-          'Qty' => quantity,
-          'TaxCategory' => tax_category,
+        'Index' => index,
+        'TIC' => tic,
+        'ItemID' => sku,
+        'Price' => price.to_s,
+        'Qty' => quantity,
+        'TaxCategory' => tax_category,
       }
     end
+  end
 end
