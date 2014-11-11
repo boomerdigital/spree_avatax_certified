@@ -1,5 +1,5 @@
 class AddColumnToUser < ActiveRecord::Migration
   def change
-    add_reference :spree_users, :spree_avalara_use_code_item, index: true
+    add_column :spree_users, :avalara_use_code_item_id, :integer
   end
 end
