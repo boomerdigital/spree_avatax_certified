@@ -130,7 +130,7 @@ module Spree
           myuserid = order_details.user_id
           logger.debug myuserid
           myuser = Spree::User.find(myuserid)
-          myusecode = Spree::AvalaraUseCodeItem.where(:id => myuser.spree_avalara_use_code_item_id).first
+          myusecode = Spree::AvalaraUseCodeItem.where(:id => myuser.avalara_use_code_item_id).first
         end
       rescue => e
         logger.debug e
