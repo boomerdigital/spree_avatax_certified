@@ -168,9 +168,18 @@ module Spree
           logger.info('about to check for shipped from')
 
           shipped_from = order_details.inventory_units.where(:variant_id => line_item.id)
-          location = Spree::StockLocation.find_by(name: 'default') || Spree::StockLocation.first
 
-          logger.info('default location')
+          if Spree::StockLocation.find_by(name: 'default').nil?
+            location = Spree::StockLocation.create(address1: origin["Address1"], address2: origin["Address2"], city: origin["City"], state_id: Spree::State.find_by_name("New Jersey").id, state_name: origin["Region"] , zipcode: origin["Zip5"], country_id: Spree::Country.find_by_name("United States").id )
+            logger.info('avatax origin location created')
+          elsif Spree::StockLocation.find_by(name: 'default').city.nil? || Spree::StockLocation.first.city.nil?
+            location = Spree::StockLocation.first.update_attributes(address1: origin["Address1"], address2: origin["Address2"], city: origin["City"], state_id: Spree::State.find_by_name("New Jersey").id, state_name: origin["Region"] , zipcode: origin["Zip5"], country_id: Spree::Country.find_by_name("United States").id )
+            logger.info('avatax origin location updated default')
+          else
+            location = Spree::StockLocation.find_by(name: 'default') || Spree::StockLocation.first
+            logger.info('default location')
+          end
+
           logger.debug location
 
           packages = Spree::Stock::Coordinator.new(order_details).packages
