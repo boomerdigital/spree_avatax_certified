@@ -65,7 +65,6 @@ module Spree
           Spree::Config.avatax_license_key = taxpref[:avatax_license_key]
           Spree::Config.avatax_iseligible = taxpref[:avatax_iseligible]
           Spree::Config.avatax_company_code =taxpref[:avatax_company_code]
-          Spree::Config.avatax_customer_code =taxpref[:avatax_customer_code]
           Spree::Config.avatax_client_version = taxpref[:avatax_client_version]
 
           respond_to do |format|

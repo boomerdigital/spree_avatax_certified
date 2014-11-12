@@ -9,10 +9,6 @@
         <fieldset>
           <legend><%= t('avatax_api_login_and_key') %></legend>
           <p>
-            <label><%= t('avatax_customer_code') %></label><br />
-            <%= text_field_tag('settings[avatax_customer_code]', Spree::Config.avatax_customer_code, :maxlength => 256, :class => 'avatax') %>
-          </p>
-          <p>
             <label><%= t('avatax_company_code') %></label><br />
             <%= text_field_tag('settings[avatax_company_code]', Spree::Config.avatax_company_code, :maxlength => 256, :class => 'avatax') %>
           </p>
