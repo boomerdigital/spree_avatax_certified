@@ -25,11 +25,12 @@ class AddressSvc
     res = http.get(uri.request_uri, 'Authorization' => credential)
     JSON.parse(res.body)
   rescue => e
-    logger.debug e, 'error in address validation'
+    'error in address validation'
   end
 
 
   private
+
 
   def credential
     'Basic ' + Base64.encode64(account_number + ":" + license_key)
