@@ -321,7 +321,7 @@ module Spree
       addresses<<orig_address
 
       gettaxes = {
-        :CustomerCode => Spree::Config.avatax_customer_code, # COME BACK TO THIS!
+        :CustomerCode => myuser ? myuser.id : "Guest",
         :DocDate => org_ord_date ? org_ord_date : Date.current.to_formatted_s(:db),
 
         :CompanyCode => Spree::Config.avatax_company_code,
