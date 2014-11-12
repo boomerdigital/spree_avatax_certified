@@ -129,7 +129,7 @@ module Spree
           myuserid = order_details.user_id
           logger.debug myuserid
           myuser = Spree::User.find(myuserid)
-          myusecode = Spree::AvalaraUseCodeItem.where(:id => myuser.avalara_use_code_item_id).first
+          myusecode = Spree::AvalaraEntityUseCode.where(:id => myuser.avalara_entity_use_code_id).first
         end
       rescue => e
         logger.debug e
@@ -162,7 +162,7 @@ module Spree
 
           line[:Description] = line_item.name
           if line_item.tax_category.name
-            line[:TaxCode] = line_item.tax_category.description || "PC030147"
+            line[:TaxCode] = line_item.tax_category.description || "P0000000"
           end
 
           logger.info('about to check for shipped from')

@@ -20,9 +20,9 @@ use_codes = {
 res = ask 'Would you like to seed use codes? [Y/n]'
 if res == '' || res.downcase == 'y'
 
-  unless Spree::AvalaraUseCodeItem.count >= 16
+  unless Spree::AvalaraEntityUseCode.count >= 16
     use_codes.each do |key, value|
-      Spree::AvalaraUseCodeItem.create(use_code: key, use_code_description: value)
+      Spree::AvalaraEntityUseCode.create(use_code: key, use_code_description: value)
     end
   end
   puts "Use codes seeded."
