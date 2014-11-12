@@ -35,10 +35,10 @@
         <%= f.error_message_on :password_confirmation %>
     <% end %>
   </div>
-  <div class="omega six columns">
+  <div class="alpha six columns">
     <%= f.field_container :customer_code do %>
         <%= f.label :customer_code, Spree.t(:customer_code) %>
-        <%= f.text_field :customer_code, :class => 'fullwidth' %>
+        <%= f.text_field :customer_code, :class => 'fullwidth', placeholder: @user.id, readonly: true %>
     <% end %>
 
    </div>
