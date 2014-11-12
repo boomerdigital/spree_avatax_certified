@@ -9,5 +9,5 @@ Spree::AppConfiguration.class_eval do
   preference :avatax_license_key, :string
   preference :avatax_iseligible, :boolean, default: true
   preference :avatax_origin, :string, default: {}
-  preference :avatax_client_version, :string, default: 'SpreeExtV1.0'
+  preference :avatax_client_version, :string, default: 'SpreeExtV2.3'
 end
