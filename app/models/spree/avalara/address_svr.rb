@@ -7,11 +7,13 @@ class AddressSvc
 
   def validate(address)
     return address if address.nil?
+
     address_hash = {
       Line1: address[:address1],
       Line2: address[:address2],
       City: address[:city],
-      Region: address[:state_name],
+      Region: Spree::State.find(address[:state_id]).abbr,
+      Country: Spree::Country.find(address[:country_id]).iso,
       PostalCode: address[:zipcode]
     }
 
@@ -30,7 +32,6 @@ class AddressSvc
 
 
   private
-
 
   def credential
     'Basic ' + Base64.encode64(account_number + ":" + license_key)
