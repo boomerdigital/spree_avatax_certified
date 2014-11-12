@@ -5,6 +5,6 @@ Deface::Override.new(
 ) do
   <<-HTML
     <%= configurations_sidebar_menu_item Spree.t('avalara.settings'), admin_avatax_settings_path %>
-    <%= configurations_sidebar_menu_item Spree.t('avalara.settings_tax_use_codes'), admin_avalara_entity_use_codes_path %>
+    <%= configurations_sidebar_menu_item Spree.t('avalara_entity_use_code_settings'), admin_avalara_entity_use_codes_path %>
   HTML
 end
