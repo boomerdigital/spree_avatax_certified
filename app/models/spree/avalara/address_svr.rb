@@ -4,29 +4,46 @@ require 'addressable/uri'
 require 'base64'
 
 class AddressSvc
-  @@service_path = '/1.0/address/'
-  attr_accessor :account_number
-  attr_accessor :license_key
-  attr_accessor :service_url
 
-  def initialize(account_number, license_key, service_url)
-    @account_number = account_number
-    @license_key = license_key
-    @service_url = service_url
-  end
-
-  def Validate(address)
+  def validate(address)
     return address if address.nil?
+    address_hash = {
+      Line1: address[:address1],
+      Line2: address[:address2],
+      City: address[:city],
+      Region: address[:state_name],
+      PostalCode: address[:zipcode]
+    }
+
     encodedquery = Addressable::URI.new
-    encodedquery.query_values = address
-    uri = URI(@service_url + @@service_path  + "validate?"+ encodedquery.query)
+    encodedquery.query_values = address_hash
+    uri = URI(service_url + encodedquery.query)
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-    cred = 'Basic '+ Base64.encode64(@account_number + ":"+ @license_key)
-    res = http.get(uri.request_uri, 'Authorization' => cred)
+    res = http.get(uri.request_uri, 'Authorization' => credential)
     JSON.parse(res.body)
+  rescue => e
+    logger.debug e, 'error in address validation'
   end
 
+
+  private
+
+  def credential
+    'Basic ' + Base64.encode64(account_number + ":" + license_key)
+  end
+
+  def service_url
+    Spree::Config.avatax_endpoint + '/1.0/address/validate?'
+  end
+
+  def license_key
+    Spree::Config.avatax_license_key
+  end
+
+  def account_number
+    Spree::Config.avatax_account
+  end
 end
