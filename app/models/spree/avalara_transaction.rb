@@ -3,11 +3,11 @@ require_dependency 'spree/order'
 
 module Spree
   class AvalaraTransaction < ActiveRecord::Base
+    @@avatax_logger = AvataxHelper::AvataxLog.new("post_order_to_avalara", __FILE__)
 
     belongs_to :order
     belongs_to :return_authorization
     validates :order, presence: true
-
 
     def rnt_tax
       @myrtntax
@@ -31,7 +31,7 @@ module Spree
     end
 
     def update_adjustment(adjustment, source)
-      logger.info("update adjustment call")
+      @@avatax_logger.info("update adjustment call")
 
       if adjustment.state != "finalized"
         post_order_to_avalara(false, order.line_items, order)
@@ -75,7 +75,7 @@ module Spree
     private
 
     def get_shipped_from_address(item_id)
-      logger.info("shipping address get")
+      @@avatax_logger.info("shipping address get")
 
       stock_item = Stock_Item.find(item_id)
       shipping_address = stock_item.stock_location || nil
@@ -83,7 +83,7 @@ module Spree
     end
 
     def cancel_order_to_avalara(doc_type="SalesInvoice", cancel_code="DocVoided", order_details=nil)
-      logger.info("cancel order to avalara")
+      @@avatax_logger.info("cancel order to avalara")
 
       cancelTaxRequest = {
         :CompanyCode => Spree::Config.avatax_company_code,
@@ -92,26 +92,25 @@ module Spree
         :CancelCode => cancel_code
       }
 
-      logger.debug cancelTaxRequest
+      @@avatax_logger.debug cancelTaxRequest
 
       mytax = TaxSvc.new
       cancelTaxResult = mytax.cancel_tax(cancelTaxRequest)
 
-      logger.debug cancelTaxResult
+      @@avatax_logger.debug cancelTaxResult
 
       if cancelTaxResult == 'error in Tax' then
         return 'Error in Tax'
       else
         if cancelTaxResult["ResultCode"] = "Success"
-          logger.debug cancelTaxResult
+          @@avatax_logger.debug cancelTaxResult
           return cancelTaxResult
         end
       end
     end
 
     def post_order_to_avalara(commit=false, orderitems=nil, order_details=nil, doc_code=nil, org_ord_date=nil)
-      logger.info("post order to avalara")
-
+      @@avatax_logger.info("post order to avalara")
       tax_line_items = Array.new
       addresses = Array.new
 
@@ -122,18 +121,18 @@ module Spree
       orig_address[:City] = origin["City"]
       orig_address[:PostalCode] = origin["Zip5"]
       orig_address[:Country] = origin["Country"]
-      logger.debug orig_address.to_xml
+      @@avatax_logger.debug orig_address.to_xml
 
       begin
         if order_details.user_id != nil
           myuserid = order_details.user_id
-          logger.debug myuserid
+          @@avatax_logger.debug myuserid
           myuser = Spree::User.find(myuserid)
           myusecode = Spree::AvalaraEntityUseCode.where(:id => myuser.avalara_entity_use_code_id).first
         end
       rescue => e
-        logger.debug e
-        logger.debug "error with order's user id"
+        @@avatax_logger.debug e
+        @@avatax_logger.debug "error with order's user id"
       end
 
       i = 0
@@ -151,51 +150,51 @@ module Spree
           line[:OriginCode] = "Orig"
           line[:DestinationCode] = "Dest"
 
-          logger.info('about to check for User')
-          logger.debug myusecode
+          @@avatax_logger.info('about to check for User')
+          @@avatax_logger.debug myusecode
 
           if myusecode
             line[:CustomerUsageType] = myusecode.use_code || ""
           end
 
-          logger.info('after user check')
+          @@avatax_logger.info('after user check')
 
           line[:Description] = line_item.name
           if line_item.tax_category.name
             line[:TaxCode] = line_item.tax_category.description || "P0000000"
           end
 
-          logger.info('about to check for shipped from')
+          @@avatax_logger.info('about to check for shipped from')
 
           shipped_from = order_details.inventory_units.where(:variant_id => line_item.id)
 
           if Spree::StockLocation.find_by(name: 'default').nil?
             location = Spree::StockLocation.create(name: "avatax origin", address1: origin["Address1"], address2: origin["Address2"], city: origin["City"], state_id: Spree::State.find_by_name(origin["Region"]).id, state_name: origin["Region"] , zipcode: origin["Zip5"], country_id: Spree::State.find_by_name(origin["Region"]).country_id)
-            logger.info('avatax origin location created')
+            @@avatax_logger.info('avatax origin location created')
           elsif Spree::StockLocation.find_by(name: 'default').city.nil? || Spree::StockLocation.first.city.nil?
             location = Spree::StockLocation.first.update_attributes(address1: origin["Address1"], address2: origin["Address2"], city: origin["City"], state_id: Spree::State.find_by_name(origin["Region"]).id, state_name: origin["Region"] , zipcode: origin["Zip5"], country_id: Spree::State.find_by_name(origin["Region"]).country_id )
-            logger.info('avatax origin location updated default')
+            @@avatax_logger.info('avatax origin location updated default')
           else
             location = Spree::StockLocation.find_by(name: 'default') || Spree::StockLocation.first
-            logger.info('default location')
+            @@avatax_logger.info('default location')
           end
 
-          logger.debug location
+          @@avatax_logger.debug location
 
           packages = Spree::Stock::Coordinator.new(order_details).packages
 
-          logger.info('packages')
-          logger.debug packages
+          @@avatax_logger.info('packages')
+          @@avatax_logger.debug packages
 
           stock_loc = nil
 
           packages.each do |package|
             next unless package.to_shipment.stock_location.stock_items.where(:variant_id => line_item.variant.id).exists?
             stock_loc = package.to_shipment.stock_location
-            logger.debug stock_loc
+            @@avatax_logger.debug stock_loc
           end
 
-          logger.info('checked for shipped from')
+          @@avatax_logger.info('checked for shipped from')
 
           if stock_loc
             orig_ship_address = Hash.new
@@ -206,7 +205,7 @@ module Spree
             orig_ship_address[:Country] = Country.find(stock_loc.country_id).iso
 
             line[:OriginCode] = line_item.id
-            logger.debug orig_ship_address.to_xml
+            @@avatax_logger.debug orig_ship_address.to_xml
 
             addresses<<orig_ship_address
           elsif location
@@ -218,19 +217,19 @@ module Spree
             orig_ship_address[:Country] = Country.find(location.country_id).iso
 
             line[:OriginCode] = line_item.id
-            logger.debug orig_ship_address.to_xml
+            @@avatax_logger.debug orig_ship_address.to_xml
             addresses<<orig_ship_address
           end
 
-          logger.debug line.to_xml
+          @@avatax_logger.debug line.to_xml
 
           tax_line_items<<line
         end
       end
 
-      logger.info('running order details')
+      @@avatax_logger.info('running order details')
       if order_details then
-        logger.info('order adjustments')
+        @@avatax_logger.info('order adjustments')
 
         order_details.adjustments.shipping.each do |adj|
 
@@ -251,7 +250,7 @@ module Spree
           line[:Description] = adj.label
           line[:TaxCode] = Spree::ShippingMethod.where(:id => adj.originator_id).first.tax_use_code
 
-          logger.debug line.to_xml
+          @@avatax_logger.debug line.to_xml
 
           tax_line_items<<line
         end
@@ -275,7 +274,7 @@ module Spree
           line[:Description] = adj.label
           line[:TaxCode] = ""
 
-          logger.debug line.to_xml
+          @@avatax_logger.debug line.to_xml
 
           tax_line_items<<line
         end
@@ -299,7 +298,7 @@ module Spree
           line[:Description] = adj.label
           line[:TaxCode] = ""
 
-          logger.debug line.to_xml
+          @@avatax_logger.debug line.to_xml
 
           tax_line_items<<line
         end
@@ -319,7 +318,7 @@ module Spree
       shipping_address[:Country] = Country.find(order_details.ship_address.country_id).iso
       shipping_address[:PostalCode] = order_details.ship_address.zipcode
 
-      logger.debug shipping_address.to_xml
+      @@avatax_logger.debug shipping_address.to_xml
 
       addresses<<shipping_address
       addresses<<orig_address
@@ -342,29 +341,23 @@ module Spree
         :Lines => tax_line_items
       }
 
-      logger.debug gettaxes
+      @@avatax_logger.debug gettaxes
 
       mytax = TaxSvc.new
 
       getTaxResult = mytax.get_tax(gettaxes)
 
-      logger.debug getTaxResult
+      @@avatax_logger.debug getTaxResult
 
       if getTaxResult == 'error in Tax' then
         @myrtntax = "0.00"
       else
         if getTaxResult["ResultCode"] = "Success"
-          logger.debug getTaxResult["TotalTax"].to_s
+          @@avatax_logger.debug getTaxResult["TotalTax"].to_s
           @myrtntax = getTaxResult["TotalTax"].to_s
         end
       end
       return @myrtntax
     end
-  end
-
-  private
-
-  def logger
-    AvataxHelper::AvataxLog.new("post_order_to_avalara", __FILE__)
   end
 end

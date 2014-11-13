@@ -1,8 +1,8 @@
 require 'logger'
 
 Spree::ReturnAuthorization.class_eval do
-
-  logger.info('start ReturnAuthorization processing')
+  @@avatax_logger = AvataxHelper::AvataxLog.new("return_authorization", "return_authorization class")
+  @@avatax_logger.info('start ReturnAuthorization processing')
 
   has_one :avalara_transaction, dependent: :destroy
   self.state_machine.after_transition :to => :authorized,
@@ -17,12 +17,12 @@ Spree::ReturnAuthorization.class_eval do
   end
 
   def avalara_lookup
-    logger.debug 'avalara lookup return_authorization'
+    @@avatax_logger.debug 'avalara lookup return_authorization'
     :lookup_avatax
   end
 
   def avalara_capture
-    logger.debug 'avalara capture return_authorization'
+    @@avatax_logger.debug 'avalara capture return_authorization'
 
     begin
       create_avalara_transaction
@@ -30,18 +30,18 @@ Spree::ReturnAuthorization.class_eval do
       order.adjustments.destroy_all
       @sat = Spree::AvalaraTransaction.new
       @rtn_tax = @sat.commit_avatax(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"))
-      logger.info 'tax amount'
-      logger.debug @rtn_tax
+      @@avatax_logger.info 'tax amount'
+      @@avatax_logger.debug @rtn_tax
       Spree::Adjustment.create(amount: @rtn_tax, label: 'Tax',adjustable: order, source: order, mandatory: true, eligible: true)
 
     rescue => e
-      logger.debug e
-      logger.debug 'error in a avalara capture return_authorization'
+      @@avatax_logger.debug e
+      @@avatax_logger.debug 'error in a avalara capture return_authorization'
     end
   end
 
   def avalara_capture_finalize
-    logger.debug 'avalara capture return_authorization avalara_capture_finalize'
+    @@avatax_logger.debug 'avalara capture return_authorization avalara_capture_finalize'
 
     begin
       create_avalara_transaction
@@ -49,19 +49,13 @@ Spree::ReturnAuthorization.class_eval do
       order.adjustments.destroy_all
       @sat = Spree::AvalaraTransaction.new
       @rtn_tax = @sat.commit_avatax_final(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"))
-      logger.info 'tax amount'
-      logger.debug @rtn_tax
+      @@avatax_logger.info 'tax amount'
+      @@avatax_logger.debug @rtn_tax
       Spree::Adjustment.create(amount: @rtn_tax, label: 'Tax',adjustable: order, source: order, mandatory: true, eligible: true)
 
     rescue => e
-      logger.debug e
-      logger.debug 'error in a avalara capture return_authorization'
+      @@avatax_logger.debug e
+      @@avatax_logger.debug 'error in a avalara capture return_authorization'
     end
-  end
-
-  private
-
-  def logger
-    AvataxHelper::AvataxLog.new("return_authorization", "return_authorization class")
   end
 end
