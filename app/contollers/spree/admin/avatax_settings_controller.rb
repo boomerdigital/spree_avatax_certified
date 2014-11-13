@@ -7,19 +7,19 @@ module Spree
       def show
       end
 
-      def get_file_content_txt_svc
+      def get_file_txt_tax_svc
         data = open("log/tax_svc.txt")
 
         send_data data.read, filename: "tax_svc.txt", disposition: 'attachment'
       end
 
-      def get_file_content_post_avatax
+      def get_file_post_order_to_avalara
         data = open("log/post_order_to_avalara.txt")
 
         send_data data.read, filename: "post_order_to_avalara.txt", disposition: 'attachment'
       end
 
-      def get_file_content_avatax_ord
+      def get_file_avalara_order
         data = open("log/avalara_order.txt")
 
         send_data data.read, filename: "avalara_order.txt", disposition: 'attachment'
