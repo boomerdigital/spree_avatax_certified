@@ -21,7 +21,8 @@ tmp
 _yardoc
 doc/
 spec/dummy
-log/
+/log
+/log/*
 /log/avalara_order.txt
 /log/post_order_to_avalara.txt
 /log/return_authorization.txt
