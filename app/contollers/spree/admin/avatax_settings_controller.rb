@@ -10,19 +10,19 @@ module Spree
       def get_file_content_txt_svc
         data = open("log/tax_svc.txt")
 
-        send_data data.read, filename: "tax_svc.txt", type: "application/text", disposition: 'inline', stream: 'true'
+        send_data data.read, filename: "tax_svc.txt", disposition: 'attachment'
       end
 
       def get_file_content_post_avatax
         data = open("log/post_order_to_avalara.txt")
 
-        send_data data.read, filename: "post_order_to_avalara.txt", type: "application/text", disposition: 'inline', stream: 'true'
+        send_data data.read, filename: "post_order_to_avalara.txt", disposition: 'attachment'
       end
 
       def get_file_content_avatax_ord
         data = open("log/avalara_order.txt")
 
-        send_data data.read, filename: "avalara_order.txt", type: "application/text", disposition: 'inline', stream: 'true'
+        send_data data.read, filename: "avalara_order.txt", disposition: 'attachment'
       end
 
       def ping_my_service
