@@ -63,25 +63,22 @@
   <tr>
    <th>View Log Files</th>
    <td>
-    Log files are located in the log directory of your spree  website.
-    <br/>
-    Tax Service Calls using REST - file name: tax_svc.txt
-    <br/>
-    Avalara Function calls -  file name: post_order_to_avalara.txt
-    <br/>
-    Spree Order item integration Calls - file name: avalara_order.txt
-    <br/>
+    Log files are located in the log directory of your spree website.
+    <table>
+      <tr>
+        <td>Tax Service calls - tax_svc.txt</td>
+        <td><%= link_to("Download", {controller: :avatax_settings, action: :get_file_content_txt_svc}) %> </td>
+      </tr>
+      <tr>
+        <td>Avalara Function calls -  post_order_to_avalara.txt</td>
+        <td><%= link_to("Download", {controller: :avatax_settings, action: :get_file_content_post_avatax}) %> </td>
+      </tr>
+      <tr>
+        <td>Spree Order Item integration calls - avalara_order.txt</td>
+        <td><%= link_to("Download", {controller: :avatax_settings, action: :get_file_content_avatax_ord}) %> </td>
+      </tr>
+    </table>
   </td>
-</tr>
-
-
-
-<tr>
-  <td>
-    <!--<textarea id="displaytext">-->
-
-  </textarea>
-</td>
 </tr>
 </table>
 
