@@ -38,7 +38,7 @@ class AddressSvc
   end
 
   def service_url
-    Spree::Config.avatax_endpoint + '/1.0/address/validate?'
+    Spree::Config.avatax_endpoint + AVATAX_SERVICEPATH_ADDRESS + 'validate?'
   end
 
   def license_key

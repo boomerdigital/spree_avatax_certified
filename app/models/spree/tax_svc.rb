@@ -62,7 +62,7 @@ class TaxSvc
   end
 
   def service_url
-    Spree::Config.avatax_endpoint + '/1.0/tax/'
+    Spree::Config.avatax_endpoint + AVATAX_SERVICEPATH_TAX
   end
 
   def license_key
