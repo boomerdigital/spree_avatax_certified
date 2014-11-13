@@ -23,12 +23,11 @@ Spree::Order.class_eval do
 
   def avalara_capture
     logger.debug 'avalara capture'
+
     begin
       create_avalara_transaction
-
       self.adjustments.destroy_all
-      @sat = Spree::AvalaraTransaction.new
-      @rtn_tax = @sat.commit_avatax(line_items, self)
+      @rtn_tax = self.avalara_transaction.commit_avatax(line_items, self)
 
       logger.info 'tax amount'
       logger.debug @rtn_tax

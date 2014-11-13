@@ -14,8 +14,9 @@ describe Spree::AvalaraTransaction, :type => :model do
     line_item = FactoryGirl.create(:line_item)
     line_item.tax_category.update_attributes(name: "Clothing", description: "PC030000")
     @order.line_items << line_item
-    @order.bill_address = FactoryGirl.create(:bill_address)
-    @order.ship_address = FactoryGirl.create(:ship_address)
+    to_address = Spree::Address.create(firstname: "Allison", lastname: "Reilly", address1: "220 Paul W Bryant Dr", city: "Tuscaloosa", zipcode: "35401", phone: "9733492462", state_name: "Alabama", state_id: 39, country_id: 1)
+    @order.bill_address = to_address
+    @order.ship_address = to_address
   end
 
   describe "rnt_tax" do
