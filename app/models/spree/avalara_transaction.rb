@@ -8,6 +8,7 @@ module Spree
     belongs_to :order
     belongs_to :return_authorization
     validates :order, presence: true
+    has_one :adjustment
 
     def rnt_tax
       @myrtntax
