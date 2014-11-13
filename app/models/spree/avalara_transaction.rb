@@ -305,6 +305,10 @@ module Spree
         end
       end
 
+      if order_details.ship_address_id.nil?
+        order_details.update_attributes(ship_address_id: order_details.bill_address_id)
+      end
+
       shipping_address = Hash.new
 
       shipping_address[:AddressCode] = "Dest"
