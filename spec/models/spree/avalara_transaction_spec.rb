@@ -8,12 +8,14 @@ describe Spree::AvalaraTransaction, :type => :model do
   it { should have_db_index :order_id }
 
   before :each do
-    MyConfigPreferences.set_preferences
+  MyConfigPreferences.set_preferences
     stock_location = FactoryGirl.create(:stock_location)
     @order = FactoryGirl.create(:order)
     line_item = FactoryGirl.create(:line_item)
     line_item.tax_category.update_attributes(name: "Clothing", description: "PC030000")
     @order.line_items << line_item
+    @order.bill_address = FactoryGirl.create(:bill_address)
+    @order.ship_address = FactoryGirl.create(:ship_address)
   end
 
   describe "rnt_tax" do
