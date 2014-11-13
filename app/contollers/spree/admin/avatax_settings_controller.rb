@@ -25,20 +25,8 @@ module Spree
         send_data data.read, filename: "avalara_order.txt", disposition: 'attachment'
       end
 
-      def erase_data(path)
-        File.open(path, 'w') {}
-      end
-
-      def erase_tax_svc_data
-        erase_data("log/tax_svc.txt")
-      end
-
-      def erase_post_order_to_avalara_data
-        erase_data("log/post_order_to_avalara.txt")
-      end
-
-      def erase_avalara_order_data
-        erase_data("log/avalara_order.txt")
+      def erase_data
+        File.open(params["path"], 'w') {}
       end
 
       def ping_my_service

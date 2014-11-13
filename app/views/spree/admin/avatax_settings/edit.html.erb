@@ -91,6 +91,42 @@
       </p>
 
     </fieldset>
+    <fieldset>
+    <legend><%= t('log_files') %></legend>
+    <p>Log files are located in the log directory of your spree website.</p>
+    <table>
+    <tr>
+   <td>
+    <table>
+      <tr>
+        <td>Tax Service calls - tax_svc.txt</td>
+        <td><%= link_to("Download", {controller: :avatax_settings, action: :get_file_txt_tax_svc}) %>
+        </td>
+        <td>
+          <%= link_to("Clear Data", {controller: :avatax_settings, action: :erase_data, remote: true, path: "log/tax_svc.txt"}) %>
+        </td>
+      </tr>
+      <tr>
+        <td>Avalara Function calls -  post_order_to_avalara.txt</td>
+        <td><%= link_to("Download", {controller: :avatax_settings, action: :get_file_post_order_to_avalara}) %>
+        </td>
+        <td>
+          <%= link_to("Clear Data", {controller: :avatax_settings, action: :erase_data, remote: true, path: "log/post_order_to_avalara.txt"}) %>
+        </td>
+      </tr>
+      <tr>
+        <td>Spree Order Item integration calls - avalara_order.txt</td>
+        <td><%= link_to("Download", {controller: :avatax_settings, action: :get_file_avalara_order}) %>
+        </td>
+        <td>
+          <%= link_to("Clear Data", {controller: :avatax_settings, action: :erase_data, remote: true, path: "log/avalara_order.txt"}) %>
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+</fieldset>
   </div>
 </div>
 
