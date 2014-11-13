@@ -30,16 +30,16 @@
         <%= text_field_tag('settings[avatax_endpoint]', Spree::Config.avatax_endpoint, :size => 46, :maxlength => 256, :class => 'avatax') %>
       </p>
       <p>
-        <label><%= t('avatax_servicepathtax') %></label><br />
-        <%= text_field_tag('settings[avatax_servicepathtax]', Spree::Config.avatax_servicepathtax, :maxlength => 256, :class => 'avatax') %>
+        <label><%= t('avatax_servicepath_tax') %></label><br />
+        <input type="text" placeholder="<%= AVATAX_SERVICEPATH_TAX %>", readonly>
       </p>
       <p>
-        <label><%= t('avatax_servicepathaddress') %></label><br />
-        <%= text_field_tag('settings[avatax_servicepathaddress]', Spree::Config.avatax_servicepathaddress, :maxlength => 256, :class => 'avatax') %>
+        <label><%= t('avatax_servicepath_address') %></label><br />
+        <input type="text" placeholder="<%= AVATAX_SERVICEPATH_ADDRESS %>", readonly>
       </p>
       <p>
         <label><%= t('avatax_client_version') %></label><br />
-        <input type="text" placeholder="<%= Spree::Config.avatax_client_version %>", readonly>
+        <input type="text" placeholder="<%= AVATAX_CLIENT_VERSION %>", readonly>
       </p>
     </fieldset>
 
