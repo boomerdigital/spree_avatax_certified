@@ -6,5 +6,6 @@ Spree::AppConfiguration.class_eval do
   preference :avatax_account, :string
   preference :avatax_license_key, :string
   preference :avatax_iseligible, :boolean, default: true
+  preference :avatax_log, :boolean, default: true
   preference :avatax_origin, :string, default: {}
 end

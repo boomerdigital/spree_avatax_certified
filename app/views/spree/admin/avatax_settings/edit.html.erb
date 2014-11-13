@@ -52,6 +52,14 @@
     </fieldset>
 
     <fieldset>
+      <legend><%= t('avatax_log') %></legend>
+      <p>
+        <label><%= t('enable_avatax_logging') %></label><br />
+        <%= check_box_tag('settings[avatax_log]','yes' , Spree::Config.avatax_log, :class => 'avatax') %>
+      </p>
+    </fieldset>
+
+    <fieldset>
       <legend><%= t('business_address') %></legend>
       <p>
         <label><%= Spree.t('address1') %></label><br />
