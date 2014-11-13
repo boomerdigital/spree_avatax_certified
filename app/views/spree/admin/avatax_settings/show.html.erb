@@ -53,7 +53,7 @@
     <th>Connection Status</th>
     <td>
       <%= link_to({:controller => :avatax_settings, :action => :ping_my_service, :remote => true }, {:class => 'btn btn-small'}) do %>
-          <i class="icon-plus-sign icon-black"></i> <% end %>
+      <i class="icon-plus-sign icon-black">Test Connection</i> <% end %>
     </td>
 
   </tr>
@@ -62,27 +62,27 @@
 
   <tr>
    <th>View Log Files</th>
-    <td>
-      Log files are located in the log directory of your spree  website.
-      <br/>
-          Tax Service Calls using REST - file name: tax_svc.txt
-       <br/>
-          Avalara Function calls -  file name: post_order_to_avalara.txt
-        <br/>
-          Spree Order item integration Calls - file name: avalara_order.txt
-        <br/>
-    </td>
-    </tr>
+   <td>
+    Log files are located in the log directory of your spree  website.
+    <br/>
+    Tax Service Calls using REST - file name: tax_svc.txt
+    <br/>
+    Avalara Function calls -  file name: post_order_to_avalara.txt
+    <br/>
+    Spree Order item integration Calls - file name: avalara_order.txt
+    <br/>
+  </td>
+</tr>
 
 
 
-  <tr>
-    <td>
-      <!--<textarea id="displaytext">-->
+<tr>
+  <td>
+    <!--<textarea id="displaytext">-->
 
-      </textarea>
-    </td>
-  </tr>
+  </textarea>
+</td>
+</tr>
 </table>
 
-<p><%= link_to_with_icon 'edit', Spree.t("edit"), edit_admin_avatax_settings_path %></p>>
+<p><%= link_to_with_icon 'edit', Spree.t("edit"), edit_admin_avatax_settings_path %></p>
