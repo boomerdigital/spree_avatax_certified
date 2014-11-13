@@ -40,10 +40,6 @@ module Spree
         end
       end
 
-      def download_txt_svc
-        send_file 'log/tax_svc.txt', :type=>"application/text"
-      end
-
       def update
         origin = params[:address]
         taxpref = params[:settings]
