@@ -3,14 +3,13 @@ AVALARA_ORDER_LOGGER = AvataxHelper::AvataxLog.new("avalara_order", "order class
 
 Spree::Order.class_eval do
 
-
   has_one :avalara_transaction, dependent: :destroy
   self.state_machine.after_transition :to => :payment,
                                       :do => :avalara_capture,
                                       :if => :avalara_eligible
 
   self.state_machine.after_transition :to => :complete,
-                                      :do => :avalara_capture,
+                                      :do => :avalara_capture_finalize,
                                       :if => :avalara_eligible
 
   def avalara_eligible

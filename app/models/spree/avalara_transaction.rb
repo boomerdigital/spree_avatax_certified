@@ -8,7 +8,7 @@ module Spree
     belongs_to :order
     belongs_to :return_authorization
     validates :order, presence: true
-    has_one :adjustment
+    has_one :adjustment, as: :source
 
     def rnt_tax
       @myrtntax
@@ -249,7 +249,7 @@ module Spree
           end
 
           line[:Description] = adj.label
-          line[:TaxCode] = Spree::ShippingMethod.where(:id => adj.originator_id).first.tax_use_code
+          line[:TaxCode] = Spree::ShippingMethod.where(:id => adj.originator_id).first.tax_code
 
           @@avatax_logger.debug line.to_xml
 
@@ -354,6 +354,7 @@ module Spree
         @myrtntax = "0.00"
       else
         if getTaxResult["ResultCode"] = "Success"
+          @@avatax_logger.info "total tax"
           @@avatax_logger.debug getTaxResult["TotalTax"].to_s
           @myrtntax = getTaxResult["TotalTax"].to_s
         end
