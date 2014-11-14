@@ -5,7 +5,7 @@ describe Spree::LineItem, type: :model do
   let(:order) { create :order_with_line_items, line_items_count: 1 }
   let(:line_item) { order.line_items.first }
 
-  describe "to_hash" do
+  describe "#to_hash" do
     it "should create hash of line item information" do
       expect(line_item.to_hash).to be_kind_of(Hash)
     end

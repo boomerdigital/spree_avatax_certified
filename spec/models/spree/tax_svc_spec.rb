@@ -3,7 +3,7 @@ require 'spec_helper'
 describe TaxSvc, :type => :model do
   MyConfigPreferences.set_preferences
 
-  describe "get_tax" do
+  describe "#get_tax" do
     it "gets tax" do
       taxsvc = TaxSvc.new
       result = taxsvc.get_tax(
@@ -12,7 +12,7 @@ describe TaxSvc, :type => :model do
       expect(result["ResultCode"]).to eq("Success")
     end
   end
-  describe "cancel_tax" do
+  describe "#cancel_tax" do
     it "should raise error" do
       taxsvc = TaxSvc.new
       result = taxsvc.cancel_tax({
@@ -24,7 +24,7 @@ describe TaxSvc, :type => :model do
       expect(result["ResultCode"]).to eq("Error")
     end
   end
-  describe "ping" do
+  describe "#ping" do
     it "should return estimate" do
       tax_svc = TaxSvc.new
       result = tax_svc.ping

@@ -19,33 +19,33 @@ describe Spree::AvalaraTransaction, :type => :model do
     @order.ship_address = to_address
   end
 
-  describe "rnt_tax" do
+  describe "#rnt_tax" do
     it "should return @myrnttax variable" do
       @order.avalara_lookup
       expect(@order.avalara_transaction.rnt_tax).to eq(@rnt_tax)
     end
   end
-  describe "amount" do
+  describe "#amount" do
     it "should return @myrnttax variable" do
       @order.avalara_lookup
       expect(@order.avalara_transaction.amount).to eq(@rnt_tax)
     end
   end
-  describe "lookup_avatax" do
+  describe "#lookup_avatax" do
     it "should look up avatax" do
       @order.avalara_capture
       expect(@order.avalara_transaction.lookup_avatax).to eq("0.4")
     end
   end
 
-  describe "commit_avatax" do
+  describe "#commit_avatax" do
     it "should commit avatax" do
       @order.avalara_capture
       expect(@order.avalara_transaction.commit_avatax(@order.line_items, @order)).to eq("0.4")
     end
   end
 
-  describe "commit_avatax_final" do
+  describe "#commit_avatax_final" do
     it "should commit avatax final" do
       @order.avalara_capture
       expect(@order.avalara_transaction.commit_avatax_final(@order.line_items, @order, @order.number.to_s + ":" + @order.id.to_s, @order.completed_at)).to eq("0.4")
