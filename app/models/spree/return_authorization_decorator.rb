@@ -31,7 +31,7 @@ Spree::ReturnAuthorization.class_eval do
       @rtn_tax = order.avalara_transaction.commit_avatax(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"))
       RETURN_AUTHORIZATION_LOGGER.info 'tax amount'
       RETURN_AUTHORIZATION_LOGGER.debug @rtn_tax
-      Spree::Adjustment.create(amount: @rtn_tax, label: 'Tax',adjustable: order, source: order, mandatory: true, eligible: true)
+      Spree::Adjustment.create(amount: @rtn_tax, label: 'Tax',adjustable: order, source: order.avalara_transaction, mandatory: true, eligible: true)
 
     rescue => e
       RETURN_AUTHORIZATION_LOGGER.debug e
@@ -45,11 +45,11 @@ Spree::ReturnAuthorization.class_eval do
     begin
       create_avalara_transaction
 
-      order.adjustments.destroy_all
+      order.adjustments.avalara_tax.destroy_all
       @rtn_tax = order.avalara_transaction.commit_avatax_final(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"))
       RETURN_AUTHORIZATION_LOGGER.info 'tax amount'
       RETURN_AUTHORIZATION_LOGGER.debug @rtn_tax
-      Spree::Adjustment.create(amount: @rtn_tax, label: 'Tax',adjustable: order, source: order, mandatory: true, eligible: true)
+      Spree::Adjustment.create(amount: @rtn_tax, label: 'Tax',adjustable: order, source: order.avalara_transaction, mandatory: true, eligible: true)
 
     rescue => e
       RETURN_AUTHORIZATION_LOGGER.debug e
