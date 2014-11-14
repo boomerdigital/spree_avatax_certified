@@ -52,7 +52,7 @@ Spree::Order.class_eval do
       create_avalara_transaction
 
       self.adjustments.avalara_tax.destroy_all
-      @rtn_tax = self.avalara_transaction.commit_avatax(line_items, self)
+      @rtn_tax = self.avalara_transaction.commit_avatax_final(line_items, self)
 
       AVALARA_ORDER_LOGGER.info 'tax amount'
       AVALARA_ORDER_LOGGER.debug @rtn_tax
