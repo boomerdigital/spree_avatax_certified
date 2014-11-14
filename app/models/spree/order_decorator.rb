@@ -1,8 +1,8 @@
 require 'logger'
+AVALARA_ORDER_LOGGER = AvataxHelper::AvataxLog.new("avalara_order", "order class", 'start order processing')
 
 Spree::Order.class_eval do
 
-  @@avatax_logger = AvataxHelper::AvataxLog.new("avalara_order", "order class", 'start order processing')
 
   has_one :avalara_transaction, dependent: :destroy
   self.state_machine.after_transition :to => :payment,
@@ -18,56 +18,56 @@ Spree::Order.class_eval do
   end
 
   def avalara_lookup
-    @@avatax_logger.debug 'avalara lookup'
+    AVALARA_ORDER_LOGGER.debug 'avalara lookup'
     create_avalara_transaction
     :lookup_avatax
   end
 
   def avalara_capture
-    @@avatax_logger.debug 'avalara capture'
+    AVALARA_ORDER_LOGGER.debug 'avalara capture'
 
     begin
       create_avalara_transaction
-      self.adjustments.destroy_all
+      self.adjustments.avalara_tax.destroy_all
       @rtn_tax = self.avalara_transaction.commit_avatax(line_items, self)
 
-      @@avatax_logger.info 'tax amount'
-      @@avatax_logger.debug @rtn_tax
+      AVALARA_ORDER_LOGGER.info 'tax amount'
+      AVALARA_ORDER_LOGGER.debug @rtn_tax
 
-      self.adjustments.create do |adjustment|
-        adjustment.source = self
+      adjustments.create do |adjustment|
+        adjustment.source = avalara_transaction
         adjustment.label = 'Tax'
         adjustment.mandatory = true
         adjustment.eligible = true
         adjustment.amount = @rtn_tax
       end
     rescue => e
-      @@avatax_logger.debug e
-      @@avatax_logger.debug 'error in a avalara capture'
+      AVALARA_ORDER_LOGGER.debug e
+      AVALARA_ORDER_LOGGER.debug 'error in a avalara capture'
     end
   end
 
   def avalara_capture_finalize
-    @@avatax_logger.debug 'avalara capture finalize'
+    AVALARA_ORDER_LOGGER.debug 'avalara capture finalize'
     begin
       create_avalara_transaction
 
       self.adjustments.destroy_all
       @rtn_tax = self.avalara_transaction.commit_avatax(line_items, self)
 
-      @@avatax_logger.info 'tax amount'
-      @@avatax_logger.debug @rtn_tax
+      AVALARA_ORDER_LOGGER.info 'tax amount'
+      AVALARA_ORDER_LOGGER.debug @rtn_tax
 
-      self.adjustments.create do |adjustment|
-        adjustment.source = self
+      adjustments.create do |adjustment|
+        adjustment.source = avalara_transaction
         adjustment.label = 'Tax'
         adjustment.mandatory = true
         adjustment.eligible = true
         adjustment.amount = @rtn_tax
       end
     rescue => e
-      @@avatax_logger.debug e
-      @@avatax_logger.debug 'error in a avalara capture finalize'
+      AVALARA_ORDER_LOGGER.debug e
+      AVALARA_ORDER_LOGGER.debug 'error in a avalara capture finalize'
     end
   end
 end
