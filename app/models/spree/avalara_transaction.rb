@@ -34,7 +34,7 @@ module Spree
     def update_adjustment(adjustment, source)
       @@avatax_logger.info("update adjustment call")
 
-      if adjustment.state != "finalized"
+      if adjustment.state != "closed"
         post_order_to_avalara(false, order.line_items, order)
         adjustment.update_column(:amount, rnt_tax)
       end
@@ -42,32 +42,32 @@ module Spree
       if order.complete?
         post_order_to_avalara(true, order.line_items, order)
         adjustment.update_column(:amount, rnt_tax)
-        adjustment.update_column(:state, "finalized")
+        adjustment.update_column(:state, "closed")
       end
 
       if order.state == 'canceled'
         cancel_order_to_avalara("SalesInvoice", "DocVoided", order)
       end
 
-      if adjustment.state == "finalized" && order.adjustments.return_authorization.exists?
+      if adjustment.state == "closed" && order.adjustments.return_authorization.exists?
         post_order_to_avalara(false, order.line_items, order, order.number.to_s + ":" + order.adjustments.return_authorization.first.id.to_s, order.completed_at)
 
         if rnt_tax != "0.00"
           adjustment.update_column(:amount, rnt_tax)
-          adjustment.update_column(:state, "finalized")
+          adjustment.update_column(:state, "closed")
         end
       end
 
-      if adjustment.state == "finalized" && order.adjustments.return_authorization.exists?
+      if adjustment.state == "closed" && order.adjustments.return_authorization.exists?
         order.adjustments.return_authorization.each do |adj|
-          if adj.state == "closed" || adj.state == "finalized"
+          if adj.state == "closed" || adj.state == "closed"
             post_order_to_avalara(true, order.line_items, order, order.number.to_s + ":"  + adj.id.to_s, order.completed_at )
           end
         end
 
         if rnt_tax != "0.00"
           adjustment.update_column(:amount, rnt_tax)
-          adjustment.update_column(:state, "finalized")
+          adjustment.update_column(:state, "closed")
         end
       end
     end
