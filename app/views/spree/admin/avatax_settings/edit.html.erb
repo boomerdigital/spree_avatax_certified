@@ -60,6 +60,14 @@
     </fieldset>
 
     <fieldset>
+      <legend><%= t('avatax_address_validation') %></legend>
+      <p>
+        <label><%= t('enable_avatax_address_validation') %></label><br />
+        <%= check_box_tag('settings[avatax_address_validation]','yes' , Spree::Config.avatax_address_validation, :class => 'avatax') %>
+      </p>
+    </fieldset>
+
+    <fieldset>
       <legend><%= t('business_address') %></legend>
       <p>
         <label><%= Spree.t('address1') %></label><br />
