@@ -5,6 +5,7 @@ describe Spree::Order, type: :model do
 
   it { should have_one :avalara_transaction }
 
+  let(:order_with_line_items) {FactoryGirl.create(:order_with_line_items)}
   before :each do
     stock_location = FactoryGirl.create(:stock_location)
     @order = FactoryGirl.create(:order)
@@ -40,6 +41,24 @@ describe Spree::Order, type: :model do
     end
     it "creates new avalara_transaction" do
       expect{@order.avalara_capture_finalize}.to change{Spree::AvalaraTransaction.count}.by(1)
+    end
+  end
+  context "payment" do
+    before do
+      order_with_line_items.state = 'delivery'
+    end
+    it "should do avalara_capture" do
+      expect(order_with_line_items).to receive(:avalara_capture)
+      order_with_line_items.next!
+    end
+  end
+  context "complete" do
+    before do
+      @order.state = 'confirm'
+    end
+    it "should do avalara_capture" do
+      expect(@order).to receive(:avalara_capture_finalize)
+      @order.next!
     end
   end
 end
