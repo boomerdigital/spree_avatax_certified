@@ -310,6 +310,14 @@ module Spree
         order_details.update_attributes(ship_address_id: order_details.bill_address_id)
       end
 
+      response = address_validator.validate(order_details.ship_address)
+
+      if response["ResultCode"] == "Success"
+        AVALARA_TRANSACTION_LOGGER.info("Address Validation Success")
+      else
+        AVALARA_TRANSACTION_LOGGER.info("Address Validation Failed")
+      end
+
       shipping_address = Hash.new
 
       shipping_address[:AddressCode] = "Dest"
