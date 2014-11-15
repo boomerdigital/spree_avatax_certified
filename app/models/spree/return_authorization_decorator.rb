@@ -32,6 +32,7 @@ Spree::ReturnAuthorization.class_eval do
       RETURN_AUTHORIZATION_LOGGER.debug @rtn_tax
       Spree::Adjustment.create(amount: @rtn_tax, label: 'Tax',adjustable: order, source: self.avalara_transaction, mandatory: true, eligible: true)
       order.reload.update!
+      order.adjustments.avalara_tax.last
     rescue => e
       RETURN_AUTHORIZATION_LOGGER.debug e
       RETURN_AUTHORIZATION_LOGGER.debug 'error in a avalara capture return_authorization'
@@ -50,6 +51,7 @@ Spree::ReturnAuthorization.class_eval do
       RETURN_AUTHORIZATION_LOGGER.debug @rtn_tax
       Spree::Adjustment.create(amount: @rtn_tax, label: 'Tax',adjustable: order, source: self.avalara_transaction, mandatory: true, eligible: true)
       order.reload.update!
+      order.adjustments.avalara_tax.last
     rescue => e
       RETURN_AUTHORIZATION_LOGGER.debug e
       RETURN_AUTHORIZATION_LOGGER.debug 'error in a avalara capture return_authorization'
