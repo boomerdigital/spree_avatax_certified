@@ -40,6 +40,7 @@ Spree::Order.class_eval do
         adjustment.eligible = true
         adjustment.amount = @rtn_tax
       end
+      self.reload.update!
     rescue => e
       AVALARA_ORDER_LOGGER.debug e
       AVALARA_ORDER_LOGGER.debug 'error in a avalara capture'
@@ -64,6 +65,7 @@ Spree::Order.class_eval do
         adjustment.eligible = true
         adjustment.amount = @rtn_tax
       end
+      self.reload.update!
     rescue => e
       AVALARA_ORDER_LOGGER.debug e
       AVALARA_ORDER_LOGGER.debug 'error in a avalara capture finalize'
