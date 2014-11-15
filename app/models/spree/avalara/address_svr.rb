@@ -6,26 +6,28 @@ require 'base64'
 class AddressSvc
 
   def validate(address)
-    return address if address.nil?
+    if address_validation_enabled?
+      return address if address.nil?
 
-    address_hash = {
-      Line1: address[:address1],
-      Line2: address[:address2],
-      City: address[:city],
-      Region: Spree::State.find(address[:state_id]).abbr,
-      Country: Spree::Country.find(address[:country_id]).iso,
-      PostalCode: address[:zipcode]
-    }
+      address_hash = {
+        Line1: address[:address1],
+        Line2: address[:address2],
+        City: address[:city],
+        Region: Spree::State.find(address[:state_id]).abbr,
+        Country: Spree::Country.find(address[:country_id]).iso,
+        PostalCode: address[:zipcode]
+      }
 
-    encodedquery = Addressable::URI.new
-    encodedquery.query_values = address_hash
-    uri = URI(service_url + encodedquery.query)
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      encodedquery = Addressable::URI.new
+      encodedquery.query_values = address_hash
+      uri = URI(service_url + encodedquery.query)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-    res = http.get(uri.request_uri, 'Authorization' => credential)
-    JSON.parse(res.body)
+      res = http.get(uri.request_uri, 'Authorization' => credential)
+      JSON.parse(res.body)
+    end
   rescue => e
     'error in address validation'
   end
@@ -47,5 +49,9 @@ class AddressSvc
 
   def account_number
     Spree::Config.avatax_account
+  end
+
+  def address_validation_enabled?
+    Spree::Config.avatax_address_validation
   end
 end
