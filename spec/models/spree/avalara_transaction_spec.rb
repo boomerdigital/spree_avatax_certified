@@ -8,7 +8,7 @@ describe Spree::AvalaraTransaction, :type => :model do
   it { should have_db_index :order_id }
 
   before :each do
-  MyConfigPreferences.set_preferences
+    MyConfigPreferences.set_preferences
     stock_location = FactoryGirl.create(:stock_location)
     @order = FactoryGirl.create(:order)
     line_item = FactoryGirl.create(:line_item)
@@ -50,16 +50,11 @@ describe Spree::AvalaraTransaction, :type => :model do
       @order.avalara_capture
       expect(@order.avalara_transaction.commit_avatax_final(@order.line_items, @order, @order.number.to_s + ":" + @order.id.to_s, @order.completed_at)).to eq("0.4")
     end
-    it "should fail to commit to avatax if settings are false"
-     do
+    it "should fail to commit to avatax if settings are false" do
       Spree::Config.avatax_document_commit = false
 
       @order.avalara_capture
-      expect(@order.avalara_transaction.commit_avatax_final(@order.line_items, @order, @order.number.to_s + ":" + @order.id.to_s, @order.completed_at)).to eq("")
-     end
-  end
-
-  describe "#update_adjustment" do
-
+      expect(@order.avalara_transaction.commit_avatax_final(@order.line_items, @order, @order.number.to_s + ":" + @order.id.to_s, @order.completed_at)).to eq("avalara document committing disabled")
+    end
   end
 end

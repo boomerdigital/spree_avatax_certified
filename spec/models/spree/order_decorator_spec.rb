@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe Spree::Order, type: :model do
-  MyConfigPreferences.set_preferences
 
   it { should have_one :avalara_transaction }
 
   let(:order_with_line_items) {FactoryGirl.create(:order_with_line_items)}
   before :each do
+    MyConfigPreferences.set_preferences
     stock_location = FactoryGirl.create(:stock_location)
     @order = FactoryGirl.create(:order)
     line_item = FactoryGirl.create(:line_item)
