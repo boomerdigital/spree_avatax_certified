@@ -27,6 +27,7 @@ Spree::ReturnAuthorization.class_eval do
       create_avalara_transaction_return_auth
 
       order.adjustments.avalara_tax.destroy_all
+
       @rtn_tax = self.avalara_transaction.commit_avatax(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"))
 
       RETURN_AUTHORIZATION_LOGGER.info 'tax amount'
@@ -47,6 +48,7 @@ Spree::ReturnAuthorization.class_eval do
       create_avalara_transaction_return_auth
 
       order.adjustments.avalara_tax.destroy_all
+
       @rtn_tax = self.avalara_transaction.commit_avatax_final(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"))
       RETURN_AUTHORIZATION_LOGGER.info 'tax amount'
       RETURN_AUTHORIZATION_LOGGER.debug @rtn_tax
