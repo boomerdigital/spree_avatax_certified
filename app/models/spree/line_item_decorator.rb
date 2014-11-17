@@ -1,5 +1,4 @@
 Spree::LineItem.class_eval do
-  # belongs_to :avalara_transaction, class_name: 'Spree::AvalaraTransaction'
 
   def to_hash
     {
