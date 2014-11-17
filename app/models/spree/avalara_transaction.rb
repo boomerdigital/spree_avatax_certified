@@ -28,19 +28,21 @@ module Spree
     end
 
     def commit_avatax_final(items, order_details,doc_id=nil,invoice_dt=nil)
-      post_order_to_avalara(true, items, order_details,doc_id,invoice_dt)
+      if document_committing_enabled?
+        post_order_to_avalara(true, items, order_details,doc_id,invoice_dt)
+      end
     end
 
     def update_adjustment(adjustment, source)
       AVALARA_TRANSACTION_LOGGER.info("update adjustment call")
 
       if adjustment.state != "closed"
-        post_order_to_avalara(false, order.line_items, order)
+        commit_avatax(order.line_items, order)
         adjustment.update_column(:amount, rnt_tax)
       end
 
       if order.complete?
-        post_order_to_avalara(true, order.line_items, order)
+        commit_avatax_final(order.line_items, order)
         adjustment.update_column(:amount, rnt_tax)
         adjustment.update_column(:state, "closed")
       end
@@ -50,7 +52,7 @@ module Spree
       end
 
       if adjustment.state == "closed" && order.adjustments.return_authorization.exists?
-        post_order_to_avalara(false, order.line_items, order, order.number.to_s + ":" + order.adjustments.return_authorization.first.id.to_s, order.completed_at)
+        commit_avatax(order.line_items, order, order.number.to_s + ":" + order.adjustments.return_authorization.first.id.to_s, order.completed_at)
 
         if rnt_tax != "0.00"
           adjustment.update_column(:amount, rnt_tax)
@@ -61,7 +63,7 @@ module Spree
       if adjustment.state == "closed" && order.adjustments.return_authorization.exists?
         order.adjustments.return_authorization.each do |adj|
           if adj.state == "closed" || adj.state == "closed"
-            post_order_to_avalara(true, order.line_items, order, order.number.to_s + ":"  + adj.id.to_s, order.completed_at )
+            commit_avatax_final(order.line_items, order, order.number.to_s + ":"  + adj.id.to_s, order.completed_at )
           end
         end
 
