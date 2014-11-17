@@ -16,6 +16,7 @@ Spree::ReturnAuthorization.class_eval do
 
   def avalara_lookup
     RETURN_AUTHORIZATION_LOGGER.debug 'avalara lookup return_authorization'
+    create_avalara_transaction_return_auth
     :lookup_avatax
   end
 
@@ -23,7 +24,7 @@ Spree::ReturnAuthorization.class_eval do
     RETURN_AUTHORIZATION_LOGGER.debug 'avalara capture return_authorization'
     begin
 
-      Spree::AvalaraTransaction.create(order_id: order.id, return_authorization_id: self.id)
+      create_avalara_transaction_return_auth
 
       order.adjustments.avalara_tax.destroy_all
       @rtn_tax = self.avalara_transaction.commit_avatax(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"))
@@ -43,7 +44,7 @@ Spree::ReturnAuthorization.class_eval do
     RETURN_AUTHORIZATION_LOGGER.debug 'avalara capture return_authorization avalara_capture_finalize'
 
     begin
-      Spree::AvalaraTransaction.create(order_id: order.id, return_authorization_id: self.id)
+      create_avalara_transaction_return_auth
 
       order.adjustments.avalara_tax.destroy_all
       @rtn_tax = self.avalara_transaction.commit_avatax_final(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"))
@@ -56,6 +57,10 @@ Spree::ReturnAuthorization.class_eval do
       RETURN_AUTHORIZATION_LOGGER.debug e
       RETURN_AUTHORIZATION_LOGGER.debug 'error in a avalara capture return_authorization'
     end
+  end
+
+  def create_avalara_transaction_return_auth
+    Spree::AvalaraTransaction.create(order_id: order.id, return_authorization_id: self.id)
   end
 
   def assign_avalara_transaction
