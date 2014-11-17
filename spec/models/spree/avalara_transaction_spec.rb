@@ -50,5 +50,16 @@ describe Spree::AvalaraTransaction, :type => :model do
       @order.avalara_capture
       expect(@order.avalara_transaction.commit_avatax_final(@order.line_items, @order, @order.number.to_s + ":" + @order.id.to_s, @order.completed_at)).to eq("0.4")
     end
+    it "should fail to commit to avatax if settings are false"
+     do
+      Spree::Config.avatax_document_commit = false
+
+      @order.avalara_capture
+      expect(@order.avalara_transaction.commit_avatax_final(@order.line_items, @order, @order.number.to_s + ":" + @order.id.to_s, @order.completed_at)).to eq("")
+     end
+  end
+
+  describe "#update_adjustment" do
+
   end
 end

@@ -4,6 +4,8 @@ describe Spree::ReturnAuthorization, type: :model do
   MyConfigPreferences.set_preferences
 
   it { should have_one :avalara_transaction }
+  let(:user) { FactoryGirl.create(:user) }
+  let(:address) { FactoryGirl.create(:address) }
 
   before :each do
     @stock_location = FactoryGirl.create(:stock_location)
