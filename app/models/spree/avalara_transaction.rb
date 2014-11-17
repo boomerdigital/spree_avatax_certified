@@ -283,15 +283,14 @@ module Spree
           tax_line_items<<line
         end
 
-        order_details.adjustments.return_authorization.each do |adj|
+        order_details.return_authorizations.each do |return_auth|
 
           line = Hash.new
           i += 1
-
           line[:LineNo] = i
           line[:ItemCode] = "Return Authorization"
           line[:Qty] = "0"
-          line[:Amount] = adj.amount.to_f
+          line[:Amount] = return_auth.amount.to_f
           line[:OriginCode] = "Orig"
           line[:DestinationCode] = "Dest"
 
@@ -299,7 +298,7 @@ module Spree
             line[:CustomerUsageType] = myusecode.use_code || ""
           end
 
-          line[:Description] = adj.label
+          line[:Description] = return_auth.reason
           line[:TaxCode] = ""
 
           AVALARA_TRANSACTION_LOGGER.debug line.to_xml
