@@ -370,5 +370,8 @@ module Spree
       end
       return @myrtntax
     end
+    def document_committing_enabled?
+      Spree::Config.avatax_document_commit
+    end
   end
 end

@@ -75,6 +75,14 @@
       </p>
     </fieldset>
 
+        <fieldset>
+      <legend><%= t('avatax_document_committing') %></legend>
+      <p>
+        <label><%= t('enable_avatax_document_committing') %></label><br />
+        <%= check_box_tag('settings[avatax_document_commit]','yes' , Spree::Config.avatax_tax_calculation, :class => 'avatax') %>
+      </p>
+    </fieldset>
+
     <fieldset>
       <legend><%= t('business_address') %></legend>
       <p>
