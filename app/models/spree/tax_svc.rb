@@ -7,39 +7,45 @@ require 'logging'
 
 class TaxSvc
   def get_tax(request_hash)
-    log(__method__, request_hash)
-    RestClient.log = logger.logger
-    res = response("get", request_hash)
-    logger.info 'RestClient call'
-    logger.debug res
-    JSON.parse(res.body)
+    if tax_calculation_enabled?
+      log(__method__, request_hash)
+      RestClient.log = logger.logger
+      res = response("get", request_hash)
+      logger.info 'RestClient call'
+      logger.debug res
+      JSON.parse(res.body)
+    end
   rescue => e
     logger.info 'Rest Client Error'
     logger.debug e, 'error in Tax'
   end
 
   def cancel_tax(request_hash)
-    log(__method__, request_hash)
-    res = response("cancel", request_hash)
-    logger.debug res
-    JSON.parse(res.body)["CancelTaxResult"]
+    if tax_calculation_enabled?
+      log(__method__, request_hash)
+      res = response("cancel", request_hash)
+      logger.debug res
+      JSON.parse(res.body)["CancelTaxResult"]
+    end
   rescue => e
     logger.debug e, 'error in Cancel Tax'
   end
 
   def estimate_tax(coordinates, sale_amount)
-    log(__method__)
+    if tax_calculation_enabled?
+      log(__method__)
 
-    return nil if coordinates.nil?
-    sale_amount = 0 if sale_amount.nil?
+      return nil if coordinates.nil?
+      sale_amount = 0 if sale_amount.nil?
 
-    uri = URI(service_url + coordinates[:latitude].to_s + "," + coordinates[:longitude].to_s + "/get?saleamount=" + sale_amount.to_s )
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      uri = URI(service_url + coordinates[:latitude].to_s + "," + coordinates[:longitude].to_s + "/get?saleamount=" + sale_amount.to_s )
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-    res = http.get(uri.request_uri, 'Authorization' => credential, 'Content-Type' => 'application/json')
-    JSON.parse(res.body)
+      res = http.get(uri.request_uri, 'Authorization' => credential, 'Content-Type' => 'application/json')
+      JSON.parse(res.body)
+    end
   rescue => e
     logger.debug e, 'error in Estimate Tax'
   end
@@ -56,6 +62,10 @@ class TaxSvc
   end
 
   private
+
+  def tax_calculation_enabled?
+    Spree::Config.avatax_tax_calculation
+  end
 
   def credential
     'Basic ' + Base64.encode64(account_number + ":" + license_key)
