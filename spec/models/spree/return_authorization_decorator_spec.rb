@@ -17,17 +17,18 @@ describe Spree::ReturnAuthorization, type: :model do
     @return_authorization = Spree::ReturnAuthorization.create(:order => @order, :stock_location_id => @stock_location.id)
   end
 
-  describe "#authorized" do
-    it "returns inital state of authorized" do
-      expect(@return_authorization.state).to eq("authorized")
-    end
-  end
   describe "#avalara_eligible" do
     it "should return true" do
       expect(@order.avalara_transaction.return_authorization.avalara_eligible).to eq(true)
     end
   end
   describe "#avalara_lookup" do
+    it "should return lookup_avatax" do
+      expect(@order.avalara_transaction.return_authorization.avalara_lookup).to eq(:lookup_avatax)
+    end
+    it "creates new avalara_transaction" do
+      expect{@order.avalara_transaction.return_authorization.avalara_lookup}.to change{Spree::AvalaraTransaction.count}.by(1)
+    end
   end
   describe "#avalara_capture" do
     it "should response with Spree::Adjustment object" do
@@ -45,15 +46,18 @@ describe Spree::ReturnAuthorization, type: :model do
       expect{@order.avalara_transaction.return_authorization.avalara_capture_finalize}.to change{Spree::AvalaraTransaction.count}.by(1)
     end
   end
+
+  describe "#authorized" do
+    it "returns inital state of authorized" do
+      expect(@return_authorization.state).to eq("authorized")
+    end
+  end
+
   context "received" do
     before do
       @return_authorization.inventory_units << @inventory_unit
       @return_authorization.state = "authorized"
-      allow(@return_authorization).to receive_messages(:stock_location_id => @inventory_unit.shipment.stock_location.id)
-      allow(Spree::Adjustment).to receive(:create)
       allow(@order).to receive(:update!)
-    end
-    it "should receive avalara_capture_finalize" do
     end
     it "should update order state" do
       @return_authorization.receive!
