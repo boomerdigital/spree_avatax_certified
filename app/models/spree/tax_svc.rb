@@ -18,6 +18,7 @@ class TaxSvc
   rescue => e
     logger.info 'Rest Client Error'
     logger.debug e, 'error in Tax'
+    'error in Tax'
   end
 
   def cancel_tax(request_hash)
@@ -29,6 +30,7 @@ class TaxSvc
     end
   rescue => e
     logger.debug e, 'error in Cancel Tax'
+    'error in Cancel Tax'
   end
 
   def estimate_tax(coordinates, sale_amount)
@@ -48,6 +50,7 @@ class TaxSvc
     end
   rescue => e
     logger.debug e, 'error in Estimate Tax'
+    'error in Estimate Tax'
   end
 
   def ping
