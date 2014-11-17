@@ -314,10 +314,12 @@ module Spree
 
       response = address_validator.validate(order_details.ship_address)
 
-      if response["ResultCode"] == "Success"
-        AVALARA_TRANSACTION_LOGGER.info("Address Validation Success")
-      else
-        AVALARA_TRANSACTION_LOGGER.info("Address Validation Failed")
+      if response != nil
+        if response["ResultCode"] == "Success"
+          AVALARA_TRANSACTION_LOGGER.info("Address Validation Success")
+        else
+          AVALARA_TRANSACTION_LOGGER.info("Address Validation Failed")
+        end
       end
 
       shipping_address = Hash.new
