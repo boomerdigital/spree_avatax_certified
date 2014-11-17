@@ -27,6 +27,8 @@ class AddressSvc
 
       res = http.get(uri.request_uri, 'Authorization' => credential)
       JSON.parse(res.body)
+    else
+      "Address validation disabled"
     end
   rescue => e
     'error in address validation'

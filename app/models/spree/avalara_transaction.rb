@@ -30,6 +30,9 @@ module Spree
     def commit_avatax_final(items, order_details,doc_id=nil,invoice_dt=nil)
       if document_committing_enabled?
         post_order_to_avalara(true, items, order_details,doc_id,invoice_dt)
+      else
+        AVALARA_TRANSACTION_LOGGER.debug "avalara document committing disabled"
+        "avalara document committing disabled"
       end
     end
 
