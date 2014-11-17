@@ -73,4 +73,12 @@ Spree::Order.class_eval do
       AVALARA_ORDER_LOGGER.debug 'error in a avalara capture finalize'
     end
   end
+
+  def display_avalara_tax_total
+    avatax_tax = BigDecimal.new("0")
+    self.adjustments.avalara_tax.each do |tax|
+      avatax_tax += tax.amount
+    end
+    Spree::Money.new(avatax_tax, { currency: currency })
+  end
 end
