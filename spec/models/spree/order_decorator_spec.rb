@@ -19,6 +19,7 @@ describe Spree::Order, type: :model do
       expect(@order.avalara_eligible).to eq(true)
     end
   end
+
   describe "#avalara_lookup" do
     it "should return lookup_avatax" do
       expect(@order.avalara_lookup).to eq(:lookup_avatax)
@@ -27,6 +28,7 @@ describe Spree::Order, type: :model do
       expect{@order.avalara_lookup}.to change{Spree::AvalaraTransaction.count}.by(1)
     end
   end
+
   describe "#avalara_capture" do
     it "should response with Spree::Adjustment object" do
       expect(@order.avalara_capture).to be_kind_of(Spree::Adjustment)
@@ -35,6 +37,7 @@ describe Spree::Order, type: :model do
       expect{@order.avalara_capture}.to change{Spree::AvalaraTransaction.count}.by(1)
     end
   end
+
   describe "#avalara_capture_finalize" do
     it "should response with Spree::Adjustment object" do
       expect(@order.avalara_capture_finalize).to be_kind_of(Spree::Adjustment)
@@ -43,6 +46,13 @@ describe Spree::Order, type: :model do
       expect{@order.avalara_capture_finalize}.to change{Spree::AvalaraTransaction.count}.by(1)
     end
   end
+
+  describe "#display_avalara_tax_total" do
+    it "is Spree::Money" do
+      expect(@order.display_avalara_tax_total).to be_kind_of(Spree::Money)
+    end
+  end
+
   context "payment" do
     before do
       order_with_line_items.state = 'delivery'
