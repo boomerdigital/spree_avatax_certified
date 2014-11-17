@@ -131,7 +131,7 @@ module Spree
         if order_details.user_id != nil
           myuserid = order_details.user_id
           AVALARA_TRANSACTION_LOGGER.debug myuserid
-          myuser = Spree::User.find(myuserid)
+          myuser = Spree::LegacyUser.find(myuserid)
           myusecode = Spree::AvalaraEntityUseCode.where(:id => myuser.avalara_entity_use_code_id).first
         end
       rescue => e
