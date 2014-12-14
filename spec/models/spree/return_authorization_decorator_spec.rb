@@ -9,8 +9,12 @@ describe Spree::ReturnAuthorization, type: :model do
   before :each do
     MyConfigPreferences.set_preferences
     @stock_location = FactoryGirl.create(:stock_location)
-    @order = FactoryGirl.create(:shipped_order)
-    @order.shipment_state = "shipped"
+    @order = FactoryGirl.create(:completed_order_with_totals)
+    @order.shipments.each do |shipment|
+      shipment.inventory_units.update_all state: 'shipped'
+      shipment.update_column('state', 'shipped')
+    end
+    @order.reload
     @order.line_items.each do |line_item|
       line_item.tax_category.update_attributes(name: "Clothing", description: "PC030000")
     end
