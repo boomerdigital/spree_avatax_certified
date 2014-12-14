@@ -5,10 +5,7 @@ Spree::ReturnAuthorization.class_eval do
   RETURN_AUTHORIZATION_LOGGER.info('start ReturnAuthorization processing')
 
   has_one :avalara_transaction, dependent: :destroy
-  after_create :assign_avalara_transaction
-  self.state_machine.after_transition :to => :authorized,
-                                      :do => :avalara_capture,
-                                      :if => :avalara_eligible
+  after_save :assign_avalara_transaction
   self.state_machine.after_transition :to => :received,
                                       :do => :avalara_capture_finalize,
                                       :if => :avalara_eligible

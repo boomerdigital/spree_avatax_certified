@@ -71,7 +71,8 @@ describe Spree::ReturnAuthorization, type: :model do
     end
     it "should receive avalara_capture_finalize" do
       @order.avalara_transaction.return_authorization.add_variant(@variant.id, 1)
-      expect(@order.avalara_transaction.return_authorization.receive!).to receive(:avalara_capture_finalize)
+      @order.avalara_transaction.return_authorization.receive!
+      expect(@order.avalara_transaction.return_authorization).to receive(:avalara_capture_finalize)
     end
 
     it "should mark all inventory units are returned" do
