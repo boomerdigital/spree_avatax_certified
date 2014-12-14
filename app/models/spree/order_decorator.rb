@@ -39,6 +39,7 @@ Spree::Order.class_eval do
         adjustment.mandatory = true
         adjustment.eligible = true
         adjustment.amount = @rtn_tax
+        adjustment.order = self
       end
       self.reload.update!
       adjustments.avalara_tax.last
@@ -65,6 +66,7 @@ Spree::Order.class_eval do
         adjustment.mandatory = true
         adjustment.eligible = true
         adjustment.amount = @rtn_tax
+        adjustment.order = self
       end
       self.reload.update!
       adjustments.avalara_tax.last
