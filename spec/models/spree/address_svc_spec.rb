@@ -6,7 +6,9 @@ describe AddressSvc, :type => :model do
   before do
     @address_svc = AddressSvc.new
     Spree::Config.avatax_address_validation = true
-    @real_address = Spree::Address.create(firstname: "Allison", lastname: "Reilly", address1: "220 Paul W Bryant Dr", city: "Tuscaloosa", zipcode: "35401", phone: "9733492462", state_name: "Alabama", state_id: 1, country: Spree::Country.first)
+    Spree::Config.avatax_address_validation = true    
+    @real_address = address.clone
+    @real_address.update_attributes(city: 'Tuscaloosa', address1: '220 Paul W Bryant Dr')
   end
 
  describe "#validate" do
