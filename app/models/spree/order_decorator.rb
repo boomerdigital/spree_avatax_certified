@@ -1,7 +1,7 @@
 require 'logger'
-AVALARA_ORDER_LOGGER = AvataxHelper::AvataxLog.new("avalara_order", "order class", 'start order processing')
 
 Spree::Order.class_eval do
+AVALARA_ORDER_LOGGER = AvataxHelper::AvataxLog.new("avalara_order", "order class", 'start order processing')
 
   has_one :avalara_transaction, dependent: :destroy
   self.state_machine.after_transition :to => :payment,
