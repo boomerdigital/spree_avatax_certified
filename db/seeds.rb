@@ -17,7 +17,8 @@ use_codes = {
   "R" => "Non-resident (Canada only)"
 }
 
-res = ask 'Would you like to seed use codes? [Y/n]'
+res = defined?(ask) ? ask('Would you like to seed use codes? [Y/n]') : ''
+
 if res == '' || res.downcase == 'y'
 
   unless Spree::AvalaraEntityUseCode.count >= 16
