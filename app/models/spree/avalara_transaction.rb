@@ -6,7 +6,7 @@ module Spree
     AVALARA_TRANSACTION_LOGGER = AvataxHelper::AvataxLog.new("post_order_to_avalara", __FILE__)
 
     belongs_to :order
-    belongs_to :return_authorization
+    belongs_to :reimbursement
     validates :order, presence: true
     has_one :adjustment, as: :source
 
@@ -27,7 +27,7 @@ module Spree
       post_order_to_avalara(false, items, order_details,doc_id,invoice_dt)
     end
 
-    def commit_avatax_final(items, order_details,doc_id=nil,invoice_dt=nil)
+    def commit_avatax_final(items, order_details,doc_id=nil,invoice_dt=nil)      
       if document_committing_enabled?
         post_order_to_avalara(true, items, order_details,doc_id,invoice_dt)
       else
@@ -134,7 +134,7 @@ module Spree
         if order_details.user_id != nil
           myuserid = order_details.user_id
           AVALARA_TRANSACTION_LOGGER.debug myuserid
-          myuser = Spree::User.find(myuserid)
+          myuser = Spree::LegacyUser.find(myuserid)
           myusecode = Spree::AvalaraEntityUseCode.where(:id => myuser.avalara_entity_use_code_id).first
         end
       rescue => e
@@ -168,7 +168,7 @@ module Spree
 
           line[:Description] = line_item.name
           if line_item.tax_category.name
-            line[:TaxCode] = line_item.tax_category.description || "P0000000"
+            line[:TaxCode] = line_item.tax_category.tax_code || "P0000000"
           end
 
           AVALARA_TRANSACTION_LOGGER.info('about to check for shipped from')
@@ -293,7 +293,7 @@ module Spree
           line[:LineNo] = i
           line[:ItemCode] = "Return Authorization"
           line[:Qty] = "0"
-          line[:Amount] = return_auth.amount.to_f
+          line[:Amount] = return_auth.refundable_amount.to_f
           line[:OriginCode] = "Orig"
           line[:DestinationCode] = "Dest"
 
