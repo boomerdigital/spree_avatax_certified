@@ -385,7 +385,8 @@ module Spree
         :Addresses => addresses,
         :Lines => tax_line_items
       }
-      unless taxoverride.empty?
+
+      unless taxoverride
         gettaxes[:TaxOverride] = taxoverride
       end
       AVALARA_TRANSACTION_LOGGER.debug gettaxes
