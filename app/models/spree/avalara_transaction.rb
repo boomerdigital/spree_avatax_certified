@@ -159,7 +159,7 @@ module Spree
           line[:LineNo] = i
           line[:ItemCode] = line_item.variant.sku
           line[:Qty] = line_item.quantity
-          if invoice_detail == "ReturnInvoice" || "ReturnOrder"
+          if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
             line[:Amount] = -line_item.total.to_f
           else
             line[:Amount] = line_item.total.to_f
@@ -256,7 +256,7 @@ module Spree
           line[:LineNo] = i
           line[:ItemCode] = "Shipping"
           line[:Qty] = "0"
-          if invoice_detail == "ReturnInvoice" || "ReturnOrder"
+          if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
             line[:Amount] = -adj.amount.to_f
           else
             line[:Amount] = adj.amount.to_f
@@ -284,7 +284,7 @@ module Spree
           line[:LineNo] = i
           line[:ItemCode] = "Promotion"
           line[:Qty] = "0"
-          if invoice_detail == "ReturnInvoice" || "ReturnOrder"
+          if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
             line[:Amount] = -adj.amount.to_f
           else
             line[:Amount] = adj.amount.to_f
@@ -311,7 +311,7 @@ module Spree
           line[:LineNo] = i
           line[:ItemCode] = "Reimbursement"
           line[:Qty] = "0"
-          if invoice_detail == "ReturnInvoice" || "ReturnOrder"
+          if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
             line[:Amount] = -reimbursement.total.to_f
           else
             line[:Amount] = reimbursement.total.to_f
@@ -361,7 +361,7 @@ module Spree
 
       addresses<<shipping_address
       addresses<<orig_address
-      if invoice_detail == "ReturnInvoice" || "ReturnOrder"
+      if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
       taxoverride = Hash.new
       taxoverride[:TaxOverrideType] = "TaxDate"
       taxoverride[:Reason] = "Adjustment for return"
@@ -383,9 +383,11 @@ module Spree
         :Commit => commit,
         :DocType => invoice_detail ? invoice_detail : "SalesInvoice",
         :Addresses => addresses,
-        :Lines => tax_line_items,
-        :TaxOverride => taxoverride ? taxoverride : ""
+        :Lines => tax_line_items
       }
+      unless taxoverride.empty?
+        gettaxes[:TaxOverride] = taxoverride
+      end
       AVALARA_TRANSACTION_LOGGER.debug gettaxes
 
       mytax = TaxSvc.new
