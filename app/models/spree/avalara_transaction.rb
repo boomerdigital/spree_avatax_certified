@@ -27,7 +27,7 @@ module Spree
       post_order_to_avalara(false, items, order_details,doc_id,invoice_dt)
     end
 
-    def commit_avatax_final(items, order_details,doc_id=nil,invoice_dt=nil)      
+    def commit_avatax_final(items, order_details,doc_id=nil,invoice_dt=nil)
       if document_committing_enabled?
         post_order_to_avalara(true, items, order_details,doc_id,invoice_dt)
       else
@@ -54,8 +54,8 @@ module Spree
         cancel_order_to_avalara("SalesInvoice", "DocVoided", order)
       end
 
-      if adjustment.state == "closed" && order.adjustments.return_authorization.exists?
-        commit_avatax(order.line_items, order, order.number.to_s + ":" + order.adjustments.return_authorization.first.id.to_s, order.completed_at)
+      if adjustment.state == "closed" && order.adjustments.reimbursement.exists?
+        commit_avatax(order.line_items, order, order.number.to_s + ":" + order.adjustments.reimbursement.first.id.to_s, order.completed_at)
 
         if rnt_tax != "0.00"
           adjustment.update_column(:amount, rnt_tax)
@@ -63,8 +63,8 @@ module Spree
         end
       end
 
-      if adjustment.state == "closed" && order.adjustments.return_authorization.exists?
-        order.adjustments.return_authorization.each do |adj|
+      if adjustment.state == "closed" && order.adjustments.reimbursement.exists?
+        order.adjustments.reimbursement.each do |adj|
           if adj.state == "closed" || adj.state == "closed"
             commit_avatax_final(order.line_items, order, order.number.to_s + ":"  + adj.id.to_s, order.completed_at )
           end
@@ -286,14 +286,14 @@ module Spree
           tax_line_items<<line
         end
 
-        order_details.return_authorizations.each do |return_auth|
+        order_details.reimbursements.each do |reimbursement|
 
           line = Hash.new
           i += 1
           line[:LineNo] = i
-          line[:ItemCode] = "Return Authorization"
+          line[:ItemCode] = "Reimbursement"
           line[:Qty] = "0"
-          line[:Amount] = return_auth.refundable_amount.to_f
+          line[:Amount] = reimbursement.total.to_f
           line[:OriginCode] = "Orig"
           line[:DestinationCode] = "Dest"
 
@@ -301,7 +301,7 @@ module Spree
             line[:CustomerUsageType] = myusecode.use_code || ""
           end
 
-          line[:Description] = return_auth.reason
+          line[:Description] = customer_return.return_authorizations.first.reason.name
           line[:TaxCode] = ""
 
           AVALARA_TRANSACTION_LOGGER.debug line.to_xml
