@@ -141,7 +141,7 @@ module Spree
           myuserid = order_details.user_id
           AVALARA_TRANSACTION_LOGGER.debug myuserid
           myuser = Spree::LegacyUser.find(myuserid)
-          myusecode = Spree::AvalaraEntityUseCode.where(:id => myuser.avalara_entity_use_code_id).first
+          myusecode = Spree::AvalaraEntityUseCode.find(myuser.avalara_entity_use_code_id)
         end
       rescue => e
         AVALARA_TRANSACTION_LOGGER.debug e
@@ -373,7 +373,7 @@ module Spree
         :DocDate => org_ord_date ? org_ord_date : Date.current.to_formatted_s(:db),
 
         :CompanyCode => Spree::Config.avatax_company_code,
-        :CustomerUsageType => myusecode ? myusecode.usecode : "",
+        :CustomerUsageType => myusecode ? myusecode.use_code : "",
         :ExemptionNo => myuser ? myuser.exemption_number : "",
         :Client =>  AVATAX_CLIENT_VERSION || "SpreeExtV2.3",
         :DocCode => doc_code ? doc_code : order_details.number,
