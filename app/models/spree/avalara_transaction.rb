@@ -36,6 +36,19 @@ module Spree
       end
     end
 
+    def check_status(order)
+
+      if order.complete?
+        commit_avatax_final(order.line_items, order)
+        adjustment.update_column(:amount, rnt_tax)
+        adjustment.update_column(:state, "closed")
+      end
+
+      if order.state == 'canceled'
+        cancel_order_to_avalara("SalesInvoice", "DocVoided", order)
+      end
+    end
+
     def update_adjustment(adjustment, source)
       AVALARA_TRANSACTION_LOGGER.info("update adjustment call")
 

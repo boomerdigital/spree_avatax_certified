@@ -10,6 +10,9 @@ Spree::Order.class_eval do
   self.state_machine.after_transition :to => :complete,
                                       :do => :avalara_capture_finalize,
                                       :if => :avalara_eligible
+ self.state_machine.after_transition :to => :canceled,
+                                      :do => :cancel_status,
+                                      :if => :avalara_eligible
 
   def avalara_eligible
     Spree::Config.avatax_iseligible
@@ -19,6 +22,10 @@ Spree::Order.class_eval do
     logger.debug 'avalara lookup'
     create_avalara_transaction
     :lookup_avatax
+  end
+
+  def cancel_status
+    self.avalara_transaction.check_status(self)
   end
 
   def avalara_capture
