@@ -22,16 +22,15 @@ Spree::Reimbursement.class_eval do
   def avalara_capture
     REIMBURSEMENT_LOGGER.debug 'avalara capture reimbursement'
     begin
-
       create_avalara_transaction_return_auth
 
       order.adjustments.avalara_tax.destroy_all
 
-      @rtn_tax = self.avalara_transaction.commit_avatax(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"))
+      @rtn_tax = self.avalara_transaction.commit_avatax(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"), "ReturnOrder")
 
       REIMBURSEMENT_LOGGER.info 'tax amount'
       REIMBURSEMENT_LOGGER.debug @rtn_tax
-      Spree::Adjustment.create(amount: @rtn_tax, label: 'Tax',adjustable: order, source: self, mandatory: true, eligible: true, order: order)
+      Spree::Adjustment.create(amount: @rtn_tax, label: 'Tax',adjustable: order, source: self.avalara_transaction, mandatory: true, eligible: true, order: order)
       order.reload.update!
       order.adjustments.avalara_tax.last
     rescue => e
@@ -48,10 +47,10 @@ Spree::Reimbursement.class_eval do
 
       order.adjustments.avalara_tax.destroy_all
 
-      @rtn_tax = self.avalara_transaction.commit_avatax_final(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"))
+      @rtn_tax = self.avalara_transaction.commit_avatax_final(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"), "ReturnInvoice")
       REIMBURSEMENT_LOGGER.info 'tax amount'
       REIMBURSEMENT_LOGGER.debug @rtn_tax
-      Spree::Adjustment.create(amount: @rtn_tax, label: 'Tax',adjustable: order, source: self, mandatory: true, eligible: true, order: order)
+      Spree::Adjustment.create(amount: @rtn_tax, label: 'Tax',adjustable: order, source: self.avalara_transaction, mandatory: true, eligible: true, order: order)
 
       order.reload.update!
       order.adjustments.avalara_tax.last

@@ -72,7 +72,7 @@ describe Spree::Reimbursement, type: :model do
     end
     it "should receive avalara_capture_finalize" do
       expect(@order.avalara_transaction.reimbursement).to receive(:avalara_capture_finalize)
-      @order.avalara_transaction.reimbursement.perform!      
+      @order.avalara_transaction.reimbursement.perform!
     end
   end
 end

@@ -23,13 +23,13 @@ module Spree
       post_order_to_avalara(false, order_details.line_items, order_details)
     end
 
-    def commit_avatax(items, order_details,doc_id=nil,invoice_dt=nil)
-      post_order_to_avalara(false, items, order_details,doc_id,invoice_dt)
+    def commit_avatax(items, order_details,doc_id=nil, org_ord_date=nil, invoice_dt=nil)
+      post_order_to_avalara(false, items, order_details, doc_id, org_ord_date, invoice_dt)
     end
 
-    def commit_avatax_final(items, order_details,doc_id=nil,invoice_dt=nil)
+    def commit_avatax_final(items, order_details,doc_id=nil, org_ord_date=nil, invoice_dt=nil)
       if document_committing_enabled?
-        post_order_to_avalara(true, items, order_details,doc_id,invoice_dt)
+        post_order_to_avalara(true, items, order_details,doc_id, org_ord_date,invoice_dt)
       else
         AVALARA_TRANSACTION_LOGGER.debug "avalara document committing disabled"
         "avalara document committing disabled"
@@ -121,7 +121,7 @@ module Spree
       end
     end
 
-    def post_order_to_avalara(commit=false, orderitems=nil, order_details=nil, doc_code=nil, org_ord_date=nil)
+    def post_order_to_avalara(commit=false, orderitems=nil, order_details=nil, doc_code=nil, org_ord_date=nil, invoice_detail=nil)
       AVALARA_TRANSACTION_LOGGER.info("post order to avalara")
       address_validator = AddressSvc.new
       tax_line_items = Array.new
@@ -159,7 +159,11 @@ module Spree
           line[:LineNo] = i
           line[:ItemCode] = line_item.variant.sku
           line[:Qty] = line_item.quantity
-          line[:Amount] = line_item.total.to_f
+          if invoice_detail == "ReturnInvoice" || "ReturnOrder"
+            line[:Amount] = -line_item.total.to_f
+          else
+            line[:Amount] = line_item.total.to_f
+          end
           line[:OriginCode] = "Orig"
           line[:DestinationCode] = "Dest"
 
@@ -252,7 +256,11 @@ module Spree
           line[:LineNo] = i
           line[:ItemCode] = "Shipping"
           line[:Qty] = "0"
-          line[:Amount] = adj.amount.to_f
+          if invoice_detail == "ReturnInvoice" || "ReturnOrder"
+            line[:Amount] = -adj.amount.to_f
+          else
+            line[:Amount] = adj.amount.to_f
+          end
           line[:OriginCode] = "Orig"
           line[:DestinationCode] = "Dest"
 
@@ -276,7 +284,11 @@ module Spree
           line[:LineNo] = i
           line[:ItemCode] = "Promotion"
           line[:Qty] = "0"
-          line[:Amount] = adj.amount.to_f
+          if invoice_detail == "ReturnInvoice" || "ReturnOrder"
+            line[:Amount] = -adj.amount.to_f
+          else
+            line[:Amount] = adj.amount.to_f
+          end
           line[:OriginCode] = "Orig"
           line[:DestinationCode] = "Dest"
 
@@ -299,7 +311,12 @@ module Spree
           line[:LineNo] = i
           line[:ItemCode] = "Reimbursement"
           line[:Qty] = "0"
-          line[:Amount] = reimbursement.total.to_f
+          if invoice_detail == "ReturnInvoice" || "ReturnOrder"
+            line[:Amount] = -reimbursement.total.to_f
+          else
+            line[:Amount] = reimbursement.total.to_f
+
+          end
           line[:OriginCode] = "Orig"
           line[:DestinationCode] = "Dest"
 
@@ -307,7 +324,7 @@ module Spree
             line[:CustomerUsageType] = myusecode.use_code || ""
           end
 
-          line[:Description] = customer_return.return_authorizations.first.reason.name
+          line[:Description] = reimbursement.customer_return.return_authorizations.first.reason.name
           line[:TaxCode] = ""
 
           AVALARA_TRANSACTION_LOGGER.debug line.to_xml
@@ -344,7 +361,13 @@ module Spree
 
       addresses<<shipping_address
       addresses<<orig_address
-
+      if invoice_detail == "ReturnInvoice" || "ReturnOrder"
+      taxoverride = Hash.new
+      taxoverride[:TaxOverrideType] = "TaxDate"
+      taxoverride[:Reason] = "Adjustment for return"
+      taxoverride[:TaxDate] = org_ord_date
+      taxoverride[:TaxAmount] = "0"
+      end
       gettaxes = {
         :CustomerCode => myuser ? myuser.id : "Guest",
         :DocDate => org_ord_date ? org_ord_date : Date.current.to_formatted_s(:db),
@@ -358,17 +381,16 @@ module Spree
         :ReferenceCode => order_details.number,
         :DetailLevel => "Tax",
         :Commit => commit,
-        :DocType => "SalesInvoice",
+        :DocType => invoice_detail ? invoice_detail : "SalesInvoice",
         :Addresses => addresses,
-        :Lines => tax_line_items
+        :Lines => tax_line_items,
+        :TaxOverride => taxoverride ? taxoverride : ""
       }
-
       AVALARA_TRANSACTION_LOGGER.debug gettaxes
 
       mytax = TaxSvc.new
 
       getTaxResult = mytax.get_tax(gettaxes)
-
       AVALARA_TRANSACTION_LOGGER.debug getTaxResult
 
       if getTaxResult == 'error in Tax' then
