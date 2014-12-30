@@ -171,7 +171,7 @@ module Spree
           AVALARA_TRANSACTION_LOGGER.debug myusecode
 
           if myusecode
-            line[:CustomerUsageType] = myusecode.use_code || ""
+            line[:CustomerUsageType] = myusecode.try(:use_code)
           end
 
           AVALARA_TRANSACTION_LOGGER.info('after user check')
@@ -265,7 +265,7 @@ module Spree
           line[:DestinationCode] = "Dest"
 
           if myusecode
-            line[:CustomerUsageType] = myusecode.use_code || ""
+            line[:CustomerUsageType] = myusecode.try(:use_code)
           end
 
           line[:Description] = adj.label
@@ -293,7 +293,7 @@ module Spree
           line[:DestinationCode] = "Dest"
 
           if myusecode
-            line[:CustomerUsageType] = myusecode.use_code || ""
+            line[:CustomerUsageType] = myusecode.try(:use_code)
           end
 
           line[:Description] = adj.label
@@ -321,7 +321,7 @@ module Spree
           line[:DestinationCode] = "Dest"
 
           if myusecode
-            line[:CustomerUsageType] = myusecode.use_code || ""
+            line[:CustomerUsageType] = myusecode.try(:use_code)
           end
 
           line[:Description] = reimbursement.customer_return.return_authorizations.first.reason.name
@@ -361,8 +361,8 @@ module Spree
 
       addresses<<shipping_address
       addresses<<orig_address
-      if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
       taxoverride = Hash.new
+      if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
       taxoverride[:TaxOverrideType] = "TaxDate"
       taxoverride[:Reason] = "Adjustment for return"
       taxoverride[:TaxDate] = org_ord_date
@@ -373,9 +373,9 @@ module Spree
         :DocDate => org_ord_date ? org_ord_date : Date.current.to_formatted_s(:db),
 
         :CompanyCode => Spree::Config.avatax_company_code,
-        :CustomerUsageType => myusecode ? myusecode.use_code : "",
-        :ExemptionNo => myuser ? myuser.exemption_number : "",
-        :Client =>  AVATAX_CLIENT_VERSION || "SpreeExtV2.3",
+        :CustomerUsageType => myusecode.try(:use_code),
+        :ExemptionNo => myuser.try(:exemption_number),
+        :Client =>  AVATAX_CLIENT_VERSION || "SpreeExtV2.4",
         :DocCode => doc_code ? doc_code : order_details.number,
 
         :ReferenceCode => order_details.number,
@@ -386,7 +386,7 @@ module Spree
         :Lines => tax_line_items
       }
 
-      unless taxoverride
+      unless taxoverride.empty?
         gettaxes[:TaxOverride] = taxoverride
       end
       AVALARA_TRANSACTION_LOGGER.debug gettaxes
