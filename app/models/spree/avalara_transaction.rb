@@ -8,8 +8,6 @@ module Spree
 
     logger = Logger.new('log/post_order_to_avalara.txt', 'weekly')
 
-
-
     logger.progname = 'avalara_transaction'
 
     belongs_to :order
@@ -18,8 +16,6 @@ module Spree
     validates :order, :presence => true
 
     has_one :adjustment, :as => :originator
-
-
 
 
     def rnt_tax
@@ -51,19 +47,22 @@ module Spree
       logger.progname = 'avalara_transaction'
 
       logger.info 'update adjustment call'
+
       if adjustment.state != "finalized"
-      post_order_to_avalara(false, order.line_items, order)
-      adjustment.update_column(:amount, rnt_tax)
+        post_order_to_avalara(false, order.line_items, order)
+        adjustment.update_column(:amount, rnt_tax)
       end
 
       if order.complete?
-      post_order_to_avalara(true, order.line_items, order)
-      adjustment.update_column(:amount, rnt_tax)
-      adjustment.update_column(:state, "finalized")
+        post_order_to_avalara(true, order.line_items, order)
+        adjustment.update_column(:amount, rnt_tax)
+        adjustment.update_column(:state, "finalized")
       end
+
       if order.state == 'canceled'
         cancel_order_to_avalara("SalesInvoice", "DocVoided", order)
       end
+
       if adjustment.state == "finalized" && order.adjustments.return_authorization.exists?
 
         post_order_to_avalara(false, order.line_items, order, order.number.to_s + ":" + order.adjustments.return_authorization.first.id.to_s, order.completed_at)
@@ -72,6 +71,7 @@ module Spree
           adjustment.update_column(:state, "finalized")
         end
       end
+
       if adjustment.state == "finalized" && order.adjustments.return_authorization.exists?
         order.adjustments.return_authorization.each do |adj|
           if adj.state == "closed" || adj.state == "finalized"
@@ -145,15 +145,10 @@ module Spree
 
     def post_order_to_avalara(commit=false, orderitems=nil, order_details=nil, doc_code=nil, org_ord_date=nil)
       logger = Logger.new('log/post_order_to_avalara.txt', 'weekly')
-
-
-
       logger.progname = 'avalara_transaction'
-
       logger.info 'post order to avalara'
 
       tax_line_items=Array.new
-
       addresses=Array.new
 
       origin = JSON.parse( Spree::Config.avatax_origin )
@@ -199,7 +194,6 @@ module Spree
             line[:TaxCode] = line_item.tax_category.description || "PC030147"
           end
 
-
           logger.info 'about to check for shipped from'
 
           shipped_from = order_details.inventory_units.where(:variant_id => line_item.id)
@@ -216,8 +210,6 @@ module Spree
             stock_loc = package.to_shipment.stock_location
             logger.debug stock_loc
           end
-
-
 
           logger.info 'checked for shipped from'
 
@@ -366,7 +358,7 @@ module Spree
           :DocDate => org_ord_date ? org_ord_date : Date.current.to_formatted_s(:db),#date transaction occurred
 
           :CompanyCode => Spree::Config.avatax_company_code,
-          :CustomerUsageType => myusecode ? myusecode.usecode : "",
+          :CustomerUsageType => myusecode ? myusecode.use_code : "",
           :ExemptionNo => myuser.exemption_number || "",
           :Client =>  Spree::Config.avatax_client_version || "SpreeExtV1.0",
           :DocCode => doc_code ? doc_code : order_details.number,
@@ -379,7 +371,6 @@ module Spree
           :Lines => tax_line_items
 
       }
-
 
       logger.debug gettaxes
 
