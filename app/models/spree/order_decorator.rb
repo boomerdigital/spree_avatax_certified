@@ -102,9 +102,8 @@ Spree::Order.class_eval do
     end
   end
 
-
-
-
-
+  def create_tax_charge!
+    #Disable Spree's Tax mechanism
+  end
 
 end
