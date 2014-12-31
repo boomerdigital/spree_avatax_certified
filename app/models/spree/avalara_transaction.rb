@@ -255,7 +255,7 @@ module Spree
 
           line[:LineNo] = i
           line[:ItemCode] = "Shipping"
-          line[:Qty] = "0"
+          line[:Qty] = "1"
           if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
             line[:Amount] = -shipment.cost.to_f
           else
