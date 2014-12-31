@@ -248,7 +248,7 @@ module Spree
       if order_details then
         AVALARA_TRANSACTION_LOGGER.info('order adjustments')
 
-        order_details.adjustments.shipping.each do |adj|
+        order_details.shipments.each do |shipment|
 
           line = Hash.new
           i += 1
@@ -257,9 +257,9 @@ module Spree
           line[:ItemCode] = "Shipping"
           line[:Qty] = "0"
           if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
-            line[:Amount] = -adj.amount.to_f
+            line[:Amount] = -shipment.cost.to_f
           else
-            line[:Amount] = adj.amount.to_f
+            line[:Amount] = shipment.cost.to_f
           end
           line[:OriginCode] = "Orig"
           line[:DestinationCode] = "Dest"
@@ -268,8 +268,8 @@ module Spree
             line[:CustomerUsageType] = myusecode.try(:use_code)
           end
 
-          line[:Description] = adj.label
-          line[:TaxCode] = Spree::ShippingMethod.where(:id => adj.originator_id).first.tax_code
+          line[:Description] = "Shipping Charge"
+          line[:TaxCode] = shipment.shipping_method.tax_code
 
           AVALARA_TRANSACTION_LOGGER.debug line.to_xml
 
@@ -361,7 +361,9 @@ module Spree
 
       addresses<<shipping_address
       addresses<<orig_address
+
       taxoverride = Hash.new
+
       if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
       taxoverride[:TaxOverrideType] = "TaxDate"
       taxoverride[:Reason] = "Adjustment for return"
@@ -389,6 +391,7 @@ module Spree
       unless taxoverride.empty?
         gettaxes[:TaxOverride] = taxoverride
       end
+
       AVALARA_TRANSACTION_LOGGER.debug gettaxes
 
       mytax = TaxSvc.new
