@@ -2,7 +2,6 @@ require 'logging'
 require_dependency 'spree/order'
 require_relative  'tax_svc'
 
-
 module Spree
   class AvalaraTransaction < ActiveRecord::Base
 
@@ -25,11 +24,9 @@ module Spree
       @myrtntax
     end
 
-
     def lookup_avatax
       post_order_to_avalara(false)
     end
-
 
     def commit_avatax(items, order_details,doc_id=nil,invoice_dt=nil)
       post_order_to_avalara(false, items, order_details,doc_id,invoice_dt)
@@ -42,10 +39,7 @@ module Spree
 
     def update_adjustment(adjustment, source)
       logger = Logger.new('log/post_order_to_avalara.txt', 'weekly')
-
-
       logger.progname = 'avalara_transaction'
-
       logger.info 'update adjustment call'
 
       if adjustment.state != "finalized"
@@ -53,14 +47,15 @@ module Spree
         adjustment.update_column(:amount, rnt_tax)
       end
 
+      if order.state == 'canceled'
+        cancel_order_to_avalara("SalesInvoice", "DocVoided", order)
+        return
+      end
+
       if order.complete?
         post_order_to_avalara(true, order.line_items, order)
         adjustment.update_column(:amount, rnt_tax)
         adjustment.update_column(:state, "finalized")
-      end
-
-      if order.state == 'canceled'
-        cancel_order_to_avalara("SalesInvoice", "DocVoided", order)
       end
 
       if adjustment.state == "finalized" && order.adjustments.return_authorization.exists?
@@ -84,10 +79,6 @@ module Spree
         end
       end
     end
-
-
-
-
 
     private
     def get_shipped_from_address(item_id)
@@ -127,20 +118,12 @@ module Spree
 
       if cancelTaxResult == 'error in Tax' then
         return 'Error in Tax'
-
-
-
       else
         if cancelTaxResult["ResultCode"] = "Success"
           logger.debug cancelTaxResult
           return cancelTaxResult
-
-
         end
       end
-
-
-
     end
 
     def post_order_to_avalara(commit=false, orderitems=nil, order_details=nil, doc_code=nil, org_ord_date=nil)

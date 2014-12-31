@@ -16,6 +16,10 @@ Spree::Order.class_eval do
                                       :do => :avalara_capture,
                                       :if => :avalara_eligible
 
+  self.state_machine.after_transition :to => :canceled,
+                                      :do => :avalara_void,
+                                      :if => :avalara_eligible
+
   def avalara_eligible
     Spree::Config.avatax_iseligible
   end
@@ -52,6 +56,12 @@ Spree::Order.class_eval do
     rescue => e
       logger.debug e
       logger.debug 'error in a avalara capture'
+    end
+  end
+
+  def avalara_void
+    adjustments.avalara_tax.each do |adjustment|
+      adjustment.originator.update_adjustment(adjustment, adjustment.source)
     end
   end
 
