@@ -2,10 +2,7 @@ require 'logger'
 require_relative 'avalara_transaction'
 
 
-
 Spree::Order.class_eval do
-
-
   logger = Logger.new('log/avalara_order.txt', 'weekly')
 
   #logger.level = :debug
@@ -19,25 +16,9 @@ Spree::Order.class_eval do
                                       :do => :avalara_capture,
                                       :if => :avalara_eligible
 
-  self.state_machine.after_transition :to => :complete,
-                                      :do => :avalara_capture,
-                                      :if => :avalara_eligible
-
-
-
-
-
   def avalara_eligible
-
-    iseligible = Spree::Config.avatax_iseligible
-    if iseligible
-      true
-    else
-      false
-    end
+    Spree::Config.avatax_iseligible
   end
-
-
 
   def avalara_lookup
     logger = Logger.new('log/avalara_order.txt', 'weekly')
@@ -45,38 +26,9 @@ Spree::Order.class_eval do
     logger.debug 'avalara lookup'
     create_avalara_transaction
     :lookup_avatax
-
   end
 
   def avalara_capture
-
-    logger = Logger.new('log/avalara_order.txt', 'weekly')
-    logger.progname = 'order class'
-    logger.debug 'avalara capture'
-    begin
-    create_avalara_transaction
-
-    self.adjustments.avalara_tax.destroy_all
-    sat = Spree::AvalaraTransaction.new
-    rtn_tax = sat.commit_avatax(line_items, self)
-    logger.info 'tax amount'
-    logger.debug rtn_tax
-    adjustments.create do |adjustment|
-      adjustment.source = self
-      adjustment.originator = avalara_transaction
-      adjustment.label = 'Tax'
-      adjustment.mandatory = true
-      adjustment.eligible = true
-      adjustment.amount = rtn_tax
-    end
-  rescue => e
-    logger.debug e
-    logger.debug 'error in a avalara capture'
-  end
-  end
-
-  def avalara_capture_finalize
-
     logger = Logger.new('log/avalara_order.txt', 'weekly')
     logger.progname = 'order class'
     logger.debug 'avalara capture'
@@ -88,6 +40,7 @@ Spree::Order.class_eval do
       rtn_tax = sat.commit_avatax(line_items, self)
       logger.info 'tax amount'
       logger.debug rtn_tax
+
       adjustments.create do |adjustment|
         adjustment.source = self
         adjustment.originator = avalara_transaction
@@ -105,5 +58,4 @@ Spree::Order.class_eval do
   def create_tax_charge!
     #Disable Spree's Tax mechanism
   end
-
 end
