@@ -362,6 +362,7 @@ module Spree
 
       addresses<<shipping_address
       addresses<<orig_address
+
       taxoverride = Hash.new
 
       if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
@@ -370,7 +371,6 @@ module Spree
         taxoverride[:TaxDate] = org_ord_date
         taxoverride[:TaxAmount] = "0"
       end
-
       gettaxes = {
         :CustomerCode => myuser ? myuser.id : "Guest",
         :DocDate => org_ord_date ? org_ord_date : Date.current.to_formatted_s(:db),
