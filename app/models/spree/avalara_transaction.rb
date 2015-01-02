@@ -23,13 +23,13 @@ module Spree
       post_order_to_avalara(false, order_details.line_items, order_details)
     end
 
-    def commit_avatax(items, order_details,doc_id=nil,invoice_dt=nil)
-      post_order_to_avalara(false, items, order_details,doc_id,invoice_dt)
+    def commit_avatax(items, order_details,doc_id=nil, org_ord_date=nil, invoice_dt=nil)
+      post_order_to_avalara(false, items, order_details, doc_id, org_ord_date, invoice_dt)
     end
 
-    def commit_avatax_final(items, order_details,doc_id=nil,invoice_dt=nil)
+    def commit_avatax_final(items, order_details,doc_id=nil, org_ord_date=nil, invoice_dt=nil)
       if document_committing_enabled?
-        post_order_to_avalara(true, items, order_details,doc_id,invoice_dt)
+        post_order_to_avalara(true, items, order_details,doc_id, org_ord_date,invoice_dt)
       else
         AVALARA_TRANSACTION_LOGGER.debug "avalara document committing disabled"
         "avalara document committing disabled"
