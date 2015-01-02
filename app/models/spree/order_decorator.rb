@@ -48,6 +48,7 @@ self.state_machine.after_transition :to => :canceled,
         adjustment.mandatory = true
         adjustment.eligible = true
         adjustment.amount = @rtn_tax
+        adjustment.order = self
       end
       self.reload.update!
       adjustments.avalara_tax.last
@@ -74,6 +75,7 @@ self.state_machine.after_transition :to => :canceled,
         adjustment.mandatory = true
         adjustment.eligible = true
         adjustment.amount = @rtn_tax
+        adjustment.order = self
       end
       self.reload.update!
       adjustments.avalara_tax.last
