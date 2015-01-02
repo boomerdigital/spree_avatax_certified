@@ -284,7 +284,7 @@ module Spree
 
           line[:LineNo] = i
           line[:ItemCode] = "Promotion"
-          line[:Qty] = "0"
+          line[:Qty] = 1
           if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
             line[:Amount] = -adj.amount.to_f
           else
@@ -311,7 +311,7 @@ module Spree
           i += 1
           line[:LineNo] = i
           line[:ItemCode] = "Return Authorization"
-          line[:Qty] = "0"
+          line[:Qty] = 1
           if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
             line[:Amount] = -return_auth.amount.to_f
           else
