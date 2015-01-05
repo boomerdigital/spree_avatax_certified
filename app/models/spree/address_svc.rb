@@ -26,7 +26,19 @@ class AddressSvc
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
       res = http.get(uri.request_uri, 'Authorization' => credential)
-      JSON.parse(res.body)
+
+      response = JSON.parse(res.body)
+
+      if response["Address"]["City"] == address[:city] || response["Address"]["Region"] == Spree::State.find(address[:state_id]).abbr
+        return response
+      else
+        response["ResultCode"] = "Error"
+        suggested_address = response["Address"]
+        response["Messages"] = [{
+          "Summary" => "Did you mean #{suggested_address['Line1']}, #{suggested_address['City']}, #{suggested_address['Region']}, #{suggested_address['PostalCode']}?"
+          }]
+          return response
+      end
     else
       "Address validation disabled"
     end
