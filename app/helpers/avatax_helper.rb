@@ -2,7 +2,8 @@ module AvataxHelper
   class AvataxLog
     def initialize(path_name, file_name, log_info = nil, schedule = nil)
       schedule = "weekly" unless schedule != nil
-      @logger ||= Logger.new('log/' + path_name + '.txt', schedule)
+      path = "#{Rails.root}/log/#{path_name}.log"
+      @logger ||= new_logger(path, schedule)
       progname(file_name.split("/").last.chomp(".rb"))
       info(log_info) unless log_info.nil?
     end
@@ -46,6 +47,13 @@ module AvataxHelper
           text
         end
       end
+    end
+
+    private
+
+    def new_logger(path, schedule)
+      FileUtils.touch path # prevent autocreate messages in log
+      Logger.new(path, schedule)
     end
   end
 end
