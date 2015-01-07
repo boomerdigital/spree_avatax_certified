@@ -164,6 +164,7 @@ module Spree
           else
             line[:Amount] = line_item.total.to_f
           end
+          line[:Discounted] = line_item.adjustments.try(:promotion) ? true : false
           line[:OriginCode] = "Orig"
           line[:DestinationCode] = "Dest"
 
@@ -283,12 +284,8 @@ module Spree
 
           line[:LineNo] = i
           line[:ItemCode] = "Promotion"
-          line[:Qty] = "0"
-          if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
-            line[:Amount] = -adj.amount.to_f
-          else
-            line[:Amount] = adj.amount.to_f
-          end
+          line[:Qty] = 0
+          line[:Amount] = adj.amount.to_f
           line[:OriginCode] = "Orig"
           line[:DestinationCode] = "Dest"
 
@@ -304,33 +301,33 @@ module Spree
           tax_line_items<<line
         end
 
-        order_details.reimbursements.each do |reimbursement|
+      #   order_details.reimbursements.each do |reimbursement|
 
-          line = Hash.new
-          i += 1
-          line[:LineNo] = i
-          line[:ItemCode] = "Reimbursement"
-          line[:Qty] = "0"
-          if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
-            line[:Amount] = -reimbursement.total.to_f
-          else
-            line[:Amount] = reimbursement.total.to_f
+      #     line = Hash.new
+      #     i += 1
+      #     line[:LineNo] = i
+      #     line[:ItemCode] = "Reimbursement"
+      #     line[:Qty] = "0"
+      #     if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
+      #       line[:Amount] = -reimbursement.total.to_f
+      #     else
+      #       line[:Amount] = reimbursement.total.to_f
 
-          end
-          line[:OriginCode] = "Orig"
-          line[:DestinationCode] = "Dest"
+      #     end
+      #     line[:OriginCode] = "Orig"
+      #     line[:DestinationCode] = "Dest"
 
-          if myusecode
-            line[:CustomerUsageType] = myusecode.try(:use_code)
-          end
+      #     if myusecode
+      #       line[:CustomerUsageType] = myusecode.try(:use_code)
+      #     end
 
-          line[:Description] = reimbursement.customer_return.return_authorizations.first.reason.name
-          line[:TaxCode] = ""
+      #     line[:Description] = reimbursement.customer_return.return_authorizations.first.reason.name
+      #     line[:TaxCode] = ""
 
-          AVALARA_TRANSACTION_LOGGER.debug line.to_xml
+      #     AVALARA_TRANSACTION_LOGGER.debug line.to_xml
 
-          tax_line_items<<line
-        end
+      #     tax_line_items<<line
+      #   end
       end
 
       if order_details.ship_address_id.nil?
@@ -365,10 +362,10 @@ module Spree
       taxoverride = Hash.new
 
       if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
-      taxoverride[:TaxOverrideType] = "TaxDate"
-      taxoverride[:Reason] = "Adjustment for return"
-      taxoverride[:TaxDate] = org_ord_date
-      taxoverride[:TaxAmount] = "0"
+        taxoverride[:TaxOverrideType] = "TaxDate"
+        taxoverride[:Reason] = "Adjustment for return"
+        taxoverride[:TaxDate] = org_ord_date
+        taxoverride[:TaxAmount] = "0"
       end
       gettaxes = {
         :CustomerCode => myuser ? myuser.id : "Guest",
@@ -384,6 +381,7 @@ module Spree
         :DetailLevel => "Tax",
         :Commit => commit,
         :DocType => invoice_detail ? invoice_detail : "SalesInvoice",
+        :Discount => order_details.adjustments.promotion.map(&:amount).reduce(&:+).to_f.abs,
         :Addresses => addresses,
         :Lines => tax_line_items
       }
