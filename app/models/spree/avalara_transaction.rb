@@ -186,15 +186,9 @@ module Spree
 
           shipped_from = order_details.inventory_units.where(:variant_id => line_item.id)
 
-          if Spree::StockLocation.find_by(name: 'default').nil?
-            location = Spree::StockLocation.create(name: "avatax origin", address1: origin["Address1"], address2: origin["Address2"], city: origin["City"], state_id: Spree::State.find_by_name(origin["Region"]).id, state_name: origin["Region"] , zipcode: origin["Zip5"], country_id: Spree::State.find_by_name(origin["Region"]).country_id)
-            AVALARA_TRANSACTION_LOGGER.info('avatax origin location created')
-          elsif Spree::StockLocation.find_by(name: 'default').city.nil? || Spree::StockLocation.first.city.nil?
-            location = Spree::StockLocation.first.update_attributes(address1: origin["Address1"], address2: origin["Address2"], city: origin["City"], state_id: Spree::State.find_by_name(origin["Region"]).id, state_name: origin["Region"] , zipcode: origin["Zip5"], country_id: Spree::State.find_by_name(origin["Region"]).country_id )
-            AVALARA_TRANSACTION_LOGGER.info('avatax origin location updated default')
-          else
-            location = Spree::StockLocation.find_by(name: 'default') || Spree::StockLocation.first
-            AVALARA_TRANSACTION_LOGGER.info('default location')
+          location = Spree::StockLocation.where(address1: origin["Address1"], address2: origin["Address2"], city: origin["City"], state_id: Spree::State.find_by_name(origin["Region"]).id, state_name: origin["Region"] , zipcode: origin["Zip5"], country_id: Spree::State.find_by_name(origin["Region"]).country_id).first
+          if location.nil?
+            location = Spree::StockLocation.create(name: "default", address1: origin["Address1"], address2: origin["Address2"], city: origin["City"], state_id: Spree::State.find_by_name(origin["Region"]).id, state_name: origin["Region"] , zipcode: origin["Zip5"], country_id: Spree::State.find_by_name(origin["Region"]).country_id)
           end
 
           AVALARA_TRANSACTION_LOGGER.debug location
