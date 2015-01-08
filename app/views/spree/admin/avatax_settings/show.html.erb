@@ -35,28 +35,28 @@
     <th scope="row"><%= t("enable_avatax_logging") %>:</th>
     <td><%= Spree::Config.avatax_log %></td>
   </tr>
-    <tr>
+  <tr>
     <th scope="row"><%= t("enable_avatax_address_validation") %>:</th>
     <td><%= Spree::Config.avatax_address_validation %></td>
   </tr>
-      <tr>
+  <tr>
     <th scope="row"><%= t("avatax_address_validation_disable_countries") %>:</th>
     <% nontaxable_countries = Spree::Config.avatax_address_validation_disable_countries %>
     <td>
       <% unless nontaxable_countries.nil? %>
       <ul style="list-style: inside;">
-  <% nontaxable_countries.each do |country| %>
-  <li><%= Spree::Country.find(country.to_i) %></li>
-  <% end %>
-  </ul>
-  <% end %>
+        <% nontaxable_countries.each do |country| %>
+        <li><%= Spree::Country.find(country.to_i) %></li>
+        <% end %>
+      </ul>
+      <% end %>
     </td>
   </tr>
   <tr>
     <th scope="row"><%= t("enable_avatax_tax_calculation") %>:</th>
     <td><%= Spree::Config.avatax_tax_calculation %></td>
   </tr>
-    <tr>
+  <tr>
     <th scope="row"><%= t("enable_avatax_document_committing") %>:</th>
     <td><%= Spree::Config.avatax_document_commit %></td>
   </tr>
