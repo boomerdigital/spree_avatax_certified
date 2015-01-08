@@ -66,7 +66,13 @@
         <%= check_box_tag('settings[avatax_address_validation]','yes' , Spree::Config.avatax_address_validation, :class => 'avatax') %>
       </p>
     </fieldset>
-
+      <fieldset>
+      <legend><%= t('avatax_address_validation_disable_countries') %></legend>
+      <p>
+        <label><%= t('disable_avatax_address_validation_for_these_countries') %></label><br />
+        <%= select_tag('settings[avatax_address_validation_disable_countries]', options_from_collection_for_select(Spree::Country.all, "id", "name"), multiple: true) %>
+      </p>
+    </fieldset>
     <fieldset>
       <legend><%= t('avatax_tax_calculation') %></legend>
       <p>

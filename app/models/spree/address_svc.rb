@@ -6,7 +6,8 @@ require 'base64'
 class AddressSvc
 
   def validate(address)
-    if address_validation_enabled?
+    if address_validation_enabled? && country_enabled?(Spree::Country.find(address[:country_id]))
+
       return address if address.nil?
 
       address_hash = {
@@ -38,34 +39,44 @@ class AddressSvc
           "Summary" => "Did you mean #{suggested_address['Line1']}, #{suggested_address['City']}, #{suggested_address['Region']}, #{suggested_address['PostalCode']}?"
           }]
           return response
+        end
+      else
+        "Address validation disabled"
       end
-    else
-      "Address validation disabled"
+    rescue => e
+      'error in address validation'
     end
-  rescue => e
-    'error in address validation'
+
+
+    private
+
+    def credential
+      'Basic ' + Base64.encode64(account_number + ":" + license_key)
+    end
+
+    def service_url
+      Spree::Config.avatax_endpoint + AVATAX_SERVICEPATH_ADDRESS + 'validate?'
+    end
+
+    def license_key
+      Spree::Config.avatax_license_key
+    end
+
+    def account_number
+      Spree::Config.avatax_account
+    end
+
+    def address_validation_enabled?
+      Spree::Config.avatax_address_validation
+    end
+
+    def country_enabled?(current_country)
+      Spree::Config.avatax_address_validation_disable_countries.each do |country|
+        if current_country.name == Spree::Country.find(country.to_i).name
+          return false
+        else
+          true
+        end
+      end
+    end
   end
-
-
-  private
-
-  def credential
-    'Basic ' + Base64.encode64(account_number + ":" + license_key)
-  end
-
-  def service_url
-    Spree::Config.avatax_endpoint + AVATAX_SERVICEPATH_ADDRESS + 'validate?'
-  end
-
-  def license_key
-    Spree::Config.avatax_license_key
-  end
-
-  def account_number
-    Spree::Config.avatax_account
-  end
-
-  def address_validation_enabled?
-    Spree::Config.avatax_address_validation
-  end
-end
