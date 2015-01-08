@@ -1,0 +1,9 @@
+<%= render :partial => 'spree/admin/shared/configuration_menu' %>
+
+<h1><%= t('avalara_entity_use_codes') %></h1>
+<%= render 'spree/shared/error_messages', :target => @use_code %>
+
+<%= form_for [:admin, @avalara_entity_use_code], :method => :put do |f| %>
+    <%= render :partial => 'form', :locals => { :f => f } %>
+    <p class="form-buttons" data-hook="buttons"><%= button t(:update) %></p>
+<% end %>

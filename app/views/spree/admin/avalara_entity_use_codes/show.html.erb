@@ -1,0 +1,24 @@
+<%= render :partial => 'spree/admin/shared/configuration_menu' %>
+
+<h1><%= t(:avalara_entity_use_code) %></h1>
+
+<table>
+  <tr data-hook="name">
+    <th><%= t(:use_code) %></th>
+    <td>
+      <%= @use_code.use_code %>
+    </td>
+  </tr>
+  <tr data-hook="description">
+    <th><%= t(:description) %></th>
+    <td>
+      <%= @use_code.use_code_description %>
+    </td>
+  </tr>
+
+</table>
+
+<p>
+  <%= link_to_edit @use_code, :class => 'edit_avalara_entity_use_code' %> <%= t(:or) %>
+  <%= link_to t(:back), collection_url %>
+</p>

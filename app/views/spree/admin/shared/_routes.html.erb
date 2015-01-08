@@ -9,8 +9,7 @@
     Spree.routes.checkouts_api = "<%= spree.api_checkouts_url(:format => 'json') %>";
     Spree.routes.stock_locations_api = "<%= spree.api_stock_locations_url(:format => 'json') %>";
     Spree.routes.variants_api = "<%= spree.api_variants_url(:format => 'json') %>";
-
     Spree.routes.payments_api = "<%= spree.api_order_payments_url(:format => 'json') if params[:order_id] %>";
     Spree.routes.stock_items_api = "<%= spree.api_stock_location_stock_items_url(:format => 'json') if params[:stock_location_id] %>";
-    Spree.routes.use_code_search = "<%= spree.admin_avalara_use_code_items_url(:format => 'json') %>"
+    Spree.routes.use_code_search = "<%= spree.admin_avalara_entity_use_codes_url(:format => 'json') %>"
 </script>

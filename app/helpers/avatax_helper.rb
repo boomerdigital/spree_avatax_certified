@@ -1,26 +1,51 @@
-require_relative '~/app/models/spree/avalara/TaxSvc'
-Spree::BaseHelper.module_eval do
-
-  alias_method :ping_my_service, :get_file_content
-
-  def  ping_my_service
-    mytax = TaxSvc.new( Spree::Config.avatax_account || AvalaraYettings['account'],Spree::Config.avatax_license_key || AvalaraYettings['license_key'],Spree::Config.avatax_endpoint || AvalaraYettings['endpoint'])
-    pingResult = mytax.Ping
-    if pingResult["ResultCode"] == "Success"
-      flash[:success] = "Ping Successful"
-    else
-      flash[:error] = "Ping Error"
+module AvataxHelper
+  class AvataxLog
+    def initialize(path_name, file_name, log_info = nil, schedule = nil)
+      schedule = "weekly" unless schedule != nil
+      @logger ||= Logger.new('log/' + path_name + '.txt', schedule)
+      progname(file_name.split("/").last.chomp(".rb"))
+      info(log_info) unless log_info.nil?
     end
 
-    respond_to do |format|
-      format.js
+    def logger
+      @logger
     end
-  end
 
-  def get_file_content(file_name="tax_svc.txt")
-    data = File.open(file_name, "rb"){|io| a = a + io.read}
-    respond_to do |format|
-      format.js
+    def logger_enabled?
+      Spree::Config.avatax_log
+    end
+
+    def progname(progname = nil)
+      if logger_enabled?
+        progname.nil? ? logger.progname : logger.progname = progname
+      end
+    end
+
+    def info(log_info = nil)
+      if logger_enabled?
+        logger.info log_info unless log_info.nil?
+      end
+    end
+
+    def info_and_debug(log_info, request_hash)
+      if logger_enabled?
+        logger.info log_info
+        logger.debug request_hash
+        logger.debug JSON.generate(request_hash)
+      end
+    end
+
+
+    def debug(error, text = nil)
+      if logger_enabled?
+        logger.debug error
+        if text.nil?
+          error
+        else
+          logger.debug text
+          text
+        end
+      end
     end
   end
 end

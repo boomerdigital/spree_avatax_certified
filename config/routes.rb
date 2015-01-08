@@ -1,16 +1,15 @@
 Spree::Core::Engine.routes.draw do
   namespace :admin do
-    resource :avatax_settings  do
-      get :ping_my_service, :get_file_content_txt_svc, :get_file_content_post_avatax, :get_file_content_avatax_ord
+    resources :users do
+      member do
+        get :avalara_information
+      end
+    end
+    resource :avatax_settings do
+      get :ping_my_service, :get_file_txt_tax_svc, :get_file_post_order_to_avalara, :get_file_avalara_order, :erase_data, :validate_address
+    end
+    resources :avalara_entity_use_codes do
 
     end
-    resources :avalara_use_code_items do
-
-    end
-
   end
- # get '/admin/log/tax_svc', :to => send_file('/log/tax_svc.txt')
-#redirect('../log/tax_svc.txt')
-
-
 end
