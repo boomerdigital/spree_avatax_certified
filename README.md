@@ -1,8 +1,29 @@
 UNDER CONSTRUCTION
-SpreeAvatax
+SpreeAvataxCertified
 ===========
 
-For help getting started, please see the wiki: https://github.com/railsdog/spree_avatax_certified/wiki/Getting-Started
+
+Installation
+------------
+```ruby
+gem 'spree_avatax_certified', github: 'railsdog/spree_avatax_certified', branch: '2-4-stable'
+```
+```shell
+bundle install
+```
+```shell
+bundle exec rails g spree_avatax_certified:install
+```
+
+
+Setup
+-----
+
+In the Spree Admin site configure the Avalara Setting.
+![avatax_example](https://cloud.githubusercontent.com/assets/6445334/5670974/aedc85ec-9752-11e4-9bf6-23b7433fc7ab.png)
+
+Enter the Entity Use Codes that are configured in your Avalara site. If you chose to seed the use codes, these will already be set up for you.
+![Imgur](http://i.imgur.com/nBo3E25.png)
 
 Testing
 -------
