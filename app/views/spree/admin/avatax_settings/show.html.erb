@@ -43,10 +43,10 @@
     <th scope="row"><%= t("avatax_address_validation_enabled_countries") %>:</th>
     <% address_validated_countries = Spree::Config.avatax_address_validation_enabled_countries %>
     <td>
-      <% unless nontaxable_countries.nil? %>
+      <% unless address_validated_countries.nil? %>
       <ul style="list-style: inside;">
         <% address_validated_countries.each do |country| %>
-        <li><%= Spree::Country.find(country.to_i) %></li>
+        <li><%= Spree::Country.find_by_name(country) %></li>
         <% end %>
       </ul>
       <% end %>
