@@ -369,7 +369,7 @@ module Spree
       end
       gettaxes = {
         :CustomerCode => myuser ? myuser.id : "Guest",
-        :DocDate => org_ord_date ? org_ord_date : Date.current.to_formatted_s(:db),
+        :DocDate => Date.current.to_formatted_s(:db),
 
         :CompanyCode => Spree::Config.avatax_company_code,
         :CustomerUsageType => myusecode.try(:use_code),

@@ -73,9 +73,9 @@ class AddressSvc
     def country_enabled?(current_country)
       Spree::Config.avatax_address_validation_disable_countries.each do |country|
         if current_country.name == Spree::Country.find(country.to_i).name
-          return false
+          return true
         else
-          true
+          false
         end
       end
     end

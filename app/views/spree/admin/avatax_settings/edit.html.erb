@@ -67,11 +67,11 @@
       </p>
     </fieldset>
       <fieldset>
-      <legend><%= t('avatax_address_validation_disable_countries') %></legend>
+      <legend><%= t('avatax_address_validation_enabled_countries') %></legend>
       <p>
-        <% current_countries = Spree::Country.where(id: Spree::Config.avatax_address_validation_disable_countries).map(&:id).join(",") %>
-        <label><%= t('disable_avatax_address_validation_for_these_countries') %></label><br />
-        <%= select_tag('settings[avatax_address_validation_disable_countries]', options_from_collection_for_select(Spree::Country.all, "id", "name", selected: current_countries), multiple: true, class: "select2 fullwidth") %>
+        <% current_countries = Spree::Country.where(id: Spree::Config.avatax_address_validation_enabled_countries).map(&:id).join(",") %>
+        <label><%= t('enable_avatax_address_validation_for_these_countries') %></label><br />
+        <%= select_tag('settings[avatax_address_validation_enabled_countries]', options_from_collection_for_select(Spree::Country.all, "id", "name", selected: current_countries), multiple: true, class: "select2 fullwidth") %>
       </p>
     </fieldset>
     <fieldset>
