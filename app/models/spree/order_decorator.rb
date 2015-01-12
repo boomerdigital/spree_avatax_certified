@@ -60,7 +60,7 @@ Spree::Order.class_eval do
         end
       end
 
-      if order_tax > 0
+      if order_tax != 0
         adjustments.create do |adjustment|
           adjustment.source = avalara_transaction
           adjustment.label = 'Tax'
@@ -110,7 +110,7 @@ Spree::Order.class_eval do
         end
       end
 
-      if order_tax > 0
+      if order_tax != 0
         adjustments.create do |adjustment|
           adjustment.source = avalara_transaction
           adjustment.label = 'Tax'
