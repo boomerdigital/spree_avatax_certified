@@ -56,7 +56,7 @@ Spree::Order.class_eval do
             adjustment.order = self
           end
         else
-          order_tax += tax_line["TaxCalculated"]
+          order_tax += tax_line["TaxCalculated"].to_f
         end
       end
 
@@ -106,7 +106,7 @@ Spree::Order.class_eval do
             adjustment.order = self
           end
         else
-          order_tax += tax_line["TaxCalculated"]
+          order_tax += tax_line["TaxCalculated"].to_f
         end
       end
 
