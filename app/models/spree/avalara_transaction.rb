@@ -156,7 +156,7 @@ module Spree
           line = Hash.new
           i += 1
 
-          line[:LineNo] = i
+          line[:LineNo] = line_item.id
           line[:ItemCode] = line_item.variant.sku
           line[:Qty] = line_item.quantity
           if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
@@ -248,7 +248,7 @@ module Spree
           line = Hash.new
           i += 1
 
-          line[:LineNo] = i
+          line[:LineNo] = "#{i}-FR"
           line[:ItemCode] = "Shipping"
           line[:Qty] = 1
           if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
@@ -276,7 +276,7 @@ module Spree
           line = Hash.new
           i += 1
 
-          line[:LineNo] = i
+          line[:LineNo] = "#{i}-PR"
           line[:ItemCode] = "Promotion"
           line[:Qty] = 1
           if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
@@ -303,7 +303,7 @@ module Spree
 
           line = Hash.new
           i += 1
-          line[:LineNo] = i
+          line[:LineNo] = "#{i}-RA"
           line[:ItemCode] = "Return Authorization"
           line[:Qty] = 1
           if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
