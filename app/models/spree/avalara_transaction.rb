@@ -396,12 +396,12 @@ module Spree
       AVALARA_TRANSACTION_LOGGER.debug getTaxResult
 
       if getTaxResult == 'error in Tax' then
-        @myrtntax = "0.00"
+        @myrtntax = { TotalTax: "0.00" }
       else
         if getTaxResult["ResultCode"] = "Success"
           AVALARA_TRANSACTION_LOGGER.info "total tax"
           AVALARA_TRANSACTION_LOGGER.debug getTaxResult["TotalTax"].to_s
-          @myrtntax = getTaxResult["TotalTax"].to_s
+          @myrtntax = getTaxResult
         end
       end
       return @myrtntax

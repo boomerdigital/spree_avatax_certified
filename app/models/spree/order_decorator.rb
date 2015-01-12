@@ -34,18 +34,41 @@ Spree::Order.class_eval do
     begin
       create_avalara_transaction
       self.adjustments.avalara_tax.destroy_all
+      line_items.each do |l|
+        l.adjustments.avalara_tax.destroy_all
+      end
       @rtn_tax = self.avalara_transaction.commit_avatax(line_items, self)
 
       logger.info 'tax amount'
       logger.debug @rtn_tax
 
-      adjustments.create do |adjustment|
-        adjustment.source = avalara_transaction
-        adjustment.label = 'Tax'
-        adjustment.mandatory = true
-        adjustment.eligible = true
-        adjustment.amount = @rtn_tax
-        adjustment.order = self
+      order_tax = 0
+
+      @rtn_tax["TaxLines"].each do |tax_line|
+        if !tax_line["LineNo"].include? "-"
+          line_item = Spree::LineItem.find(tax_line["LineNo"])
+          line_item.adjustments.create do |adjustment|
+            adjustment.source = avalara_transaction
+            adjustment.label = "Tax"
+            adjustment.mandatory = true
+            adjustment.eligible = true
+            adjustment.amount = tax_line["TaxCalculated"]
+            adjustment.order = self
+          end
+        else
+          order_tax += tax_line["TaxCalculated"]
+        end
+      end
+
+      if order_tax > 0
+        adjustments.create do |adjustment|
+          adjustment.source = avalara_transaction
+          adjustment.label = 'Tax'
+          adjustment.mandatory = true
+          adjustment.eligible = true
+          adjustment.amount = order_tax
+          adjustment.order = self
+        end
       end
       self.reload.update!
       adjustments.avalara_tax.last
@@ -61,18 +84,41 @@ Spree::Order.class_eval do
       create_avalara_transaction
 
       self.adjustments.avalara_tax.destroy_all
+      line_items.each do |l|
+        l.adjustments.avalara_tax.destroy_all
+      end
       @rtn_tax = self.avalara_transaction.commit_avatax_final(line_items, self)
 
       logger.info 'tax amount'
       logger.debug @rtn_tax
 
-      adjustments.create do |adjustment|
-        adjustment.source = avalara_transaction
-        adjustment.label = 'Tax'
-        adjustment.mandatory = true
-        adjustment.eligible = true
-        adjustment.amount = @rtn_tax
-        adjustment.order = self
+      order_tax = 0
+
+      @rtn_tax["TaxLines"].each do |tax_line|
+        if !tax_line["LineNo"].include? "-"
+          line_item = Spree::LineItem.find(tax_line["LineNo"])
+          line_item.adjustments.create do |adjustment|
+            adjustment.source = avalara_transaction
+            adjustment.label = "Tax"
+            adjustment.mandatory = true
+            adjustment.eligible = true
+            adjustment.amount = tax_line["TaxCalculated"]
+            adjustment.order = self
+          end
+        else
+          order_tax += tax_line["TaxCalculated"]
+        end
+      end
+
+      if order_tax > 0
+        adjustments.create do |adjustment|
+          adjustment.source = avalara_transaction
+          adjustment.label = 'Tax'
+          adjustment.mandatory = true
+          adjustment.eligible = true
+          adjustment.amount = order_tax
+          adjustment.order = self
+        end
       end
       self.reload.update!
       adjustments.avalara_tax.last
