@@ -47,6 +47,19 @@ class AddressSvc
       'error in address validation'
     end
 
+    def address_validation_enabled?
+      Spree::Config.avatax_address_validation
+    end
+
+    def country_enabled?(current_country)
+      Spree::Config.avatax_address_validation_enabled_countries.each do |country|
+        if current_country.name == country
+          return true
+        else
+          false
+        end
+      end
+    end
 
     private
 
@@ -64,19 +77,5 @@ class AddressSvc
 
     def account_number
       Spree::Config.avatax_account
-    end
-
-    def address_validation_enabled?
-      Spree::Config.avatax_address_validation
-    end
-
-    def country_enabled?(current_country)
-      Spree::Config.avatax_address_validation_enabled_countries.each do |country|
-        if current_country.name == country
-          return true
-        else
-          false
-        end
-      end
     end
   end
