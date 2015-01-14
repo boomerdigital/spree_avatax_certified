@@ -160,9 +160,9 @@ module Spree
           line[:ItemCode] = line_item.variant.sku
           line[:Qty] = line_item.quantity
           if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
-            line[:Amount] = -line_item.total.to_f
+            line[:Amount] = -line_item.total.to_f  # Returns should return the full value
           else
-            line[:Amount] = line_item.total.to_f
+            line[:Amount] = line_item.price.to_f  # Taxes should be calculated on price alone
           end
           line[:OriginCode] = "Orig"
           line[:DestinationCode] = "Dest"
