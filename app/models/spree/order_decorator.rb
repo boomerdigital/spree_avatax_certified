@@ -33,10 +33,7 @@ Spree::Order.class_eval do
 
     begin
       create_avalara_transaction
-      self.adjustments.avalara_tax.destroy_all
-      line_items.each do |l|
-        l.adjustments.avalara_tax.destroy_all
-      end
+      self.all_adjustments.avalara_tax.destroy_all
       @rtn_tax = self.avalara_transaction.commit_avatax(line_items, self)
 
       logger.info 'tax amount'
@@ -70,8 +67,11 @@ Spree::Order.class_eval do
           adjustment.order = self
         end
       end
+      line_items.each do |l|
+        l.update_avalara_tax
+      end
       self.reload.update!
-      adjustments.avalara_tax.last
+      all_adjustments.avalara_tax
     rescue => e
       logger.debug e
       logger.debug 'error in a avalara capture'
@@ -83,17 +83,13 @@ Spree::Order.class_eval do
     begin
       create_avalara_transaction
 
-      self.adjustments.avalara_tax.destroy_all
-      line_items.each do |l|
-        l.adjustments.avalara_tax.destroy_all
-      end
+      self.all_adjustments.avalara_tax.destroy_all
       @rtn_tax = self.avalara_transaction.commit_avatax_final(line_items, self)
 
       logger.info 'tax amount'
       logger.debug @rtn_tax
 
       order_tax = 0
-
       @rtn_tax["TaxLines"].each do |tax_line|
         if !tax_line["LineNo"].include? "-"
           line_item = Spree::LineItem.find(tax_line["LineNo"])
@@ -120,8 +116,11 @@ Spree::Order.class_eval do
           adjustment.order = self
         end
       end
+      line_items.each do |l|
+        l.update_avalara_tax
+      end
       self.reload.update!
-      adjustments.avalara_tax.last
+      all_adjustments.avalara_tax
     rescue => e
       logger.debug e
       logger.debug 'error in a avalara capture finalize'
@@ -130,7 +129,7 @@ Spree::Order.class_eval do
 
   def display_avalara_tax_total
     avatax_tax = BigDecimal.new("0")
-    self.adjustments.avalara_tax.each do |tax|
+    self.all_adjustments.avalara_tax.each do |tax|
       avatax_tax += tax.amount
     end
     Spree::Money.new(avatax_tax, { currency: currency })
