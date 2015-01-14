@@ -11,9 +11,4 @@ Spree::LineItem.class_eval do
     }
   end
 
-  def update_avalara_tax
-    tax = self.adjustments.avalara_tax.sum(:amount)
-    self.update(adjustment_total: tax)
-  end
-
 end

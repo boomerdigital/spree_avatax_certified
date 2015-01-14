@@ -67,9 +67,6 @@ Spree::Order.class_eval do
           adjustment.order = self
         end
       end
-      line_items.each do |l|
-        l.update_avalara_tax
-      end
       self.reload.update!
       all_adjustments.avalara_tax
     rescue => e
@@ -115,9 +112,6 @@ Spree::Order.class_eval do
           adjustment.amount = order_tax
           adjustment.order = self
         end
-      end
-      line_items.each do |l|
-        l.update_avalara_tax
       end
       self.reload.update!
       all_adjustments.avalara_tax
