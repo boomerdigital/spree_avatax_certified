@@ -10,4 +10,5 @@ Spree::LineItem.class_eval do
       'TaxCategory' => tax_category
     }
   end
+
 end
