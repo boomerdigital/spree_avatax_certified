@@ -156,13 +156,13 @@ module Spree
           line = Hash.new
           i += 1
 
-          line[:LineNo] = i
+          line[:LineNo] = line_item.id
           line[:ItemCode] = line_item.variant.sku
           line[:Qty] = line_item.quantity
           if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
-            line[:Amount] = -line_item.total.to_f
+            line[:Amount] = -line_item.total.to_f  # Returns should return the full value
           else
-            line[:Amount] = line_item.total.to_f
+            line[:Amount] = line_item.price.to_f  # Taxes should be calculated on price alone
           end
           line[:OriginCode] = "Orig"
           line[:DestinationCode] = "Dest"
@@ -248,7 +248,7 @@ module Spree
           line = Hash.new
           i += 1
 
-          line[:LineNo] = i
+          line[:LineNo] = "#{i}-FR"
           line[:ItemCode] = "Shipping"
           line[:Qty] = 1
           if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
@@ -276,7 +276,7 @@ module Spree
           line = Hash.new
           i += 1
 
-          line[:LineNo] = i
+          line[:LineNo] = "#{i}-PR"
           line[:ItemCode] = "Promotion"
           line[:Qty] = 1
           if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
@@ -303,7 +303,7 @@ module Spree
 
           line = Hash.new
           i += 1
-          line[:LineNo] = i
+          line[:LineNo] = "#{i}-RA"
           line[:ItemCode] = "Return Authorization"
           line[:Qty] = 1
           if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
@@ -396,12 +396,12 @@ module Spree
       AVALARA_TRANSACTION_LOGGER.debug getTaxResult
 
       if getTaxResult == 'error in Tax' then
-        @myrtntax = "0.00"
+        @myrtntax = { TotalTax: "0.00" }
       else
         if getTaxResult["ResultCode"] = "Success"
           AVALARA_TRANSACTION_LOGGER.info "total tax"
           AVALARA_TRANSACTION_LOGGER.debug getTaxResult["TotalTax"].to_s
-          @myrtntax = getTaxResult["TotalTax"].to_s
+          @myrtntax = getTaxResult
         end
       end
       return @myrtntax
