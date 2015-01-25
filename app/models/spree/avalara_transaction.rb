@@ -141,7 +141,7 @@ module Spree
           myuserid = order_details.user_id
           AVALARA_TRANSACTION_LOGGER.debug myuserid
           myuser = Spree::User.find(myuserid)
-          myusecode = Spree::AvalaraEntityUseCode.where(:id => myuser.avalara_entity_use_code_id).first
+          myusecode = Spree::AvalaraEntityUseCode.find(myuser.avalara_entity_use_code_id)
         end
       rescue => e
         AVALARA_TRANSACTION_LOGGER.debug e
@@ -179,7 +179,7 @@ module Spree
 
           line[:Description] = line_item.name
           if line_item.tax_category.name
-            line[:TaxCode] = line_item.tax_category.description || "P0000000"
+            line[:TaxCode] = line_item.tax_category.tax_code || "P0000000"
           end
 
           AVALARA_TRANSACTION_LOGGER.info('about to check for shipped from')
@@ -278,12 +278,9 @@ module Spree
 
           line[:LineNo] = "#{i}-PR"
           line[:ItemCode] = "Promotion"
-          line[:Qty] = 1
-          if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
-            line[:Amount] = -adj.amount.to_f
-          else
-            line[:Amount] = adj.amount.to_f
-          end
+          line[:Qty] = 0
+          line[:Amount] = adj.amount.to_f
+          line[:Discounted] = adj.try(:promotion) ? true : false
           line[:OriginCode] = "Orig"
           line[:DestinationCode] = "Dest"
 
