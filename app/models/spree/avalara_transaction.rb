@@ -162,7 +162,7 @@ module Spree
           if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
             line[:Amount] = -line_item.total.to_f  # Returns should return the full value
           else
-            line[:Amount] = line_item.price.to_f  # Taxes should be calculated on price alone
+            line[:Amount] = line_item.total.to_f
           end
           line[:OriginCode] = "Orig"
           line[:DestinationCode] = "Dest"
