@@ -179,7 +179,7 @@ module Spree
 
           line[:Description] = line_item.name
           if line_item.tax_category.name
-            line[:TaxCode] = line_item.tax_category.tax_code || "P0000000"
+            line[:TaxCode] = line_item.tax_category.description || "P0000000"
           end
 
           AVALARA_TRANSACTION_LOGGER.info('about to check for shipped from')
