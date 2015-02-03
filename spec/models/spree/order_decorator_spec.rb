@@ -31,7 +31,7 @@ describe Spree::Order, type: :model do
 
   describe "#avalara_capture" do
     it "should response with Spree::Adjustment object" do
-      expect(@order.avalara_capture).to be_kind_of(Spree::Adjustment)
+      expect(@order.avalara_capture.first).to be_kind_of(Spree::Adjustment)
     end
     it "creates new avalara_transaction" do
       expect{@order.avalara_capture}.to change{Spree::AvalaraTransaction.count}.by(1)
@@ -40,7 +40,7 @@ describe Spree::Order, type: :model do
 
   describe "#avalara_capture_finalize" do
     it "should response with Spree::Adjustment object" do
-      expect(@order.avalara_capture_finalize).to be_kind_of(Spree::Adjustment)
+      expect(@order.avalara_capture_finalize.first).to be_kind_of(Spree::Adjustment)
     end
     it "creates new avalara_transaction" do
       expect{@order.avalara_capture_finalize}.to change{Spree::AvalaraTransaction.count}.by(1)
