@@ -26,15 +26,16 @@ Spree::ReturnAuthorization.class_eval do
 
       create_avalara_transaction_return_auth
 
-      order.adjustments.avalara_tax.destroy_all
+      order.all_adjustments.avalara_tax.destroy_all
 
       @rtn_tax = self.avalara_transaction.commit_avatax(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"), "ReturnOrder")
 
       RETURN_AUTHORIZATION_LOGGER.info 'tax amount'
       RETURN_AUTHORIZATION_LOGGER.debug @rtn_tax
+
       Spree::Adjustment.create(amount: @rtn_tax, label: 'Tax',adjustable: order, source: self.avalara_transaction, mandatory: true, eligible: true, order: order)
       order.reload.update!
-      order.adjustments.avalara_tax.last
+      order.all_adjustments.avalara_tax
     rescue => e
       RETURN_AUTHORIZATION_LOGGER.debug e
       RETURN_AUTHORIZATION_LOGGER.debug 'error in a avalara capture return_authorization'
@@ -47,14 +48,16 @@ Spree::ReturnAuthorization.class_eval do
     begin
       create_avalara_transaction_return_auth
 
-      order.adjustments.avalara_tax.destroy_all
+      order.all_adjustments.avalara_tax.destroy_all
 
       @rtn_tax = self.avalara_transaction.commit_avatax_final(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"), "ReturnOrder")
+
       RETURN_AUTHORIZATION_LOGGER.info 'tax amount'
       RETURN_AUTHORIZATION_LOGGER.debug @rtn_tax
+
       Spree::Adjustment.create(amount: @rtn_tax, label: 'Tax',adjustable: order, source: self.avalara_transaction, mandatory: true, eligible: true, order: order)
       order.reload.update!
-      order.adjustments.avalara_tax.last
+      order.all_adjustments.avalara_tax
     rescue => e
       RETURN_AUTHORIZATION_LOGGER.debug e
       RETURN_AUTHORIZATION_LOGGER.debug 'error in a avalara capture return_authorization'
