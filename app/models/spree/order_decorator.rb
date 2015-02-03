@@ -10,7 +10,8 @@ Spree::Order.class_eval do
   self.state_machine.after_transition :to => :complete,
                                       :do => :avalara_capture_finalize,
                                       :if => :avalara_eligible
- self.state_machine.after_transition :to => :canceled,
+
+  self.state_machine.after_transition :to => :canceled,
                                       :do => :cancel_status,
                                       :if => :avalara_eligible
 
