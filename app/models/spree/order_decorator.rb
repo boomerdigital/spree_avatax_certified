@@ -3,7 +3,7 @@ require 'logger'
 Spree::Order.class_eval do
 
   has_one :avalara_transaction, dependent: :destroy
-  self.state_machine.before_transition :to => :payment,
+  self.state_machine.before_transition :to => :confirm,
                                       :do => :avalara_capture,
                                       :if => :avalara_eligible
 
