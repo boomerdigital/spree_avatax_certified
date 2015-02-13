@@ -39,16 +39,18 @@ Spree::Order.class_eval do
       logger.info 'tax amount'
       logger.debug @rtn_tax
 
-      adjustments.create do |adjustment|
-        adjustment.source = avalara_transaction
-        adjustment.label = 'Tax'
-        adjustment.mandatory = true
-        adjustment.eligible = true
-        adjustment.amount = @rtn_tax
-        adjustment.order = self
+      unless @rtn_tax == "0"
+        adjustments.create do |adjustment|
+          adjustment.source = avalara_transaction
+          adjustment.label = 'Tax'
+          adjustment.mandatory = true
+          adjustment.eligible = true
+          adjustment.amount = @rtn_tax
+          adjustment.order = self
+        end
+        self.reload.update!
+        adjustments.avalara_tax.last
       end
-      self.reload.update!
-      adjustments.avalara_tax.last
     rescue => e
       logger.debug e
       logger.debug 'error in a avalara capture'
@@ -66,16 +68,18 @@ Spree::Order.class_eval do
       logger.info 'tax amount'
       logger.debug @rtn_tax
 
-      adjustments.create do |adjustment|
-        adjustment.source = avalara_transaction
-        adjustment.label = 'Tax'
-        adjustment.mandatory = true
-        adjustment.eligible = true
-        adjustment.amount = @rtn_tax
-        adjustment.order = self
+      unless @rtn_tax == "0"
+        adjustments.create do |adjustment|
+          adjustment.source = avalara_transaction
+          adjustment.label = 'Tax'
+          adjustment.mandatory = true
+          adjustment.eligible = true
+          adjustment.amount = @rtn_tax
+          adjustment.order = self
+        end
+        self.reload.update!
+        adjustments.avalara_tax.last
       end
-      self.reload.update!
-      adjustments.avalara_tax.last
     rescue => e
       logger.debug e
       logger.debug 'error in a avalara capture finalize'
