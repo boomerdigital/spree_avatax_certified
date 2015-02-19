@@ -8,21 +8,15 @@ module Spree
       end
 
       def get_file_txt_tax_svc
-        data = open("#{Rails.root}/log/tax_svc.log")
-
-        send_data data.read, filename: "tax_svc.log", disposition: 'attachment'
+        send_file "#{Rails.root}/log/tax_svc.log"
       end
 
       def get_file_post_order_to_avalara
-        data = open("#{Rails.root}/log/post_order_to_avalara.log")
-
-        send_data data.read, filename: "post_order_to_avalara.log", disposition: 'attachment'
+        send_file "#{Rails.root}/log/post_order_to_avalara.log"
       end
 
       def get_file_avalara_order
-        data = open("#{Rails.root}/log/avalara_order.log")
-
-        send_data data.read, filename: "avalara_order.log", disposition: 'attachment'
+        send_file "#{Rails.root}/log/avalara_order.log"
       end
 
       def erase_data
