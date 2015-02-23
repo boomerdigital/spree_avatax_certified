@@ -30,7 +30,18 @@ Spree::ItemAdjustments.class_eval do
       :additional_tax_total => additional_tax_total,
       :adjustment_total => promo_total + additional_tax_total + avalara_tax.sum(:amount),
       :updated_at => Time.now,
-    )
+      )
+
+    unless item.is_a? Spree::Order
+      case item
+      when Spree::LineItem
+        item_amount = item.discounted_amount
+      when Spree::Shipment
+        item_amount = item.discounted_cost
+      end
+      pre_tax_amount = item_amount
+      item.update_columns(pre_tax_amount: pre_tax_amount)
+    end
   end
 
 end
