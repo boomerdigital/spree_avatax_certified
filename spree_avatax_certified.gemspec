@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'spree_avatax_certified'
-  s.version     = '0.3.8'
+  s.version     = '0.3.9'
   s.summary     = 'Spree extension for Avalara tax calculation.'
   s.description = 'Spree extension for Avalara tax calculation.'
   s.required_ruby_version = '>= 1.9.3'
