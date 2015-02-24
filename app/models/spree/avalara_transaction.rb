@@ -140,7 +140,7 @@ module Spree
         if order_details.user_id != nil
           myuserid = order_details.user_id
           AVALARA_TRANSACTION_LOGGER.debug myuserid
-          myuser = Spree::LegacyUser.find(myuserid)
+          myuser = Spree::User.find(myuserid)
           myusecode = Spree::AvalaraEntityUseCode.find(myuser.avalara_entity_use_code_id)
         end
       rescue => e
@@ -282,10 +282,11 @@ module Spree
           line = Hash.new
           i += 1
 
-          line[:LineNo] = i
+          line[:LineNo] = "#{i}-PR"
           line[:ItemCode] = "Promotion"
           line[:Qty] = 0
           line[:Amount] = adj.amount.to_f
+          line[:Discounted] = adj.try(:promotion) ? true : false
           line[:OriginCode] = "Orig"
           line[:DestinationCode] = "Dest"
 
@@ -369,7 +370,7 @@ module Spree
       end
       gettaxes = {
         :CustomerCode => myuser ? myuser.id : "Guest",
-        :DocDate => Date.current.to_formatted_s(:db),
+        :DocDate => org_ord_date ? org_ord_date : Date.current.to_formatted_s(:db),
 
         :CompanyCode => Spree::Config.avatax_company_code,
         :CustomerUsageType => myusecode.try(:use_code),
@@ -395,15 +396,16 @@ module Spree
       mytax = TaxSvc.new
 
       getTaxResult = mytax.get_tax(gettaxes)
+
       AVALARA_TRANSACTION_LOGGER.debug getTaxResult
 
       if getTaxResult == 'error in Tax' then
-        @myrtntax = "0.00"
+        @myrtntax = { TotalTax: "0.00" }
       else
         if getTaxResult["ResultCode"] = "Success"
           AVALARA_TRANSACTION_LOGGER.info "total tax"
           AVALARA_TRANSACTION_LOGGER.debug getTaxResult["TotalTax"].to_s
-          @myrtntax = getTaxResult["TotalTax"].to_s
+          @myrtntax = getTaxResult
         end
       end
       return @myrtntax
