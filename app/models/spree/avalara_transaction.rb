@@ -151,130 +151,124 @@ module Spree
       i = 0
 
       if orderitems then
+        unless invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
+          orderitems.each do |line_item|
+            line = Hash.new
+            i += 1
 
-        orderitems.each do |line_item|
-          line = Hash.new
-          i += 1
-
-          line[:LineNo] = line_item.id
-          line[:ItemCode] = line_item.variant.sku
-          line[:Qty] = line_item.quantity
-          if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
-            line[:Amount] = -line_item.pre_tax_amount.to_f  # Returns should return the full value
-          else
+            line[:LineNo] = line_item.id
+            line[:ItemCode] = line_item.variant.sku
+            line[:Qty] = line_item.quantity
             line[:Amount] = line_item.pre_tax_amount.to_f
+            line[:OriginCode] = "Orig"
+            line[:DestinationCode] = "Dest"
+
+            AVALARA_TRANSACTION_LOGGER.info('about to check for User')
+            AVALARA_TRANSACTION_LOGGER.debug myusecode
+
+
+            if myusecode
+              line[:CustomerUsageType] = myusecode.try(:use_code)
+            end
+
+            AVALARA_TRANSACTION_LOGGER.info('after user check')
+
+            line[:Description] = line_item.name
+            if line_item.tax_category.name
+              line[:TaxCode] = line_item.tax_category.description || "P0000000"
+            end
+
+            AVALARA_TRANSACTION_LOGGER.info('about to check for shipped from')
+
+            shipped_from = order_details.inventory_units.where(:variant_id => line_item.id)
+
+            if Spree::StockLocation.find_by(name: 'default').nil?
+              location = Spree::StockLocation.create(name: "avatax origin", address1: origin["Address1"], address2: origin["Address2"], city: origin["City"], state_id: Spree::State.find_by_name(origin["Region"]).id, state_name: origin["Region"] , zipcode: origin["Zip5"], country_id: Spree::State.find_by_name(origin["Region"]).country_id)
+              AVALARA_TRANSACTION_LOGGER.info('avatax origin location created')
+            elsif Spree::StockLocation.find_by(name: 'default').city.nil? || Spree::StockLocation.first.city.nil?
+              location = Spree::StockLocation.first.update_attributes(address1: origin["Address1"], address2: origin["Address2"], city: origin["City"], state_id: Spree::State.find_by_name(origin["Region"]).id, state_name: origin["Region"] , zipcode: origin["Zip5"], country_id: Spree::State.find_by_name(origin["Region"]).country_id )
+              AVALARA_TRANSACTION_LOGGER.info('avatax origin location updated default')
+            else
+              location = Spree::StockLocation.find_by(name: 'default') || Spree::StockLocation.first
+              AVALARA_TRANSACTION_LOGGER.info('default location')
+            end
+
+            AVALARA_TRANSACTION_LOGGER.debug location
+
+            packages = Spree::Stock::Coordinator.new(order_details).packages
+
+            AVALARA_TRANSACTION_LOGGER.info('packages')
+            AVALARA_TRANSACTION_LOGGER.debug packages
+
+            stock_loc = nil
+
+            packages.each do |package|
+              next unless package.to_shipment.stock_location.stock_items.where(:variant_id => line_item.variant.id).exists?
+              stock_loc = package.to_shipment.stock_location
+              AVALARA_TRANSACTION_LOGGER.debug stock_loc
+            end
+
+            AVALARA_TRANSACTION_LOGGER.info('checked for shipped from')
+
+            if stock_loc
+              orig_ship_address = Hash.new
+              orig_ship_address[:AddressCode] = line_item.id
+              orig_ship_address[:Line1] = stock_loc.address1
+              orig_ship_address[:City] = stock_loc.city
+              orig_ship_address[:PostalCode] = stock_loc.zipcode
+              orig_ship_address[:Country] = Country.find(stock_loc.country_id).iso
+
+              line[:OriginCode] = line_item.id
+              AVALARA_TRANSACTION_LOGGER.debug orig_ship_address.to_xml
+
+              addresses<<orig_ship_address
+            elsif location
+              orig_ship_address = Hash.new
+              orig_ship_address[:AddressCode] = line_item.id
+              orig_ship_address[:Line1] = location.address1
+              orig_ship_address[:City] = location.city
+              orig_ship_address[:PostalCode] = location.zipcode
+              orig_ship_address[:Country] = Country.find(location.country_id).iso
+
+              line[:OriginCode] = line_item.id
+              AVALARA_TRANSACTION_LOGGER.debug orig_ship_address.to_xml
+              addresses<<orig_ship_address
+            end
+
+            AVALARA_TRANSACTION_LOGGER.debug line.to_xml
+
+            tax_line_items<<line
           end
-          line[:OriginCode] = "Orig"
-          line[:DestinationCode] = "Dest"
-
-          AVALARA_TRANSACTION_LOGGER.info('about to check for User')
-          AVALARA_TRANSACTION_LOGGER.debug myusecode
-
-
-          if myusecode
-            line[:CustomerUsageType] = myusecode.try(:use_code)
-          end
-
-          AVALARA_TRANSACTION_LOGGER.info('after user check')
-
-          line[:Description] = line_item.name
-          if line_item.tax_category.name
-            line[:TaxCode] = line_item.tax_category.description || "P0000000"
-          end
-
-          AVALARA_TRANSACTION_LOGGER.info('about to check for shipped from')
-
-          shipped_from = order_details.inventory_units.where(:variant_id => line_item.id)
-
-          if Spree::StockLocation.find_by(name: 'default').nil?
-            location = Spree::StockLocation.create(name: "avatax origin", address1: origin["Address1"], address2: origin["Address2"], city: origin["City"], state_id: Spree::State.find_by_name(origin["Region"]).id, state_name: origin["Region"] , zipcode: origin["Zip5"], country_id: Spree::State.find_by_name(origin["Region"]).country_id)
-            AVALARA_TRANSACTION_LOGGER.info('avatax origin location created')
-          elsif Spree::StockLocation.find_by(name: 'default').city.nil? || Spree::StockLocation.first.city.nil?
-            location = Spree::StockLocation.first.update_attributes(address1: origin["Address1"], address2: origin["Address2"], city: origin["City"], state_id: Spree::State.find_by_name(origin["Region"]).id, state_name: origin["Region"] , zipcode: origin["Zip5"], country_id: Spree::State.find_by_name(origin["Region"]).country_id )
-            AVALARA_TRANSACTION_LOGGER.info('avatax origin location updated default')
-          else
-            location = Spree::StockLocation.find_by(name: 'default') || Spree::StockLocation.first
-            AVALARA_TRANSACTION_LOGGER.info('default location')
-          end
-
-          AVALARA_TRANSACTION_LOGGER.debug location
-
-          packages = Spree::Stock::Coordinator.new(order_details).packages
-
-          AVALARA_TRANSACTION_LOGGER.info('packages')
-          AVALARA_TRANSACTION_LOGGER.debug packages
-
-          stock_loc = nil
-
-          packages.each do |package|
-            next unless package.to_shipment.stock_location.stock_items.where(:variant_id => line_item.variant.id).exists?
-            stock_loc = package.to_shipment.stock_location
-            AVALARA_TRANSACTION_LOGGER.debug stock_loc
-          end
-
-          AVALARA_TRANSACTION_LOGGER.info('checked for shipped from')
-
-          if stock_loc
-            orig_ship_address = Hash.new
-            orig_ship_address[:AddressCode] = line_item.id
-            orig_ship_address[:Line1] = stock_loc.address1
-            orig_ship_address[:City] = stock_loc.city
-            orig_ship_address[:PostalCode] = stock_loc.zipcode
-            orig_ship_address[:Country] = Country.find(stock_loc.country_id).iso
-
-            line[:OriginCode] = line_item.id
-            AVALARA_TRANSACTION_LOGGER.debug orig_ship_address.to_xml
-
-            addresses<<orig_ship_address
-          elsif location
-            orig_ship_address = Hash.new
-            orig_ship_address[:AddressCode] = line_item.id
-            orig_ship_address[:Line1] = location.address1
-            orig_ship_address[:City] = location.city
-            orig_ship_address[:PostalCode] = location.zipcode
-            orig_ship_address[:Country] = Country.find(location.country_id).iso
-
-            line[:OriginCode] = line_item.id
-            AVALARA_TRANSACTION_LOGGER.debug orig_ship_address.to_xml
-            addresses<<orig_ship_address
-          end
-
-          AVALARA_TRANSACTION_LOGGER.debug line.to_xml
-
-          tax_line_items<<line
         end
       end
 
       AVALARA_TRANSACTION_LOGGER.info('running order details')
       if order_details then
         AVALARA_TRANSACTION_LOGGER.info('order adjustments')
+        unless invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
+          order_details.shipments.each do |shipment|
 
-        order_details.shipments.each do |shipment|
+            line = Hash.new
+            i += 1
 
-          line = Hash.new
-          i += 1
-
-          line[:LineNo] = "#{i}-FR"
-          line[:ItemCode] = "Shipping"
-          line[:Qty] = 1
-          if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
-            line[:Amount] = -shipment.cost.to_f
-          else
+            line[:LineNo] = "#{i}-FR"
+            line[:ItemCode] = "Shipping"
+            line[:Qty] = 1
             line[:Amount] = shipment.cost.to_f
+            line[:OriginCode] = "Orig"
+            line[:DestinationCode] = "Dest"
+
+            if myusecode
+              line[:CustomerUsageType] = myusecode.try(:use_code)
+            end
+
+            line[:Description] = "Shipping Charge"
+            line[:TaxCode] = shipment.shipping_method.tax_code
+
+            AVALARA_TRANSACTION_LOGGER.debug line.to_xml
+
+            tax_line_items<<line
           end
-          line[:OriginCode] = "Orig"
-          line[:DestinationCode] = "Dest"
-
-          if myusecode
-            line[:CustomerUsageType] = myusecode.try(:use_code)
-          end
-
-          line[:Description] = "Shipping Charge"
-          line[:TaxCode] = shipment.shipping_method.tax_code
-
-          AVALARA_TRANSACTION_LOGGER.debug line.to_xml
-
-          tax_line_items<<line
         end
 
         order_details.adjustments.promotion.each do |adj|
