@@ -2,7 +2,7 @@ module AvataxHelper
   class AvataxLog
     def initialize(path_name, file_name, log_info = nil, schedule = nil)
       schedule = "weekly" unless schedule != nil
-      @logger ||= Logger.new('log/' + path_name + '.txt', schedule)
+      @logger ||= Logger.new("#{Rails.root}/log/#{path_name}.log", schedule)
       progname(file_name.split("/").last.chomp(".rb"))
       info(log_info) unless log_info.nil?
     end
