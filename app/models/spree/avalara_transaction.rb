@@ -166,7 +166,6 @@ module Spree
             AVALARA_TRANSACTION_LOGGER.info('about to check for User')
             AVALARA_TRANSACTION_LOGGER.debug myusecode
 
-
             if myusecode
               line[:CustomerUsageType] = myusecode.try(:use_code)
             end
