@@ -151,7 +151,6 @@ module Spree
       i = 0
 
       if orderitems then
-
         orderitems.each do |line_item|
           line = Hash.new
           i += 1
