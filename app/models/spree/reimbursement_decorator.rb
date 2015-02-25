@@ -21,6 +21,7 @@ Spree::Reimbursement.class_eval do
 
   def avalara_capture
     REIMBURSEMENT_LOGGER.debug 'avalara capture reimbursement'
+
     begin
       create_avalara_transaction_return_auth
 
