@@ -295,33 +295,33 @@ module Spree
           tax_line_items<<line
         end
 
-      #   order_details.reimbursements.each do |reimbursement|
+        order_details.reimbursements.each do |reimbursement|
 
-      #     line = Hash.new
-      #     i += 1
-      #     line[:LineNo] = i
-      #     line[:ItemCode] = "Reimbursement"
-      #     line[:Qty] = "0"
-      #     if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
-      #       line[:Amount] = -reimbursement.total.to_f
-      #     else
-      #       line[:Amount] = reimbursement.total.to_f
+          line = Hash.new
+          i += 1
+          line[:LineNo] = "#{i}-RA"
+          line[:ItemCode] = "Reimbursement"
+          line[:Qty] = 1
+          if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
+            line[:Amount] = -reimbursement.total.to_f
+          else
+            line[:Amount] = reimbursement.total.to_f
 
-      #     end
-      #     line[:OriginCode] = "Orig"
-      #     line[:DestinationCode] = "Dest"
+          end
+          line[:OriginCode] = "Orig"
+          line[:DestinationCode] = "Dest"
 
           if myusecode
             line[:CustomerUsageType] = myusecode.try(:use_code)
           end
 
-      #     line[:Description] = reimbursement.customer_return.return_authorizations.first.reason.name
-      #     line[:TaxCode] = ""
+          line[:Description] = "Reimbursement"
+          line[:TaxCode] = ""
 
-      #     AVALARA_TRANSACTION_LOGGER.debug line.to_xml
+          AVALARA_TRANSACTION_LOGGER.debug line.to_xml
 
-      #     tax_line_items<<line
-      #   end
+          tax_line_items<<line
+        end
       end
 
       if order_details.ship_address_id.nil?
