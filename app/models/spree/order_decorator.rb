@@ -41,7 +41,6 @@ Spree::Order.class_eval do
       logger.info 'tax amount'
       logger.debug @rtn_tax
 
-      shipping_tax = 0
       promotion_tax = 0
       return_tax = 0
 
@@ -58,7 +57,15 @@ Spree::Order.class_eval do
               adjustment.order = self
             end
           elsif tax_line["LineNo"].include? "-FR"
-            shipping_tax += tax_line["TaxCalculated"].to_f
+            shipment = Spree::Shipment.find(tax_line["LineNo"].split("-").first)
+            shipment.adjustments.create do |adjustment|
+              adjustment.source = avalara_transaction
+              adjustment.label = 'Shipping Tax'
+              adjustment.mandatory = true
+              adjustment.eligible = true
+              adjustment.amount = tax_line["TaxCalculated"].to_f
+              adjustment.order = self
+            end
           elsif tax_line["LineNo"].include? "-PR"
             promotion_tax += tax_line["TaxCalculated"].to_f
           elsif tax_line["LineNo"].include? "-RA"
@@ -66,16 +73,6 @@ Spree::Order.class_eval do
           end
         end
 
-        if shipping_tax != 0
-          adjustments.create do |adjustment|
-            adjustment.source = avalara_transaction
-            adjustment.label = 'Shipping Tax'
-            adjustment.mandatory = true
-            adjustment.eligible = true
-            adjustment.amount = shipping_tax
-            adjustment.order = self
-          end
-        end
         if promotion_tax != 0
           adjustments.create do |adjustment|
             adjustment.source = avalara_transaction
@@ -116,9 +113,9 @@ Spree::Order.class_eval do
       logger.info 'tax amount'
       logger.debug @rtn_tax
 
-      shipping_tax = 0
       promotion_tax = 0
       return_tax = 0
+
       unless @rtn_tax == "0"
         @rtn_tax["TaxLines"].each do |tax_line|
           if !tax_line["LineNo"].include? "-"
@@ -132,7 +129,15 @@ Spree::Order.class_eval do
               adjustment.order = self
             end
           elsif tax_line["LineNo"].include? "-FR"
-            shipping_tax += tax_line["TaxCalculated"].to_f
+            shipment = Spree::Shipment.find(tax_line["LineNo"].split("-").first)
+            shipment.adjustments.create do |adjustment|
+              adjustment.source = avalara_transaction
+              adjustment.label = 'Shipping Tax'
+              adjustment.mandatory = true
+              adjustment.eligible = true
+              adjustment.amount = tax_line["TaxCalculated"].to_f
+              adjustment.order = self
+            end
           elsif tax_line["LineNo"].include? "-PR"
             promotion_tax += tax_line["TaxCalculated"].to_f
           elsif tax_line["LineNo"].include? "-RA"
@@ -140,16 +145,6 @@ Spree::Order.class_eval do
           end
         end
 
-        if shipping_tax != 0
-          adjustments.create do |adjustment|
-            adjustment.source = avalara_transaction
-            adjustment.label = 'Shipping Tax'
-            adjustment.mandatory = true
-            adjustment.eligible = true
-            adjustment.amount = shipping_tax
-            adjustment.order = self
-          end
-        end
         if promotion_tax != 0
           adjustments.create do |adjustment|
             adjustment.source = avalara_transaction

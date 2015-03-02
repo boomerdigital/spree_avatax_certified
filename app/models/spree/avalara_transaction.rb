@@ -248,9 +248,8 @@ module Spree
           order_details.shipments.each do |shipment|
 
             line = Hash.new
-            i += 1
 
-            line[:LineNo] = "#{i}-FR"
+            line[:LineNo] = "#{shipment.id}-FR"
             line[:ItemCode] = "Shipping"
             line[:Qty] = 1
             line[:Amount] = shipment.cost.to_f
@@ -300,7 +299,7 @@ module Spree
 
             line = Hash.new
             i += 1
-            line[:LineNo] = "#{i}-RA"
+            line[:LineNo] = "#{return_item.inventory_unit.line_item_id}-RA-#{i}"
             line[:ItemCode] = "Reimbursement"
             line[:Qty] = 1
             if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"

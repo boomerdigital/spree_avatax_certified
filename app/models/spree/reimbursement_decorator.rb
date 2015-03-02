@@ -21,11 +21,8 @@ Spree::Reimbursement.class_eval do
 
   def avalara_capture
     REIMBURSEMENT_LOGGER.debug 'avalara capture reimbursement'
-    binding.pry
     begin
       create_avalara_transaction_return_auth
-
-      order.all_adjustments.avalara_tax.destroy_all
 
       @rtn_tax = Spree::AvalaraTransaction.find_by_reimbursement_id(self.id).commit_avatax(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"), "ReturnInvoice")
 
@@ -33,11 +30,9 @@ Spree::Reimbursement.class_eval do
       REIMBURSEMENT_LOGGER.info 'tax amount'
       REIMBURSEMENT_LOGGER.debug @rtn_tax
 
-      unless @rtn_tax == "0"
-        Spree::Adjustment.create(amount: @rtn_tax, label: 'Tax',adjustable: order, source: Spree::AvalaraTransaction.find_by_reimbursement_id(self.id), mandatory: true, eligible: true, order: order)
-        order.reload.update!
-        order.all_adjustments.avalara_tax
-      end
+
+      order.reload.update!
+      order.all_adjustments.avalara_tax
     rescue => e
       REIMBURSEMENT_LOGGER.debug e
       REIMBURSEMENT_LOGGER.debug 'error in a avalara capture reimbursement'
@@ -46,23 +41,16 @@ Spree::Reimbursement.class_eval do
 
   def avalara_capture_finalize
     REIMBURSEMENT_LOGGER.debug 'avalara capture reimbursement avalara_capture_finalize'
-
     begin
       create_avalara_transaction_return_auth
-
-      order.all_adjustments.avalara_tax.destroy_all
 
       @rtn_tax = self.avalara_transaction.commit_avatax_final(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"), "ReturnInvoice")
 
       REIMBURSEMENT_LOGGER.info 'tax amount'
       REIMBURSEMENT_LOGGER.debug @rtn_tax
 
-      unless @rtn_tax == "0"
-        Spree::Adjustment.create(amount: @rtn_tax, label: 'Tax',adjustable: order, source: self.avalara_transaction, mandatory: true, eligible: true, order: order)
-
-        order.reload.update!
-        order.all_adjustments.avalara_tax
-      end
+      order.reload.update!
+      order.all_adjustments.avalara_tax
     rescue => e
       REIMBURSEMENT_LOGGER.debug e
       REIMBURSEMENT_LOGGER.debug 'error in a avalara capture reimbursement'
