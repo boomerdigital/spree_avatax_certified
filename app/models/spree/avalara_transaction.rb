@@ -174,7 +174,7 @@ module Spree
 
             line[:Description] = line_item.name
             if line_item.tax_category.name
-              line[:TaxCode] = line_item.tax_category.description || "P0000000"
+              line[:TaxCode] = line_item.tax_category.tax_code || "P0000000"
             end
 
             AVALARA_TRANSACTION_LOGGER.info('about to check for shipped from')
@@ -296,31 +296,34 @@ module Spree
         end
 
         order_details.reimbursements.each do |reimbursement|
+          reimbursement.return_items.each do |return_item|
 
-          line = Hash.new
-          i += 1
-          line[:LineNo] = "#{i}-RA"
-          line[:ItemCode] = "Reimbursement"
-          line[:Qty] = 1
-          if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
-            line[:Amount] = -reimbursement.total.to_f
-          else
-            line[:Amount] = reimbursement.total.to_f
+            line = Hash.new
+            i += 1
+            line[:LineNo] = "#{i}-RA"
+            line[:ItemCode] = "Reimbursement"
+            line[:Qty] = 1
+            if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
+              line[:Amount] = -return_item.pre_tax_amount.to_f
+            else
+              line[:Amount] = return_item.pre_tax_amount.to_f
+            end
+            line[:OriginCode] = "Orig"
+            line[:DestinationCode] = "Dest"
 
+            if myusecode
+              line[:CustomerUsageType] = myusecode.try(:use_code)
+            end
+
+            line[:Description] = "Reimbursement"
+            if return_item.variant.tax_category.tax_code.nil?
+              line[:TaxCode] = "P0000000"
+            else
+              line[:TaxCode] = return_item.variant.tax_category.tax_code
+            end
+            AVALARA_TRANSACTION_LOGGER.debug line.to_xml
+            tax_line_items<<line
           end
-          line[:OriginCode] = "Orig"
-          line[:DestinationCode] = "Dest"
-
-          if myusecode
-            line[:CustomerUsageType] = myusecode.try(:use_code)
-          end
-
-          line[:Description] = "Reimbursement"
-          line[:TaxCode] = ""
-
-          AVALARA_TRANSACTION_LOGGER.debug line.to_xml
-
-          tax_line_items<<line
         end
       end
 
