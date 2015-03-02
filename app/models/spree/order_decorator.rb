@@ -55,6 +55,7 @@ Spree::Order.class_eval do
               adjustment.eligible = true
               adjustment.amount = tax_line["TaxCalculated"]
               adjustment.order = self
+              adjustment.state = "closed"
             end
           elsif tax_line["LineNo"].include? "-FR"
             shipment = Spree::Shipment.find(tax_line["LineNo"].split("-").first)
@@ -65,6 +66,7 @@ Spree::Order.class_eval do
               adjustment.eligible = true
               adjustment.amount = tax_line["TaxCalculated"].to_f
               adjustment.order = self
+              adjustment.state = "closed"
             end
           elsif tax_line["LineNo"].include? "-PR"
             promotion_tax += tax_line["TaxCalculated"].to_f
@@ -127,6 +129,7 @@ Spree::Order.class_eval do
               adjustment.eligible = true
               adjustment.amount = tax_line["TaxCalculated"]
               adjustment.order = self
+              adjustment.state = "closed"
             end
           elsif tax_line["LineNo"].include? "-FR"
             shipment = Spree::Shipment.find(tax_line["LineNo"].split("-").first)
@@ -137,6 +140,7 @@ Spree::Order.class_eval do
               adjustment.eligible = true
               adjustment.amount = tax_line["TaxCalculated"].to_f
               adjustment.order = self
+              adjustment.state = "closed"
             end
           elsif tax_line["LineNo"].include? "-PR"
             promotion_tax += tax_line["TaxCalculated"].to_f

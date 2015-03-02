@@ -1,6 +1,6 @@
 <% if order.line_item_adjustments.avalara_tax.exists? %>
   <tfoot id="avalara-price-adjustments" data-hook="order_details_avalara_price_adjustments">
-    <% order.line_item_adjustments.avalara_tax.eligible.group_by(&:label).each do |label, adjustments| %>
+    <% order.all_adjustments.avalara_tax.eligible.group_by(&:label).each do |label, adjustments| %>
     <tr class="total">
       <td colspan="4"><strong><%= label %></strong></td>
       <td class="total"><span><%= Spree::Money.new(adjustments.sum(&:amount), currency: order.currency) %></span></td>
