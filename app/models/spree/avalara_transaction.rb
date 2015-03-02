@@ -295,8 +295,8 @@ module Spree
         end
 
         order_details.reimbursements.each do |reimbursement|
+          next if reimbursement.reimbursement_status == "reimbursed"
           reimbursement.return_items.each do |return_item|
-
             line = Hash.new
             i += 1
             line[:LineNo] = "#{return_item.inventory_unit.line_item_id}-RA-#{i}"

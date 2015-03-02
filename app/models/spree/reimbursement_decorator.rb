@@ -24,8 +24,7 @@ Spree::Reimbursement.class_eval do
     begin
       create_avalara_transaction_return_auth
 
-      @rtn_tax = Spree::AvalaraTransaction.find_by_reimbursement_id(self.id).commit_avatax(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"), "ReturnInvoice")
-
+      @rtn_tax = Spree::AvalaraTransaction.find_by_reimbursement_id(self.id).commit_avatax(order.line_items, order, order.number.to_s + "." + self.id.to_s, order.completed_at.strftime("%F"), "ReturnInvoice")
 
       REIMBURSEMENT_LOGGER.info 'tax amount'
       REIMBURSEMENT_LOGGER.debug @rtn_tax
@@ -44,7 +43,7 @@ Spree::Reimbursement.class_eval do
     begin
       create_avalara_transaction_return_auth
 
-      @rtn_tax = self.avalara_transaction.commit_avatax_final(order.line_items, order, order.number.to_s + ":" + self.id.to_s, order.completed_at.strftime("%F"), "ReturnInvoice")
+      @rtn_tax = self.avalara_transaction.commit_avatax_final(order.line_items, order, order.number.to_s + "." + self.id.to_s, order.completed_at.strftime("%F"), "ReturnInvoice")
 
       REIMBURSEMENT_LOGGER.info 'tax amount'
       REIMBURSEMENT_LOGGER.debug @rtn_tax
