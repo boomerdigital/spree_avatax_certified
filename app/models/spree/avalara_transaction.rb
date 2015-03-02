@@ -300,7 +300,7 @@ module Spree
             line = Hash.new
             i += 1
             line[:LineNo] = "#{return_item.inventory_unit.line_item_id}-RA-#{i}"
-            line[:ItemCode] = "Reimbursement"
+            line[:ItemCode] = return_item.inventory_unit.line_item.sku || "Reimbursement"
             line[:Qty] = 1
             if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
               line[:Amount] = -return_item.pre_tax_amount.to_f
