@@ -11,6 +11,8 @@ describe Spree::Reimbursement, type: :model do
   before :each do
     MyConfigPreferences.set_preferences
     @order = FactoryGirl.create(:completed_order_with_totals)
+    to_address = Spree::Address.create(firstname: "Allison", lastname: "Reilly", address1: "220 Paul W Bryant Dr", city: "Tuscaloosa", zipcode: "35401", phone: "9733492462", state_name: "Alabama", state_id: 39, country_id: 1)
+    @order.update_attributes(ship_address: to_address, bill_address: to_address)
     @order.shipments.each do |shipment|
       shipment.inventory_units.update_all state: 'shipped'
       shipment.update_column('state', 'shipped')

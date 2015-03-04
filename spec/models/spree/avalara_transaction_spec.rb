@@ -16,8 +16,7 @@ describe Spree::AvalaraTransaction, :type => :model do
     line_item.tax_category.update_attributes(name: "Clothing", description: "PC030000")
     @order.line_items << line_item
     to_address = Spree::Address.create(firstname: "Allison", lastname: "Reilly", address1: "220 Paul W Bryant Dr", city: "Tuscaloosa", zipcode: "35401", phone: "9733492462", state_name: "Alabama", state_id: 39, country_id: 1)
-    @order.bill_address = to_address
-    @order.ship_address = to_address
+    @order.update_attributes(ship_address: to_address, bill_address: to_address)
   end
 
   describe "#rnt_tax" do
@@ -35,21 +34,21 @@ describe Spree::AvalaraTransaction, :type => :model do
   describe "#lookup_avatax" do
     it "should look up avatax" do
       @order.avalara_capture
-      expect(@order.avalara_transaction.lookup_avatax).to eq("0.4")
+      expect(@order.avalara_transaction.lookup_avatax["TotalTax"]).to eq("0.4")
     end
   end
 
   describe "#commit_avatax" do
     it "should commit avatax" do
       @order.avalara_capture
-      expect(@order.avalara_transaction.commit_avatax(@order.line_items, @order)).to eq("0.4")
+      expect(@order.avalara_transaction.commit_avatax(@order.line_items, @order)["TotalTax"]).to eq("0.4")
     end
   end
 
   describe "#commit_avatax_final" do
     it "should commit avatax final" do
       @order.avalara_capture
-      expect(@order.avalara_transaction.commit_avatax_final(@order.line_items, @order, @order.number.to_s + ":" + @order.id.to_s, @order.completed_at)).to eq("0.4")
+      expect(@order.avalara_transaction.commit_avatax_final(@order.line_items, @order, @order.number.to_s + ":" + @order.id.to_s, @order.completed_at)["TotalTax"]).to eq("0.4")
     end
     it "should fail to commit to avatax if settings are false" do
       Spree::Config.avatax_document_commit = false
