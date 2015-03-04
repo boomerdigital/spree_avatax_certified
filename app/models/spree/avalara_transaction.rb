@@ -215,11 +215,7 @@ module Spree
       line[:LineNo] = "#{return_item.inventory_unit.line_item_id}-RA-#{return_item.reimbursement_id}"
       line[:ItemCode] = return_item.inventory_unit.line_item.sku || "Reimbursement"
       line[:Qty] = 1
-      if invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
-        line[:Amount] = -return_item.pre_tax_amount.to_f
-      else
-        line[:Amount] = return_item.pre_tax_amount.to_f
-      end
+      line[:Amount] = -return_item.pre_tax_amount.to_f
       line[:OriginCode] = "Orig"
       line[:DestinationCode] = "Dest"
 
