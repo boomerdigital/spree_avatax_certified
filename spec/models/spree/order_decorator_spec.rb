@@ -5,6 +5,7 @@ describe Spree::Order, type: :model do
   it { should have_one :avalara_transaction }
 
   let(:order_with_line_items) {FactoryGirl.create(:order_with_line_items)}
+
   before :each do
     MyConfigPreferences.set_preferences
     stock_location = FactoryGirl.create(:stock_location)
