@@ -7,6 +7,7 @@ module Spree
 
     belongs_to :order
     belongs_to :reimbursement
+    belongs_to :refund
     validates :order, presence: true
     has_one :adjustment, as: :source
 
@@ -239,6 +240,22 @@ module Spree
       return line
     end
 
+    def refund_line(refund)
+      line = Hash.new
+      line[:LineNo] = "#{refund.id}-RA"
+      line[:ItemCode] = refund.transaction_id || "Refund"
+      line[:Qty] = 1
+      line[:Amount] = -refund.pre_tax_amount.to_f
+      line[:OriginCode] = "Orig"
+      line[:DestinationCode] = "Dest"
+
+      line[:CustomerUsageType] = myusecode.try(:use_code)
+
+      line[:Description] = "Refund"
+      AVALARA_TRANSACTION_LOGGER.debug line.to_xml
+      return line
+    end
+
     def myusecode
       begin
         if order.user_id != nil
@@ -393,7 +410,7 @@ module Spree
         :ReferenceCode => order_details.number,
         :DetailLevel => "Tax",
         :Commit => commit,
-        :DocType => invoice_detail ? invoice_detail : "SalesInvoice",
+        :DocType => invoice_detail ? invoice_detail : "SalesOrder",
         :Addresses => addresses,
         :Lines => tax_line_items
       }
@@ -438,6 +455,11 @@ module Spree
             tax_line_items<<reimbursement_return_item_line(return_item)
           end
         end
+
+        order_details.refunds.each do |refund|
+          next unless refund.reimbursement_id.nil?
+          tax_line_items<<refund_line(refund)
+        end
       end
 
       if order_details.ship_address.nil?
@@ -467,7 +489,7 @@ module Spree
         :ReferenceCode => order_details.number,
         :DetailLevel => "Tax",
         :Commit => commit,
-        :DocType => "ReturnInvoice",
+        :DocType => invoice_detail ? invoice_detail : "ReturnOrder",
         :Addresses => addresses,
         :Lines => tax_line_items
       }
