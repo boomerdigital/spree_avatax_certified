@@ -183,16 +183,13 @@ module Spree
 
     def shipment_line(shipment)
       line = Hash.new
-
       line[:LineNo] = "#{shipment.id}-FR"
       line[:ItemCode] = "Shipping"
       line[:Qty] = 1
       line[:Amount] = shipment.cost.to_f
       line[:OriginCode] = "Orig"
       line[:DestinationCode] = "Dest"
-
       line[:CustomerUsageType] = myusecode.try(:use_code)
-
       line[:Description] = "Shipping Charge"
       line[:TaxCode] = shipment.shipping_method.tax_code
 
@@ -209,9 +206,7 @@ module Spree
       line[:Discounted] = promo.try(:promotion) ? true : false
       line[:OriginCode] = "Orig"
       line[:DestinationCode] = "Dest"
-
       line[:CustomerUsageType] = myusecode.try(:use_code)
-
       line[:Description] = promo.label
       line[:TaxCode] = ""
 
@@ -227,15 +222,14 @@ module Spree
       line[:Amount] = -return_item.pre_tax_amount.to_f
       line[:OriginCode] = "Orig"
       line[:DestinationCode] = "Dest"
-
       line[:CustomerUsageType] = myusecode.try(:use_code)
-
       line[:Description] = "Reimbursement"
       if return_item.variant.tax_category.tax_code.nil?
         line[:TaxCode] = "P0000000"
       else
         line[:TaxCode] = return_item.variant.tax_category.tax_code
       end
+
       AVALARA_TRANSACTION_LOGGER.debug line.to_xml
       return line
     end
@@ -248,10 +242,9 @@ module Spree
       line[:Amount] = -refund.pre_tax_amount.to_f
       line[:OriginCode] = "Orig"
       line[:DestinationCode] = "Dest"
-
       line[:CustomerUsageType] = myusecode.try(:use_code)
-
       line[:Description] = "Refund"
+
       AVALARA_TRANSACTION_LOGGER.debug line.to_xml
       return line
     end
@@ -337,9 +330,7 @@ module Spree
           AVALARA_TRANSACTION_LOGGER.info('after user check')
 
           line[:Description] = line_item.name
-          if line_item.tax_category.name
-            line[:TaxCode] = line_item.tax_category.tax_code || "P0000000"
-          end
+          line[:TaxCode] = line_item.tax_category.try(:tax_code) || "P0000000"
 
           AVALARA_TRANSACTION_LOGGER.info('about to check for shipped from')
 
