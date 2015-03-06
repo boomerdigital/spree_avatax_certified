@@ -61,8 +61,14 @@ describe Spree::Order, type: :model do
       order_with_line_items.state = 'delivery'
     end
     it "should do avalara_capture" do
+      order_with_line_items.should be_delivery
       expect(order_with_line_items).to receive(:avalara_capture)
       order_with_line_items.next!
+    end
+    it "should be at state payment" do
+      order_with_line_items.next!
+      order_with_line_items.should be_payment
+
     end
   end
   context "complete" do
@@ -72,6 +78,10 @@ describe Spree::Order, type: :model do
     it "should do avalara_capture" do
       expect(@order).to receive(:avalara_capture_finalize)
       @order.next!
+    end
+    it "should be at state complete" do
+      @order.next!
+      @order.should be_complete
     end
   end
 end
