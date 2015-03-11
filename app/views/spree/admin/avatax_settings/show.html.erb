@@ -1,8 +1,7 @@
-<%= render :partial => 'spree/admin/shared/configuration_menu' %>
 <% origin = JSON.parse(Spree::Config.avatax_origin) || {} %>
 <h1><%= "Avalara Settings" %></h1>
 
-<table>
+<table class="table table-bordered">
   <tr>
     <th scope="row"><%= t("avatax_company_code") %>:</th>
     <td><%= Spree::Config.avatax_company_code %></td>

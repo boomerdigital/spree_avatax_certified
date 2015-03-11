@@ -1,5 +1,5 @@
 Deface::Override.new(
-  virtual_path:  'spree/admin/shared/_configuration_menu',
+  virtual_path:  'spree/admin/shared/sub_menu/_configuration',
   name:          'add_avalara_admin_menu_links',
   insert_bottom: "[data-hook='admin_configurations_sidebar_menu']"
 ) do
