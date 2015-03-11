@@ -270,7 +270,7 @@ module Spree
           end
         end
 
-        order_details.adjustments.promotion.each do |adj|
+        order_details.all_adjustments.promotion.each do |adj|
 
           line = Hash.new
           i += 1
