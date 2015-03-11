@@ -1,11 +1,11 @@
 SpreeAvataxCertified
 ===========
-
+UNDER CONSTRUCTION
 
 Installation
 ------------
 ```ruby
-gem 'spree_avatax_certified', github: 'railsdog/spree_avatax_certified', branch: '2-4-stable'
+gem 'spree_avatax_certified', github: 'railsdog/spree_avatax_certified', branch: '3-0-stable'
 ```
 ```shell
 bundle install
