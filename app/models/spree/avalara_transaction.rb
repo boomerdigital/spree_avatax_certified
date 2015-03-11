@@ -395,7 +395,7 @@ module Spree
         :CompanyCode => Spree::Config.avatax_company_code,
         :CustomerUsageType => myusecode.try(:use_code),
         :ExemptionNo => order_details.user.try(:exemption_number),
-        :Client =>  AVATAX_CLIENT_VERSION || "SpreeExtV2.4",
+        :Client =>  AVATAX_CLIENT_VERSION || "SpreeExtV3.0",
         :DocCode => doc_code ? doc_code : order_details.number,
 
         :ReferenceCode => order_details.number,
@@ -474,7 +474,7 @@ module Spree
         :CompanyCode => Spree::Config.avatax_company_code,
         :CustomerUsageType => myusecode.try(:use_code),
         :ExemptionNo => order_details.user.try(:exemption_number),
-        :Client =>  AVATAX_CLIENT_VERSION || "SpreeExtV2.4",
+        :Client =>  AVATAX_CLIENT_VERSION || "SpreeExtV3.0",
         :DocCode => doc_code ? doc_code : order_details.number,
 
         :ReferenceCode => order_details.number,
