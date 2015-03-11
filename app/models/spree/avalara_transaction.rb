@@ -148,7 +148,7 @@ module Spree
       orig_ship_address[:Line1] = origin.address1
       orig_ship_address[:City] = origin.city
       orig_ship_address[:PostalCode] = origin.zipcode
-      orig_ship_address[:Country] = Country.find(origin.country_id).iso
+      orig_ship_address[:Country] = Spree::Country.find(origin.country_id).iso
 
       AVALARA_TRANSACTION_LOGGER.debug orig_ship_address.to_xml
       return orig_ship_address
@@ -162,7 +162,7 @@ module Spree
         shipping_address[:Line2] = order.ship_address.address2
         shipping_address[:City] = order.ship_address.city
         shipping_address[:Region] = order.ship_address.state_text
-        shipping_address[:Country] = Country.find(order.ship_address.country_id).iso
+        shipping_address[:Country] = Spree::Country.find(order.ship_address.country_id).iso
         shipping_address[:PostalCode] = order.ship_address.zipcode
 
         AVALARA_TRANSACTION_LOGGER.debug shipping_address.to_xml
