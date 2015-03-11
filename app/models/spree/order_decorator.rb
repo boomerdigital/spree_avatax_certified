@@ -70,8 +70,6 @@ Spree::Order.class_eval do
             end
           elsif tax_line["LineNo"].include? "-PR"
             promotion_tax += tax_line["TaxCalculated"].to_f
-          elsif tax_line["LineNo"].include? "-RA"
-            return_tax += tax_line["TaxCalculated"].to_f
           end
         end
 
@@ -137,8 +135,6 @@ Spree::Order.class_eval do
             end
           elsif tax_line["LineNo"].include? "-PR"
             promotion_tax += tax_line["TaxCalculated"].to_f
-          elsif tax_line["LineNo"].include? "-RA"
-            return_tax += tax_line["TaxCalculated"].to_f
           end
         end
 
