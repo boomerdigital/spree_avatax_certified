@@ -46,7 +46,6 @@ Spree::Order.class_eval do
       logger.debug @rtn_tax
 
       promotion_tax = 0
-      return_tax = 0
 
       unless @rtn_tax == "0"
         @rtn_tax["TaxLines"].each do |tax_line|
@@ -74,8 +73,6 @@ Spree::Order.class_eval do
             end
           elsif tax_line["LineNo"].include? "-PR"
             promotion_tax += tax_line["TaxCalculated"].to_f
-          elsif tax_line["LineNo"].include? "-RA"
-            return_tax += tax_line["TaxCalculated"].to_f
           end
         end
 
@@ -86,17 +83,6 @@ Spree::Order.class_eval do
             adjustment.mandatory = true
             adjustment.eligible = true
             adjustment.amount = promotion_tax
-            adjustment.order = self
-            adjustment.state = "closed"
-          end
-        end
-        if return_tax != 0
-          adjustments.create do |adjustment|
-            adjustment.source = avalara_transaction
-            adjustment.label = 'Return Tax'
-            adjustment.mandatory = true
-            adjustment.eligible = true
-            adjustment.amount = return_tax
             adjustment.order = self
             adjustment.state = "closed"
           end
@@ -123,7 +109,6 @@ Spree::Order.class_eval do
       logger.debug @rtn_tax
 
       promotion_tax = 0
-      return_tax = 0
 
       unless @rtn_tax == "0"
         @rtn_tax["TaxLines"].each do |tax_line|
@@ -151,8 +136,6 @@ Spree::Order.class_eval do
             end
           elsif tax_line["LineNo"].include? "-PR"
             promotion_tax += tax_line["TaxCalculated"].to_f
-          elsif tax_line["LineNo"].include? "-RA"
-            return_tax += tax_line["TaxCalculated"].to_f
           end
         end
 
@@ -163,17 +146,6 @@ Spree::Order.class_eval do
             adjustment.mandatory = true
             adjustment.eligible = true
             adjustment.amount = promotion_tax
-            adjustment.order = self
-            adjustment.state = "closed"
-          end
-        end
-        if return_tax != 0
-          adjustments.create do |adjustment|
-            adjustment.source = avalara_transaction
-            adjustment.label = 'Return Tax'
-            adjustment.mandatory = true
-            adjustment.eligible = true
-            adjustment.amount = return_tax
             adjustment.order = self
             adjustment.state = "closed"
           end
