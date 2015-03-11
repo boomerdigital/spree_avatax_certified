@@ -1,7 +1,7 @@
 Spree::OrderUpdater.class_eval do
 
   def recalculate_adjustments
-    all_adjustments.not_avalara_tax.includes(:adjustable).map(&:adjustable).uniq.each do |adjustable|
+    all_adjustments.includes(:adjustable).map(&:adjustable).uniq.each do |adjustable|
       Spree::Adjustable::AdjustmentsUpdater.update(adjustable)
     end
     self.order.line_items.each do |line_item|
@@ -10,11 +10,12 @@ Spree::OrderUpdater.class_eval do
   end
 
   def store_pre_tax_amount(item)
-    pre_tax_amount = case item
-    when Spree::LineItem then item.discounted_amount
-    when Spree::Shipment then item.discounted_cost
+    unless item.is_a? Spree::Order
+      pre_tax_amount = case item
+      when Spree::LineItem then item.discounted_amount
+      when Spree::Shipment then item.discounted_cost
+      end
+      item.update_column(:pre_tax_amount, pre_tax_amount)
     end
-
-    item.update_column(:pre_tax_amount, pre_tax_amount)
   end
 end

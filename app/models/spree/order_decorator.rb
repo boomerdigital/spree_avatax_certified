@@ -7,6 +7,9 @@ Spree::Order.class_eval do
                                       :do => :avalara_capture,
                                       :if => :avalara_eligible
 
+  self.state_machine.before_transition :to => :confirm,
+                                      :do => :avalara_capture,
+                                      :if => :avalara_eligible
   self.state_machine.before_transition :to => :complete,
                                       :do => :avalara_capture_finalize,
                                       :if => :avalara_eligible
@@ -84,6 +87,7 @@ Spree::Order.class_eval do
             adjustment.eligible = true
             adjustment.amount = promotion_tax
             adjustment.order = self
+            adjustment.state = "closed"
           end
         end
         if return_tax != 0
@@ -94,6 +98,7 @@ Spree::Order.class_eval do
             adjustment.eligible = true
             adjustment.amount = return_tax
             adjustment.order = self
+            adjustment.state = "closed"
           end
         end
         self.reload.update!
@@ -159,6 +164,7 @@ Spree::Order.class_eval do
             adjustment.eligible = true
             adjustment.amount = promotion_tax
             adjustment.order = self
+            adjustment.state = "closed"
           end
         end
         if return_tax != 0
@@ -169,6 +175,7 @@ Spree::Order.class_eval do
             adjustment.eligible = true
             adjustment.amount = return_tax
             adjustment.order = self
+            adjustment.state = "closed"
           end
         end
         self.reload.update!
