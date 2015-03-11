@@ -1,5 +1,13 @@
 <tbody data-hook="order_details_avalara_tax_adjustments">
-  <% order.all_adjustments.avalara_tax.eligible.group_by(&:label).each do |label, adjustments| %>
+  <% order.line_item_adjustments.avalara_tax.eligible.group_by(&:label).each do |label, adjustments| %>
+  <% next if adjustments.sum(&:amount) == 0 %>
+  <tr class="total">
+    <td><%= label %>:</td>
+    <td><%= Spree::Money.new(adjustments.sum(&:amount), currency: order.currency).to_html %></td>
+  </tr>
+  <% end %>
+  <% order.shipment_adjustments.avalara_tax.eligible.group_by(&:label).each do |label, adjustments| %>
+  <% next if adjustments.sum(&:amount) == 0 %>
   <tr class="total">
     <td><%= label %>:</td>
     <td><%= Spree::Money.new(adjustments.sum(&:amount), currency: order.currency).to_html %></td>

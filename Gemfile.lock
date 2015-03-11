@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    spree_avatax_certified (0.4.3)
+    spree_avatax_certified (0.4.5)
       addressable (~> 2.3)
       json (~> 1.7)
       logging (~> 1.8)
