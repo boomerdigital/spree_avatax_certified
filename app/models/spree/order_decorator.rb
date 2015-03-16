@@ -74,7 +74,7 @@ Spree::Order.class_eval do
         end
 
         if promotion_tax != 0
-          if self.promotions.joins(:promotion_actions).where(spree_promotion_actions: {type: "Spree::Promotion::Actions::CreateAdjustment"})
+          if self.promotions.joins(:promotion_actions).where(spree_promotion_actions: {type: "Spree::Promotion::Actions::CreateAdjustment"}).any?
             adjustments.create do |adjustment|
               adjustment.source = avalara_transaction
               adjustment.label = 'Promotion Tax'
@@ -139,7 +139,7 @@ Spree::Order.class_eval do
         end
 
         if promotion_tax != 0
-          if self.promotions.joins(:promotion_actions).where(spree_promotion_actions: {type: "Spree::Promotion::Actions::CreateAdjustment"})
+          if self.promotions.joins(:promotion_actions).where(spree_promotion_actions: {type: "Spree::Promotion::Actions::CreateAdjustment"}).any?
             adjustments.create do |adjustment|
               adjustment.source = avalara_transaction
               adjustment.label = 'Promotion Tax'
