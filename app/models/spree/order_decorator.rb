@@ -41,64 +41,53 @@ Spree::Order.class_eval do
       logger.info 'tax amount'
       logger.debug @rtn_tax
 
-      shipping_tax = 0
       promotion_tax = 0
-      return_tax = 0
 
-      @rtn_tax["TaxLines"].each do |tax_line|
-        if !tax_line["LineNo"].include? "-"
-          line_item = Spree::LineItem.find(tax_line["LineNo"])
-          line_item.adjustments.create do |adjustment|
-            adjustment.source = avalara_transaction
-            adjustment.label = "Tax"
-            adjustment.mandatory = true
-            adjustment.eligible = true
-            adjustment.amount = tax_line["TaxCalculated"]
-            adjustment.order = self
-          end
-        elsif tax_line["LineNo"].include? "-FR"
-          shipping_tax += tax_line["TaxCalculated"].to_f
-        elsif tax_line["LineNo"].include? "-PR"
-          promotion_tax += tax_line["TaxCalculated"].to_f
-        elsif tax_line["LineNo"].include? "-RA"
-          return_tax += tax_line["TaxCalculated"].to_f
-        end
-      end
-
-      if shipping_tax != 0
-        adjustments.create do |adjustment|
-          adjustment.source = avalara_transaction
-          adjustment.label = 'Shipping Tax'
-          adjustment.mandatory = true
-          adjustment.eligible = true
-          adjustment.amount = shipping_tax
-          adjustment.order = self
-        end
-      end
-      if promotion_tax != 0
-        if self.promotions.joins(:promotion_actions).where(spree_promotion_actions: {type: "Spree::Promotion::Actions::CreateAdjustment"}).any?
-          adjustments.create do |adjustment|
-            adjustment.source = avalara_transaction
-            adjustment.label = 'Promotion Tax'
-            adjustment.mandatory = true
-            adjustment.eligible = true
-            adjustment.amount = promotion_tax
-            adjustment.order = self
+      unless @rtn_tax == "0"
+        @rtn_tax["TaxLines"].each do |tax_line|
+          if !tax_line["LineNo"].include? "-"
+            line_item = Spree::LineItem.find(tax_line["LineNo"])
+            line_item.adjustments.create do |adjustment|
+              adjustment.source = avalara_transaction
+              adjustment.label = "Tax"
+              adjustment.mandatory = true
+              adjustment.eligible = true
+              adjustment.amount = tax_line["TaxCalculated"]
+              adjustment.order = self
+              adjustment.state = "closed"
+            end
+          elsif tax_line["LineNo"].include? "-FR"
+            shipment = Spree::Shipment.find(tax_line["LineNo"].split("-").first)
+            shipment.adjustments.create do |adjustment|
+              adjustment.source = avalara_transaction
+              adjustment.label = 'Shipping Tax'
+              adjustment.mandatory = true
+              adjustment.eligible = true
+              adjustment.amount = tax_line["TaxCalculated"].to_f
+              adjustment.order = self
+              adjustment.state = "closed"
+            end
+          elsif tax_line["LineNo"].include? "-PR"
+            promotion_tax += tax_line["TaxCalculated"].to_f
           end
         end
-      end
-      if return_tax != 0
-        adjustments.create do |adjustment|
-          adjustment.source = avalara_transaction
-          adjustment.label = 'Return Tax'
-          adjustment.mandatory = true
-          adjustment.eligible = true
-          adjustment.amount = return_tax
-          adjustment.order = self
+
+        if promotion_tax != 0
+          if self.promotions.joins(:promotion_actions).where(spree_promotion_actions: {type: "Spree::Promotion::Actions::CreateAdjustment"}).any?
+            adjustments.create do |adjustment|
+              adjustment.source = avalara_transaction
+              adjustment.label = 'Promotion Tax'
+              adjustment.mandatory = true
+              adjustment.eligible = true
+              adjustment.amount = promotion_tax
+              adjustment.order = self
+              adjustment.state = "closed"
+            end
+          end
         end
+        self.reload.update!
+        all_adjustments.avalara_tax
       end
-      self.reload.update!
-      all_adjustments.avalara_tax
     rescue => e
       logger.debug e
       logger.debug 'error in a avalara capture'
@@ -107,76 +96,66 @@ Spree::Order.class_eval do
 
   def avalara_capture_finalize
     logger.debug 'avalara capture finalize'
+
     begin
       create_avalara_transaction
       self.all_adjustments.avalara_tax.destroy_all
       self.line_items.reload
-      @rtn_tax = self.avalara_transaction.commit_avatax_final(line_items, self)
+      @rtn_tax = self.avalara_transaction.commit_avatax_final(line_items, self, self.number.to_s, Date.today.strftime("%F"), "SalesInvoice")
 
       logger.info 'tax amount'
       logger.debug @rtn_tax
 
-      shipping_tax = 0
       promotion_tax = 0
-      return_tax = 0
 
-      @rtn_tax["TaxLines"].each do |tax_line|
-        if !tax_line["LineNo"].include? "-"
-          line_item = Spree::LineItem.find(tax_line["LineNo"])
-          line_item.adjustments.create do |adjustment|
-            adjustment.source = avalara_transaction
-            adjustment.label = "Tax"
-            adjustment.mandatory = true
-            adjustment.eligible = true
-            adjustment.amount = tax_line["TaxCalculated"]
-            adjustment.order = self
-          end
-        elsif tax_line["LineNo"].include? "-FR"
-          shipping_tax += tax_line["TaxCalculated"].to_f
-        elsif tax_line["LineNo"].include? "-PR"
-          promotion_tax += tax_line["TaxCalculated"].to_f
-        elsif tax_line["LineNo"].include? "-RA"
-          return_tax += tax_line["TaxCalculated"].to_f
-        end
-      end
-
-      if shipping_tax != 0
-        adjustments.create do |adjustment|
-          adjustment.source = avalara_transaction
-          adjustment.label = 'Shipping Tax'
-          adjustment.mandatory = true
-          adjustment.eligible = true
-          adjustment.amount = shipping_tax
-          adjustment.order = self
-        end
-      end
-      if promotion_tax != 0
-        if self.promotions.joins(:promotion_actions).where(spree_promotion_actions: {type: "Spree::Promotion::Actions::CreateAdjustment"}).any?
-          adjustments.create do |adjustment|
-            adjustment.source = avalara_transaction
-            adjustment.label = 'Promotion Tax'
-            adjustment.mandatory = true
-            adjustment.eligible = true
-            adjustment.amount = promotion_tax
-            adjustment.order = self
+      unless @rtn_tax == "0"
+        @rtn_tax["TaxLines"].each do |tax_line|
+          if !tax_line["LineNo"].include? "-"
+            line_item = Spree::LineItem.find(tax_line["LineNo"])
+            line_item.adjustments.create do |adjustment|
+              adjustment.source = avalara_transaction
+              adjustment.label = "Tax"
+              adjustment.mandatory = true
+              adjustment.eligible = true
+              adjustment.amount = tax_line["TaxCalculated"]
+              adjustment.order = self
+              adjustment.state = "closed"
+            end
+          elsif tax_line["LineNo"].include? "-FR"
+            shipment = Spree::Shipment.find(tax_line["LineNo"].split("-").first)
+            shipment.adjustments.create do |adjustment|
+              adjustment.source = avalara_transaction
+              adjustment.label = 'Shipping Tax'
+              adjustment.mandatory = true
+              adjustment.eligible = true
+              adjustment.amount = tax_line["TaxCalculated"].to_f
+              adjustment.order = self
+              adjustment.state = "closed"
+            end
+          elsif tax_line["LineNo"].include? "-PR"
+            promotion_tax += tax_line["TaxCalculated"].to_f
           end
         end
-      end
-      if return_tax != 0
-        adjustments.create do |adjustment|
-          adjustment.source = avalara_transaction
-          adjustment.label = 'Return Tax'
-          adjustment.mandatory = true
-          adjustment.eligible = true
-          adjustment.amount = return_tax
-          adjustment.order = self
+
+        if promotion_tax != 0
+          if self.promotions.joins(:promotion_actions).where(spree_promotion_actions: {type: "Spree::Promotion::Actions::CreateAdjustment"}).any?
+            adjustments.create do |adjustment|
+              adjustment.source = avalara_transaction
+              adjustment.label = 'Promotion Tax'
+              adjustment.mandatory = true
+              adjustment.eligible = true
+              adjustment.amount = promotion_tax
+              adjustment.order = self
+              adjustment.state = "closed"
+            end
+          end
         end
+        self.reload.update!
+        all_adjustments.avalara_tax
       end
-      self.reload.update!
-      all_adjustments.avalara_tax
     rescue => e
       logger.debug e
-      logger.debug 'error in a avalara capture'
+      logger.debug 'error in a avalara capture finalize'
     end
   end
 
