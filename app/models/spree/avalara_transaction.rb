@@ -8,7 +8,7 @@ module Spree
     belongs_to :order
     belongs_to :return_authorization
     validates :order, presence: true
-    has_one :adjustment, as: :source
+    has_many :adjustments, as: :source
 
     def rnt_tax
       @myrtntax
@@ -268,31 +268,31 @@ module Spree
 
             tax_line_items<<line
           end
-        end
 
-        order_details.all_adjustments.promotion.each do |adj|
+          order_details.all_adjustments.promotion.each do |adj|
 
-          line = Hash.new
-          i += 1
+            line = Hash.new
+            i += 1
 
-          line[:LineNo] = "#{i}-PR"
-          line[:ItemCode] = "Promotion"
-          line[:Qty] = 0
-          line[:Amount] = adj.amount.to_f
-          line[:Discounted] = adj.try(:promotion) ? true : false
-          line[:OriginCode] = "Orig"
-          line[:DestinationCode] = "Dest"
+            line[:LineNo] = "#{i}-PR"
+            line[:ItemCode] = "Promotion"
+            line[:Qty] = 0
+            line[:Amount] = adj.amount.to_f
+            line[:Discounted] = adj.try(:promotion) ? true : false
+            line[:OriginCode] = "Orig"
+            line[:DestinationCode] = "Dest"
 
-          if myusecode
-            line[:CustomerUsageType] = myusecode.try(:use_code)
+            if myusecode
+              line[:CustomerUsageType] = myusecode.try(:use_code)
+            end
+
+            line[:Description] = adj.label
+            line[:TaxCode] = ""
+
+            AVALARA_TRANSACTION_LOGGER.debug line.to_xml
+
+            tax_line_items<<line
           end
-
-          line[:Description] = adj.label
-          line[:TaxCode] = ""
-
-          AVALARA_TRANSACTION_LOGGER.debug line.to_xml
-
-          tax_line_items<<line
         end
 
         order_details.return_authorizations.each do |return_auth|
