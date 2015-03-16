@@ -76,13 +76,15 @@ Spree::Order.class_eval do
         end
       end
       if promotion_tax != 0
-        adjustments.create do |adjustment|
-          adjustment.source = avalara_transaction
-          adjustment.label = 'Promotion Tax'
-          adjustment.mandatory = true
-          adjustment.eligible = true
-          adjustment.amount = promotion_tax
-          adjustment.order = self
+        if self.promotions.joins(:promotion_actions).where(spree_promotion_actions: {type: "Spree::Promotion::Actions::CreateAdjustment"}).any?
+          adjustments.create do |adjustment|
+            adjustment.source = avalara_transaction
+            adjustment.label = 'Promotion Tax'
+            adjustment.mandatory = true
+            adjustment.eligible = true
+            adjustment.amount = promotion_tax
+            adjustment.order = self
+          end
         end
       end
       if return_tax != 0
@@ -149,13 +151,15 @@ Spree::Order.class_eval do
         end
       end
       if promotion_tax != 0
-        adjustments.create do |adjustment|
-          adjustment.source = avalara_transaction
-          adjustment.label = 'Promotion Tax'
-          adjustment.mandatory = true
-          adjustment.eligible = true
-          adjustment.amount = promotion_tax
-          adjustment.order = self
+        if self.promotions.joins(:promotion_actions).where(spree_promotion_actions: {type: "Spree::Promotion::Actions::CreateAdjustment"}).any?
+          adjustments.create do |adjustment|
+            adjustment.source = avalara_transaction
+            adjustment.label = 'Promotion Tax'
+            adjustment.mandatory = true
+            adjustment.eligible = true
+            adjustment.amount = promotion_tax
+            adjustment.order = self
+          end
         end
       end
       if return_tax != 0
