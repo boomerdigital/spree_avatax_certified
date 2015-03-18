@@ -435,10 +435,6 @@ module Spree
       if order_details then
         AVALARA_TRANSACTION_LOGGER.info('order adjustments')
 
-        order_details.all_adjustments.promotion.each do |adj|
-          tax_line_items<<promotion_line(adj)
-        end
-
         order_details.reimbursements.each do |reimbursement|
           next if reimbursement.reimbursement_status == "reimbursed"
           reimbursement.return_items.each do |return_item|
