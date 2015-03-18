@@ -1,7 +1,7 @@
 Spree::OrderUpdater.class_eval do
 
   def recalculate_adjustments
-    all_adjustments.includes(:adjustable).map(&:adjustable).uniq.each do |adjustable|
+    all_adjustments.not_avalara_tax.includes(:adjustable).map(&:adjustable).uniq.each do |adjustable|
       Spree::Adjustable::AdjustmentsUpdater.update(adjustable)
     end
     self.order.line_items.each do |line_item|

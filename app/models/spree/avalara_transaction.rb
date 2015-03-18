@@ -198,12 +198,13 @@ module Spree
     end
 
     def promotion_line(promo)
+      binding.pry
       line = Hash.new
       line[:LineNo] = "#{promo.id}-PR"
       line[:ItemCode] = "Promotion"
       line[:Qty] = 0
       line[:Amount] = promo.amount.to_f
-      line[:Discounted] = promo.try(:promotion) ? true : false
+      line[:Discounted] = true
       line[:OriginCode] = "Orig"
       line[:DestinationCode] = "Dest"
       line[:CustomerUsageType] = myusecode.try(:use_code)
