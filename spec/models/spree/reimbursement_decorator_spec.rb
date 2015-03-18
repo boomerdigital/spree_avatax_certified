@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Spree::Reimbursement, type: :model do
 
-  it { should have_one :avalara_transaction }
   let(:order) {FactoryGirl.create(:shipped_order)}
   let(:stock_location) {create(:stock_location)}
   let(:return_authorization_reason) { create(:return_authorization_reason)}
@@ -21,7 +20,6 @@ describe Spree::Reimbursement, type: :model do
     @customer_return = customer_return
   end
   let(:reimbursement) { create(:reimbursement, customer_return: @customer_return, order: @order, return_items: [@customer_return.return_items.first])}
-  subject { reimbursement.perform! }
 
   describe "#avalara_eligible" do
     it "should return true" do
@@ -42,11 +40,10 @@ describe Spree::Reimbursement, type: :model do
     end
   end
   context "finalized" do
-    let(:reimbursement2) { create(:reimbursement, customer_return: @customer_return, order: @order, return_items: [@customer_return.return_items.first])}
+    subject { reimbursement.perform! }
     describe "#avalara_capture_finalize" do
-      subject {reimbursement2.reimbursed!}
       it "creates new avalara_transaction" do
-        expect{reimbursement2.reimbursed!}.to change{Spree::AvalaraTransaction.count}.by(1)
+        expect{subject}.to change{Spree::AvalaraTransaction.count}.by(1)
       end
     end
 
