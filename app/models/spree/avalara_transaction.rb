@@ -198,7 +198,6 @@ module Spree
     end
 
     def promotion_line(promo)
-      binding.pry
       line = Hash.new
       line[:LineNo] = "#{promo.id}-PR"
       line[:ItemCode] = "Promotion"
