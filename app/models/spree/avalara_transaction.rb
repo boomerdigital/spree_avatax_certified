@@ -24,20 +24,12 @@ module Spree
     end
 
     def commit_avatax(items, order_details, doc_id=nil, org_ord_date=nil, invoice_dt=nil)
-      if invoice_dt == "ReturnInvoice"
-        post_return_order_to_avalara(false, items, order_details, doc_id, org_ord_date, invoice_dt)
-      else
-        post_order_to_avalara(false, items, order_details, doc_id, org_ord_date, invoice_dt)
-      end
+      post_order_to_avalara(false, items, order_details, doc_id, org_ord_date, invoice_dt)
     end
 
     def commit_avatax_final(items, order_details,doc_id=nil, org_ord_date=nil, invoice_dt=nil)
       if document_committing_enabled?
-        if invoice_dt == "ReturnInvoice"
-          post_return_order_to_avalara(true, items, order_details, doc_id, org_ord_date,invoice_dt)
-        else
-          post_order_to_avalara(true, items, order_details, doc_id, org_ord_date,invoice_dt)
-        end
+        post_order_to_avalara(true, items, order_details, doc_id, org_ord_date,invoice_dt)
       else
         AVALARA_TRANSACTION_LOGGER.debug "avalara document committing disabled"
         "avalara document committing disabled"
@@ -155,13 +147,25 @@ module Spree
     end
 
     def order_shipping_address
-      unless order.ship_address.nil?
+      if order.ship_address.nil?
+        shipping_address = Hash.new
+        shipping_address[:AddressCode] = "Dest"
+        shipping_address[:Line1] = order.bill_address.address1
+        shipping_address[:Line2] = order.bill_address.address2
+        shipping_address[:City] = order.bill_address.city
+        shipping_address[:Region] = order.bill_address.state_name
+        shipping_address[:Country] = Country.find(order.bill_address.country_id).iso
+        shipping_address[:PostalCode] = order.bill_address.zipcode
+
+        AVALARA_TRANSACTION_LOGGER.debug shipping_address.to_xml
+        return shipping_address
+      else
         shipping_address = Hash.new
         shipping_address[:AddressCode] = "Dest"
         shipping_address[:Line1] = order.ship_address.address1
         shipping_address[:Line2] = order.ship_address.address2
         shipping_address[:City] = order.ship_address.city
-        shipping_address[:Region] = order.ship_address.state_text
+        shipping_address[:Region] = order.ship_address.state_name
         shipping_address[:Country] = Country.find(order.ship_address.country_id).iso
         shipping_address[:PostalCode] = order.ship_address.zipcode
 
@@ -315,11 +319,10 @@ module Spree
             AVALARA_TRANSACTION_LOGGER.info('checked for shipped from')
 
 
-
             if stock_location(packages, line_item)
               addresses<<origin_ship_address(line_item, stock_location(packages, line_item))
             elsif backup_stock_location(origin)
-              addresses<<origin_ship_address(line_item, location)
+              addresses<<origin_ship_address(line_item, backup_stock_location(origin))
             end
 
             line[:OriginCode] = line_item.id
@@ -373,10 +376,6 @@ module Spree
         end
       end
 
-      if order_details.ship_address.nil?
-        order_details.update_attributes(ship_address_id: order_details.bill_address_id)
-      end
-
       response = address_validator.validate(order_details.ship_address)
 
       if response != nil
@@ -386,7 +385,6 @@ module Spree
           AVALARA_TRANSACTION_LOGGER.info("Address Validation Failed")
         end
       end
-
       addresses<<order_shipping_address
       addresses<<origin_address
 
@@ -398,6 +396,7 @@ module Spree
         taxoverride[:TaxDate] = org_ord_date
         taxoverride[:TaxAmount] = "0"
       end
+
       gettaxes = {
         :CustomerCode => order_details.user ? order_details.user.id : "Guest",
         :DocDate => org_ord_date ? org_ord_date : Date.current.to_formatted_s(:db),
