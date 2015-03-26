@@ -22,7 +22,7 @@ describe Spree::ReturnAuthorization, type: :model do
     @variant = @order.variants.first
     @return_authorization = Spree::ReturnAuthorization.create(:order => @order, :stock_location_id => @stock_location.id)
   end
-
+  let(:return_authorization) { create(:return_authorization)}
   describe "#avalara_eligible" do
     it "should return true" do
       expect(@order.avalara_transaction.return_authorization.avalara_eligible).to eq(true)
@@ -32,13 +32,10 @@ describe Spree::ReturnAuthorization, type: :model do
     it "should return lookup_avatax" do
       expect(@order.avalara_transaction.return_authorization.avalara_lookup).to eq(:lookup_avatax)
     end
-    it "creates new avalara_transaction" do
-      expect{@order.avalara_transaction.return_authorization.avalara_lookup}.to change{Spree::AvalaraTransaction.count}.by(1)
-    end
   end
   describe "#avalara_capture" do
     it "creates new avalara_transaction" do
-      expect{@order.avalara_transaction.return_authorization.avalara_capture}.to change{Spree::AvalaraTransaction.count}.by(1)
+      expect{return_authorization}.to change{Spree::AvalaraTransaction.count}.by(1)
     end
   end
 
