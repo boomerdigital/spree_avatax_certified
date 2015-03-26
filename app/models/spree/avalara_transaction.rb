@@ -392,12 +392,12 @@ module Spree
         taxoverride[:TaxAmount] = "0"
       end
       gettaxes = {
-        :CustomerCode => myuser ? myuser.id : "Guest",
+        :CustomerCode => order_details.user ? order_details.user.id : "Guest",
         :DocDate => org_ord_date ? org_ord_date : Date.current.to_formatted_s(:db),
 
         :CompanyCode => Spree::Config.avatax_company_code,
         :CustomerUsageType => myusecode.try(:use_code),
-        :ExemptionNo => myuser.try(:exemption_number),
+        :ExemptionNo => order_details.user.try(:exemption_number),
         :Client =>  AVATAX_CLIENT_VERSION || "SpreeExtV2.3",
         :DocCode => doc_code ? doc_code : order_details.number,
 
