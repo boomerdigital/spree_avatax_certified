@@ -209,9 +209,8 @@ module Spree
     def myusecode
       begin
         if order.user_id != nil
-          myuserid = order.user_id
-          AVALARA_TRANSACTION_LOGGER.debug myuserid
-          myuser = Spree::User.find(myuserid)
+          myuser = order.user
+          AVALARA_TRANSACTION_LOGGER.debug myuser
           unless myuser.avalara_entity_use_code_id.nil?
             return Spree::AvalaraEntityUseCode.find(myuser.avalara_entity_use_code_id)
           else
