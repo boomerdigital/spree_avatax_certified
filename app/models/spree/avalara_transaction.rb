@@ -23,13 +23,21 @@ module Spree
       post_order_to_avalara(false, order_details.line_items, order_details)
     end
 
-    def commit_avatax(items, order_details,doc_id=nil, org_ord_date=nil, invoice_dt=nil)
-      post_order_to_avalara(false, items, order_details, doc_id, org_ord_date, invoice_dt)
+    def commit_avatax(items, order_details, doc_id=nil, org_ord_date=nil, invoice_dt=nil)
+      if invoice_dt == "ReturnInvoice"
+        post_return_order_to_avalara(false, items, order_details, doc_id, org_ord_date, invoice_dt)
+      else
+        post_order_to_avalara(false, items, order_details, doc_id, org_ord_date, invoice_dt)
+      end
     end
 
     def commit_avatax_final(items, order_details,doc_id=nil, org_ord_date=nil, invoice_dt=nil)
       if document_committing_enabled?
-        post_order_to_avalara(true, items, order_details,doc_id, org_ord_date,invoice_dt)
+        if invoice_dt == "ReturnInvoice"
+          post_return_order_to_avalara(true, items, order_details, doc_id, org_ord_date,invoice_dt)
+        else
+          post_order_to_avalara(true, items, order_details, doc_id, org_ord_date,invoice_dt)
+        end
       else
         AVALARA_TRANSACTION_LOGGER.debug "avalara document committing disabled"
         "avalara document committing disabled"
@@ -365,7 +373,7 @@ module Spree
         end
       end
 
-      if order_details.ship_address_id.nil?
+      if order_details.ship_address.nil?
         order_details.update_attributes(ship_address_id: order_details.bill_address_id)
       end
 
