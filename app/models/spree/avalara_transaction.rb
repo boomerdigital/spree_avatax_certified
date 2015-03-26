@@ -381,7 +381,7 @@ module Spree
       end
 
       addresses<<order_shipping_address
-      addresses<<orig_address
+      addresses<<origin_address
 
       taxoverride = Hash.new
 
