@@ -248,9 +248,8 @@ module Spree
           order_details.shipments.each do |shipment|
 
             line = Hash.new
-            i += 1
 
-            line[:LineNo] = "#{i}-FR"
+            line[:LineNo] = "#{shipment.id}-FR"
             line[:ItemCode] = "Shipping"
             line[:Qty] = 1
             line[:Amount] = shipment.cost.to_f
