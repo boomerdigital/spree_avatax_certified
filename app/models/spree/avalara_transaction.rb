@@ -161,7 +161,7 @@ module Spree
         shipping_address[:Line1] = order.ship_address.address1
         shipping_address[:Line2] = order.ship_address.address2
         shipping_address[:City] = order.ship_address.city
-        shipping_address[:Region] = order.ship_address.state_text
+        shipping_address[:Region] = order.ship_address.state_name
         shipping_address[:Country] = Country.find(order.ship_address.country_id).iso
         shipping_address[:PostalCode] = order.ship_address.zipcode
 
