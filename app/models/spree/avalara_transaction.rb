@@ -252,9 +252,8 @@ module Spree
     def myusecode
       begin
         if order.user_id != nil
-          myuserid = order.user_id
-          AVALARA_TRANSACTION_LOGGER.debug myuserid
-          myuser = Spree::User.find(myuserid)
+          myuser = order.user
+          AVALARA_TRANSACTION_LOGGER.debug myuser
           unless myuser.avalara_entity_use_code_id.nil?
             return Spree::AvalaraEntityUseCode.find(myuser.avalara_entity_use_code_id)
           else
@@ -268,37 +267,40 @@ module Spree
     end
 
     def backup_stock_location(origin)
-      if Spree::StockLocation.find_by(name: 'default').nil? || Spree::StockLocation.find_by(name: 'avatax origin').nil?
+      location = Spree::StockLocation.find_by(name: 'default') || Spree::StockLocation.first
+
+      if location.nil?
+        location = create_stock_location_from_origin(origin)
         AVALARA_TRANSACTION_LOGGER.info('avatax origin location created')
-
-        return Spree::StockLocation.create(
-          name: "avatax origin",
-          address1: origin["Address1"],
-          address2: origin["Address2"],
-          city: origin["City"],
-          state_id: Spree::State.find_by_name(origin["Region"]).id,
-          state_name: origin["Region"],
-          zipcode: origin["Zip5"],
-          country_id: Spree::State.find_by_name(origin["Region"]).country_id
-          )
-
-      elsif Spree::StockLocation.find_by(name: 'default').city.nil? || Spree::StockLocation.first.city.nil?
+      elsif location.zipcode.blank? || (location.city.nil? && location.state_name.nil?)
+        update_location_with_origin(location, origin)
         AVALARA_TRANSACTION_LOGGER.info('avatax origin location updated default')
-
-        return Spree::StockLocation.first.update_attributes(
-          address1: origin["Address1"],
-          address2: origin["Address2"],
-          city: origin["City"],
-          state_id: Spree::State.find_by_name(origin["Region"]).id,
-          state_name: origin["Region"],
-          zipcode: origin["Zip5"],
-          country_id: Spree::State.find_by_name(origin["Region"]).country_id
-          )
-
       else
         AVALARA_TRANSACTION_LOGGER.info('default location')
-        return Spree::StockLocation.find_by(name: 'default') || Spree::StockLocation.first
       end
+
+      location
+    end
+
+    def create_stock_location_from_origin(origin)
+      attributes = address_attributes_from_origin(origin)
+      Spree::StockLocation.create(attributes.merge(name: 'avatax origin'))
+    end
+
+    def update_location_with_origin(location, origin)
+      location.update_attributes(address_attributes_from_origin(origin))
+    end
+
+    def address_attributes_from_origin(origin)
+      {
+        address1: origin["Address1"],
+        address2: origin["Address2"],
+        city: origin["City"],
+        state_id: Spree::State.find_by_name(origin["Region"]).id,
+        state_name: origin["Region"],
+        zipcode: origin["Zip5"],
+        country_id: Spree::State.find_by_name(origin["Region"]).country_id
+      }
     end
 
     def post_order_to_avalara(commit=false, orderitems=nil, order_details=nil, doc_code=nil, org_ord_date=nil, invoice_detail=nil)
@@ -348,7 +350,7 @@ module Spree
           if stock_location(packages, line_item)
             addresses<<origin_ship_address(line_item, stock_location(packages, line_item))
           elsif backup_stock_location(origin)
-            addresses<<origin_ship_address(line_item, location)
+            addresses<<origin_ship_address(line_item, backup_stock_location(origin))
           end
 
           line[:OriginCode] = line_item.id
