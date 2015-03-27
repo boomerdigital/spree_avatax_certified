@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    spree_avatax_certified (0.4.8)
+    spree_avatax_certified (0.4.9)
       addressable (~> 2.3)
       json (~> 1.7)
       logging (~> 1.8)
@@ -65,8 +65,8 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
-    carmen (1.0.1)
-      unicode_utils (~> 1.4.0)
+    carmen (1.0.2)
+      activesupport (>= 3.0.0)
     childprocess (0.5.5)
       ffi (~> 1.0, >= 1.0.11)
     cldr-plurals-runtime-rb (1.0.0)
@@ -149,7 +149,7 @@ GEM
       activesupport (>= 3.0.0)
       cocaine (~> 0.5.3)
       mime-types
-    paranoia (2.1.0)
+    paranoia (2.1.1)
       activerecord (~> 4.0)
     polyamorous (1.1.0)
       activerecord (>= 3.0)
@@ -288,7 +288,6 @@ GEM
       tzinfo
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    unicode_utils (1.4.0)
     versioncake (2.3.1)
       actionpack (>= 3.2)
       activesupport (>= 3.2)
