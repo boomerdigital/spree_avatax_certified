@@ -1,27 +1,14 @@
-<div class="row">
-  <div class="alpha twelve columns">
-    <fieldset class="no-border-bottom">
-      <% if @avalara_entity_use_code.errors.any? %>
-          <div id="error_explanation">
-            <h2><%= pluralize(@use_code.errors.count, "error") %> prohibited this "Use Code" from being saved:</h2>
-
-            <ul>
-              <% @use_code.errors.full_messages.each do |msg| %>
-                  <li><%= msg %></li>
-              <% end %>
-            </ul>
-          </div>
-      <% end %>
-
-      <div class="field">
-        <%= f.label :use_code %><br>
-        <%= f.text_field :use_code, class: 'fullwidth' %>
-      </div>
-      <div class="field">
-        <%= f.label :use_code_description %><br>
-        <%= f.text_field :use_code_description, class: 'fullwidth' %>
-      </div>
-    </fieldset>
+<div>
+  <div class="form-group">
+    <%= f.field_container :use_code do %>
+      <%= f.label :use_code %>
+      <%= f.text_field :use_code, class: 'form-control' %>
+    <% end %>
   </div>
-
+  <div class="form-group">
+    <%= f.field_container :use_code_description do %>
+      <%= f.label :use_code_description %>
+      <%= f.text_field :use_code_description, class: 'form-control' %>
+    <% end %>
+  </div>
 </div>
