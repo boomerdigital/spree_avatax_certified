@@ -195,7 +195,7 @@ module Spree
       line[:DestinationCode] = "Dest"
       line[:CustomerUsageType] = myusecode.try(:use_code)
       line[:Description] = "Shipping Charge"
-      line[:TaxCode] = shipment.shipping_method.tax_code
+      line[:TaxCode] = shipment.shipping_method.tax_code || "FR000000"
 
       AVALARA_TRANSACTION_LOGGER.debug line.to_xml
       return line
