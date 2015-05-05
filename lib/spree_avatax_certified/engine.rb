@@ -26,6 +26,7 @@ module SpreeAvataxCertified
         preference :avatax_tax_calculation, :boolean, default: true
         preference :avatax_document_commit, :boolean, default: true
         preference :avatax_origin, :string, default: "{}"
+        preference :avatax_log_to_stdout, :boolean, default: false
       end
     end
 

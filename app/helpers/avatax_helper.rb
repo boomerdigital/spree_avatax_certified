@@ -1,9 +1,15 @@
 module AvataxHelper
   class AvataxLog
     def initialize(path_name, file_name, log_info = nil, schedule = nil)
-      schedule = "weekly" unless schedule != nil
-      @logger ||= Logger.new("#{Rails.root}/log/#{path_name}.log", schedule)
-      progname(file_name.split("/").last.chomp(".rb"))
+      if !(Spree::Config.avatax_log_to_stdout)
+        schedule = "weekly" unless schedule != nil
+        @logger ||= Logger.new("#{Rails.root}/log/#{path_name}.log", schedule)
+        progname(file_name.split("/").last.chomp(".rb"))
+      else
+        log_info = "-#{file_name} #{log_info}"
+        @logger = Logger.new(STDOUT)
+      end
+
       info(log_info) unless log_info.nil?
     end
 
@@ -23,26 +29,27 @@ module AvataxHelper
 
     def info(log_info = nil)
       if logger_enabled?
-        logger.info log_info unless log_info.nil?
+        unless log_info.nil?
+          logger.info "[AVATAX] #{log_info}"
+        end
       end
     end
 
     def info_and_debug(log_info, request_hash)
       if logger_enabled?
-        logger.info log_info
-        logger.debug request_hash
-        logger.debug JSON.generate(request_hash)
+        logger.info "[AVATAX] #{log_info}"
+        logger.debug "[AVATAX] #{request_hash}"
+        logger.debug "[AVATAX] #{JSON.generate(request_hash)}"
       end
     end
 
-
     def debug(error, text = nil)
       if logger_enabled?
-        logger.debug error
+        logger.debug "[AVATAX] #{error.inspect}"
         if text.nil?
           error
         else
-          logger.debug text
+          logger.debug "[AVATAX] text"
           text
         end
       end

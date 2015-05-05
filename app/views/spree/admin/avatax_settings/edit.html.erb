@@ -57,7 +57,12 @@
         <label><%= t('enable_avatax_logging') %></label><br />
         <%= check_box_tag('settings[avatax_log]','yes' , Spree::Config.avatax_log, :class => 'avatax') %>
       </p>
+	  <p>
+        <label><%= t('enable_avatax_log_to_stdout') %></label> (Use for Heroku/ephemeral deployment architecture)<br />
+        <%= check_box_tag('settings[avatax_log_to_stdout]', 'yes' , Spree::Config.avatax_log_to_stdout, :class => 'avatax') %>
+      </p>
     </fieldset>
+
 
     <fieldset>
       <legend><%= t('avatax_address_validation') %></legend>
