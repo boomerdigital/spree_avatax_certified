@@ -71,12 +71,13 @@ module Spree
           Spree::Config.avatax_license_key = taxpref[:avatax_license_key]
           Spree::Config.avatax_iseligible = taxpref[:avatax_iseligible]
           Spree::Config.avatax_log = taxpref[:avatax_log]
+          Spree::Config.avatax_log_to_stdout = taxpref[:avatax_log_to_stdout]
           Spree::Config.avatax_address_validation = taxpref[:avatax_address_validation]
           Spree::Config.avatax_address_validation_enabled_countries = taxpref[:avatax_address_validation_enabled_countries]
           Spree::Config.avatax_tax_calculation = taxpref[:avatax_tax_calculation]
           Spree::Config.avatax_document_commit = taxpref[:avatax_document_commit]
           Spree::Config.avatax_company_code =taxpref[:avatax_company_code]
-
+          
           respond_to do |format|
             format.html {
               redirect_to admin_avatax_settings_path
