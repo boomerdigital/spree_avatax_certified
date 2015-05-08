@@ -197,22 +197,22 @@ module Spree
       return line
     end
 
-    def promotion_line(promo)
-      line = Hash.new
-      line[:LineNo] = "#{promo.id}-PR"
-      line[:ItemCode] = "Promotion"
-      line[:Qty] = 0
-      line[:Amount] = promo.amount.to_f
-      line[:Discounted] = true
-      line[:OriginCode] = "Orig"
-      line[:DestinationCode] = "Dest"
-      line[:CustomerUsageType] = myusecode.try(:use_code)
-      line[:Description] = promo.label
-      line[:TaxCode] = ""
+    # def promotion_line(promo)
+    #   line = Hash.new
+    #   line[:LineNo] = "#{promo.id}-PR"
+    #   line[:ItemCode] = "Promotion"
+    #   line[:Qty] = 0
+    #   line[:Amount] = promo.amount.to_f
+    #   line[:Discounted] = true
+    #   line[:OriginCode] = "Orig"
+    #   line[:DestinationCode] = "Dest"
+    #   line[:CustomerUsageType] = myusecode.try(:use_code)
+    #   line[:Description] = promo.label
+    #   line[:TaxCode] = ""
 
-      AVALARA_TRANSACTION_LOGGER.debug line.to_xml
-      return line
-    end
+    #   AVALARA_TRANSACTION_LOGGER.debug line.to_xml
+    #   return line
+    # end
 
     def reimbursement_return_item_line(return_item)
       line = Hash.new
@@ -329,6 +329,14 @@ module Spree
 
           AVALARA_TRANSACTION_LOGGER.info('after user check')
 
+          if line_item.promo_total.to_f != 0
+            line[:Discounted] = true
+          elsif order_details.all_adjustments.where(source_type: "Spree::PromotionAction").where(adjustable_type: "Spree::Order")
+            line[:Discounted] = true
+          else
+            line[:Discounted] = false
+          end
+
           line[:Description] = line_item.name
           line[:TaxCode] = line_item.tax_category.try(:tax_code) || "P0000000"
 
@@ -365,9 +373,9 @@ module Spree
         order_details.shipments.each do |shipment|
           tax_line_items<<shipment_line(shipment)
         end
-        order_details.all_adjustments.promotion.each do |adj|
-          tax_line_items<<promotion_line(adj)
-        end
+        # order_details.all_adjustments.promotion.each do |adj|
+          # tax_line_items<<promotion_line(adj)
+        # end
       end
 
       if order_details.ship_address.nil?
@@ -396,6 +404,8 @@ module Spree
         :ExemptionNo => order_details.user.try(:exemption_number),
         :Client =>  AVATAX_CLIENT_VERSION || "SpreeExtV3.0",
         :DocCode => doc_code ? doc_code : order_details.number,
+
+        :Discount => order_details.all_adjustments.where(source_type: "Spree::PromotionAction").any? ? order_details.all_adjustments.where(source_type: "Spree::PromotionAction").pluck(:amount).reduce(&:+).to_f.abs : 0,
 
         :ReferenceCode => order_details.number,
         :DetailLevel => "Tax",

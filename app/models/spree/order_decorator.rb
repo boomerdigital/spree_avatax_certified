@@ -42,8 +42,6 @@ Spree::Order.class_eval do
       logger.info 'tax amount'
       logger.debug @rtn_tax
 
-      promotion_tax = 0
-
       unless @rtn_tax == "0"
         @rtn_tax["TaxLines"].each do |tax_line|
           if !tax_line["LineNo"].include? "-"
@@ -68,24 +66,9 @@ Spree::Order.class_eval do
               adjustment.order = self
               adjustment.state = "closed"
             end
-          elsif tax_line["LineNo"].include? "-PR"
-            promotion_tax += tax_line["TaxCalculated"].to_f
           end
         end
 
-        if promotion_tax != 0
-          if self.promotions.joins(:promotion_actions).where(spree_promotion_actions: {type: "Spree::Promotion::Actions::CreateAdjustment"}).any?
-            adjustments.create do |adjustment|
-              adjustment.source = avalara_transaction
-              adjustment.label = 'Promotion Tax'
-              adjustment.mandatory = true
-              adjustment.eligible = true
-              adjustment.amount = promotion_tax
-              adjustment.order = self
-              adjustment.state = "closed"
-            end
-          end
-        end
         self.reload.update!
         all_adjustments.avalara_tax
       end
@@ -107,8 +90,6 @@ Spree::Order.class_eval do
       logger.info 'tax amount'
       logger.debug @rtn_tax
 
-      promotion_tax = 0
-
       unless @rtn_tax == "0"
         @rtn_tax["TaxLines"].each do |tax_line|
           if !tax_line["LineNo"].include? "-"
@@ -133,24 +114,9 @@ Spree::Order.class_eval do
               adjustment.order = self
               adjustment.state = "closed"
             end
-          elsif tax_line["LineNo"].include? "-PR"
-            promotion_tax += tax_line["TaxCalculated"].to_f
           end
         end
 
-        if promotion_tax != 0
-          if self.promotions.joins(:promotion_actions).where(spree_promotion_actions: {type: "Spree::Promotion::Actions::CreateAdjustment"}).any?
-            adjustments.create do |adjustment|
-              adjustment.source = avalara_transaction
-              adjustment.label = 'Promotion Tax'
-              adjustment.mandatory = true
-              adjustment.eligible = true
-              adjustment.amount = promotion_tax
-              adjustment.order = self
-              adjustment.state = "closed"
-            end
-          end
-        end
         self.reload.update!
         all_adjustments.avalara_tax
       end
