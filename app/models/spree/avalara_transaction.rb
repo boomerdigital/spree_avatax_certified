@@ -292,7 +292,7 @@ module Spree
             line[:LineNo] = line_item.id
             line[:ItemCode] = line_item.variant.sku
             line[:Qty] = line_item.quantity
-            line[:Amount] = line_item.pre_tax_amount.to_f
+            line[:Amount] = line_item.price.to_f * line_item.quantity
             line[:OriginCode] = "Orig"
             line[:DestinationCode] = "Dest"
 
