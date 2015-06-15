@@ -83,6 +83,14 @@ module Spree
       end
     end
 
+    def set_current_transaction(a)
+      @current_transaction = a
+    end
+
+    def self.current
+      @current_transaction
+    end
+
 
     private
 
@@ -200,24 +208,6 @@ module Spree
       AVALARA_TRANSACTION_LOGGER.debug line.to_xml
       return line
     end
-
-    # Not used anymore
-    # def promotion_line(promo)
-    #   line = Hash.new
-    #   line[:LineNo] = "#{promo.id}-PR"
-    #   line[:ItemCode] = "Promotion"
-    #   line[:Qty] = 0
-    #   line[:Amount] = promo.amount.to_f
-    #   line[:Discounted] = true
-    #   line[:OriginCode] = "Orig"
-    #   line[:DestinationCode] = "Dest"
-    #   line[:CustomerUsageType] = myusecode.try(:use_code)
-    #   line[:Description] = promo.label
-    #   line[:TaxCode] = ""
-
-    #   AVALARA_TRANSACTION_LOGGER.debug line.to_xml
-    #   return line
-    # end
 
     def myusecode
       begin
@@ -438,6 +428,8 @@ module Spree
 
       AVALARA_TRANSACTION_LOGGER.debug getTaxResult
 
+      set_current_transaction(getTaxResult)
+
       if getTaxResult == 'error in Tax' then
         @myrtntax = { TotalTax: "0.00" }
       else
@@ -449,6 +441,9 @@ module Spree
       end
       return @myrtntax
     end
+
+
+
     def document_committing_enabled?
       Spree::Config.avatax_document_commit
     end
