@@ -8,7 +8,7 @@ SpreeAvataxCertified is the *only* [officially certified Avatax solution](http:/
 From Avalara's own explanation of the certification program:
 
 > Relax. It’s certified.
->   
+>
 > Our “Certified for AvaTax” Program features integrations that perform at the highest level, providing the best possible customer experience.
 
 > Avalara’s partners who have created certified integrations for AvaTax have demonstrated that those integrations contain elements which are essential to providing customers with easy-to-use software that gives accurate sales tax calculations. The certification criteria used to demonstrate these elements are based on Avalara’s years of experience integrating into ERP, ecommerce and point-of-sale applications.
