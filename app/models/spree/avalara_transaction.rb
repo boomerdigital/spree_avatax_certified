@@ -420,6 +420,7 @@ module Spree
       mytax = TaxSvc.new
 
       getTaxResult = mytax.get_tax(gettaxes)
+
       AVALARA_TRANSACTION_LOGGER.debug getTaxResult
 
       if getTaxResult == 'error in Tax' then
