@@ -33,6 +33,17 @@ describe Spree::Order, type: :model do
     end
   end
 
+  describe "#cancel_status" do
+    it "should return nil if no AvalaraTransaction is present" do
+      expect(@order.cancel_status).to be_nil
+    end
+
+    it "should call #check_status on AvalaraTransaction" do
+      avala_transaction = @order.create_avalara_transaction
+      expect(avala_transaction).to receive(:check_status).with(@order)
+      @order.cancel_status
+    end
+  end
   describe "#avalara_capture" do
     it "should response with Spree::Adjustment object" do
       expect(@order.avalara_capture.first).to be_kind_of(Spree::Adjustment)

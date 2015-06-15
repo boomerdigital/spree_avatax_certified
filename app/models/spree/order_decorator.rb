@@ -26,6 +26,7 @@ Spree::Order.class_eval do
   end
 
   def cancel_status
+    return nil unless avalara_transaction.present?
     self.avalara_transaction.check_status(self)
   end
 
