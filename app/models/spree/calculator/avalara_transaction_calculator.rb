@@ -14,9 +14,18 @@ module Spree
         raise 'AvalaraTransaction cannot calculate inclusive sales taxes.'
       else
         binding.pry
-        # round_to_two_places(tax_for_item(item))
-        0
-        # TODO take discounted_amount into account. This is a problem because TaxCloud API does not take discounts nor does it return percentage rates.
+        @avalara_transaction ||= item.order.avalara_transaction
+
+        if @avalara_response.nil?
+          @avalara_response ||= item.order.avalara_capture
+        end
+
+        item.order.rtn_tax["TaxLines"].each do |line|
+          if line["LineNo"].include?(item.id.to_s)
+            return line["TaxCalculated"].to_f
+          end
+           0
+        end
       end
     end
 
@@ -24,6 +33,7 @@ module Spree
     alias_method :compute_line_item, :compute_shipment_or_line_item
 
     def compute_shipping_rate(shipping_rate)
+        binding.pry
       if rate.included_in_price
         raise 'AvalaraTransaction cannot calculate inclusive sales taxes.'
       else
