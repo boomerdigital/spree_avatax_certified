@@ -424,6 +424,8 @@ module Spree
 
       mytax = TaxSvc.new
 
+      puts "************************ HERE AND HITTING THE API NEXT ************************"
+
       getTaxResult = mytax.get_tax(gettaxes)
 
       AVALARA_TRANSACTION_LOGGER.debug getTaxResult
@@ -441,8 +443,6 @@ module Spree
       end
       return @myrtntax
     end
-
-
 
     def document_committing_enabled?
       Spree::Config.avatax_document_commit
