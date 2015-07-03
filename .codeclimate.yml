@@ -1,0 +1,15 @@
+engines:
+  rubocop:
+    enabled: true
+  eslint:
+    enabled: true
+  csslint:
+    enabled: true
+  bundler-audit:
+    enabled: true
+ratings: #Specifies which files/paths will be graded.
+  paths:
+    - "app/**"
+    - Gemfile.lock
+exclude_paths:
+ - "spec/*" #Paths that you want excluded from our analysis.
