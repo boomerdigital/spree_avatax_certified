@@ -16,9 +16,18 @@ module SpreeAvataxCertified
         run 'bundle exec rake railties:install:migrations FROM=spree_avatax_certified'
       end
 
+      def auto_migrate?
+        ENV['AUTO_RUN_MIGRATIONS'] =~ /true/i
+      end
+
       def run_migrations
-        res = ask 'Would you like to run the migrations now? [Y/n]'
-        if res == '' || res.downcase == 'y'
+        # hiding this inside parent method so it's not auto-run by rails generator
+        def migration_prompt_approved?
+          result = ask('Would you like to run the migrations now? [Y/n]')
+          !(result =~ /n/i)
+        end
+
+        if auto_migrate? || migration_prompt_approved?
           run 'bundle exec rake db:migrate'
         else
           puts 'Skipping rake db:migrate, don\'t forget to run it!'
