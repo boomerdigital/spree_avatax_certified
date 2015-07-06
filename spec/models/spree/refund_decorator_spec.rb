@@ -47,10 +47,5 @@ describe Spree::Refund, type: :model do
         expect(subject.avalara_eligible).to eq(true)
       end
     end
-    describe "#avalara_lookup" do
-      it "creates new avalara_transaction" do
-        expect{subject}.to change{Spree::AvalaraTransaction.count}.by(1)
-      end
-    end
   end
 end

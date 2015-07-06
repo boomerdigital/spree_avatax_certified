@@ -7,10 +7,13 @@ describe Spree::AvalaraTransaction, :type => :model do
   it { should belong_to :refund }
   it { should validate_presence_of :order }
   it { should have_db_index :order_id }
-  it { should have_one :adjustment }
+  it { should have_many :adjustments }
+
+  before do
+    MyConfigPreferences.set_preferences
+  end
 
   before :each do
-    MyConfigPreferences.set_preferences
     stock_location = FactoryGirl.create(:stock_location)
     @order = FactoryGirl.create(:order)
     line_item = FactoryGirl.create(:line_item)

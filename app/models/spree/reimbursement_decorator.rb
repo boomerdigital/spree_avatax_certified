@@ -52,10 +52,10 @@ Spree::Reimbursement.class_eval do
 
   def assign_avalara_transaction
     if avalara_eligible
-      if self.avalara_transaction.nil?
+      if order.avalara_transaction.nil?
         create_avalara_transaction_return_auth
       else
-        Spree::AvalaraTransaction.find_by_reimbursement_id(self.id).update_attributes(order_id: order.id, reimbursement_id: self.id)
+        Spree::AvalaraTransaction.find_by_order_id(order.id).update_attributes(order_id: order.id, reimbursement_id: self.id)
       end
     end
   end

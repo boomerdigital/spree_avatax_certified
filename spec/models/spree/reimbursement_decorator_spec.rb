@@ -2,14 +2,16 @@ require 'spec_helper'
 
 describe Spree::Reimbursement, type: :model do
 
-  it { should have_one :avalara_transaction }
   let(:order) {FactoryGirl.create(:shipped_order)}
   let(:stock_location) {create(:stock_location)}
   let(:return_authorization_reason) { create(:return_authorization_reason)}
   let!(:default_refund_reason) { Spree::RefundReason.find_or_create_by!(name: Spree::RefundReason::RETURN_PROCESSING_REASON, mutable: false) }
 
-  before :each do
+  before do
     MyConfigPreferences.set_preferences
+  end
+
+  before :each do
     @order = FactoryGirl.create(:shipped_order)
     payment = create(:payment, amount: @order.total, order: @order, state: 'completed')
     return_authorization = Spree::ReturnAuthorization.create(:order => @order, :stock_location => stock_location, :reason => return_authorization_reason)
@@ -42,14 +44,6 @@ describe Spree::Reimbursement, type: :model do
     end
   end
   context "finalized" do
-    let(:reimbursement2) { create(:reimbursement, customer_return: @customer_return, order: @order, return_items: [@customer_return.return_items.first])}
-    describe "#avalara_capture_finalize" do
-      subject {reimbursement2.reimbursed!}
-      it "creates new avalara_transaction" do
-        expect{reimbursement2.reimbursed!}.to change{Spree::AvalaraTransaction.count}.by(1)
-      end
-    end
-
     describe "#pending" do
       it "returns inital state of authorized" do
         expect(reimbursement.reimbursement_status).to eq("pending")
