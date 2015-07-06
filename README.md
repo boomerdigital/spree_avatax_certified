@@ -1,7 +1,7 @@
 SpreeAvataxCertified
 ===========
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/railsdog/spree_avatax_certified?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/railsdog/spree_avatax_certified?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Circle CI](https://circleci.com/gh/railsdog/spree_avatax_certified/tree/2-4-stable.svg?style=svg)](https://circleci.com/gh/railsdog/spree_avatax_certified/tree/2-4-stable)
 
 SpreeAvataxCertified is the *only* [officially certified Avatax solution](http://www.avalara.com/avalara-certified/) that integrates with SpreeCommerce.  With this extension you can add instantaneous sales tax decisions to your store.
 
