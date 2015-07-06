@@ -62,7 +62,6 @@ PATH
       logging (~> 1.8)
       psych (~> 2.0.4)
       rest-client (~> 1.7)
-      spree_backend (~> 2.3.0)
       spree_core (~> 2.3.0)
 
 GEM
