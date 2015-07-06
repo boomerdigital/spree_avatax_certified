@@ -63,10 +63,10 @@ Spree::Refund.class_eval do
 
   def assign_avalara_transaction
     if avalara_eligible
-      if self.avalara_transaction.nil?
+      if self.payment.order.avalara_transaction.nil?
         create_avalara_transaction_refund
       else
-        Spree::AvalaraTransaction.find_by_refund_id(self.id).update_attributes(order_id: payment.order.id, refund_id: self.id)
+        Spree::AvalaraTransaction.find_by_order_id(payment.order.id).update_attributes(order_id: payment.order.id, refund_id: self.id)
       end
     end
   end
