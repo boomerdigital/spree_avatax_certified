@@ -4,6 +4,8 @@ require "codeclimate-test-reporter"
 CodeClimate::TestReporter.start
 
 require File.expand_path('../dummy/config/environment.rb',  __FILE__)
+require 'dotenv'
+Dotenv.load
 
 require 'rspec/rails'
 require 'rspec/its'

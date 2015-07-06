@@ -7,8 +7,11 @@ describe Spree::Reimbursement, type: :model do
   let(:return_authorization_reason) { create(:return_authorization_reason)}
   let!(:default_refund_reason) { Spree::RefundReason.find_or_create_by!(name: Spree::RefundReason::RETURN_PROCESSING_REASON, mutable: false) }
 
-  before :each do
+  before do
     MyConfigPreferences.set_preferences
+  end
+
+  before :each do
     @order = FactoryGirl.create(:shipped_order)
     payment = create(:payment, amount: @order.total, order: @order, state: 'completed')
     return_authorization = Spree::ReturnAuthorization.create(:order => @order, :stock_location => stock_location, :reason => return_authorization_reason)

@@ -9,8 +9,11 @@ describe Spree::AvalaraTransaction, :type => :model do
   it { should have_db_index :order_id }
   it { should have_many :adjustments }
 
-  before :each do
+  before do
     MyConfigPreferences.set_preferences
+  end
+
+  before :each do
     stock_location = FactoryGirl.create(:stock_location)
     @order = FactoryGirl.create(:order)
     line_item = FactoryGirl.create(:line_item)
