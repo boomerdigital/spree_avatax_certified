@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.version     = '0.5.2'
   s.summary     = 'Spree extension for Avalara tax calculation.'
   s.description = 'Spree extension for Avalara tax calculation.'
-  s.required_ruby_version = '>= 2.0.0'
+  s.required_ruby_version = '>= 2.1.0'
 
   s.author    = 'Allison Reilly'
   s.email     = 'allison@railsdog.com'
@@ -17,7 +17,6 @@ Gem::Specification.new do |s|
   s.requirements << 'none'
 
   s.add_dependency 'spree_core', '~> 3.0.0'
-  s.add_dependency 'spree_backend', '~> 3.0.0'
   s.add_dependency 'json', '~> 1.7'
   s.add_dependency 'addressable', '~> 2.3'
   s.add_dependency 'rest-client', '~> 1.7'
