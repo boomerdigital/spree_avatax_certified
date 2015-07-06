@@ -18,7 +18,7 @@ describe AddressSvc, :type => :model do
 
     it "does not validate address because of incorrect address" do
       result = @address_svc.validate(address)
-      expect(@address_svc.validate(address)["ResultCode"]).to eq("Error")
+      expect(@address_svc.validate(address)).to eq("error in address validation")
     end
 
     it "does not validate when config settings are false" do
