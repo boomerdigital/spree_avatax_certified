@@ -52,12 +52,22 @@ module Spree
 
     def retrieve_rates_from_cache(order)
       Rails.cache.fetch(cache_key(order), time_to_idle: 5.minutes) do
+        # need to set up a way to know when the order has been put through so order.avalara_capture_finalize will occur
         order.avalara_capture
       end
     end
 
     def tax_for_item(item, avalara_response)
       order = item.order
+      item_address = order.ship_address || order.billing_address
+      if item_address.nil?
+        # We can't calculate tax when we don't have a destination address
+        return 0
+      elsif !self.calculable.zone.include?(item_address)
+        # If the order is outside our jurisdiction, then return 0
+        return 0
+      end
+
       avalara_response["TaxLines"].each do |line|
         if line["LineNo"].include?(item.id.to_s)
           return line["TaxCalculated"].to_f
@@ -70,10 +80,8 @@ module Spree
     def tax_for_shipments(item, avalara_response)
       order = item.order
       shipments = item.order.shipments
-
       avalara_response["TaxLines"].each do |line|
         shipments.each do |shipment|
-          binding.pry
           if line["LineNo"] == "#{shipment.id}-FR"
             unless shipment.additional_tax_total.to_f == line["TaxCalculated"].to_f
               shipment.adjustments.create do |adjustment|
