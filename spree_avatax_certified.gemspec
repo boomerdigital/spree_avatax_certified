@@ -17,7 +17,6 @@ Gem::Specification.new do |s|
   s.requirements << 'none'
 
   s.add_dependency 'spree_core', '~> 2.3.0'
-  s.add_dependency 'spree_backend', '~> 2.3.0'
   s.add_dependency 'json', '~> 1.7'
   s.add_dependency 'addressable', '~> 2.3'
   s.add_dependency 'rest-client', '~> 1.7'
@@ -25,6 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'logging', '~> 1.8'
 
   #add gems here for files
+  s.add_development_dependency 'dotenv'
   s.add_development_dependency 'deface', '~> 1.0'
   s.add_development_dependency 'capybara', '~> 2.1'
   s.add_development_dependency 'coffee-rails', '~> 4.0'
