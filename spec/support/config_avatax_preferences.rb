@@ -1,11 +1,9 @@
 class MyConfigPreferences
   def self.set_preferences
-    Spree::Config.avatax_api_username = ""
-    Spree::Config.avatax_api_password = ""
-    Spree::Config.avatax_company_code = "54321"
-    Spree::Config.avatax_endpoint = "https://development.avalara.net"
-    Spree::Config.avatax_account = ""
-    Spree::Config.avatax_license_key = ""
+    Spree::Config.avatax_company_code = ENV['AVATAX_COMPANY_CODE']
+    Spree::Config.avatax_endpoint = ENV['AVATAX_ENDPOINT']
+    Spree::Config.avatax_account = ENV['AVATAX_ACCOUNT']
+    Spree::Config.avatax_license_key = ENV['AVATAX_LICENSE_KEY']
     Spree::Config.avatax_log = true
     Spree::Config.avatax_address_validation = false
     Spree::Config.avatax_document_commit = true
