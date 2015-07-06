@@ -11,7 +11,7 @@ database:
 test:
   pre:
     # set up avatax login API keys
-    - cp spec/support/config_preferences.example.rb spec/support/config_preferences.rb
+    - cp spec/support/config_avatax_preferences.example.rb spec/support/config_avatax_preferences.rb
     # build dummy app
     - bundle exec rake test_app:
         environment:
