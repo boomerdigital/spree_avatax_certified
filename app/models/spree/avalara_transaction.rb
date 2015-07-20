@@ -287,7 +287,7 @@ module Spree
       if location.nil? && avatax_origin_location.nil?
         AVALARA_TRANSACTION_LOGGER.info('avatax origin location created')
         return create_avatax_origin origin
-      elsif location.city.nil?
+      elsif location.nil? || location.city.nil?
 
         if avatax_origin_location.nil?
           return create_avatax_origin origin
