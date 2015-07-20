@@ -268,7 +268,7 @@ module Spree
     end
 
     def backup_stock_location(origin)
-      if Spree::StockLocation.find_by(default: true).nil? || Spree::StockLocation.find_by(name: 'avatax origin').nil?
+      if Spree::StockLocation.find_by(default: true).nil? && Spree::StockLocation.find_by(name: 'avatax origin').nil?
         AVALARA_TRANSACTION_LOGGER.info('avatax origin location created')
 
         return Spree::StockLocation.create(
