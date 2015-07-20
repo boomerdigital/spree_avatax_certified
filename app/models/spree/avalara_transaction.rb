@@ -268,7 +268,9 @@ module Spree
     end
 
     def backup_stock_location(origin)
-      if Spree::StockLocation.find_by(default: true).nil? && Spree::StockLocation.find_by(name: 'avatax origin').nil?
+      location = Spree::StockLocation.find_by(default: true) || Spree::StockLocation.first || Spree::StockLocation.find_by(name: 'avatax origin')
+
+      if location.nil?
         AVALARA_TRANSACTION_LOGGER.info('avatax origin location created')
 
         return Spree::StockLocation.create(
@@ -282,10 +284,10 @@ module Spree
           country_id: Spree::State.find_by_name(origin["Region"]).country_id
           )
 
-      elsif Spree::StockLocation.find_by(default: true).city.nil? || Spree::StockLocation.first.city.nil?
+      elsif location.city.nil?
         AVALARA_TRANSACTION_LOGGER.info('avatax origin location updated default')
 
-        return Spree::StockLocation.first.update_attributes(
+        return location.update_attributes(
           address1: origin["Address1"],
           address2: origin["Address2"],
           city: origin["City"],
@@ -297,7 +299,7 @@ module Spree
 
       else
         AVALARA_TRANSACTION_LOGGER.info('default location')
-        return Spree::StockLocation.find_by(default: true) || Spree::StockLocation.first
+        return location
       end
     end
 
