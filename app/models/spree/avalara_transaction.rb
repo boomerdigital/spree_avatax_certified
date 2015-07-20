@@ -95,7 +95,7 @@ module Spree
 
     private
 
-    def create_avatax_origin
+    def create_avatax_origin origin
       return Spree::StockLocation.create(
         name: "avatax origin",
         address1: origin["Address1"],
@@ -286,11 +286,11 @@ module Spree
 
       if location.nil? && avatax_origin_location.nil?
         AVALARA_TRANSACTION_LOGGER.info('avatax origin location created')
-        return create_avatax_origin
+        return create_avatax_origin origin
       elsif location.city.nil?
 
         if avatax_origin_location.nil?
-          return create_avatax_origin
+          return create_avatax_origin origin
         elsif avatax_origin_location.city.nil?
           AVALARA_TRANSACTION_LOGGER.info('avatax origin location updated avatax origin')
           return avatax_origin_location.update_attributes(
