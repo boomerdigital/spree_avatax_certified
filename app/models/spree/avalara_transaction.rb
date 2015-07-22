@@ -373,7 +373,9 @@ module Spree
       if order_details then
         AVALARA_TRANSACTION_LOGGER.info('order adjustments')
         order_details.shipments.each do |shipment|
-          tax_line_items<<shipment_line(shipment)
+          if shipment.tax_category
+            tax_line_items<<shipment_line(shipment)
+          end
         end
 
         # order_details.all_adjustments.promotion.each do |adj|

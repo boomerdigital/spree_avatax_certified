@@ -7,7 +7,7 @@ Spree::Reimbursement.class_eval do
   has_one :avalara_transaction, dependent: :destroy
   after_save :assign_avalara_transaction, on: :create
 
-  self.state_machine(:reimbursement_status).before_transition :to => :reimbursed, :do => :avalara_capture_finalize, :if => :avalara_eligible
+  # self.state_machine(:reimbursement_status).before_transition :to => :reimbursed, :do => :avalara_capture_finalize, :if => :avalara_eligible
 
   def avalara_eligible
     Spree::Config.avatax_iseligible

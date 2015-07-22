@@ -17,8 +17,16 @@ use_codes = {
   "R" => "Non-resident (Canada only)"
 }
 
-res = defined?(ask) ? ask('Would you like to seed use codes? [Y/n]') : ''
+clothing = Spree::TaxCategory.find_by_name('Clothing')
+shipping = Spree::TaxCategory.create!(name: 'Shipping', tax_code: 'FR000000')
 
+shipping_tax = Spree::TaxRate.create(name: 'Shipping Tax', tax_category: shipping, amount: BigDecimal.new('0'), zone: Spree::Zone.find_by_name('North America'))
+shipping_tax.calculator = Spree::Calculator::AvalaraTransactionCalculator.create!
+shipping_tax.save!
+
+
+
+res = ask 'Would you like to seed use codes? [Y/n]'
 if res == '' || res.downcase == 'y'
 
   unless Spree::AvalaraEntityUseCode.count >= 16
@@ -30,3 +38,8 @@ if res == '' || res.downcase == 'y'
 else
   puts 'Skipping use code seeds!'
 end
+
+puts "Please remember to:"
+puts "- Create Tax Rates for each tax category and assign them the AvalaraTransactionCalculator"
+puts "- Add tax category to all shipping methods that need to be taxed."
+puts "- Don't assign anything default tax."

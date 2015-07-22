@@ -10,4 +10,12 @@ Spree::LineItem.class_eval do
       'TaxCategory' => tax_category
     }
   end
+
+  def avatax_cache_key
+    key = ["Spree::LineItem"]
+    key << self.id
+    key << self.quantity
+    key << self.cost_price
+    key.join("-")
+  end
 end
