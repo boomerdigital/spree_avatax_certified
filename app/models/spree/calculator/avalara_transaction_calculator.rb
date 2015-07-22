@@ -52,7 +52,6 @@ module Spree
 
     def retrieve_rates_from_cache(order)
       Rails.cache.fetch(cache_key(order), time_to_idle: 5.minutes) do
-        # need to set up a way to know when the order has been put through so order.avalara_capture_finalize will occur
         order.avalara_capture
       end
     end
@@ -69,7 +68,9 @@ module Spree
       end
 
       avalara_response["TaxLines"].each do |line|
-        if line["LineNo"].include?(item.id.to_s)
+        if line["LineNo"].include?("#{item.id}-FR")
+          return line["TaxCalculated"].to_f
+        elsif line["LineNo"].include?(item.id.to_s)
           return line["TaxCalculated"].to_f
         end
         0

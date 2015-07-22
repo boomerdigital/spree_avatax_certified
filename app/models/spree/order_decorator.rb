@@ -3,13 +3,10 @@ require 'logger'
 Spree::Order.class_eval do
 
   has_one :avalara_transaction, dependent: :destroy
-  # self.state_machine.before_transition :to => :payment,
-  #                                     :do => :avalara_capture,
-  #                                     :if => :avalara_eligible
 
-  # self.state_machine.before_transition :to => :complete,
-  #                                     :do => :avalara_capture_finalize,
-  #                                     :if => :avalara_eligible
+  self.state_machine.after_transition :to => :complete,
+                                      :do => :avalara_capture_finalize,
+                                      :if => :avalara_eligible
 
  self.state_machine.before_transition :to => :canceled,
                                       :do => :cancel_status,
@@ -42,37 +39,7 @@ Spree::Order.class_eval do
 
       logger.info 'tax amount'
       logger.debug @rtn_tax
-
-      unless @rtn_tax == "0"
-        @rtn_tax["TaxLines"].each do |tax_line|
-          if !tax_line["LineNo"].include? "-"
-            line_item = Spree::LineItem.find(tax_line["LineNo"])
-            line_item.adjustments.create do |adjustment|
-              adjustment.source = avalara_transaction
-              adjustment.label = "Tax"
-              adjustment.mandatory = true
-              adjustment.eligible = true
-              adjustment.amount = tax_line["TaxCalculated"]
-              adjustment.order = self
-              adjustment.state = "closed"
-            end
-          elsif tax_line["LineNo"].include? "-FR"
-            shipment = Spree::Shipment.find(tax_line["LineNo"].split("-").first)
-            shipment.adjustments.create do |adjustment|
-              adjustment.source = avalara_transaction
-              adjustment.label = 'Shipping Tax'
-              adjustment.mandatory = true
-              adjustment.eligible = true
-              adjustment.amount = tax_line["TaxCalculated"].to_f
-              adjustment.order = self
-              adjustment.state = "closed"
-            end
-          end
-        end
-
-        self.reload.update!
-        all_adjustments.avalara_tax
-      end
+      @rtn_tax
     rescue => e
       logger.debug e
       logger.debug 'error in a avalara capture'
@@ -81,7 +48,6 @@ Spree::Order.class_eval do
 
   def avalara_capture_finalize
     logger.debug 'avalara capture finalize'
-
     begin
       create_avalara_transaction
       self.all_adjustments.avalara_tax.destroy_all
@@ -90,37 +56,7 @@ Spree::Order.class_eval do
 
       logger.info 'tax amount'
       logger.debug @rtn_tax
-
-      unless @rtn_tax == "0"
-        @rtn_tax["TaxLines"].each do |tax_line|
-          if !tax_line["LineNo"].include? "-"
-            line_item = Spree::LineItem.find(tax_line["LineNo"])
-            line_item.adjustments.create do |adjustment|
-              adjustment.source = avalara_transaction
-              adjustment.label = "Tax"
-              adjustment.mandatory = true
-              adjustment.eligible = true
-              adjustment.amount = tax_line["TaxCalculated"]
-              adjustment.order = self
-              adjustment.state = "closed"
-            end
-          elsif tax_line["LineNo"].include? "-FR"
-            shipment = Spree::Shipment.find(tax_line["LineNo"].split("-").first)
-            shipment.adjustments.create do |adjustment|
-              adjustment.source = avalara_transaction
-              adjustment.label = 'Shipping Tax'
-              adjustment.mandatory = true
-              adjustment.eligible = true
-              adjustment.amount = tax_line["TaxCalculated"].to_f
-              adjustment.order = self
-              adjustment.state = "closed"
-            end
-          end
-        end
-
-        self.reload.update!
-        all_adjustments.avalara_tax
-      end
+      @rtn_tax
     rescue => e
       logger.debug e
       logger.debug 'error in a avalara capture finalize'

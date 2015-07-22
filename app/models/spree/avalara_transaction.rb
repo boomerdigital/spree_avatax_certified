@@ -239,7 +239,7 @@ module Spree
       line[:LineNo] = "#{refund.id}-RA"
       line[:ItemCode] = refund.transaction_id || "Refund"
       line[:Qty] = 1
-      line[:Amount] = -refund.pre_tax_amount.to_f
+      line[:Amount] = -refund.amount.to_f
       line[:OriginCode] = "Orig"
       line[:DestinationCode] = "Dest"
       line[:CustomerUsageType] = myusecode.try(:use_code)
@@ -501,6 +501,7 @@ module Spree
       mytax = TaxSvc.new
 
       getTaxResult = mytax.get_tax(gettaxes)
+
       AVALARA_TRANSACTION_LOGGER.debug getTaxResult
 
       if getTaxResult == 'error in Tax' then
