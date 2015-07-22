@@ -12,13 +12,8 @@ module Spree
       if rate.included_in_price
         raise 'AvalaraTransaction cannot calculate inclusive sales taxes.'
       else
-        # @avalara_transaction ||= item.order.avalara_transaction
-        # if item.order.rtn_tax.nil?
-        #   item.order.avalara_capture
-        # end
-
         avalara_response = retrieve_rates_from_cache(item.order)
-        # tax_for_shipments(item, avalara_response)
+
         tax_for_item(item, avalara_response)
       end
     end
@@ -67,13 +62,17 @@ module Spree
         return 0
       end
 
-      avalara_response["TaxLines"].each do |line|
-        if line["LineNo"].include?("#{item.id}-FR")
-          return line["TaxCalculated"].to_f
-        elsif line["LineNo"].include?(item.id.to_s)
-          return line["TaxCalculated"].to_f
+      begin
+        avalara_response["TaxLines"].each do |line|
+          if line["LineNo"].include?("#{item.id}-FR")
+            return line["TaxCalculated"].to_f
+          elsif line["LineNo"].include?(item.id.to_s)
+            return line["TaxCalculated"].to_f
+          end
+          0
         end
-        0
+      rescue => e
+        raise e.message
       end
     end
 
