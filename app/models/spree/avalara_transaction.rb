@@ -338,12 +338,10 @@ module Spree
         unless invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
 
           order_details.shipments.each do |shipment|
-            tax_line_items<<shipment_line(shipment)
+            if shipment.tax_category
+              tax_line_items<<shipment_line(shipment)
+            end
           end
-
-          # order_details.all_adjustments.promotion.each do |adj|
-          #   tax_line_items<<promotion_line(adj)
-          # end
         end
 
         order_details.return_authorizations.each do |return_auth|
