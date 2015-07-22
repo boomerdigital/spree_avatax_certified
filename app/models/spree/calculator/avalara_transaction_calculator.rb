@@ -75,25 +75,5 @@ module Spree
         raise e.message
       end
     end
-
-
-    def tax_for_shipments(item, avalara_response)
-      order = item.order
-      shipments = item.order.shipments
-      avalara_response["TaxLines"].each do |line|
-        shipments.each do |shipment|
-          if line["LineNo"] == "#{shipment.id}-FR"
-            unless shipment.additional_tax_total.to_f == line["TaxCalculated"].to_f
-              shipment.adjustments.create do |adjustment|
-              adjustment.source = self
-              adjustment.amount = line["TaxCalculated"].to_f
-              adjustment.order = order
-            end
-            end
-          end
-          0
-        end
-      end
-    end
   end
 end
