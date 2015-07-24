@@ -2,14 +2,23 @@ require 'spec_helper'
 
 describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
   let!(:country) { create(:country) }
-  let!(:zone) { create(:zone, :name => "Country Zone", :default_tax => true, :zone_members => []) }
-  let!(:tax_category) { create(:tax_category, :tax_rates => []) }
-  let!(:rate) { create(:tax_rate, :tax_category => tax_category, :amount => 0.05, :included_in_price => included_in_price) }
+  let!(:zone) { create(:zone, :name => "North America", :default_tax => true, :zone_members => []) }
+  let(:zone_member) { Spree::ZoneMember.create() }
+  let!(:tax_category) { Spree::TaxCategory.create(name: 'Clothing', tax_code: 'P0000000') }
+  let!(:rate) { create(:tax_rate, :tax_category => tax_category, :amount => 0.00, :included_in_price => false, zone: zone) }
   let(:included_in_price) { false }
   let!(:calculator) { Spree::Calculator::AvalaraTransactionCalculator.new(:calculable => rate ) }
   let!(:order) { create(:order) }
   let!(:line_item) { create(:line_item, :price => 10, :quantity => 3, :tax_category => tax_category) }
   let!(:shipment) { create(:shipment, :cost => 15) }
+  let(:address) { Spree::Address.create(firstname: "Allison", lastname: "Reilly", address1: "220 Paul W Bryant Dr", city: "Tuscaloosa", zipcode: "35401", phone: "9733492462", state_name: "Alabama", state_id: 39, country_id: 1) }
+  before do
+    order.ship_address = address
+    order.save
+    zone.zone_members.create!(zoneable: country)
+    shipment.shipping_method.tax_category = tax_category
+    shipment.shipping_method.save
+  end
 
   context "#compute" do
     context "when given an order" do
@@ -39,13 +48,13 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
         before { line_item.promo_total = -1 }
 
         it "should be equal to the item's pre-tax total * rate" do
-          expect(calculator.compute(line_item)).to eq(1.45)
+          expect(calculator.compute(line_item)).to eq(1.2)
         end
       end
 
       context "when the variant matches the tax category" do
         it "should be equal to the item pre-tax total * rate" do
-          expect(calculator.compute(line_item)).to eq(1.50)
+          expect(calculator.compute(line_item)).to eq(1.2)
         end
       end
     end
