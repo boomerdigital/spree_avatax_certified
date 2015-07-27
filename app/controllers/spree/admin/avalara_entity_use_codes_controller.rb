@@ -4,13 +4,8 @@ module Spree
       respond_to :html
 
       def index
-        if params[:ids]
-          @use_codes = Spree::AvalaraEntityUseCode.where(:id => params[:ids])
-        elsif params[:q]
-          @use_codes = Spree::AvalaraEntityUseCode.ransack(:use_code_cont => params[:q]).result
-        else
-          @use_codes = Spree::AvalaraEntityUseCode.all
-        end
+        @use_codes = Spree::AvalaraEntityUseCode.all
+
         respond_to do |format|
           format.html
           format.json { render json: @use_codes }
