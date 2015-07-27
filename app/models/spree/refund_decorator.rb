@@ -28,9 +28,7 @@ Spree::Refund.class_eval do
         REFUND_LOGGER.info 'tax amount'
         REFUND_LOGGER.debug @rtn_tax
 
-
-        payment.order.reload.update!
-        payment.order.all_adjustments.avalara_tax
+        @rtn_tax
       rescue => e
         REFUND_LOGGER.debug e
         REFUND_LOGGER.debug 'error in a avalara capture refund'
@@ -48,8 +46,7 @@ Spree::Refund.class_eval do
         REFUND_LOGGER.info 'tax amount'
         REFUND_LOGGER.debug @rtn_tax
 
-        payment.order.reload.update!
-        payment.order.all_adjustments.avalara_tax
+        @rtn_tax
       rescue => e
         REFUND_LOGGER.debug e
         REFUND_LOGGER.debug 'error in a avalara capture refund finalize'

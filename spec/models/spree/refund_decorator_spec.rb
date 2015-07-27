@@ -36,9 +36,10 @@ describe Spree::Refund, type: :model do
     .to receive(:credit)
     .with(amount_in_cents, payment.source, payment.transaction_id, {originator: an_instance_of(Spree::Refund)})
     .and_return(gateway_response)
-
-    @refund = Spree::Refund.create(payment: payment, amount: BigDecimal.new(10), reason: refund_reason, transaction_id: nil)
   end
+
+  let(:refund) {Spree::Refund.create(payment: payment, amount: BigDecimal.new(10), reason: refund_reason, transaction_id: nil)}
+
   context "transaction id exists" do
     let(:transaction_id) { "12kfjas0" }
     subject { create(:refund, payment: payment, amount: amount, reason: refund_reason, transaction_id: transaction_id) }
@@ -46,6 +47,27 @@ describe Spree::Refund, type: :model do
       it "should return true" do
         expect(subject.avalara_eligible).to eq(true)
       end
+    end
+  end
+
+  describe "#avalara_eligible" do
+    it "should return true" do
+      expect(refund.avalara_eligible).to eq(true)
+    end
+  end
+
+  describe "#avalara_lookup" do
+    it "should return lookup_avatax" do
+      expect(refund.avalara_lookup).to eq(:lookup_avatax)
+    end
+    it "creates new avalara_transaction" do
+      expect{refund}.to change{Spree::AvalaraTransaction.count}.by(1)
+    end
+  end
+
+  describe "#avalara_capture" do
+    it "creates new avalara_transaction" do
+      expect{refund.avalara_capture}.to change{Spree::AvalaraTransaction.count}.by(1)
     end
   end
 end
