@@ -51,48 +51,6 @@ module Spree
       end
     end
 
-    def update_adjustment(adjustment, source)
-      AVALARA_TRANSACTION_LOGGER.info("update adjustment call")
-
-      if adjustment.state != "closed"
-        commit_avatax(order.line_items, order)
-        adjustment.update_column(:amount, rnt_tax)
-      end
-
-      if order.complete?
-        commit_avatax_final(order.line_items, order)
-        adjustment.update_column(:amount, rnt_tax)
-        adjustment.update_column(:state, "closed")
-      end
-
-      if order.state == 'canceled'
-        cancel_order_to_avalara("SalesInvoice", "DocVoided", order)
-      end
-
-      if adjustment.state == "closed" && order.adjustments.reimbursement.exists?
-        commit_avatax(order.line_items, order, order.number.to_s + ":" + order.adjustments.reimbursement.first.id.to_s, order.completed_at)
-
-        if rnt_tax != "0.00"
-          adjustment.update_column(:amount, rnt_tax)
-          adjustment.update_column(:state, "closed")
-        end
-      end
-
-      if adjustment.state == "closed" && order.adjustments.reimbursement.exists?
-        order.adjustments.reimbursement.each do |adj|
-          if adj.state == "closed" || adj.state == "closed"
-            commit_avatax_final(order.line_items, order, order.number.to_s + ":"  + adj.id.to_s, order.completed_at )
-          end
-        end
-
-        if rnt_tax != "0.00"
-          adjustment.update_column(:amount, rnt_tax)
-          adjustment.update_column(:state, "closed")
-        end
-      end
-    end
-
-
     private
 
     def get_shipped_from_address(item_id)
@@ -196,23 +154,6 @@ module Spree
       AVALARA_TRANSACTION_LOGGER.debug line.to_xml
       return line
     end
-
-    # def promotion_line(promo)
-    #   line = Hash.new
-    #   line[:LineNo] = "#{promo.id}-PR"
-    #   line[:ItemCode] = "Promotion"
-    #   line[:Qty] = 0
-    #   line[:Amount] = promo.amount.to_f
-    #   line[:Discounted] = true
-    #   line[:OriginCode] = "Orig"
-    #   line[:DestinationCode] = "Dest"
-    #   line[:CustomerUsageType] = myusecode.try(:use_code)
-    #   line[:Description] = promo.label
-    #   line[:TaxCode] = ""
-
-    #   AVALARA_TRANSACTION_LOGGER.debug line.to_xml
-    #   return line
-    # end
 
     def reimbursement_return_item_line(return_item)
       line = Hash.new
@@ -377,10 +318,6 @@ module Spree
             tax_line_items<<shipment_line(shipment)
           end
         end
-
-        # order_details.all_adjustments.promotion.each do |adj|
-        #   tax_line_items << promotion_line(adj)
-        # end
       end
 
       if order_details.ship_address.nil?
