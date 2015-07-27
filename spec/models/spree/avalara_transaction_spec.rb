@@ -9,6 +9,9 @@ describe Spree::AvalaraTransaction, :type => :model do
   it { should have_db_index :order_id }
   it { should have_many :adjustments }
 
+  let(:country) {create(:country)}
+  let(:state) {create(:state)}
+
   before :each do
     MyConfigPreferences.set_preferences
     stock_location = FactoryGirl.create(:stock_location)
@@ -16,7 +19,7 @@ describe Spree::AvalaraTransaction, :type => :model do
     line_item = FactoryGirl.create(:line_item)
     line_item.tax_category.update_attributes(name: "Clothing", description: "PC030000")
     @order.line_items << line_item
-    to_address = Spree::Address.create(firstname: "Allison", lastname: "Reilly", address1: "220 Paul W Bryant Dr", city: "Tuscaloosa", zipcode: "35401", phone: "9733492462", state_name: "Alabama", state_id: 39, country_id: 1)
+    to_address = Spree::Address.create(firstname: "Allison", lastname: "Reilly", address1: "220 Paul W Bryant Dr", city: "Tuscaloosa", zipcode: "35401", phone: "9733492462", state_name: "Alabama", state: state, country: country)
     @order.update_attributes(ship_address: to_address, bill_address: to_address)
   end
 
