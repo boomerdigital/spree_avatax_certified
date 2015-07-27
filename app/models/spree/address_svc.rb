@@ -27,7 +27,6 @@ class AddressSvc
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
       res = http.get(uri.request_uri, 'Authorization' => credential)
-
       response = JSON.parse(res.body)
 
       if response["Address"]["City"] == address[:city] || response["Address"]["Region"] == Spree::State.find(address[:state_id]).abbr
@@ -45,37 +44,38 @@ class AddressSvc
       end
     rescue => e
       'error in address validation'
-    end
+  end
 
-    def address_validation_enabled?
-      Spree::Config.avatax_address_validation
-    end
+  def address_validation_enabled?
+    Spree::Config.avatax_address_validation
+  end
 
-    def country_enabled?(current_country)
-      Spree::Config.avatax_address_validation_enabled_countries.each do |country|
-        if current_country.name == country
-          return true
-        else
-          false
-        end
+  def country_enabled?(current_country)
+    Spree::Config.avatax_address_validation_enabled_countries.each do |country|
+      if current_country.name == country
+        return true
+      else
+        false
       end
     end
-
-    private
-
-    def credential
-      'Basic ' + Base64.encode64(account_number + ":" + license_key)
-    end
-
-    def service_url
-      Spree::Config.avatax_endpoint + AVATAX_SERVICEPATH_ADDRESS + 'validate?'
-    end
-
-    def license_key
-      Spree::Config.avatax_license_key
-    end
-
-    def account_number
-      Spree::Config.avatax_account
-    end
+    nil
   end
+
+  private
+
+  def credential
+    'Basic ' + Base64.encode64(account_number + ":" + license_key)
+  end
+
+  def service_url
+    Spree::Config.avatax_endpoint + AVATAX_SERVICEPATH_ADDRESS + 'validate?'
+  end
+
+  def license_key
+    Spree::Config.avatax_license_key
+  end
+
+  def account_number
+    Spree::Config.avatax_account
+  end
+end
