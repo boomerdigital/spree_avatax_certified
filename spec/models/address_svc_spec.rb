@@ -1,7 +1,10 @@
 require 'spec_helper'
 
 describe AddressSvc, :type => :model do
-  let(:address){FactoryGirl.create(:address)}
+  MyConfigPreferences.set_preferences
+  let(:country) { create(:country) }
+  let(:state) { create(:state) }
+  let(:address) { FactoryGirl.create(:address) }
 
   before do
     @address_svc = AddressSvc.new
@@ -10,7 +13,7 @@ describe AddressSvc, :type => :model do
     @real_address.update_attributes(city: 'Tuscaloosa', address1: '220 Paul W Bryant Dr')
   end
 
- describe "#validate" do
+  describe "#validate" do
     it "validates address with success" do
       result = @address_svc.validate(@real_address)
       expect(@address_svc.validate(@real_address)["ResultCode"]).to eq("Success")
@@ -26,5 +29,11 @@ describe AddressSvc, :type => :model do
       result = @address_svc.validate(address)
       expect(@address_svc.validate(address)).to eq("Address validation disabled")
     end
- end
+  end
+
+  describe "#country_enabled?" do
+    it 'returns true if current_country is in address' do
+      expect(@address_svc.country_enabled?(Spree::Country.find(address[:country_id]))).to eq(true)
+    end
+  end
 end
