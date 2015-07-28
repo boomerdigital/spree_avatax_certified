@@ -372,11 +372,9 @@ module Spree
       return @myrtntax
     end
 
-    def post_return_order_to_avalara(commit=false, orderitems=nil, order_details=nil, doc_code=nil, org_ord_date=nil, invoice_detail=nil)
-      address_validator = AddressSvc.new
+    def post_return_order_to_avalara(commit = false, orderitems = nil, order_details = nil, doc_code = nil, org_ord_date = nil, invoice_detail = nil)
       tax_line_items = []
       addresses = []
-      origin = JSON.parse(Spree::Config.avatax_origin)
       AVALARA_TRANSACTION_LOGGER.info('starting post return order to avalara')
       AVALARA_TRANSACTION_LOGGER.info('running order details')
 
