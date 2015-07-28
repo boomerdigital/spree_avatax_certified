@@ -1,5 +1,5 @@
 require 'logger'
-REFUND_LOGGER = AvataxHelper::AvataxLog.new("refund", "refund class")
+REFUND_LOGGER = AvataxHelper::AvataxLog.new('refund', 'refund class')
 
 Spree::Refund.class_eval do
   REFUND_LOGGER.info('start refund processing')
@@ -23,7 +23,7 @@ Spree::Refund.class_eval do
       REFUND_LOGGER.debug 'avalara capture refund'
       begin
         avalara_transaction_refund = Spree::AvalaraTransaction.find_by_refund_id(self.id)
-        @rtn_tax = avalara_transaction_refund.commit_avatax(payment.order.line_items, payment.order, payment.order.number.to_s + "." + self.id.to_s, avalara_transaction_refund.order.completed_at.strftime("%F"), "ReturnInvoice")
+        @rtn_tax = avalara_transaction_refund.commit_avatax(payment.order.line_items, payment.order, payment.order.number.to_s + '.' + self.id.to_s, avalara_transaction_refund.order.completed_at.strftime('%F'), 'ReturnInvoice')
 
         REFUND_LOGGER.info 'tax amount'
         REFUND_LOGGER.debug @rtn_tax
@@ -41,7 +41,7 @@ Spree::Refund.class_eval do
       REFUND_LOGGER.debug 'avalara capture refund avalara_capture_finalize'
       begin
         avalara_transaction_refund = Spree::AvalaraTransaction.find_by_refund_id(self.id)
-        @rtn_tax = avalara_transaction_refund.commit_avatax_final(payment.order.line_items, payment.order, payment.order.number.to_s + "." + self.id.to_s, avalara_transaction_refund.order.completed_at.strftime("%F"), "ReturnInvoice")
+        @rtn_tax = avalara_transaction_refund.commit_avatax_final(payment.order.line_items, payment.order, payment.order.number.to_s + '.' + self.id.to_s, avalara_transaction_refund.order.completed_at.strftime('%F'), 'ReturnInvoice')
 
         REFUND_LOGGER.info 'tax amount'
         REFUND_LOGGER.debug @rtn_tax
