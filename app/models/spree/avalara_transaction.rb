@@ -51,47 +51,6 @@ module Spree
       end
     end
 
-    def update_adjustment(adjustment, source)
-      AVALARA_TRANSACTION_LOGGER.info('update adjustment call')
-
-      if adjustment.state != 'closed'
-        commit_avatax(order.line_items, order)
-        adjustment.update_column(:amount, rnt_tax)
-      end
-
-      if order.complete?
-        commit_avatax_final(order.line_items, order)
-        adjustment.update_column(:amount, rnt_tax)
-        adjustment.update_column(:state, 'closed')
-      end
-
-      if order.state == 'canceled'
-        cancel_order_to_avalara('SalesInvoice', 'DocVoided', order)
-      end
-
-      if adjustment.state == 'closed' && order.adjustments.reimbursement.exists?
-        commit_avatax(order.line_items, order, order.number.to_s + ':' + order.adjustments.reimbursement.first.id.to_s, order.completed_at)
-
-        if rnt_tax != '0.00'
-          adjustment.update_column(:amount, rnt_tax)
-          adjustment.update_column(:state, 'closed')
-        end
-      end
-
-      if adjustment.state == 'closed' && order.adjustments.reimbursement.exists?
-        order.adjustments.reimbursement.each do |adj|
-          if adj.state == 'closed' || adj.state == 'closed'
-            commit_avatax_final(order.line_items, order, order.number.to_s + ':' + adj.id.to_s, order.completed_at )
-          end
-        end
-
-        if rnt_tax != '0.00'
-          adjustment.update_column(:amount, rnt_tax)
-          adjustment.update_column(:state, 'closed')
-        end
-      end
-    end
-
     private
 
     def create_avatax_origin(origin)
@@ -184,7 +143,6 @@ module Spree
 
     def stock_location(packages, line_item)
       stock_loc = nil
-
       packages.each do |package|
         next unless package.to_shipment.stock_location.stock_items.where(:variant_id => line_item.variant.id).exists?
         stock_loc = package.to_shipment.stock_location
@@ -246,11 +204,11 @@ module Spree
 
     def myusecode
       begin
-        if !order.user_id.nil?
+        unless order.user_id.nil?
           myuserid = order.user_id
           AVALARA_TRANSACTION_LOGGER.debug myuserid
           myuser = Spree::User.find(myuserid)
-          unless myuser.avalara_entity_use_code_id.nil?
+          if !myuser.avalara_entity_use_code_id.nil?
             return Spree::AvalaraEntityUseCode.find(myuser.avalara_entity_use_code_id)
           else
             return nil
@@ -419,7 +377,7 @@ module Spree
           @myrtntax = get_tax_result
         end
       end
-      return @myrtntax
+      @myrtntax
     end
 
     def post_return_order_to_avalara(commit = false, orderitems = nil, order_details = nil, doc_code = nil, org_ord_date = nil, invoice_detail = nil)
@@ -494,7 +452,7 @@ module Spree
           @myrtntax = get_tax_result
         end
       end
-      return @myrtntax
+      @myrtntax
     end
 
     def document_committing_enabled?
