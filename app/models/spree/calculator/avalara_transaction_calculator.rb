@@ -62,14 +62,14 @@ module Spree
         # If the order is outside our jurisdiction, then return 0
         return 0
       end
-
       avalara_response["TaxLines"].each do |line|
-        if line["LineNo"].include?("#{item.id}-FR")
+        if line["LineNo"] == "#{item.id}-FR" && line["TaxCode"] == item.tax_category.tax_code
           return line["TaxCalculated"].to_f
-        elsif line["LineNo"].include?(item.id.to_s)
+        elsif line["LineNo"] == "#{item.id}-LI" && line["TaxCode"] == item.tax_category.tax_code
           return line["TaxCalculated"].to_f
+        else
+          0
         end
-        0
       end
     end
   end

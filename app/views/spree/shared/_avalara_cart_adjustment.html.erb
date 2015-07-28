@@ -1,3 +1,0 @@
-<% @order.all_adjustments.avalara_tax.eligible.group_by(&:label).each do |label, adjustments| %>
-  <%= render "spree/orders/adjustment_row", :label => label, :adjustments => adjustments, :type => Spree.t(:tax) %>
-<% end %>

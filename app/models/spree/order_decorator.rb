@@ -32,7 +32,6 @@ Spree::Order.class_eval do
 
     begin
       create_avalara_transaction
-      self.all_adjustments.avalara_tax.destroy_all
       self.line_items.reload
 
       @rtn_tax = self.avalara_transaction.commit_avatax(line_items, self, self.number.to_s, Date.today.strftime("%F"), "SalesInvoice")
@@ -42,7 +41,7 @@ Spree::Order.class_eval do
       @rtn_tax
     rescue => e
       logger.debug e
-      logger.debug 'error in a avalara capture'
+      logger.debug 'error in avalara capture'
     end
   end
 
@@ -50,7 +49,6 @@ Spree::Order.class_eval do
     logger.debug 'avalara capture finalize'
     begin
       create_avalara_transaction
-      self.all_adjustments.avalara_tax.destroy_all
       self.line_items.reload
       @rtn_tax = self.avalara_transaction.commit_avatax_final(line_items, self, self.number.to_s, Date.today.strftime("%F"), "SalesInvoice")
 
@@ -59,19 +57,12 @@ Spree::Order.class_eval do
       @rtn_tax
     rescue => e
       logger.debug e
-      logger.debug 'error in a avalara capture finalize'
+      logger.debug 'error in avalara capture finalize'
     end
-  end
-
-  def display_avalara_tax_total
-    avatax_tax = BigDecimal.new("0")
-    self.all_adjustments.avalara_tax.each do |tax|
-      avatax_tax += tax.amount
-    end
-    Spree::Money.new(avatax_tax, { currency: currency })
   end
 
   private
+
   def logger
     @logger ||= AvataxHelper::AvataxLog.new("avalara_order", "order class", 'start order processing')
   end

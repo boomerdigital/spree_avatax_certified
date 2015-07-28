@@ -62,12 +62,6 @@ describe Spree::Order, type: :model do
     end
   end
 
-  describe "#display_avalara_tax_total" do
-    it "is Spree::Money" do
-      expect(@order.display_avalara_tax_total).to be_kind_of(Spree::Money)
-    end
-  end
-
   context "complete" do
     before do
       @order.state = 'confirm'

@@ -57,7 +57,7 @@ Spree::Reimbursement.class_eval do
       REIMBURSEMENT_LOGGER.debug @rtn_tax
     rescue => e
       REIMBURSEMENT_LOGGER.debug e
-      REIMBURSEMENT_LOGGER.debug 'error in a avalara capture reimbursement'
+      REIMBURSEMENT_LOGGER.debug 'error in avalara capture reimbursement'
     end
   end
 
@@ -71,7 +71,7 @@ Spree::Reimbursement.class_eval do
       REIMBURSEMENT_LOGGER.debug @rtn_tax
     rescue => e
       REIMBURSEMENT_LOGGER.debug e
-      REIMBURSEMENT_LOGGER.debug 'error in a avalara capture reimbursement'
+      REIMBURSEMENT_LOGGER.debug 'error in avalara capture reimbursement'
     end
   end
 

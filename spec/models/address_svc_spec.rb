@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe AddressSvc, :type => :model do
-  MyConfigPreferences.set_preferences
   let(:country) { create(:country) }
   let(:state) { create(:state) }
   let(:address) { FactoryGirl.create(:address) }
 
-  before do
+  before :each do
+    MyConfigPreferences.set_preferences
     @address_svc = AddressSvc.new
     Spree::Config.avatax_address_validation = true
     @real_address = address.clone
