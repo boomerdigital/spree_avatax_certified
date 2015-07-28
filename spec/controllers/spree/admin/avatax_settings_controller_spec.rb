@@ -16,18 +16,8 @@ module Spree
         it { should be_success }
       end
 
-      describe "/avatax_settings/get_file_txt_tax_svc" do
-        subject { spree_get :get_file_txt_tax_svc }
-        it { should be_success }
-      end
-
       describe "/avatax_settings/get_file_post_order_to_avalara" do
         subject { spree_get :get_file_post_order_to_avalara }
-        it { should be_success }
-      end
-
-      describe "/avatax_settings/get_file_avalara_order" do
-        subject { spree_get :get_file_avalara_order }
         it { should be_success }
       end
 
