@@ -20,17 +20,16 @@ module Spree
       end
 
       def erase_data
-        File.open(params["path"], 'w') {}
+        File.open(params['path'], 'w') {}
       end
 
       def ping_my_service
         mytax = TaxSvc.new
         pingResult = mytax.ping
-        if pingResult["ResultCode"] == "Success"
-          flash[:success] = "Ping Successful"
-
+        if pingResult['ResultCode'] == 'Success'
+          flash[:success] = 'Ping Successful'
         else
-          flash[:error] = "Ping Error"
+          flash[:error] = 'Ping Error'
         end
 
         respond_to do |format|
@@ -40,12 +39,12 @@ module Spree
 
       def validate_address
         address_validation = AddressSvc.new
-        address = Spree::Address.find(params["user_address"])
+        address = Spree::Address.find(params['user_address'])
         address_result = address_validation.validate(address)
-        if address_result["ResultCode"] == "Success"
-          flash[:success] = "Address Validation Successful"
+        if address_result['ResultCode'] == 'Success'
+          flash[:success] = 'Address Validation Successful'
         else
-          flash[:error] = "Address Validation Error"
+          flash[:error] = 'Address Validation Error'
         end
         respond_to do |format|
           format.js
