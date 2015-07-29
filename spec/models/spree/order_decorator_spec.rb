@@ -75,4 +75,12 @@ describe Spree::Order, type: :model do
       @order.should be_complete
     end
   end
+
+  describe '#avatax_cache_key' do
+    it 'should respond with a cache key' do
+      expected_response = "Spree::Order-#{@order.number}-#{@order.promo_total}"
+
+      expect(@order.avatax_cache_key).to eq(expected_response)
+    end
+  end
 end

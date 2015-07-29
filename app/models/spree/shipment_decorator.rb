@@ -5,6 +5,7 @@ Spree::Shipment.class_eval do
     key << self.id
     key << self.cost
     key << self.stock_location.cache_key
-    key.join('-')
+    key << self.promo_total
+    key.join("-")
   end
 end
