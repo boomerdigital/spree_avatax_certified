@@ -34,7 +34,7 @@ module Spree
 
 
     def cache_key(order)
-      key = "Spree::Order #{order.number} "
+      key = order.avatax_cache_key
       key << (order.ship_address.try(:cache_key) || order.bill_address.try(:cache_key)).to_s
       order.line_items.each do |line_item|
         key << line_item.avatax_cache_key
@@ -42,9 +42,11 @@ module Spree
       order.shipments.each do |shipment|
         key << shipment.avatax_cache_key
       end
+      order.all_adjustments.not_tax do |adj|
+        key << adj.avatax_cache_key
+      end
       key
     end
-
 
     def retrieve_rates_from_cache(order)
       Rails.cache.fetch(cache_key(order), time_to_idle: 5.minutes) do
