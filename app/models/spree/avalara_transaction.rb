@@ -207,7 +207,7 @@ module Spree
     end
 
     def backup_stock_location(origin)
-      location = Spree::StockLocation.find_by(name: 'default') || Spree::StockLocation.first
+      location = Spree::StockLocation.find_by(active: true) || Spree::StockLocation.first
 
       if location.nil?
         location = create_stock_location_from_origin(origin)
