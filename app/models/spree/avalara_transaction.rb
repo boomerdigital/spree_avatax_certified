@@ -279,7 +279,7 @@ module Spree
             line = Hash.new
             i += 1
 
-            line[:LineNo] = line_item.id
+            line[:LineNo] = "#{line_item.id}-LI"
             line[:ItemCode] = line_item.variant.sku
             line[:Qty] = line_item.quantity
             line[:Amount] = line_item.amount.to_f

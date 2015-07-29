@@ -64,9 +64,9 @@ module Spree
         return 0
       end
       avalara_response["TaxLines"].each do |line|
-        if line["LineNo"] == "#{item.id}-FR" && line["TaxCode"] == item.tax_category.tax_code
+        if line["LineNo"] == "#{item.id}-FR" && item.class.name == "Spree::Shipment"
           return line["TaxCalculated"].to_f
-        elsif line["LineNo"] == "#{item.id}-LI" && line["TaxCode"] == item.tax_category.tax_code
+        elsif line["LineNo"] == "#{item.id}-LI" && item.class.name == "Spree::LineItem"
           return line["TaxCalculated"].to_f
         else
           0
