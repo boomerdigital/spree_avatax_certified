@@ -5,9 +5,13 @@ module SpreeAvataxCertified
       def seed!
         create_use_codes
         create_tax
+        puts "***** SPREE AVATAX CERTIFIED *****"
+        puts ""
         puts "Please remember to:"
         puts "- Add tax category to all shipping methods that need to be taxed."
         puts "- Don't assign anything default tax."
+        puts ""
+        puts "***** SPREE AVATAX CERTIFIED *****"
       end
 
       def create_tax
