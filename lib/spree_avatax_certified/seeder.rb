@@ -14,7 +14,7 @@ module SpreeAvataxCertified
         clothing = Spree::TaxCategory.find_or_create_by(name: 'Clothing')
         clothing.update_attributes(tax_code: 'P0000000')
 
-        shipping = Spree::TaxCategory.create!(name: 'Shipping', tax_code: 'FR000000')
+        shipping = Spree::TaxCategory.find_or_create_by(name: 'Shipping', tax_code: 'FR000000')
 
         sales_tax = Spree::TaxRate.find_or_create_by(name: 'North America')
         sales_tax.update_attributes(tax_category: clothing, name: 'Tax', amount: BigDecimal.new('0'), zone: Spree::Zone.find_by_name('North America'), show_rate_in_label: false)
