@@ -42,56 +42,6 @@ module Spree
       end
     end
 
-    def update_adjustment(adjustment, source)
-      AVALARA_TRANSACTION_LOGGER.info("update adjustment call")
-
-      if adjustment.state != "closed"
-        commit_avatax(order.line_items, order)
-        adjustment.update_column(:amount, rnt_tax)
-      end
-
-      if order.complete?
-        commit_avatax_final(order.line_items, order)
-        adjustment.update_column(:amount, rnt_tax)
-        adjustment.update_column(:state, "closed")
-      end
-
-      if order.state == 'canceled'
-        cancel_order_to_avalara("SalesInvoice", "DocVoided", order)
-      end
-
-      if adjustment.state == "closed" && order.adjustments.return_authorization.exists?
-        commit_avatax(order.line_items, order, order.number.to_s + ":" + order.adjustments.return_authorization.first.id.to_s, order.completed_at)
-
-        if rnt_tax != "0.00"
-          adjustment.update_column(:amount, rnt_tax)
-          adjustment.update_column(:state, "closed")
-        end
-      end
-
-      if adjustment.state == "closed" && order.adjustments.return_authorization.exists?
-        order.adjustments.return_authorization.each do |adj|
-          if adj.state == "closed" || adj.state == "closed"
-            commit_avatax_final(order.line_items, order, order.number.to_s + ":"  + adj.id.to_s, order.completed_at )
-          end
-        end
-
-        if rnt_tax != "0.00"
-          adjustment.update_column(:amount, rnt_tax)
-          adjustment.update_column(:state, "closed")
-        end
-      end
-    end
-
-    def set_current_transaction(a)
-      @current_transaction = a
-    end
-
-    def self.current
-      @current_transaction
-    end
-
-
     private
 
     def get_shipped_from_address(item_id)
@@ -422,13 +372,9 @@ module Spree
 
       mytax = TaxSvc.new
 
-      puts "************************ HERE AND HITTING THE API NEXT ************************"
-
       getTaxResult = mytax.get_tax(gettaxes)
 
       AVALARA_TRANSACTION_LOGGER.debug getTaxResult
-
-      set_current_transaction(getTaxResult)
 
       if getTaxResult == 'error in Tax' then
         @myrtntax = { TotalTax: "0.00" }
