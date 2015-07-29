@@ -8,4 +8,8 @@ Spree::Shipment.class_eval do
     key << self.promo_total
     key.join("-")
   end
+
+  def avatax_line_code
+    'FR'
+  end
 end
