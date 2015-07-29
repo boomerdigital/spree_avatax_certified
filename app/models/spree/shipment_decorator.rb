@@ -1,7 +1,7 @@
 Spree::Shipment.class_eval do
 
   def avatax_cache_key
-    key = ["Spree::Shipment"]
+    key = ['Spree::Shipment']
     key << self.id
     key << self.cost
     key << self.stock_location.cache_key
