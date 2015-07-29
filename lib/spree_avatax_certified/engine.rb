@@ -28,6 +28,12 @@ module SpreeAvataxCertified
       end
     end
 
+    initializer "spree.avatax_certified.tax_rates", :before => :load_config_initializers do |app|
+      if Spree::TaxRate.joins(:calculator).where(spree_calculators: {type: "Spree::Calculator::AvalaraTransactionCalculator"}).empty?
+        raise 'No AvalaraTransactionCalculator, please run rake spree_avatax_certified:load_seeds'
+      end
+    end
+
     def self.activate
       Dir.glob(File.join(File.dirname(__FILE__), '../../app/models/**/*.rb')) do |c|
         Rails.configuration.cache_classes ? require(c) : load(c)
