@@ -14,4 +14,12 @@ describe Spree::LineItem, type: :model do
       expect(response['Index']).to eq(1)
     end
   end
+
+  describe '#avatax_cache_key' do
+    it 'should respond with a cache key' do
+      expected_response = "Spree::LineItem-#{line_item.id}-#{line_item.quantity}-#{line_item.price}-#{line_item.promo_total}"
+
+      expect(line_item.avatax_cache_key).to eq(expected_response)
+    end
+  end
 end
