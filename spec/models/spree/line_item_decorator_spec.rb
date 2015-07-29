@@ -22,4 +22,10 @@ describe Spree::LineItem, type: :model do
       expect(line_item.avatax_cache_key).to eq(expected_response)
     end
   end
+
+  describe "#avatax_line_code" do
+    it 'should equal LI' do
+      expect(line_item.avatax_line_code).to eq('LI')
+    end
+  end
 end
