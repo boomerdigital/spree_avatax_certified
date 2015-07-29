@@ -11,4 +11,10 @@ describe Spree::Shipment, type: :model do
       expect(shipment.avatax_cache_key).to eq(expected_response)
     end
   end
+
+  describe "#avatax_line_code" do
+    it 'should equal FR' do
+      expect(shipment.avatax_line_code).to eq('FR')
+    end
+  end
 end

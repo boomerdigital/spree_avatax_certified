@@ -19,4 +19,8 @@ Spree::LineItem.class_eval do
     key << self.promo_total
     key.join("-")
   end
+
+  def avatax_line_code
+    'LI'
+  end
 end
