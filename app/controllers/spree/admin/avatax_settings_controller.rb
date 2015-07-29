@@ -45,7 +45,7 @@ module Spree
         if address_result["ResultCode"] == "Success"
           flash[:success] = "Address Validation Successful"
         else
-          flash[:error] = "Address Validation Error"
+          flash[:error] = address_result
         end
         respond_to do |format|
           format.js

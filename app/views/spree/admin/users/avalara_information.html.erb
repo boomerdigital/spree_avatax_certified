@@ -36,9 +36,9 @@
       <% if @user.ship_address.nil? %>
       <p>No Address given</p>
       <% else %>
-      <%= link_to({:controller => :avatax_settings, :action => :validate_address, :remote => true, user_address: @user.ship_address }, {:class => 'btn btn-small'}) do %>
-      <button>Validate Address</button>
-      <% end %>
+        <%= link_to({:controller => :avatax_settings, :action => :validate_address, :remote => true, user_address: @user.ship_address_id }, {:class => 'btn btn-small'}) do %>
+          <button>Validate Address</button>
+        <% end %>
       <% end %>
     </div>
     <br><br><br>

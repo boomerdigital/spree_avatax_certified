@@ -28,4 +28,3 @@ log/post_order_to_avalara.txt
 log/avalara_order.txt
 log/return_authorization.txt
 log/tax_svc.txt
-spec/support/config_preferences.rb
