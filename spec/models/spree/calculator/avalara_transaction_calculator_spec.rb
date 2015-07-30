@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
   let!(:country) { create(:country) }
+  let!(:state) { create(:state) }
   let!(:zone) { create(:zone, :name => "North America", :default_tax => true, :zone_members => []) }
   let(:zone_member) { Spree::ZoneMember.create() }
   let!(:tax_category) { Spree::TaxCategory.create(name: 'Clothing', description: 'P0000000') }
@@ -10,9 +11,10 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
   let!(:calculator) { Spree::Calculator::AvalaraTransactionCalculator.new(:calculable => rate ) }
   let!(:order) { create(:order) }
   let!(:line_item) { create(:line_item, :price => 10, :quantity => 3, :tax_category => tax_category) }
-  let(:address) { Spree::Address.create(firstname: "Allison", lastname: "Reilly", address1: "220 Paul W Bryant Dr", city: "Tuscaloosa", zipcode: "35401", phone: "9733492462", state_name: "Alabama", state_id: 39, country_id: 1) }
+  let(:address) { Spree::Address.create(firstname: "Allison", lastname: "Reilly", address1: "220 Paul W Bryant Dr", city: "Tuscaloosa", zipcode: "35401", phone: "9733492462", state_name: "Alabama", state_id: 1, country_id: 1) }
 
   before :each do
+    line_item.order.update_attributes(ship_address: address)
     order.update_attributes(ship_address: address)
     zone.zone_members.create!(zoneable: country)
   end
@@ -63,6 +65,7 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
       let!(:shipment) { create(:shipment, :cost => 15) }
 
       before :each do
+        shipment.order.update_attributes(ship_address: address)
         shipment.shipping_method.update_attributes(tax_category: shipping_tax_category)
         shipment.selected_shipping_rate.update_attributes(tax_rate: Spree::TaxRate.last)
         shipment.order.line_items << line_item

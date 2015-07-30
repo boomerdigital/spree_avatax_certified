@@ -1,6 +1,6 @@
 class MyConfigPreferences
   def self.set_preferences
-    Spree::Config.avatax_address_validation_enabled_countries = ["United States", "Canada"]
+    Spree::Config.avatax_address_validation_enabled_countries = ["United States of America", "Canada"]
     Spree::Config.avatax_iseligible = true
     Spree::Config.avatax_company_code = ENV['AVATAX_COMPANY_CODE']
     Spree::Config.avatax_endpoint = ENV['AVATAX_ENDPOINT']
