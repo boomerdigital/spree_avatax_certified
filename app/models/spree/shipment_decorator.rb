@@ -1,11 +1,15 @@
 Spree::Shipment.class_eval do
-  def update_amounts
-    if selected_shipping_rate
-      self.update_columns(
-        cost: selected_shipping_rate.cost,
-          # adjustment_total: adjustments.additional.map(&:update!).compact.sum,
-          updated_at: Time.now,
-          )
-    end
+
+  def avatax_cache_key
+    key = ["Spree::Shipment"]
+    key << self.id
+    key << self.cost
+    key << self.stock_location.cache_key
+    key << self.promo_total
+    key.join("-")
+  end
+
+  def avatax_line_code
+    'FR'
   end
 end

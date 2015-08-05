@@ -5,15 +5,14 @@ describe Spree::Order, type: :model do
   it { should have_one :avalara_transaction }
 
   let(:order_with_line_items) {FactoryGirl.create(:order_with_line_items)}
-  before do
-    MyConfigPreferences.set_preferences
-  end
+  let(:variant) { create(:variant) }
 
   before :each do
+    MyConfigPreferences.set_preferences
     stock_location = FactoryGirl.create(:stock_location)
     @order = FactoryGirl.create(:order)
     line_item = FactoryGirl.create(:line_item)
-    line_item.tax_category.update_attributes(name: "Clothing", description: "PC030000")
+    line_item.tax_category.update_attributes(name: "Clothing", tax_code: "PC030000")
     @order.line_items << line_item
     to_address = Spree::Address.create(firstname: "Allison", lastname: "Reilly", address1: "220 Paul W Bryant Dr", city: "Tuscaloosa", zipcode: "35401", phone: "9733492462", state_name: "Alabama", state_id: 39, country_id: 1)
     @order.update_attributes(ship_address: to_address, bill_address: to_address)
@@ -45,10 +44,9 @@ describe Spree::Order, type: :model do
       @order.cancel_status
     end
   end
-
   describe "#avalara_capture" do
-    it "should response with Spree::Adjustment object" do
-      expect(@order.avalara_capture.first).to be_kind_of(Spree::Adjustment)
+    it "should response with Hash object" do
+      expect(@order.avalara_capture).to be_kind_of(Hash)
     end
     it "creates new avalara_transaction" do
       expect{@order.avalara_capture}.to change{Spree::AvalaraTransaction.count}.by(1)
@@ -56,35 +54,14 @@ describe Spree::Order, type: :model do
   end
 
   describe "#avalara_capture_finalize" do
-    it "should response with Spree::Adjustment object" do
-      expect(@order.avalara_capture_finalize.first).to be_kind_of(Spree::Adjustment)
+    it "should response with Hash object" do
+      expect(@order.avalara_capture_finalize).to be_kind_of(Hash)
     end
     it "creates new avalara_transaction" do
       expect{@order.avalara_capture_finalize}.to change{Spree::AvalaraTransaction.count}.by(1)
     end
   end
 
-  describe "#display_avalara_tax_total" do
-    it "is Spree::Money" do
-      expect(@order.display_avalara_tax_total).to be_kind_of(Spree::Money)
-    end
-  end
-
-  context "payment" do
-    before do
-      order_with_line_items.state = 'delivery'
-    end
-    it "should do avalara_capture" do
-      order_with_line_items.should be_delivery
-      expect(order_with_line_items).to receive(:avalara_capture)
-      order_with_line_items.next!
-    end
-    it "should be at state payment" do
-      order_with_line_items.next!
-      order_with_line_items.should be_payment
-
-    end
-  end
   context "complete" do
     before do
       @order.state = 'confirm'
@@ -96,6 +73,14 @@ describe Spree::Order, type: :model do
     it "should be at state complete" do
       @order.next!
       @order.should be_complete
+    end
+  end
+
+  describe '#avatax_cache_key' do
+    it 'should respond with a cache key' do
+      expected_response = "Spree::Order-#{@order.number}-#{@order.promo_total}"
+
+      expect(@order.avatax_cache_key).to eq(expected_response)
     end
   end
 end
