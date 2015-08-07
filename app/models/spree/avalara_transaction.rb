@@ -82,7 +82,7 @@ module Spree
 
     def origin_address
       origin = JSON.parse(Spree::Config.avatax_origin)
-      orig_address = Hash.new
+      orig_address = {}
       orig_address[:AddressCode] = "Orig"
       orig_address[:Line1] = origin["Address1"]
       orig_address[:City] = origin["City"]
@@ -93,7 +93,7 @@ module Spree
     end
 
     def origin_ship_address(line_item, origin)
-      orig_ship_address = Hash.new
+      orig_ship_address = {}
       orig_ship_address[:AddressCode] = line_item.id
       orig_ship_address[:Line1] = origin.address1
       orig_ship_address[:City] = origin.city
@@ -224,13 +224,10 @@ module Spree
 
       origin = JSON.parse(Spree::Config.avatax_origin)
 
-      i = 0
-
       if orderitems then
         unless invoice_detail == "ReturnInvoice" || invoice_detail == "ReturnOrder"
           orderitems.each do |line_item|
             line = {}
-            i += 1
 
             line[:LineNo] = "#{line_item.id}-LI"
             line[:ItemCode] = line_item.variant.sku
