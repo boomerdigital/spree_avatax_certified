@@ -6,7 +6,7 @@ Spree::ReturnAuthorization.class_eval do
 
   has_one :avalara_transaction, dependent: :destroy
   after_save :assign_avalara_transaction, on: :create
-  self.state_machine.after_transition :to => :received,
+  self.state_machine.before_transition :to => :received,
                                       :do => :avalara_capture_finalize,
                                       :if => :avalara_eligible
 

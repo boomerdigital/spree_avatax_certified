@@ -296,6 +296,7 @@ module Spree
         end
 
         order_details.return_authorizations.each do |return_auth|
+          next if return_auth.state == 'received'
           tax_line_items<<return_authorization_line(return_auth)
         end
       end
