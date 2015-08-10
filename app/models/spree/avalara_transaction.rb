@@ -61,7 +61,7 @@ module Spree
       shipping_address
     end
 
-    def cancel_order_to_avalara(doc_type='SalesInvoice', cancel_code='DocVoided', order_details=nil)
+    def cancel_order_to_avalara(doc_type= 'SalesInvoice', cancel_code= 'DocVoided', order_details= nil)
       AVALARA_TRANSACTION_LOGGER.info('cancel order to avalara')
 
       cancel_tax_request = {
@@ -250,12 +250,9 @@ module Spree
       addresses = []
       origin = JSON.parse(Spree::Config.avatax_origin)
 
-      i = 0
-
       if orderitems
         orderitems.each do |line_item|
           line = {}
-          i += 1
 
           line[:LineNo] = "#{line_item.id}-LI"
           line[:ItemCode] = line_item.variant.sku

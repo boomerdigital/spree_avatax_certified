@@ -7,8 +7,6 @@ Spree::Reimbursement.class_eval do
   has_one :avalara_transaction, dependent: :destroy
   after_save :assign_avalara_transaction, on: :create
 
-
-
   def perform!
     reimbursement_tax_calculator.call(self)
     reload

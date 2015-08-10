@@ -31,7 +31,6 @@ module Spree
 
     private
 
-
     def cache_key(order)
       key = order.avatax_cache_key
       key << (order.ship_address.try(:cache_key) || order.bill_address.try(:cache_key)).to_s
@@ -74,9 +73,9 @@ module Spree
         # If the order is outside our jurisdiction, then return 0
         return 0
       end
-      avalara_response["TaxLines"].each do |line|
-        if line["LineNo"] == "#{item.id}-#{item.avatax_line_code}"
-          return line["TaxCalculated"].to_f
+      avalara_response['TaxLines'].each do |line|
+        if line['LineNo'] == "#{item.id}-#{item.avatax_line_code}"
+          return line['TaxCalculated'].to_f
         else
           0
         end
