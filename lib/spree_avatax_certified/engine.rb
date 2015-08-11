@@ -10,7 +10,7 @@ module SpreeAvataxCertified
       g.test_framework :rspec
     end
 
-    initializer "spree.avatax_certified.preferences", :before => :load_config_initializers do |app|
+    initializer 'spree.avatax_certified.preferences', before: :load_config_initializers do |app|
       Spree::AppConfiguration.class_eval do
         preference :avatax_api_username, :string
         preference :avatax_api_password, :string
@@ -21,21 +21,21 @@ module SpreeAvataxCertified
         preference :avatax_iseligible, :boolean, default: true
         preference :avatax_log, :boolean, default: true
         preference :avatax_address_validation, :boolean, default: true
-        preference :avatax_address_validation_enabled_countries, :array, default: ["United States of America", "Canada"]
+        preference :avatax_address_validation_enabled_countries, :array, default: ['United States of America', 'Canada']
         preference :avatax_tax_calculation, :boolean, default: true
         preference :avatax_document_commit, :boolean, default: true
-        preference :avatax_origin, :string, default: "{}"
+        preference :avatax_origin, :string, default: '{}'
       end
     end
 
-    initializer "spree.avatax_certified.tax_rates", :before => :load_config_initializers do |app|
+    initializer 'spree.avatax_certified.tax_rates', before: :load_config_initializers do |app|
       unless Rails.env == 'test'
         begin
-          if Spree::TaxRate.joins(:calculator).where(spree_calculators: {type: "Spree::Calculator::AvalaraTransactionCalculator"}).empty?
+          if Spree::TaxRate.joins(:calculator).where(spree_calculators: { type: 'Spree::Calculator::AvalaraTransactionCalculator' }).empty?
             SpreeAvataxCertified::Seeder.seed!
           end
         rescue ActiveRecord::StatementInvalid => err
-          puts "** Be sure to create Avatax calculator after loading your Spree schema."
+          puts '** Be sure to create Avatax calculator after loading your Spree schema.'
         end
       end
     end

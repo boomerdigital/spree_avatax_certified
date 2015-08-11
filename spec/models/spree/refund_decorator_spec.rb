@@ -25,7 +25,7 @@ describe Spree::Refund, type: :model do
       )
   }
   let(:gateway_response_success) { true }
-  let(:gateway_response_message) { "" }
+  let(:gateway_response_message) { '' }
   let(:gateway_response_params) { {} }
   let(:gateway_response_options) { {} }
 
@@ -40,33 +40,33 @@ describe Spree::Refund, type: :model do
 
   let(:refund) {Spree::Refund.create(payment: payment, amount: BigDecimal.new(10), reason: refund_reason, transaction_id: nil)}
 
-  context "transaction id exists" do
-    let(:transaction_id) { "12kfjas0" }
+  context 'transaction id exists' do
+    let(:transaction_id) { '12kfjas0' }
     subject { create(:refund, payment: payment, amount: amount, reason: refund_reason, transaction_id: transaction_id) }
-    describe "#avalara_eligible" do
-      it "should return true" do
+    describe '#avalara_eligible' do
+      it 'should return true' do
         expect(subject.avalara_eligible).to eq(true)
       end
     end
   end
 
-  describe "#avalara_eligible" do
-    it "should return true" do
+  describe '#avalara_eligible' do
+    it 'should return true' do
       expect(refund.avalara_eligible).to eq(true)
     end
   end
 
-  describe "#avalara_lookup" do
-    it "should return lookup_avatax" do
+  describe '#avalara_lookup' do
+    it 'should return lookup_avatax' do
       expect(refund.avalara_lookup).to eq(:lookup_avatax)
     end
-    it "creates new avalara_transaction" do
+    it 'creates new avalara_transaction' do
       expect{refund}.to change{Spree::AvalaraTransaction.count}.by(1)
     end
   end
 
-  describe "#avalara_capture" do
-    it "creates new avalara_transaction" do
+  describe '#avalara_capture' do
+    it 'creates new avalara_transaction' do
       expect{refund.avalara_capture}.to change{Spree::AvalaraTransaction.count}.by(1)
     end
   end

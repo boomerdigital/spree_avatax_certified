@@ -5,13 +5,13 @@ module SpreeAvataxCertified
       def seed!
         create_use_codes
         create_tax
-        puts "***** SPREE AVATAX CERTIFIED *****"
-        puts ""
-        puts "Please remember to:"
-        puts "- Add tax category to all shipping methods that need to be taxed."
-        puts "- Don't assign anything default tax."
-        puts ""
-        puts "***** SPREE AVATAX CERTIFIED *****"
+        puts '***** SPREE AVATAX CERTIFIED *****'
+        puts ''
+        puts 'Please remember to:'
+        puts '- Add tax category to all shipping methods that need to be taxed.'
+        puts '- Dont assign anything default tax.'
+        puts ''
+        puts '***** SPREE AVATAX CERTIFIED *****'
       end
 
       def create_tax
@@ -40,22 +40,22 @@ module SpreeAvataxCertified
 
       def use_codes
         {
-          "A" => "Federal government",
-          "B" => "State government",
-          "C" => "Tribe/Status Indian/Indian Band",
-          "D" => "Foreign diplomat",
-          "E" => "Charitable or benevolent organization",
-          "F" => "Religious or educational organization",
-          "G" => "Resale",
-          "H" => "Commercial agricultural production",
-          "I" => "Industrial production/manufacturer",
-          "J" => "Direct pay permit",
-          "K" => "Direct mail",
-          "L" => "Other",
-          "N" => "Local government",
-          "P" => "Commercial aquaculture (Canada only)",
-          "Q" => "Commercial fishery (Canada only)",
-          "R" => "Non-resident (Canada only)"
+          'A' => 'Federal government',
+          'B' => 'State government',
+          'C' => 'Tribe/Status Indian/Indian Band',
+          'D' => 'Foreign diplomat',
+          'E' => 'Charitable or benevolent organization',
+          'F' => 'Religious or educational organization',
+          'G' => 'Resale',
+          'H' => 'Commercial agricultural production',
+          'I' => 'Industrial production/manufacturer',
+          'J' => 'Direct pay permit',
+          'K' => 'Direct mail',
+          'L' => 'Other',
+          'N' => 'Local government',
+          'P' => 'Commercial aquaculture (Canada only)',
+          'Q' => 'Commercial fishery (Canada only)',
+          'R' => 'Non-resident (Canada only)'
         }
       end
     end

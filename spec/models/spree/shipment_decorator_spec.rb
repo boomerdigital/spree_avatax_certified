@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Spree::Shipment, type: :model do
-
   let(:shipment) { create(:shipment) }
 
   describe '#avatax_cache_key' do
@@ -12,7 +11,7 @@ describe Spree::Shipment, type: :model do
     end
   end
 
-  describe "#avatax_line_code" do
+  describe '#avatax_line_code' do
     it 'should equal FR' do
       expect(shipment.avatax_line_code).to eq('FR')
     end
