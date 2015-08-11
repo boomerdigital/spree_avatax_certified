@@ -3,13 +3,12 @@ require 'spec_helper'
 describe Spree::Calculator::AvalaraTransactionCalculator, type: :model do
   let!(:country) { create(:country) }
   let!(:zone) { create(:zone, name: 'North America', default_tax: true, zone_members: []) }
-  let(:zone_member) { Spree::ZoneMember.create() }
-  let!(:tax_category) { Spree::TaxCategory.create(name: 'Clothing', tax_code: 'P0000000') }
+  let!(:tax_cat) { Spree::TaxCategory.create(name: 'Clothing', tax_code: 'P0000000') }
   let(:included_in_price) { false }
-  let!(:rate) { create(:tax_rate, tax_category: tax_category, amount: 0.00, included_in_price: included_in_price, zone: zone) }
-  let!(:calculator) { Spree::Calculator::AvalaraTransactionCalculator.new(calculable: rate ) }
+  let!(:rate) { create(:tax_rate, tax_category: tax_cat, amount: 0.00, included_in_price: included_in_price, zone: zone) }
+  let!(:calculator) { Spree::Calculator::AvalaraTransactionCalculator.new(calculable: rate) }
   let!(:order) { create(:order) }
-  let!(:line_item) { create(:line_item, price: 10, quantity: 3, tax_category: tax_category) }
+  let!(:line_item) { create(:line_item, price: 10, quantity: 3, tax_category: tax_cat) }
   let(:address) { Spree::Address.create(firstname: 'Allison', lastname: 'Reilly', address1: '220 Paul W Bryant Dr', city: 'Tuscaloosa', zipcode: '35401', phone: '9733492462', state_name: 'Alabama', state_id: 39, country_id: 1) }
 
   before :each do
@@ -19,16 +18,16 @@ describe Spree::Calculator::AvalaraTransactionCalculator, type: :model do
 
   context '#compute' do
     context 'when given an order' do
-      let!(:line_item_1) { line_item }
-      let!(:line_item_2) { create(:line_item, price: 10, quantity: 3, tax_category: tax_category) }
+      let!(:li_1) { line_item }
+      let!(:li_2) { create(:line_item, price: 10, quantity: 3, tax_category: tax_cat) }
 
       before do
-        allow(order).to receive_messages :line_items => [line_item_1, line_item_2]
+        allow(order).to receive_messages line_items: [li_1, li_2]
       end
 
       context 'when computing an order' do
         it 'should raise error' do
-          expect{ calculator.compute(order) }.to raise_error(RuntimeError)
+          expect { calculator.compute(order) }.to raise_error(RuntimeError)
         end
       end
     end
@@ -36,7 +35,7 @@ describe Spree::Calculator::AvalaraTransactionCalculator, type: :model do
       context 'when tax is included in price' do
         let(:included_in_price) { true }
         it 'should raise error' do
-          expect{ calculator.compute(line_item) }.to raise_error(RuntimeError)
+          expect { calculator.compute(line_item) }.to raise_error(RuntimeError)
         end
       end
 
@@ -58,7 +57,7 @@ describe Spree::Calculator::AvalaraTransactionCalculator, type: :model do
     end
     context 'when given a shipment' do
       let!(:shipping_tax_category) { Spree::TaxCategory.create(name: 'Shipping', tax_code: 'FR000000') }
-      let!(:shipping_calculator) { Spree::Calculator::AvalaraTransactionCalculator.new(calculable: rate ) }
+      let!(:shipping_calculator) { Spree::Calculator::AvalaraTransactionCalculator.new(calculable: rate) }
       let!(:shipping_rate) { create(:tax_rate, tax_category: shipping_tax_category, amount: 0.00, included_in_price: false, zone: zone) }
       let!(:shipment) { create(:shipment, cost: 15) }
 
