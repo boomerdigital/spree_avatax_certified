@@ -7,7 +7,34 @@ Spree::Reimbursement.class_eval do
   has_one :avalara_transaction, dependent: :destroy
   after_save :assign_avalara_transaction, on: :create
 
-  self.state_machine(:reimbursement_status).before_transition :to => :reimbursed, :do => :avalara_capture_finalize, :if => :avalara_eligible
+  def perform!
+    reimbursement_tax_calculator.call(self)
+    reload
+    update!(total: calculated_total)
+
+    reimbursement_performer.perform(self)
+
+    if unpaid_amount_within_tolerance?
+      self.avalara_capture_finalize
+      reimbursed!
+
+      reimbursement_success_hooks.each { |h| h.call self }
+      send_reimbursement_email
+    else
+      errored!
+      reimbursement_failure_hooks.each { |h| h.call self }
+      raise IncompleteReimbursementError, Spree.t('validation.unpaid_amount_not_zero', amount: unpaid_amount)
+    end
+  end
+
+  def simulate
+    reimbursement_simulator_tax_calculator.call(self)
+    reload
+    update!(total: calculated_total)
+
+    self.avalara_capture
+    reimbursement_performer.simulate(self)
+  end
 
   def avalara_eligible
     Spree::Config.avatax_iseligible
@@ -28,7 +55,7 @@ Spree::Reimbursement.class_eval do
       REIMBURSEMENT_LOGGER.debug @rtn_tax
     rescue => e
       REIMBURSEMENT_LOGGER.debug e
-      REIMBURSEMENT_LOGGER.debug 'error in a avalara capture reimbursement'
+      REIMBURSEMENT_LOGGER.debug 'error in avalara capture reimbursement'
     end
   end
 
@@ -42,7 +69,7 @@ Spree::Reimbursement.class_eval do
       REIMBURSEMENT_LOGGER.debug @rtn_tax
     rescue => e
       REIMBURSEMENT_LOGGER.debug e
-      REIMBURSEMENT_LOGGER.debug 'error in a avalara capture reimbursement'
+      REIMBURSEMENT_LOGGER.debug 'error in avalara capture reimbursement'
     end
   end
 

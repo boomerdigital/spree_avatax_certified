@@ -2,8 +2,7 @@ require 'spec_helper'
 
 module Spree
   module Admin
-    describe AvataxSettingsController, :type => :controller do
-
+    describe AvataxSettingsController, type: :controller do
       stub_authorization!
 
       describe "/avatax_settings" do

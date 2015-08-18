@@ -32,7 +32,7 @@ module Spree
       end
     end
 
-    def commit_avatax_final(items, order_details, doc_id = nil, org_ord_date = nil, invoice_dt = nil)
+    def commit_avatax_final(items, order_details,doc_id = nil, org_ord_date = nil, invoice_dt = nil)
       if document_committing_enabled?
         if invoice_dt == 'ReturnInvoice'
           post_return_order_to_avalara(true, items, order_details, doc_id, org_ord_date,invoice_dt)
@@ -52,19 +52,6 @@ module Spree
     end
 
     private
-
-    def create_avatax_origin(origin)
-      Spree::StockLocation.create(
-        name: 'avatax origin',
-        address1: origin['Address1'],
-        address2: origin['Address2'],
-        city: origin['City'],
-        state_id: Spree::State.find_by_name(origin['Region']).id,
-        state_name: origin['Region'],
-        zipcode: origin['Zip5'],
-        country_id: Spree::State.find_by_name(origin['Region']).country_id
-      )
-    end
 
     def get_shipped_from_address(item_id)
       AVALARA_TRANSACTION_LOGGER.info('shipping address get')
@@ -119,7 +106,7 @@ module Spree
       orig_ship_address[:Line1] = origin.address1
       orig_ship_address[:City] = origin.city
       orig_ship_address[:PostalCode] = origin.zipcode
-      orig_ship_address[:Country] = Spree::Country.find(origin.country_id).iso
+      orig_ship_address[:Country] = Country.find(origin.country_id).iso
 
       AVALARA_TRANSACTION_LOGGER.debug orig_ship_address.to_xml
       orig_ship_address
@@ -132,8 +119,8 @@ module Spree
         shipping_address[:Line1] = order.ship_address.address1
         shipping_address[:Line2] = order.ship_address.address2
         shipping_address[:City] = order.ship_address.city
-        shipping_address[:Region] = order.ship_address.state_text
-        shipping_address[:Country] = Spree::Country.find(order.ship_address.country_id).iso
+        shipping_address[:Region] = order.ship_address.state_name
+        shipping_address[:Country] = Country.find(order.ship_address.country_id).iso
         shipping_address[:PostalCode] = order.ship_address.zipcode
 
         AVALARA_TRANSACTION_LOGGER.debug shipping_address.to_xml
@@ -144,7 +131,7 @@ module Spree
     def stock_location(packages, line_item)
       stock_loc = nil
       packages.each do |package|
-        next unless package.to_shipment.stock_location.stock_items.where(:variant_id => line_item.variant.id).exists?
+        next unless package.to_shipment.stock_location.stock_items.where(variant_id: line_item.variant.id).exists?
         stock_loc = package.to_shipment.stock_location
         AVALARA_TRANSACTION_LOGGER.debug stock_loc
       end
@@ -192,7 +179,7 @@ module Spree
       line[:LineNo] = "#{refund.id}-RA"
       line[:ItemCode] = refund.transaction_id || 'Refund'
       line[:Qty] = 1
-      line[:Amount] = -refund.pre_tax_amount.to_f
+      line[:Amount] = -refund.amount.to_f
       line[:OriginCode] = 'Orig'
       line[:DestinationCode] = 'Dest'
       line[:CustomerUsageType] = myusecode.try(:use_code)
@@ -205,9 +192,9 @@ module Spree
     def myusecode
       begin
         unless order.user_id.nil?
-          myuserid = order.user_id
-          AVALARA_TRANSACTION_LOGGER.debug myuserid
-          myuser = Spree::User.find(myuserid)
+          myuser = order.user
+          AVALARA_TRANSACTION_LOGGER.debug myuser
+
           if !myuser.avalara_entity_use_code_id.nil?
             return Spree::AvalaraEntityUseCode.find(myuser.avalara_entity_use_code_id)
           else
@@ -221,35 +208,40 @@ module Spree
     end
 
     def backup_stock_location(origin)
-      location = Spree::StockLocation.find_by(default: true)
-      avatax_origin_location = Spree::StockLocation.find_by(name: 'avatax origin')
+      location = Spree::StockLocation.find_by(active: true) || Spree::StockLocation.first
 
-      if location.nil? && avatax_origin_location.nil?
+      if location.nil?
+        location = create_stock_location_from_origin(origin)
         AVALARA_TRANSACTION_LOGGER.info('avatax origin location created')
-        return create_avatax_origin origin
-      elsif location.nil? || location.city.nil?
-
-        if avatax_origin_location.nil?
-          return create_avatax_origin origin
-        elsif avatax_origin_location.city.nil?
-          AVALARA_TRANSACTION_LOGGER.info('avatax origin location updated avatax origin')
-          return avatax_origin_location.update_attributes(
-            address1: origin['Address1'],
-            address2: origin['Address2'],
-            city: origin['City'],
-            state_id: Spree::State.find_by_name(origin['Region']).id,
-            state_name: origin['Region'],
-            zipcode: origin['Zip5'],
-            country_id: Spree::State.find_by_name(origin['Region']).country_id
-          )
-        else
-          AVALARA_TRANSACTION_LOGGER.info('avatax origin location')
-          return avatax_origin_location
-        end
+      elsif location.zipcode.blank? || (location.city.nil? && location.state_name.nil?)
+        update_location_with_origin(location, origin)
+        AVALARA_TRANSACTION_LOGGER.info('avatax origin location updated default')
       else
         AVALARA_TRANSACTION_LOGGER.info('default location')
-        return location
       end
+
+      location
+    end
+
+    def create_stock_location_from_origin(origin)
+      attributes = address_attributes_from_origin(origin)
+      Spree::StockLocation.create(attributes.merge(name: 'avatax origin'))
+    end
+
+    def update_location_with_origin(location, origin)
+      location.update_attributes(address_attributes_from_origin(origin))
+    end
+
+    def address_attributes_from_origin(origin)
+      {
+        address1: origin['Address1'],
+        address2: origin['Address2'],
+        city: origin['City'],
+        state_id: Spree::State.find_by_name(origin['Region']).id,
+        state_name: origin['Region'],
+        zipcode: origin['Zip5'],
+        country_id: Spree::State.find_by_name(origin['Region']).country_id
+      }
     end
 
     def post_order_to_avalara(commit = false, orderitems = nil, order_details = nil, doc_code = nil, org_ord_date = nil, invoice_detail = nil)
@@ -259,14 +251,11 @@ module Spree
       addresses = []
       origin = JSON.parse(Spree::Config.avatax_origin)
 
-      i = 0
-
       if orderitems
         orderitems.each do |line_item|
           line = {}
-          i += 1
 
-          line[:LineNo] = line_item.id
+          line[:LineNo] = "#{line_item.id}-LI"
           line[:ItemCode] = line_item.variant.sku
           line[:Qty] = line_item.quantity
           line[:Amount] = line_item.amount.to_f
@@ -304,7 +293,7 @@ module Spree
           if stock_location(packages, line_item)
             addresses << origin_ship_address(line_item, stock_location(packages, line_item))
           elsif backup_stock_location(origin)
-            addresses << origin_ship_address(line_item, location)
+            addresses << origin_ship_address(line_item, backup_stock_location(origin))
           end
 
           line[:OriginCode] = line_item.id
@@ -319,7 +308,9 @@ module Spree
       if order_details
         AVALARA_TRANSACTION_LOGGER.info('order adjustments')
         order_details.shipments.each do |shipment|
-          tax_line_items << shipment_line(shipment)
+          if shipment.tax_category
+            tax_line_items << shipment_line(shipment)
+          end
         end
       end
 
@@ -329,7 +320,7 @@ module Spree
 
       response = address_validator.validate(order_details.ship_address)
 
-      if !response.nil?
+      unless response.nil?
         if response['ResultCode'] == 'Success'
           AVALARA_TRANSACTION_LOGGER.info('Address Validation Success')
         else
@@ -388,7 +379,6 @@ module Spree
 
       if order_details
         AVALARA_TRANSACTION_LOGGER.info('order adjustments')
-
         order_details.reimbursements.each do |reimbursement|
           next if reimbursement.reimbursement_status == 'reimbursed'
           reimbursement.return_items.each do |return_item|
@@ -441,6 +431,7 @@ module Spree
       mytax = TaxSvc.new
 
       get_tax_result = mytax.get_tax(get_taxes)
+
       AVALARA_TRANSACTION_LOGGER.debug get_tax_result
 
       if get_tax_result == 'error in Tax'

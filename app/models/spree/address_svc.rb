@@ -27,6 +27,7 @@ class AddressSvc
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
       res = http.get(uri.request_uri, 'Authorization' => credential)
+
       response = JSON.parse(res.body)
 
       if response['Address']['City'] == address[:city] || response['Address']['Region'] == Spree::State.find(address[:state_id]).abbr
