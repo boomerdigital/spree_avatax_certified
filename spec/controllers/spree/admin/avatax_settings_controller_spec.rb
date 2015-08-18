@@ -20,6 +20,16 @@ module Spree
         it { should be_success }
       end
 
+      describe "/avatax_settings/get_file_txt_tax_svc" do
+        subject { spree_get :get_file_txt_tax_svc }
+        it { should be_success }
+      end
+
+      describe "/avatax_settings/get_file_avalara_order" do
+        subject { spree_get :get_file_avalara_order }
+        it { should be_success }
+      end
+
       describe '/avatax_settings/ping_my_service' do
         it 'flashes message' do
           subject { spree_get :ping_my_service }
