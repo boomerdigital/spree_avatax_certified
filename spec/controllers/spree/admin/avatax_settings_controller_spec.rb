@@ -21,11 +21,13 @@ module Spree
       end
 
       describe "/avatax_settings/get_file_txt_tax_svc" do
+        AvataxHelper::AvataxLog.new('tax_svc', 'tax_service', 'call to tax service')
         subject { spree_get :get_file_txt_tax_svc }
         it { should be_success }
       end
 
       describe "/avatax_settings/get_file_avalara_order" do
+        AvataxHelper::AvataxLog.new('avalara_order', 'order class', 'start order processing')
         subject { spree_get :get_file_avalara_order }
         it { should be_success }
       end
