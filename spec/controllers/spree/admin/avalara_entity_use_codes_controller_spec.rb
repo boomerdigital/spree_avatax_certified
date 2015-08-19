@@ -12,25 +12,25 @@ describe Spree::Admin::AvalaraEntityUseCodesController do
   describe "#index" do
     subject { spree_get :index }
 
-    it { should be_success }
+    it { is_expected.to be_success }
   end
 
   describe "#show" do
     subject { spree_get :show, id: avalara_entity_use_code.id }
 
-    it { should be_success }
+    it { is_expected.to be_success }
   end
 
   describe "#new" do
     subject {spree_get :new }
 
-    it { should be_success }
+    it { is_expected.to be_success }
   end
 
   describe "#edit" do
     subject {spree_get :edit, id: avalara_entity_use_code.id}
 
-    it { should be_success }
+    it { is_expected.to be_success }
   end
 
   describe "#update" do
@@ -44,9 +44,9 @@ describe Spree::Admin::AvalaraEntityUseCodesController do
     end
     subject { spree_put :update, params }
 
-    it { should redirect_to(spree.admin_avalara_entity_use_codes_path) }
+    it { is_expected.to redirect_to(spree.admin_avalara_entity_use_codes_path) }
     it "expect @use_code to eq the use_code being updated" do
-      assigns(:avalara_entity_use_code).should eq(@use_code)
+      expect(assigns(:avalara_entity_use_code)).to eq(@use_code)
     end
 
     it "should update use_code" do
