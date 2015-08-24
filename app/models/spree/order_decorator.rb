@@ -18,7 +18,7 @@ Spree::Order.class_eval do
 
   def avalara_lookup
     logger.debug 'avalara lookup'
-    create_avalara_transaction
+    create_avalara_transaction if avalara_transaction.nil?
     :lookup_avatax
   end
 
@@ -31,8 +31,8 @@ Spree::Order.class_eval do
     logger.debug 'avalara capture'
 
     begin
-      create_avalara_transaction
-      self.line_items.reload
+      create_avalara_transaction if avalara_transaction.nil?
+      line_items.reload
 
       @rtn_tax = self.avalara_transaction.commit_avatax(line_items, self, self.number.to_s, Date.today.strftime('%F'), 'SalesInvoice')
 
@@ -48,9 +48,9 @@ Spree::Order.class_eval do
   def avalara_capture_finalize
     logger.debug 'avalara capture finalize'
     begin
-      create_avalara_transaction
-      self.line_items.reload
-      @rtn_tax = self.avalara_transaction.commit_avatax_final(line_items, self, self.number.to_s, Date.today.strftime('%F'), 'SalesInvoice')
+      create_avalara_transaction if avalara_transaction.nil?
+      line_items.reload
+      @rtn_tax = avalara_transaction.commit_avatax_final(line_items, self, number.to_s, Date.today.strftime('%F'), 'SalesInvoice')
 
       logger.info 'tax amount'
       logger.debug @rtn_tax
