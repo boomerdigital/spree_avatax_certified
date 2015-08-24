@@ -9,6 +9,7 @@ module Spree
     belongs_to :reimbursement
     belongs_to :refund
     validates :order, presence: true
+    validates :order_id, uniqueness: true
     has_many :adjustments, as: :source
 
     def rnt_tax
