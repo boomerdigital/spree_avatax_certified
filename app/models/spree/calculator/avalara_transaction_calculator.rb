@@ -12,7 +12,12 @@ module Spree
       if rate.included_in_price
         raise 'AvalaraTransaction cannot calculate inclusive sales taxes.'
       else
-        avalara_response = retrieve_rates_from_cache(item.order)
+
+        if item.order.state == 'complete'
+          avalara_response = item.order.avalara_capture
+        else
+          avalara_response = retrieve_rates_from_cache(item.order)
+        end
 
         tax_for_item(item, avalara_response)
       end
@@ -66,20 +71,17 @@ module Spree
     def tax_for_item(item, avalara_response)
       order = item.order
       item_address = order.ship_address || order.billing_address
-      if item_address.nil?
-        # We can't calculate tax when we don't have a destination address
-        return 0
-      elsif !self.calculable.zone.include?(item_address)
-        # If the order is outside our jurisdiction, then return 0
-        return 0
-      end
+
+      return 0 if order.state == %w(address cart)
+      return 0 if item_address.nil?
+      return 0 if !self.calculable.zone.include?(item_address)
+
       avalara_response['TaxLines'].each do |line|
         if line['LineNo'] == "#{item.id}-#{item.avatax_line_code}"
           return line['TaxCalculated'].to_f
-        else
-          0
         end
       end
+      0
     end
   end
 end
