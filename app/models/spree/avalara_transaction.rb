@@ -11,26 +11,18 @@ module Spree
     validates :order_id, uniqueness: true
     has_many :adjustments, as: :source
 
-    def rnt_tax
-      @myrtntax
-    end
-
-    def amount
-      @myrtntax
-    end
-
     def lookup_avatax
-      order_details = Spree::Order.find(self.order_id)
-      post_order_to_avalara(false, order_details.line_items, order_details)
+      order = Spree::Order.find(self.order_id)
+      post_order_to_avalara(false, order, 'SalesOrder')
     end
 
-    def commit_avatax(items, order_details, doc_id=nil, org_ord_date=nil, invoice_dt=nil)
-      post_order_to_avalara(false, items, order_details, doc_id, org_ord_date, invoice_dt)
+    def commit_avatax(order, invoice_dt=nil)
+      post_order_to_avalara(false, order, invoice_dt)
     end
 
-    def commit_avatax_final(items, order_details,doc_id=nil, org_ord_date=nil, invoice_dt=nil)
+    def commit_avatax_final(order, invoice_dt=nil)
       if document_committing_enabled?
-        post_order_to_avalara(true, items, order_details, doc_id, org_ord_date,invoice_dt)
+        post_order_to_avalara(true, order, invoice_dt)
       else
         AVALARA_TRANSACTION_LOGGER.debug "avalara document committing disabled"
         "avalara document committing disabled"
@@ -53,13 +45,13 @@ module Spree
       return shipping_address
     end
 
-    def cancel_order_to_avalara(doc_type="SalesInvoice", cancel_code="DocVoided", order_details=nil)
+    def cancel_order_to_avalara(doc_type="SalesInvoice", cancel_code="DocVoided", order=nil)
       AVALARA_TRANSACTION_LOGGER.info("cancel order to avalara")
 
       cancelTaxRequest = {
         :CompanyCode => Spree::Config.avatax_company_code,
         :DocType => doc_type,
-        :DocCode => order_details.number,
+        :DocCode => order.number,
         :CancelCode => cancel_code
       }
 
@@ -80,19 +72,18 @@ module Spree
       end
     end
 
-    def post_order_to_avalara(commit=false, orderitems=nil, order_details=nil, doc_code=nil, org_ord_date=nil, invoice_detail=nil)
+    def post_order_to_avalara(commit=false, order=nil, invoice_detail=nil)
       AVALARA_TRANSACTION_LOGGER.info("post order to avalara")
 
-      avatax_address = SpreeAvataxCertified::Address.new(order_details)
-      avatax_line = SpreeAvataxCertified::Line.new(order_details, invoice_detail)
+      avatax_address = SpreeAvataxCertified::Address.new(order)
+      avatax_line = SpreeAvataxCertified::Line.new(order, invoice_detail)
 
       AVALARA_TRANSACTION_LOGGER.debug avatax_address
-
-      origin = JSON.parse(Spree::Config.avatax_origin)
+      AVALARA_TRANSACTION_LOGGER.debug avatax_line
 
       response = avatax_address.validate
 
-      if response != nil
+      unless response.nil?
         if response["ResultCode"] == "Success"
           AVALARA_TRANSACTION_LOGGER.info("Address Validation Success")
         else
@@ -102,26 +93,31 @@ module Spree
 
       taxoverride = {}
 
+      order_num = nil
+      order_date = nil
+
       if invoice_detail == 'ReturnInvoice' || invoice_detail == 'ReturnOrder'
         taxoverride[:TaxOverrideType] = 'TaxDate'
         taxoverride[:Reason] = 'Adjustment for return'
-        taxoverride[:TaxDate] = org_ord_date
+        taxoverride[:TaxDate] = Date.today.strftime('%F')
         taxoverride[:TaxAmount] = '0'
+        order_num = order.number.to_s + ":" + self.id.to_s
+        order_date = order.completed_at.strftime("%F")
       end
 
       gettaxes = {
-        :CustomerCode => order_details.user ? order_details.user.id : "Guest",
-        :DocDate => org_ord_date ? org_ord_date : Date.current.to_formatted_s(:db),
+        :CustomerCode => order.user ? order.user.id : "Guest",
+        :DocDate => order_date ? order_date : Date.today.strftime('%F'),
 
         :CompanyCode => Spree::Config.avatax_company_code,
         :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
-        :ExemptionNo => order_details.user.try(:exemption_number),
+        :ExemptionNo => order.user.try(:exemption_number),
         :Client =>  AVATAX_CLIENT_VERSION || "SpreeExtV2.3",
-        :DocCode => doc_code ? doc_code : order_details.number,
+        :DocCode => order.number,
 
-        :Discount => order_details.all_adjustments.where(source_type: "Spree::PromotionAction").any? ? order_details.all_adjustments.where(source_type: "Spree::PromotionAction").pluck(:amount).reduce(&:+).to_f.abs : 0,
+        :Discount => order.all_adjustments.where(source_type: "Spree::PromotionAction").any? ? order.all_adjustments.where(source_type: "Spree::PromotionAction").pluck(:amount).reduce(&:+).to_f.abs : 0,
 
-        :ReferenceCode => order_details.number,
+        :ReferenceCode => order_num ? order_num : order.number,
         :DetailLevel => "Tax",
         :Commit => commit,
         :DocType => invoice_detail ? invoice_detail : "SalesInvoice",
