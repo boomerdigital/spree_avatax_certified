@@ -21,7 +21,7 @@ module SpreeAvataxCertified
         preference :avatax_iseligible, :boolean, default: true
         preference :avatax_log, :boolean, default: true
         preference :avatax_address_validation, :boolean, default: true
-        preference :avatax_address_validation_enabled_countries, :array, default: ["United States of America", "Canada"]
+        preference :avatax_address_validation_enabled_countries, :array, default: ["United States", "Canada"]
         preference :avatax_tax_calculation, :boolean, default: true
         preference :avatax_document_commit, :boolean, default: true
         preference :avatax_origin, :string, default: "{}"
