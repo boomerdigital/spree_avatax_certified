@@ -12,12 +12,7 @@ module Spree
       if rate.included_in_price
         raise 'AvalaraTransaction cannot calculate inclusive sales taxes.'
       else
-
-        if item.order.state == 'complete'
-          avalara_response = item.order.avalara_capture
-        else
-          avalara_response = retrieve_rates_from_cache(item.order)
-        end
+        avalara_response = get_avalara_response(item.order)
 
         tax_for_item(item, avalara_response)
       end
@@ -35,6 +30,14 @@ module Spree
     end
 
     private
+
+    def get_avalara_response(order)
+      if order.state == 'complete'
+        order.avalara_capture
+      else
+        retrieve_rates_from_cache(order)
+      end
+    end
 
 
     def cache_key(order)
