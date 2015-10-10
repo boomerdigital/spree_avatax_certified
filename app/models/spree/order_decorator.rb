@@ -30,7 +30,7 @@ Spree::Order.class_eval do
       create_avalara_transaction if avalara_transaction.nil?
       line_items.reload
 
-      @rtn_tax = self.avalara_transaction.commit_avatax(self, Date.today.strftime('%F'), 'SalesInvoice')
+      @rtn_tax = self.avalara_transaction.commit_avatax(self, 'SalesInvoice')
 
       logger.info 'tax amount'
       logger.debug @rtn_tax
