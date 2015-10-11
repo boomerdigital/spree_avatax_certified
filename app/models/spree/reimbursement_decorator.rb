@@ -7,8 +7,6 @@ Spree::Reimbursement.class_eval do
   has_one :avalara_transaction, dependent: :destroy
   after_save :assign_avalara_transaction, on: :create
 
-
-
   def perform!
     reimbursement_tax_calculator.call(self)
     reload
@@ -51,7 +49,7 @@ Spree::Reimbursement.class_eval do
   def avalara_capture
     REIMBURSEMENT_LOGGER.debug 'avalara capture reimbursement'
     begin
-      @rtn_tax = Spree::AvalaraTransaction.find_by_reimbursement_id(self.id).commit_avatax(order.line_items, order, order.number.to_s + '.' + self.id.to_s, order.completed_at.strftime('%F'), 'ReturnInvoice')
+      @rtn_tax = Spree::AvalaraTransaction.find_by_reimbursement_id(self.id).commit_avatax(order, 'ReturnInvoice')
 
       REIMBURSEMENT_LOGGER.info 'tax amount'
       REIMBURSEMENT_LOGGER.debug @rtn_tax
@@ -65,7 +63,7 @@ Spree::Reimbursement.class_eval do
     REIMBURSEMENT_LOGGER.debug 'avalara capture reimbursement avalara_capture_finalize'
     begin
 
-      @rtn_tax = self.avalara_transaction.commit_avatax_final(order.line_items, order, order.number.to_s + '.' + self.id.to_s, order.completed_at.strftime('%F'), 'ReturnInvoice')
+      @rtn_tax = self.avalara_transaction.commit_avatax_final(order, 'ReturnInvoice')
 
       REIMBURSEMENT_LOGGER.info 'tax amount'
       REIMBURSEMENT_LOGGER.debug @rtn_tax
