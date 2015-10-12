@@ -32,8 +32,7 @@ Spree::Order.class_eval do
 
       @rtn_tax = self.avalara_transaction.commit_avatax(self, 'SalesInvoice')
 
-      logger.info 'tax amount'
-      logger.debug @rtn_tax
+      logger.info_and_debug('tax amount', @rtn_tax)
       @rtn_tax
     rescue => e
       logger.debug e
@@ -48,8 +47,7 @@ Spree::Order.class_eval do
       line_items.reload
       @rtn_tax = avalara_transaction.commit_avatax_final(self, 'SalesInvoice')
 
-      logger.info 'tax amount'
-      logger.debug @rtn_tax
+      logger.info_and_debug('tax amount', @rtn_tax)
       @rtn_tax
     rescue => e
       logger.debug e
