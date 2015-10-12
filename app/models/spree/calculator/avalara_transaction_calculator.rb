@@ -9,6 +9,7 @@ module Spree
     end
 
     def compute_shipment_or_line_item(item)
+      # NEED TO TEST VAT
       if rate.included_in_price
         raise 'AvalaraTransaction cannot calculate inclusive sales taxes.'
       else
@@ -79,7 +80,8 @@ module Spree
       return 0 if order.state == %w(address cart)
       return 0 if item_address.nil?
       return 0 if !self.calculable.zone.include?(item_address)
-      # think about if totaltax is 0 because of an error, adding a message to the order so a user will be available.
+      # return 0 if avalara_response.try(:[], :TotalTax) == '0.00'
+      # if error occurs.. need a way to report error on backend
 
       avalara_response['TaxLines'].each do |line|
         if line['LineNo'] == "#{item.id}-#{item.avatax_line_code}"
