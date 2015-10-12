@@ -37,14 +37,6 @@ module Spree
 
     private
 
-    def get_shipped_from_address(item_id)
-      AVALARA_TRANSACTION_LOGGER.info("shipping address get")
-
-      stock_item = Stock_Item.find(item_id)
-      shipping_address = stock_item.stock_location || nil
-      return shipping_address
-    end
-
     def cancel_order_to_avalara(doc_type="SalesInvoice", cancel_code="DocVoided", order=nil)
       AVALARA_TRANSACTION_LOGGER.info("cancel order to avalara")
 
