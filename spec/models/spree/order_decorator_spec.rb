@@ -62,20 +62,6 @@ describe Spree::Order, type: :model do
     end
   end
 
-  context "complete" do
-    before do
-      @order.state = 'confirm'
-    end
-    it "should do avalara_capture" do
-      expect(@order).to receive(:avalara_capture_finalize)
-      @order.next!
-    end
-    it "should be at state complete" do
-      @order.next!
-      @order.should be_complete
-    end
-  end
-
   describe '#avatax_cache_key' do
     it 'should respond with a cache key' do
       expected_response = "Spree::Order-#{@order.number}-#{@order.promo_total}"
