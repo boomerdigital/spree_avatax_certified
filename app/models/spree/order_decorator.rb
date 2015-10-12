@@ -56,10 +56,10 @@ Spree::Order.class_eval do
   end
 
   def avatax_cache_key
-    key = ["Spree::Order"]
+    key = ['Spree::Order']
     key << self.number
     key << self.promo_total
-    key.join("-")
+    key.join('-')
   end
 
   private

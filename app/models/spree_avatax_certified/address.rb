@@ -108,18 +108,18 @@ module SpreeAvataxCertified
 
         response = JSON.parse(res.body)
 
-        if response["Address"]["City"] == address[:city] || response["Address"]["Region"] == Spree::State.find(address[:state_id]).abbr
+        if response['Address']['City'] == address[:city] || response['Address']['Region'] == Spree::State.find(address[:state_id]).abbr
           return response
         else
-          response["ResultCode"] = "Error"
-          suggested_address = response["Address"]
-          response["Messages"] = [{
-                                    "Summary" => "Did you mean #{suggested_address['Line1']}, #{suggested_address['City']}, #{suggested_address['Region']}, #{suggested_address['PostalCode']}?"
+          response['ResultCode'] = 'Error'
+          suggested_address = response['Address']
+          response['Messages'] = [{
+                                    'Summary' => "Did you mean #{suggested_address['Line1']}, #{suggested_address['City']}, #{suggested_address['Region']}, #{suggested_address['PostalCode']}?"
           }]
           return response
         end
       else
-        "Address validation disabled"
+        'Address validation disabled'
       end
     rescue => e
       'error in address validation'
@@ -142,7 +142,7 @@ module SpreeAvataxCertified
     private
 
     def credential
-      'Basic ' + Base64.encode64(account_number + ":" + license_key)
+      'Basic ' + Base64.encode64(account_number + ':' + license_key)
     end
 
     def service_url

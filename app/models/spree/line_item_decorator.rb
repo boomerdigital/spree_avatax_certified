@@ -12,12 +12,12 @@ Spree::LineItem.class_eval do
   end
 
   def avatax_cache_key
-    key = ["Spree::LineItem"]
+    key = ['Spree::LineItem']
     key << self.id
     key << self.quantity
     key << self.price
     key << self.promo_total
-    key.join("-")
+    key.join('-')
   end
 
   def avatax_line_code

@@ -1,5 +1,5 @@
 require 'logger'
-RETURN_AUTHORIZATION_LOGGER = AvataxHelper::AvataxLog.new("return_authorization", "return_authorization class")
+RETURN_AUTHORIZATION_LOGGER = AvataxHelper::AvataxLog.new('return_authorization', 'return_authorization class')
 
 Spree::ReturnAuthorization.class_eval do
   RETURN_AUTHORIZATION_LOGGER.info('start ReturnAuthorization processing')
