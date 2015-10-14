@@ -5,6 +5,7 @@ module SpreeAvataxCertified
       def seed!
         create_use_codes
         create_tax
+        add_tax_category_to_shipping_methods
         puts "***** SPREE AVATAX CERTIFIED *****"
         puts ""
         puts "Please remember to:"
@@ -28,6 +29,12 @@ module SpreeAvataxCertified
         shipping_tax = Spree::TaxRate.create(name: 'Shipping Tax', tax_category: shipping, amount: BigDecimal.new('0'), zone: Spree::Zone.find_by_name('North America'), show_rate_in_label: false)
         shipping_tax.calculator = Spree::Calculator::AvalaraTransactionCalculator.create!
         shipping_tax.save!
+      end
+
+      def add_tax_category_to_shipping_methods
+        Spree::ShippingMethod.all.each do |shipping_method|
+          shipping_method.update_attributes(tax_category: Spree::TaxCategory.find_by_name('Shipping'))
+        end
       end
 
       def create_use_codes
