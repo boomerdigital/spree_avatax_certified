@@ -24,7 +24,7 @@ Spree::ReturnAuthorization.class_eval do
     RETURN_AUTHORIZATION_LOGGER.debug 'avalara capture return_authorization'
 
     begin
-      @rtn_tax = Spree::AvalaraTransaction.find_by_return_authorization_id(self.id).commit_avatax(order, 'ReturnInvoice')
+      @rtn_tax = Spree::AvalaraTransaction.find_by_return_authorization_id(self.id).commit_avatax('ReturnInvoice')
 
       RETURN_AUTHORIZATION_LOGGER.info_and_debug('tax amount', @rtn_tax)
     rescue => e
@@ -37,7 +37,7 @@ Spree::ReturnAuthorization.class_eval do
     RETURN_AUTHORIZATION_LOGGER.debug 'avalara capture return_authorization avalara_capture_finalize'
 
     begin
-      @rtn_tax = self.avalara_transaction.commit_avatax_final(order, 'ReturnInvoice')
+      @rtn_tax = self.avalara_transaction.commit_avatax_final('ReturnInvoice')
 
       RETURN_AUTHORIZATION_LOGGER.info_and_debug('tax amount', @rtn_tax)
     rescue => e

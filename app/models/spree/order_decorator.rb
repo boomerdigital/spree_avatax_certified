@@ -30,7 +30,7 @@ Spree::Order.class_eval do
       create_avalara_transaction if avalara_transaction.nil?
       line_items.reload
 
-      @rtn_tax = self.avalara_transaction.commit_avatax(self, 'SalesInvoice')
+      @rtn_tax = self.avalara_transaction.commit_avatax('SalesInvoice')
 
       logger.info_and_debug('tax amount', @rtn_tax)
       @rtn_tax
@@ -45,7 +45,7 @@ Spree::Order.class_eval do
     begin
       create_avalara_transaction if avalara_transaction.nil?
       line_items.reload
-      @rtn_tax = avalara_transaction.commit_avatax_final(self, 'SalesInvoice')
+      @rtn_tax = avalara_transaction.commit_avatax_final('SalesInvoice')
 
       logger.info_and_debug('tax amount', @rtn_tax)
       @rtn_tax

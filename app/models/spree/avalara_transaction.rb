@@ -12,32 +12,29 @@ module Spree
     has_many :adjustments, as: :source
 
     def lookup_avatax
-      order = Spree::Order.find(self.order_id)
-      post_order_to_avalara(false, order, 'SalesOrder')
+      post_order_to_avalara(false, 'SalesOrder')
     end
 
-    def commit_avatax(order, invoice_dt=nil)
-      post_order_to_avalara(false, order, invoice_dt)
+    def commit_avatax(invoice_dt=nil)
+      post_order_to_avalara(false, invoice_dt)
     end
 
-    def commit_avatax_final(order, invoice_dt=nil)
+    def commit_avatax_final(invoice_dt=nil)
       if document_committing_enabled?
-        post_order_to_avalara(true, order, invoice_dt)
+        post_order_to_avalara(true, invoice_dt)
       else
         AVALARA_TRANSACTION_LOGGER.debug 'avalara document committing disabled'
         'avalara document committing disabled'
       end
     end
 
-    def check_status(order)
-      if order.state == 'canceled'
-        cancel_order_to_avalara('SalesInvoice', 'DocVoided', order)
-      end
+    def cancel_order
+      cancel_order_to_avalara('SalesInvoice', 'DocVoided')
     end
 
     private
 
-    def cancel_order_to_avalara(doc_type='SalesInvoice', cancel_code='DocVoided', order=nil)
+    def cancel_order_to_avalara(doc_type = 'SalesInvoice', cancel_code = 'DocVoided')
       AVALARA_TRANSACTION_LOGGER.info('cancel order to avalara')
 
       cancelTaxRequest = {
@@ -64,7 +61,7 @@ module Spree
       end
     end
 
-    def post_order_to_avalara(commit=false, order=nil, invoice_detail=nil)
+    def post_order_to_avalara(commit=false, invoice_detail=nil)
       AVALARA_TRANSACTION_LOGGER.info('post order to avalara')
 
       avatax_address = SpreeAvataxCertified::Address.new(order)
