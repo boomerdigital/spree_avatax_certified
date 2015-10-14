@@ -37,19 +37,19 @@ describe Spree::AvalaraTransaction, :type => :model do
 
     describe "#commit_avatax" do
       it "should commit avatax" do
-        expect(@order.avalara_transaction.commit_avatax(@order, 'SalesOrder')["TotalTax"]).to eq("0.4")
+        expect(@order.avalara_transaction.commit_avatax('SalesOrder')["TotalTax"]).to eq("0.4")
       end
     end
 
     describe "#commit_avatax_final" do
       it "should commit avatax final" do
-        expect(@order.avalara_transaction.commit_avatax_final(@order, 'SalesInvoice')["TotalTax"]).to eq("0.4")
+        expect(@order.avalara_transaction.commit_avatax_final('SalesInvoice')["TotalTax"]).to eq("0.4")
       end
 
       it "should fail to commit to avatax if settings are false" do
         Spree::Config.avatax_document_commit = false
 
-        expect(@order.avalara_transaction.commit_avatax_final(@order, 'SalesOrder')).to eq("avalara document committing disabled")
+        expect(@order.avalara_transaction.commit_avatax_final('SalesOrder')).to eq("avalara document committing disabled")
       end
     end
   end

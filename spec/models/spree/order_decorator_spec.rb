@@ -33,17 +33,24 @@ describe Spree::Order, type: :model do
     end
   end
 
-  describe "#cancel_status" do
-    it "should return nil if no AvalaraTransaction is present" do
-      expect(@order.cancel_status).to be_nil
+  describe "#cancel_avalara" do
+    let(:completed_order) {create(:completed_order_with_totals)}
+
+    before do
+      completed_order.avalara_capture
+      @response = completed_order.cancel_avalara
     end
 
-    it "should call #check_status on AvalaraTransaction" do
-      avala_transaction = @order.create_avalara_transaction
-      expect(avala_transaction).to receive(:check_status).with(@order)
-      @order.cancel_status
+    it 'should be successful' do
+      expect(@response["ResultCode"]).to eq("Success")
     end
+
+    it "should return hash" do
+      expect(@response).to be_kind_of(Hash)
+    end
+
   end
+
   describe "#avalara_capture" do
     it "should response with Hash object" do
       expect(@order.avalara_capture).to be_kind_of(Hash)
