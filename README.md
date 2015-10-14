@@ -39,11 +39,25 @@ Enter the Entity Use Codes that are configured in your Avalara site. If you chos
 Edit Tax Categories configuration settings. If left blank, the tax code will default to P0000000.
 ![taxcategories](https://cloud.githubusercontent.com/assets/6445334/5671227/2b840c18-9754-11e4-9f68-99efbfcc9fcd.png)
 
-Edit the Shipping Methods configuration settings, to add Tax Use Code for each type of Shipping Method. The Use code must be matched to a value that is configured in the Avalara site.
-![shipping](https://cloud.githubusercontent.com/assets/6445334/5671020/f6115b68-9752-11e4-8af9-d60f8fd3fa81.png)
+Make sure you have your tax rates set up for each tax category you have available on your site. If you use clothing, electronics, and shipping, there should be a tax rate for each of those.
+![image](https://cloud.githubusercontent.com/assets/6445334/10485599/0c5d0d72-7259-11e5-888e-d09183f40851.png)
+![image](https://cloud.githubusercontent.com/assets/6445334/10485617/218d0f94-7259-11e5-86d4-e1361e023841.png)
+
+Edit the Shipping Methods configuration settings, to add Tax Category for each type of Shipping Method.
+![image](https://cloud.githubusercontent.com/assets/6445334/10485517/a3f929f0-7258-11e5-86a3-e40de4585e4e.png)
+
+Add Stock Location address. Without this, tax cannot calculate.
+![image](https://cloud.githubusercontent.com/assets/6445334/10485464/573cb08c-7258-11e5-8d2f-c3f1a81abd01.png)
 
 Configure specific users to utilize Avalara Entity Use Code, and Exemption number; Customer Code will be the user's id. Exemption Number are sourced from the Avalara site and the Avalara Entity Use code is a searchable drop down that was previously configured in the system.
 ![userinfoavalara](https://cloud.githubusercontent.com/assets/6445334/5671095/5e01cdca-9753-11e4-9900-6946c79ad614.png)
+
+Load Seeds
+----------
+Will seed Avalara entity use codes and the basic tax calculators.
+```shell
+rake spree_avatax_certified:load_seeds
+```
 
 
 Testing
