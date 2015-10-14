@@ -5,7 +5,7 @@ Spree::Order.class_eval do
   has_one :avalara_transaction, dependent: :destroy
 
  self.state_machine.before_transition :to => :canceled,
-                                      :do => :cancel_status,
+                                      :do => :cancel_avalara,
                                       :if => :avalara_eligible
 
   def avalara_eligible
@@ -18,9 +18,9 @@ Spree::Order.class_eval do
     :lookup_avatax
   end
 
-  def cancel_status
+  def cancel_avalara
     return nil unless avalara_transaction.present?
-    self.avalara_transaction.check_status(self)
+    self.avalara_transaction.cancel_order
   end
 
   def avalara_capture
