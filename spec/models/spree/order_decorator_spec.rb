@@ -49,6 +49,22 @@ describe Spree::Order, type: :model do
       expect(@response).to be_kind_of(Hash)
     end
 
+    it 'should receive cancel_order when cancel_avalara is called' do
+      expect(completed_order.avalara_transaction).to receive(:cancel_order)
+      completed_order.cancel_avalara
+    end
+
+    context 'state machine event cancel' do
+      it 'should recieve cancel_avalara when event cancel is called' do
+        expect(completed_order).to receive(:cancel_avalara)
+        completed_order.cancel!
+      end
+
+      it 'avalara_transaction should recieve cancel_order when event cancel is called' do
+        expect(completed_order.avalara_transaction).to receive(:cancel_order)
+        completed_order.cancel!
+      end
+    end
   end
 
   describe "#avalara_capture" do

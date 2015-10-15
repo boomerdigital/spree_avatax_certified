@@ -51,24 +51,21 @@ describe Spree::ReturnAuthorization, type: :model do
       @order.avalara_transaction.return_authorization.state = "authorized"
       allow(@order).to receive(:update!)
     end
+
     it "should update order state" do
       @order.avalara_transaction.return_authorization.receive!
       expect(@order.avalara_transaction.return_authorization.state).to eq("received")
     end
-    # it "should receive avalara_capture_finalize" do
-    #   @order.avalara_transaction.return_authorization.add_variant(@variant.id, 1)
-    #   @order.avalara_transaction.return_authorization.receive!
-    #   expect(@order.avalara_transaction.return_authorization).to receive(:avalara_capture_finalize)
-    # end
 
-    # it "should mark all inventory units are returned" do
-    #   expect(@inventory_unit).to receive(:return!)
-    #   @order.avalara_transaction.return_authorization.receive!
-    # end
+    it "should receive avalara_capture_finalize" do
+      @order.avalara_transaction.return_authorization.add_variant(@variant.id, 1)
+      expect(@order.avalara_transaction.return_authorization).to receive(:avalara_capture_finalize)
+      @order.avalara_transaction.return_authorization.receive!
+    end
 
-    # it "should update order state" do
-    #   expect(@order).to receive :avalara_capture_finalize
-    #   @order.avalara_transaction.return_authorization.receive!
-    # end
+    it 'avalara_transaction should receive post_order_to_avalara when return auth is received' do
+      expect(@order.avalara_transaction).to receive(:post_order_to_avalara)
+      @order.avalara_transaction.return_authorization.receive!
+    end
   end
 end
