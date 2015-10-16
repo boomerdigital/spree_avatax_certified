@@ -22,23 +22,23 @@ module Spree
 
     def lookup_avatax
       order = Spree::Order.find(self.order_id)
-      post_order_to_avalara(false, order, 'SalesOrder')
+      post_order_to_avalara(false, 'SalesOrder')
     end
 
-    def commit_avatax(order, invoice_dt = nil)
+    def commit_avatax(invoice_dt = nil)
       if invoice_dt == 'ReturnInvoice'
-        post_return_order_to_avalara(false, order, invoice_dt)
+        post_return_order_to_avalara(false, invoice_dt)
       else
-        post_order_to_avalara(false, order, invoice_dt)
+        post_order_to_avalara(false, invoice_dt)
       end
     end
 
-    def commit_avatax_final(order, invoice_dt = nil)
+    def commit_avatax_final(invoice_dt = nil)
       if document_committing_enabled?
         if invoice_dt == 'ReturnInvoice'
-          post_return_order_to_avalara(true, order, invoice_dt)
+          post_return_order_to_avalara(true, invoice_dt)
         else
-          post_order_to_avalara(true, order, invoice_dt)
+          post_order_to_avalara(true, invoice_dt)
         end
       else
         AVALARA_TRANSACTION_LOGGER.debug 'avalara document committing disabled'
@@ -54,7 +54,7 @@ module Spree
 
     private
 
-    def cancel_order_to_avalara(doc_type='SalesInvoice', cancel_code='DocVoided', order=nil)
+    def cancel_order_to_avalara(doc_type='SalesInvoice', cancel_code='DocVoided')
       AVALARA_TRANSACTION_LOGGER.info('cancel order to avalara')
 
       cancel_tax_request = {
@@ -81,7 +81,7 @@ module Spree
       end
     end
 
-    def post_order_to_avalara(commit = false, order = nil, invoice_detail = nil)
+    def post_order_to_avalara(commit = false, invoice_detail = nil)
       AVALARA_TRANSACTION_LOGGER.info('post order to avalara')
       avatax_address = SpreeAvataxCertified::Address.new(order)
       avatax_line = SpreeAvataxCertified::Line.new(order, invoice_detail)
@@ -141,7 +141,7 @@ module Spree
       return @myrtntax
     end
 
-    def post_return_order_to_avalara(commit = false, order = nil, invoice_detail = nil)
+    def post_return_order_to_avalara(commit = false, invoice_detail = nil)
       AVALARA_TRANSACTION_LOGGER.info('starting post return order to avalara')
 
       avatax_address = SpreeAvataxCertified::Address.new(order)
