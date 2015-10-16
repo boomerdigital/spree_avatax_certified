@@ -4,10 +4,8 @@ REIMBURSEMENT_LOGGER = AvataxHelper::AvataxLog.new('reimbursement', 'reimburseme
 Spree::Reimbursement.class_eval do
   REIMBURSEMENT_LOGGER.info('start Reimbursement processing')
 
-  has_one :avalara_transaction, dependent: :destroy
-  after_save :assign_avalara_transaction, on: :create
-
-
+  has_one :avalara_transaction
+  after_save :assign_avalara_transaction, if: :order_has_avalara_transaction?
 
   def perform!
     reimbursement_tax_calculator.call(self)
@@ -55,6 +53,8 @@ Spree::Reimbursement.class_eval do
 
       REIMBURSEMENT_LOGGER.info 'tax amount'
       REIMBURSEMENT_LOGGER.debug @rtn_tax
+
+      @rtn_tax
     rescue => e
       REIMBURSEMENT_LOGGER.debug e
       REIMBURSEMENT_LOGGER.debug 'error in avalara capture reimbursement'
@@ -69,6 +69,8 @@ Spree::Reimbursement.class_eval do
 
       REIMBURSEMENT_LOGGER.info 'tax amount'
       REIMBURSEMENT_LOGGER.debug @rtn_tax
+
+      @rtn_tax
     rescue => e
       REIMBURSEMENT_LOGGER.debug e
       REIMBURSEMENT_LOGGER.debug 'error in avalara capture reimbursement'
@@ -81,12 +83,13 @@ Spree::Reimbursement.class_eval do
 
   def assign_avalara_transaction
     if avalara_eligible
-      if order.avalara_transaction.nil?
-        create_avalara_transaction_return_auth
-      else
-        Spree::AvalaraTransaction.find_by_order_id(order.id).update_attributes(order_id: order.id, reimbursement_id: self.id)
+      if order.avalara_transaction.reimbursement_id.nil?
+        Spree::AvalaraTransaction.find_by_order_id(order.id).update_attributes(reimbursement_id: self.id)
       end
     end
   end
-end
 
+  def order_has_avalara_transaction?
+    order.avalara_transaction.nil? ? false : true
+  end
+end

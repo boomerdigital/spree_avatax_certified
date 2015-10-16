@@ -4,8 +4,8 @@ REFUND_LOGGER = AvataxHelper::AvataxLog.new('refund', 'refund class')
 Spree::Refund.class_eval do
   REFUND_LOGGER.info('start refund processing')
 
-  has_one :avalara_transaction, dependent: :destroy
-  after_save :assign_avalara_transaction, on: :create
+  has_one :avalara_transaction
+  after_save :assign_avalara_transaction, if: :order_has_avalara_transaction?
   after_save :avalara_capture_finalize, on: :update
 
   def avalara_eligible
@@ -13,7 +13,7 @@ Spree::Refund.class_eval do
   end
 
   def avalara_lookup
-    REIMBURSEMENT_LOGGER.debug 'avalara lookup reimbursement'
+    REFUND_LOGGER.debug 'avalara lookup reimbursement'
     create_avalara_transaction_refund
     :lookup_avatax
   end
@@ -60,12 +60,14 @@ Spree::Refund.class_eval do
 
   def assign_avalara_transaction
     if avalara_eligible
-      if self.payment.order.avalara_transaction.nil?
-        create_avalara_transaction_refund
-      else
-        Spree::AvalaraTransaction.find_by_order_id(payment.order.id).update_attributes(order_id: payment.order.id, refund_id: self.id)
+      if self.payment.order.avalara_transaction.refund_id.nil?
+        Spree::AvalaraTransaction.find_by_order_id(self.payment.order.id).update_attributes(refund_id: self.id)
       end
     end
+  end
+
+  def order_has_avalara_transaction?
+    self.payment.order.avalara_transaction.nil? ? false : true
   end
 
   def pre_tax_amount
