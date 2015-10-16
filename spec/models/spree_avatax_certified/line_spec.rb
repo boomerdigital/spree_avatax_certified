@@ -4,13 +4,16 @@ describe SpreeAvataxCertified::Line, :type => :model do
   let(:country){ FactoryGirl.create(:country) }
   let(:address){ FactoryGirl.create(:address) }
   let(:order) { FactoryGirl.create(:order_with_line_items) }
+  let(:shipped_order) { FactoryGirl.create(:shipped_order) }
+  let(:stock_location) { FactoryGirl.create(:stock_location) }
+  let!(:return_authorization) { Spree::ReturnAuthorization.create(:order => shipped_order, :stock_location => stock_location) }
 
   before do
     order.ship_address.update_attributes(city: 'Tuscaloosa', address1: '220 Paul W Bryant Dr')
   end
 
   let(:sales_lines) { SpreeAvataxCertified::Line.new(order, 'SalesOrder') }
-  let(:return_lines) { SpreeAvataxCertified::Line.new(order, 'ReturnOrder') }
+  let(:return_lines) { SpreeAvataxCertified::Line.new(shipped_order, 'ReturnOrder') }
 
   describe '#initialize' do
     it 'should have order' do
@@ -77,7 +80,9 @@ describe SpreeAvataxCertified::Line, :type => :model do
       end
     end
     describe '#return_authorization_lines' do
-
+      it 'returns an array' do
+        expect(return_lines.return_authorization_lines).to be_kind_of(Array)
+      end
     end
   end
 end

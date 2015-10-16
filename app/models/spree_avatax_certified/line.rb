@@ -113,6 +113,8 @@ module SpreeAvataxCertified
         }
 
         @logger.debug return_auth_line
+
+        return_auth_lines << return_auth_line
       end
 
       lines.concat(return_auth_lines) unless return_auth_lines.empty?
