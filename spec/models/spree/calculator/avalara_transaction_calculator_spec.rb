@@ -8,6 +8,7 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
   let!(:tax_category) { Spree::TaxCategory.create(name: 'Clothing', description: 'P0000000') }
   let(:included_in_price) { false }
   let!(:rate) { create(:tax_rate, :tax_category => tax_category, :amount => 0.00, :included_in_price => included_in_price, zone: zone) }
+  let!(:stock_location) { create(:stock_location) }
   let!(:calculator) { Spree::Calculator::AvalaraTransactionCalculator.new(:calculable => rate ) }
   let!(:order) { create(:order) }
   let!(:line_item) { create(:line_item, :price => 10, :quantity => 3, :tax_category => tax_category) }
