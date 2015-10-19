@@ -79,6 +79,7 @@ module Spree
       return 0 if order.state == %w(address cart)
       return 0 if item_address.nil?
       return 0 if !self.calculable.zone.include?(item_address)
+      # return 0 if avalara_response[:TotalTax] == '0.00'
       # think about if totaltax is 0 because of an error, adding a message to the order so a user will be available.
 
       avalara_response['TaxLines'].each do |line|

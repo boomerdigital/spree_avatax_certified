@@ -14,7 +14,8 @@ module SpreeAvataxCertified
       @logger.info('build lines')
 
       if invoice_type == 'ReturnInvoice' || invoice_type == 'ReturnOrder'
-        reimbursement_lines
+        reimbursement_return_item_lines
+        refund_lines
       else
         item_lines
         shipment_lines
@@ -39,7 +40,7 @@ module SpreeAvataxCertified
         line = {
           :LineNo => "#{line_item.id}-LI",
           :Description => line_item.name[0..255],
-          :TaxCode => line_item.tax_category.try(:description) || 'P0000000',
+          :TaxCode => line_item.tax_category.try(:tax_code) || 'P0000000',
           :ItemCode => line_item.variant.sku,
           :Qty => line_item.quantity,
           :Amount => line_item.discounted_amount.to_f,
@@ -72,7 +73,7 @@ module SpreeAvataxCertified
             :DestinationCode => 'Dest',
             :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
             :Description => 'Shipping Charge',
-            :TaxCode => shipment.shipping_method.tax_category.try(:description) || 'FR000000',
+            :TaxCode => shipment.shipping_method.tax_category.try(:tax_code) || 'FR000000',
           }
 
           @logger.debug shipment_line
@@ -96,7 +97,7 @@ module SpreeAvataxCertified
           :Amount => -refund.amount.to_f,
           :OriginCode => 'Orig',
           :DestinationCode => 'Dest',
-          :CustomerUsageType => myusecode.try(:use_code),
+          :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
           :Description => 'Refund'
         }
 
@@ -104,6 +105,8 @@ module SpreeAvataxCertified
 
         refunds << refund_line
       end
+
+      lines.concat(refunds) unless refunds.empty?
     end
 
     def reimbursement_return_item_lines

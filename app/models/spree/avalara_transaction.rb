@@ -12,33 +12,33 @@ module Spree
     validates :order_id, uniqueness: true
     has_many :adjustments, as: :source
 
-    def rnt_tax
-      @myrtntax
-    end
-
-    def amount
-      @myrtntax
-    end
-
     def lookup_avatax
       order = Spree::Order.find(self.order_id)
       post_order_to_avalara(false, 'SalesOrder')
     end
 
     def commit_avatax(invoice_dt = nil)
-      if invoice_dt == 'ReturnInvoice'
-        post_return_order_to_avalara(false, invoice_dt)
+      if tax_calculation_enabled?
+        if invoice_dt == 'ReturnInvoice'
+          post_return_order_to_avalara(false, invoice_dt)
+        else
+          post_order_to_avalara(false, invoice_dt)
+        end
       else
-        post_order_to_avalara(false, invoice_dt)
+        { TotalTax: '0.00' }
       end
     end
 
     def commit_avatax_final(invoice_dt = nil)
       if document_committing_enabled?
-        if invoice_dt == 'ReturnInvoice'
-          post_return_order_to_avalara(true, invoice_dt)
+        if tax_calculation_enabled?
+          if invoice_dt == 'ReturnInvoice'
+            post_return_order_to_avalara(true, invoice_dt)
+          else
+            post_order_to_avalara(true, invoice_dt)
+          end
         else
-          post_order_to_avalara(true, invoice_dt)
+          { TotalTax: '0.00' }
         end
       else
         AVALARA_TRANSACTION_LOGGER.debug 'avalara document committing disabled'
@@ -46,10 +46,8 @@ module Spree
       end
     end
 
-    def check_status(order)
-      if order.state == 'canceled'
-        cancel_order_to_avalara('SalesInvoice', 'DocVoided', order)
-      end
+    def cancel_order
+      cancel_order_to_avalara('SalesInvoice', 'DocVoided')
     end
 
     private
@@ -101,7 +99,7 @@ module Spree
 
       gettaxes = {
         :CustomerCode => order.user ? order.user.id : 'Guest',
-        :DocDate => order_date ? order_date : Date.today.strftime('%F'),
+        :DocDate => Date.today.strftime('%F'),
 
         :CompanyCode => Spree::Config.avatax_company_code,
         :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
@@ -150,24 +148,25 @@ module Spree
       AVALARA_TRANSACTION_LOGGER.debug avatax_address
       AVALARA_TRANSACTION_LOGGER.debug avatax_line
 
-      taxoverride = {}
+      taxoverride = {
+        :TaxOverrideType => 'TaxDate',
+        :Reason => 'Adjustment for return',
+        :TaxDate => order.completed_at.strftime('%F'),
+        :TaxAmount => '0'
+      }
 
-      taxoverride[:TaxOverrideType] = 'TaxDate'
-      taxoverride[:Reason] = 'Adjustment for return'
-      taxoverride[:TaxDate] = org_ord_date
-      taxoverride[:TaxAmount] = '0'
 
       gettaxes = {
         :CustomerCode => order.user ? order.user.id : 'Guest',
-        :DocDate => order.completed_at.strftime("%F"),
+        :DocDate => Date.today.strftime('%F'),
 
         :CompanyCode => Spree::Config.avatax_company_code,
-        :CustomerUsageType => myusecode.try(:use_code),
+        :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
         :ExemptionNo => order.user.try(:exemption_number),
         :Client =>  AVATAX_CLIENT_VERSION || 'SpreeExtV2.4',
-        :DocCode => doc_code ? doc_code : order.number,
+        :DocCode => order.number.to_s + '.' + self.id.to_s,
 
-        :ReferenceCode => order.number.to_s + ":" + self.id.to_s,
+        :ReferenceCode => order.number,
         :DetailLevel => 'Tax',
         :Commit => commit,
         :DocType => invoice_detail ? invoice_detail : 'ReturnOrder',
@@ -202,6 +201,10 @@ module Spree
 
     def document_committing_enabled?
       Spree::Config.avatax_document_commit
+    end
+
+    def tax_calculation_enabled?
+      Spree::Config.avatax_tax_calculation
     end
   end
 end
