@@ -166,6 +166,9 @@
   </div>
 </div>
 
-<p class="form-buttons"><%= button t('save_preferences') %></p>
+<div class="form-buttons filter-actions actions" data-hook="buttons">
+  <%= button Spree.t('actions.update'), 'refresh' %>
+</div>
+
 
 <% end %>
