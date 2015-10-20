@@ -29,11 +29,11 @@ module Spree
       end
     end
 
-    def commit_avatax_final(invoice_dt = nil)
+    def commit_avatax_final(invoice_dt = nil, refund_id)
       if document_committing_enabled?
         if tax_calculation_enabled?
           if invoice_dt == 'ReturnInvoice'
-            post_return_order_to_avalara(true, invoice_dt)
+            post_return_order_to_avalara(true, invoice_dt, refund_id)
           else
             post_order_to_avalara(true, invoice_dt)
           end
@@ -121,10 +121,9 @@ module Spree
 
       mytax = TaxSvc.new
 
+      get_tax_result = mytax.get_tax(gettaxes)
       AVALARA_TRANSACTION_LOGGER.info '********** hitting the api'
       puts '********** hitting the api'
-
-      get_tax_result = mytax.get_tax(gettaxes)
       AVALARA_TRANSACTION_LOGGER.debug get_tax_result
 
       if get_tax_result == 'error in Tax'
@@ -139,7 +138,7 @@ module Spree
       return @myrtntax
     end
 
-    def post_return_order_to_avalara(commit = false, invoice_detail = nil)
+    def post_return_order_to_avalara(commit = false, invoice_detail = nil, refund_id)
       AVALARA_TRANSACTION_LOGGER.info('starting post return order to avalara')
 
       avatax_address = SpreeAvataxCertified::Address.new(order)
@@ -155,7 +154,6 @@ module Spree
         :TaxAmount => '0'
       }
 
-
       gettaxes = {
         :CustomerCode => order.user ? order.user.id : 'Guest',
         :DocDate => Date.today.strftime('%F'),
@@ -164,7 +162,7 @@ module Spree
         :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
         :ExemptionNo => order.user.try(:exemption_number),
         :Client =>  AVATAX_CLIENT_VERSION || 'SpreeExtV2.4',
-        :DocCode => order.number.to_s + '.' + self.id.to_s,
+        :DocCode => order.number.to_s + '.' + refund_id.to_s,
 
         :ReferenceCode => order.number,
         :DetailLevel => 'Tax',

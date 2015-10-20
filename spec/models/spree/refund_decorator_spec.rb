@@ -65,10 +65,9 @@ describe Spree::Refund, type: :model do
       order.avalara_capture
     end
 
-    describe "#avalara_capture" do
+    describe "#avalara_capture_finalize" do
       it "should return a Hash" do
-        binding.pry
-        expect(refund.avalara_capture).to be_kind_of(Hash)
+        expect(refund.avalara_capture_finalize).to be_kind_of(Hash)
       end
     end
   end

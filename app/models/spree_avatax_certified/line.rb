@@ -14,7 +14,6 @@ module SpreeAvataxCertified
       @logger.info('build lines')
 
       if invoice_type == 'ReturnInvoice' || invoice_type == 'ReturnOrder'
-        reimbursement_return_item_lines
         refund_lines
       else
         item_lines
@@ -88,13 +87,13 @@ module SpreeAvataxCertified
     def refund_lines
       refunds = []
       order.refunds.each do |refund|
-        next unless refund.reimbursement_id.nil?
+        next if refund.reimbursement.reimbursement_status == 'reimbursed'
 
         refund_line = {
           :LineNo => "#{refund.id}-RA",
           :ItemCode => refund.transaction_id || 'Refund',
           :Qty => 1,
-          :Amount => -refund.amount.to_f,
+          :Amount => -refund.reimbursement.return_items.sum(:pre_tax_amount).to_f,
           :OriginCode => 'Orig',
           :DestinationCode => 'Dest',
           :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
@@ -107,40 +106,6 @@ module SpreeAvataxCertified
       end
 
       lines.concat(refunds) unless refunds.empty?
-    end
-
-    def reimbursement_return_item_lines
-      @logger.info('build return reimbursement lines')
-
-      return_item_lines = []
-
-      order.reimbursements.each do |reimbursement|
-        next if reimbursement.reimbursement_status == 'reimbursed'
-        reimbursement.return_items.each do |return_item|
-          return_item_line = {
-            :LineNo => "#{return_item.inventory_unit.line_item_id}-RA-#{return_item.reimbursement_id}",
-            :ItemCode => return_item.inventory_unit.line_item.sku || 'Reimbursement',
-            :Qty => 1,
-            :Amount => -return_item.pre_tax_amount.to_f,
-            :OriginCode => 'Orig', #need to fix this
-            :DestinationCode => 'Dest',
-            :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
-            :Description => 'Reimbursement'
-          }
-
-          if return_item.variant.tax_category.tax_code.nil?
-            return_item_line[:TaxCode] = 'P0000000'
-          else
-            return_item_line[:TaxCode] = return_item.variant.tax_category.tax_code
-          end
-
-          @logger.debug return_item_line
-
-          return_item_lines << return_item_line
-        end
-      end
-
-      lines.concat(return_item_lines) unless return_item_lines.empty?
     end
 
     def get_stock_location(stock_locations, line_item)
