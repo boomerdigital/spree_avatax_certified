@@ -4,15 +4,11 @@ Spree::Order.class_eval do
 
   has_one :avalara_transaction, dependent: :destroy
 
-  self.state_machine.after_transition :to => :complete,
-                                      :do => :avalara_capture_finalize,
-                                      :if => :avalara_eligible
-
  self.state_machine.before_transition :to => :canceled,
-                                      :do => :cancel_status,
-                                      :if => :avalara_eligible
+                                      :do => :cancel_avalara,
+                                      :if => :avalara_eligible?
 
-  def avalara_eligible
+  def avalara_eligible?
     Spree::Config.avatax_iseligible
   end
 
@@ -22,9 +18,9 @@ Spree::Order.class_eval do
     :lookup_avatax
   end
 
-  def cancel_status
+  def cancel_avalara
     return nil unless avalara_transaction.present?
-    self.avalara_transaction.check_status(self)
+    self.avalara_transaction.cancel_order
   end
 
   def avalara_capture
@@ -34,10 +30,9 @@ Spree::Order.class_eval do
       create_avalara_transaction if avalara_transaction.nil?
       line_items.reload
 
-      @rtn_tax = self.avalara_transaction.commit_avatax(line_items, self, self.number.to_s, Date.today.strftime('%F'), 'SalesInvoice')
+      @rtn_tax = self.avalara_transaction.commit_avatax('SalesInvoice')
 
-      logger.info 'tax amount'
-      logger.debug @rtn_tax
+      logger.info_and_debug('tax amount', @rtn_tax)
       @rtn_tax
     rescue => e
       logger.debug e
@@ -50,10 +45,9 @@ Spree::Order.class_eval do
     begin
       create_avalara_transaction if avalara_transaction.nil?
       line_items.reload
-      @rtn_tax = avalara_transaction.commit_avatax_final(line_items, self, number.to_s, Date.today.strftime('%F'), 'SalesInvoice')
+      @rtn_tax = avalara_transaction.commit_avatax_final('SalesInvoice')
 
-      logger.info 'tax amount'
-      logger.debug @rtn_tax
+      logger.info_and_debug('tax amount', @rtn_tax)
       @rtn_tax
     rescue => e
       logger.debug e
@@ -62,10 +56,10 @@ Spree::Order.class_eval do
   end
 
   def avatax_cache_key
-    key = ["Spree::Order"]
+    key = ['Spree::Order']
     key << self.number
     key << self.promo_total
-    key.join("-")
+    key.join('-')
   end
 
   private

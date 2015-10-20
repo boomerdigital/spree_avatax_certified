@@ -23,20 +23,6 @@ describe Spree::AvalaraTransaction, :type => :model do
     @order.update_attributes(ship_address: to_address, bill_address: to_address)
   end
 
-  describe "#rnt_tax" do
-    it "should return @myrnttax variable" do
-      @order.avalara_lookup
-      expect(@order.avalara_transaction.rnt_tax).to eq(@rnt_tax)
-    end
-  end
-
-  describe "#amount" do
-    it "should return @myrnttax variable" do
-      @order.avalara_lookup
-      expect(@order.avalara_transaction.amount).to eq(@rnt_tax)
-    end
-  end
-
   context 'captured orders' do
 
     before :each do
@@ -51,19 +37,19 @@ describe Spree::AvalaraTransaction, :type => :model do
 
     describe "#commit_avatax" do
       it "should commit avatax" do
-        expect(@order.avalara_transaction.commit_avatax(@order.line_items, @order)["TotalTax"]).to eq("0.4")
+        expect(@order.avalara_transaction.commit_avatax('SalesOrder')["TotalTax"]).to eq("0.4")
       end
     end
 
     describe "#commit_avatax_final" do
       it "should commit avatax final" do
-        expect(@order.avalara_transaction.commit_avatax_final(@order.line_items, @order, @order.number.to_s + ":" + @order.id.to_s, @order.completed_at)["TotalTax"]).to eq("0.4")
+        expect(@order.avalara_transaction.commit_avatax_final('SalesInvoice')["TotalTax"]).to eq("0.4")
       end
 
       it "should fail to commit to avatax if settings are false" do
         Spree::Config.avatax_document_commit = false
 
-        expect(@order.avalara_transaction.commit_avatax_final(@order.line_items, @order, @order.number.to_s + ":" + @order.id.to_s, @order.completed_at)).to eq("avalara document committing disabled")
+        expect(@order.avalara_transaction.commit_avatax_final('SalesOrder')).to eq("avalara document committing disabled")
       end
     end
   end
