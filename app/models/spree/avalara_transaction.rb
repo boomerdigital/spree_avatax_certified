@@ -29,7 +29,7 @@ module Spree
       end
     end
 
-    def commit_avatax_final(invoice_dt = nil, refund_id)
+    def commit_avatax_final(invoice_dt = nil, refund_id = nil)
       if document_committing_enabled?
         if tax_calculation_enabled?
           if invoice_dt == 'ReturnInvoice'
@@ -112,7 +112,7 @@ module Spree
         :ReferenceCode => order.number,
         :DetailLevel => 'Tax',
         :Commit => commit,
-        :DocType => invoice_detail ? invoice_detail : 'SalesOrder',
+        :DocType => invoice_detail ? invoice_detail : 'SalesInvoice',
         :Addresses => avatax_address.addresses,
         :Lines => avatax_line.lines
       }
