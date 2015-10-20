@@ -12,7 +12,15 @@ class TaxSvc
     res = response('get', request_hash)
     logger.info 'RestClient call'
     logger.debug res
-    JSON.parse(res.body)
+    response = JSON.parse(res.body)
+
+    if response['ResultCode'] != 'Success'
+      logger.info 'Avatax Error'
+      logger.debug response, 'error in Tax'
+      raise 'error in Tax'
+    else
+      response
+    end
   rescue => e
     logger.info 'Rest Client Error'
     logger.debug e, 'error in Tax'
