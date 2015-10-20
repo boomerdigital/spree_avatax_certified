@@ -13,11 +13,11 @@ describe TaxSvc, :type => :model do
 
     context 'fails' do
       it 'fails when no params are given' do
-        expect(taxsvc.get_tax({})["ResultCode"]).to eq("Error")
+        expect(taxsvc.get_tax({})).to eq('error in Tax')
       end
 
       it 'fails when no lines are given' do
-        expect(taxsvc.get_tax({:CustomerCode=>"1",:DocDate=>"2014-11-03",:CompanyCode=>"54321",:CustomerUsageType=>"",:ExemptionNo=>nil,:Client=>"SpreeExtV1.0",:DocCode=>"R731071205",:ReferenceCode=>"R731071205",:DetailLevel=>"Tax",:Commit=>false,:DocType=>"SalesInvoice",:Addresses=>[{:AddressCode=>9,:Line1=>"31 South St",:City=>"Morristown",:PostalCode=>"07960",:Country=>"US"},{:AddressCode=>"Dest",:Line1=>"73 Glenmere Drive",:Line2=>"",:City=>"Chatham",:Region=>"NJ",:Country=>"US",:PostalCode=>"07928"},{:AddressCode=>"Orig",:Line1=>"73 Glenmere Drive",:City=>"Chatham",:PostalCode=>"07928",:Country=>"United States"}]})["ResultCode"]).to eq("Error")
+        expect(taxsvc.get_tax({:CustomerCode=>"1",:DocDate=>"2014-11-03",:CompanyCode=>"54321",:CustomerUsageType=>"",:ExemptionNo=>nil,:Client=>"SpreeExtV1.0",:DocCode=>"R731071205",:ReferenceCode=>"R731071205",:DetailLevel=>"Tax",:Commit=>false,:DocType=>"SalesInvoice",:Addresses=>[{:AddressCode=>9,:Line1=>"31 South St",:City=>"Morristown",:PostalCode=>"07960",:Country=>"US"},{:AddressCode=>"Dest",:Line1=>"73 Glenmere Drive",:Line2=>"",:City=>"Chatham",:Region=>"NJ",:Country=>"US",:PostalCode=>"07928"},{:AddressCode=>"Orig",:Line1=>"73 Glenmere Drive",:City=>"Chatham",:PostalCode=>"07928",:Country=>"United States"}]})).to eq('error in Tax')
       end
     end
   end
