@@ -13,9 +13,9 @@ describe Spree::Order, type: :model do
     order.line_items.first.tax_category.update_attributes(name: "Clothing", description: "PC030000")
   end
 
-  describe "#avalara_eligible" do
+  describe "#avalara_eligible?" do
     it "should return true" do
-      expect(order.avalara_eligible).to eq(true)
+      expect(order.avalara_eligible?).to eq(true)
     end
   end
 

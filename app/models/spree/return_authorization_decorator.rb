@@ -8,9 +8,9 @@ Spree::ReturnAuthorization.class_eval do
   after_save :assign_avalara_transaction, if: :order_has_avalara_transaction?
   self.state_machine.before_transition :to => :received,
                                        :do => :avalara_capture_finalize,
-                                       :if => :avalara_eligible
+                                       :if => :avalara_eligible?
 
-  def avalara_eligible
+  def avalara_eligible?
     Spree::Config.avatax_iseligible
   end
 
@@ -53,7 +53,7 @@ Spree::ReturnAuthorization.class_eval do
   end
 
   def assign_avalara_transaction
-    if avalara_eligible
+    if avalara_eligible?
       if order.avalara_transaction.return_authorization_id.nil?
         Spree::AvalaraTransaction.find_by_order_id(order.id).update_attributes(return_authorization_id: self.id)
       end

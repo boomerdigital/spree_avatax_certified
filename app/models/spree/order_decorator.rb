@@ -6,9 +6,9 @@ Spree::Order.class_eval do
 
  self.state_machine.before_transition :to => :canceled,
                                       :do => :cancel_avalara,
-                                      :if => :avalara_eligible
+                                      :if => :avalara_eligible?
 
-  def avalara_eligible
+  def avalara_eligible?
     Spree::Config.avatax_iseligible
   end
 

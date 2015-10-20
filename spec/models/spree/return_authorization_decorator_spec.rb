@@ -20,9 +20,9 @@ describe Spree::ReturnAuthorization, type: :model do
     @variant = order.variants.first
   end
 
-  describe "#avalara_eligible" do
+  describe "#avalara_eligible?" do
     it "should return true" do
-      expect(return_authorization.avalara_eligible).to eq(true)
+      expect(return_authorization.avalara_eligible?).to eq(true)
     end
   end
   describe "#avalara_lookup" do

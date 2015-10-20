@@ -3,7 +3,7 @@ Spree::Payment.class_eval do
   do: :avalara_finalize
   self.state_machine.after_transition to: :void, do: :cancel_avalara
 
-  def avatax_eligible
+  def avalara_eligible?
     Spree::Config.avatax_iseligible
   end
 
@@ -15,9 +15,9 @@ Spree::Payment.class_eval do
     if order.additional_tax_total > 0
       if self.amount != order.total
         self.update_attributes(amount: order.total)
-        order.avalara_capture_finalize if avatax_eligible
+        order.avalara_capture_finalize if avalara_eligible?
       else
-        order.avalara_capture_finalize if avatax_eligible
+        order.avalara_capture_finalize if avalara_eligible?
       end
     end
   end
