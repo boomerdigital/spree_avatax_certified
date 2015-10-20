@@ -4,6 +4,7 @@ describe Spree::Payment, :type => :model do
   subject(:order) do
     order = FactoryGirl.create(:completed_order_with_totals)
     order.line_items.first.tax_category.update_attributes(name: "Clothing", description: "PC030000")
+    Spree::AvalaraTransaction.create(order: order)
     order.avalara_capture_finalize
     order
   end
@@ -51,16 +52,37 @@ describe Spree::Payment, :type => :model do
 
 
   describe "#purchase!" do
-    it "should call purchase on the gateway with the payment amount" do
+    it "receive avalara_finalize" do
       expect(payment).to receive(:avalara_finalize)
       payment.purchase!
     end
   end
 
+  describe '#avalara_finalize' do
+    before do
+      order.update_attributes(additional_tax_total: 1.to_f)
+    end
+    it 'should update the amount to be the order total' do
+      initial_amount = payment.amount
+      payment.avalara_finalize
+      expect(payment.amount).not_to eq(initial_amount)
+    end
+    it 'should receive avalara_capture_finalize on order' do
+      expect(payment.order).to receive(:avalara_capture_finalize)
+      payment.avalara_finalize
+    end
+  end
+
   describe "#void_transaction!" do
-      it "should call payment_gateway.void with the payment's response_code" do
+      it "receive cancel_avalara" do
         expect(payment).to receive(:cancel_avalara)
         payment.void_transaction!
+    end
+  end
+  describe '#cancel_avalara' do
+    it 'should receive cancel order on avalara transaction' do
+      expect(payment.order.avalara_transaction).to receive(:cancel_order)
+      payment.cancel_avalara
     end
   end
 end
