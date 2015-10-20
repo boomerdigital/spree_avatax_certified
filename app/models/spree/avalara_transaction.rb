@@ -16,12 +16,20 @@ module Spree
     end
 
     def commit_avatax(invoice_dt=nil)
-      post_order_to_avalara(false, invoice_dt)
+      if tax_calculation_enabled?
+        post_order_to_avalara(false, invoice_dt)
+      else
+        { TotalTax: '0.00' }
+      end
     end
 
     def commit_avatax_final(invoice_dt=nil)
       if document_committing_enabled?
-        post_order_to_avalara(true, invoice_dt)
+        if tax_calculation_enabled?
+          post_order_to_avalara(true, invoice_dt)
+        else
+          { TotalTax: '0.00' }
+        end
       else
         AVALARA_TRANSACTION_LOGGER.debug 'avalara document committing disabled'
         'avalara document committing disabled'
@@ -143,6 +151,10 @@ module Spree
 
     def document_committing_enabled?
       Spree::Config.avatax_document_commit
+    end
+
+    def tax_calculation_enabled?
+      Spree::Config.avatax_tax_calculation
     end
   end
 end

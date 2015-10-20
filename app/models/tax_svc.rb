@@ -7,14 +7,12 @@ require 'logging'
 
 class TaxSvc
   def get_tax(request_hash)
-    if tax_calculation_enabled?
-      log(__method__, request_hash)
-      RestClient.log = logger.logger
-      res = response('get', request_hash)
-      logger.info 'RestClient call'
-      logger.debug res
-      JSON.parse(res.body)
-    end
+    log(__method__, request_hash)
+    RestClient.log = logger.logger
+    res = response('get', request_hash)
+    logger.info 'RestClient call'
+    logger.debug res
+    JSON.parse(res.body)
   rescue => e
     logger.info 'Rest Client Error'
     logger.debug e, 'error in Tax'
