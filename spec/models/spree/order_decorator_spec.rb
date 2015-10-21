@@ -69,6 +69,9 @@ describe Spree::Order, type: :model do
     it "creates new avalara_transaction" do
       expect{order.avalara_capture}.to change{Spree::AvalaraTransaction.count}.by(1)
     end
+    it 'should have a ResultCode of success' do
+      expect(order.avalara_capture['ResultCode']).to eq('Success')
+    end
   end
 
   describe "#avalara_capture_finalize" do
@@ -77,6 +80,9 @@ describe Spree::Order, type: :model do
     end
     it "creates new avalara_transaction" do
       expect{order.avalara_capture_finalize}.to change{Spree::AvalaraTransaction.count}.by(1)
+    end
+    it 'should have a ResultCode of success' do
+      expect(order.avalara_capture_finalize['ResultCode']).to eq('Success')
     end
   end
 
