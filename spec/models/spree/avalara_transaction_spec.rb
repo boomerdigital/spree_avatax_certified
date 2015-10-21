@@ -36,6 +36,18 @@ describe Spree::AvalaraTransaction, :type => :model do
       it "should commit avatax" do
         expect(order.avalara_transaction.commit_avatax('SalesInvoice')["TotalTax"]).to eq("0.4")
       end
+
+      it 'should receive post_order_to_avalara' do
+        expect(order.avalara_transaction).to receive(:post_order_to_avalara)
+        order.avalara_transaction.commit_avatax('SalesInvoice')
+      end
+
+      context 'tax calculation disabled' do
+        it 'should respond with total tax of 0' do
+          Spree::Config.avatax_tax_calculation = false
+          expect(order.avalara_transaction.commit_avatax('SalesInvoice')[:TotalTax]).to eq("0.00")
+        end
+      end
     end
 
     describe "#commit_avatax_final" do
@@ -43,10 +55,29 @@ describe Spree::AvalaraTransaction, :type => :model do
         expect(order.avalara_transaction.commit_avatax_final('SalesInvoice')["TotalTax"]).to eq("0.4")
       end
 
+      it 'should receive post_order_to_avalara' do
+        expect(order.avalara_transaction).to receive(:post_order_to_avalara)
+        order.avalara_transaction.commit_avatax_final('SalesInvoice')
+      end
+
       it "should fail to commit to avatax if settings are false" do
         Spree::Config.avatax_document_commit = false
 
         expect(order.avalara_transaction.commit_avatax_final('SalesInvoice')).to eq("avalara document committing disabled")
+      end
+
+      context 'tax calculation disabled' do
+        it 'should respond with total tax of 0' do
+          Spree::Config.avatax_tax_calculation = false
+          expect(order.avalara_transaction.commit_avatax('SalesInvoice')[:TotalTax]).to eq("0.00")
+        end
+      end
+    end
+
+    describe '#cancel_order' do
+      it 'should receive cancel_order_to_avalara' do
+        expect(order.avalara_transaction).to receive(:cancel_order_to_avalara)
+        order.avalara_transaction.cancel_order
       end
     end
   end
