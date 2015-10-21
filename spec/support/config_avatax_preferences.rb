@@ -10,6 +10,6 @@ class MyConfigPreferences
     Spree::Config.avatax_address_validation = false
     Spree::Config.avatax_document_commit = true
     Spree::Config.avatax_tax_calculation = true
-    Spree::Config.avatax_origin = "{\"Address1\":\"915 S Jackson St\",\"Address2\":\"\",\"City\":\"Montgomery\",\"Region\":\"Alabama\",\"Zip5\":\"36104\",\"Zip4\":\"\",\"Country\":\"United States\"}"
+    Spree::Config.avatax_origin = "{\"Address1\":\"915 S Jackson St\",\"Address2\":\"\",\"City\":\"Montgomery\",\"Region\":\"Alabama\",\"Zip5\":\"36104\",\"Zip4\":\"\",\"Country\":\"US\"}"
   end
 end

@@ -6,6 +6,7 @@ describe SpreeAvataxCertified::Address, :type => :model do
   let(:order) { FactoryGirl.create(:order_with_line_items) }
 
   before do
+    MyConfigPreferences.set_preferences
     Spree::Config.avatax_address_validation = true
     order.ship_address.update_attributes(city: 'Tuscaloosa', address1: '220 Paul W Bryant Dr')
   end
