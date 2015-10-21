@@ -104,7 +104,7 @@ module Spree
         :CompanyCode => Spree::Config.avatax_company_code,
         :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
         :ExemptionNo => order.user.try(:exemption_number),
-        :Client =>  AVATAX_CLIENT_VERSION || 'SpreeExtV2.4',
+        :Client =>  AVATAX_CLIENT_VERSION || 'SpreeExtV3.0',
         :DocCode => order.number,
 
         :Discount => order.all_adjustments.where(source_type: 'Spree::PromotionAction').any? ? order.all_adjustments.where(source_type: 'Spree::PromotionAction').pluck(:amount).reduce(&:+).to_f.abs : 0,
@@ -161,7 +161,7 @@ module Spree
         :CompanyCode => Spree::Config.avatax_company_code,
         :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
         :ExemptionNo => order.user.try(:exemption_number),
-        :Client =>  AVATAX_CLIENT_VERSION || 'SpreeExtV2.4',
+        :Client =>  AVATAX_CLIENT_VERSION || 'SpreeExtV3.0',
         :DocCode => order.number.to_s + '.' + refund_id.to_s,
 
         :ReferenceCode => order.number,
