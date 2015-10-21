@@ -80,8 +80,7 @@ module Spree
       return 0 if order.state == %w(address cart)
       return 0 if item_address.nil?
       return 0 if !self.calculable.zone.include?(item_address)
-      # return 0 if avalara_response.try(:[], :TotalTax) == '0.00'
-      # if error occurs.. need a way to report error on backend
+      return 0 if avalara_response[:TotalTax] == '0.00'
 
       avalara_response['TaxLines'].each do |line|
         if line['LineNo'] == "#{item.id}-#{item.avatax_line_code}"
