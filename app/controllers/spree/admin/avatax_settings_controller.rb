@@ -38,20 +38,6 @@ module Spree
         end
       end
 
-      def validate_address
-        address_validation = AddressSvc.new
-        address = Spree::Address.find(params["user_address"])
-        address_result = address_validation.validate(address)
-        if address_result["ResultCode"] == "Success"
-          flash[:success] = "Address Validation Successful"
-        else
-          flash[:error] = "Address Validation Error"
-        end
-        respond_to do |format|
-          format.js
-        end
-      end
-
       def update
         origin = params[:address]
         taxpref = params[:settings]
@@ -77,7 +63,7 @@ module Spree
           Spree::Config.avatax_tax_calculation = taxpref[:avatax_tax_calculation]
           Spree::Config.avatax_document_commit = taxpref[:avatax_document_commit]
           Spree::Config.avatax_company_code =taxpref[:avatax_company_code]
-          
+
           respond_to do |format|
             format.html {
               redirect_to admin_avatax_settings_path
