@@ -10,21 +10,12 @@ describe Spree::Payment, :type => :model do
   end
 
   let(:gateway) do
-    gateway = Spree::Gateway::Bogus.new(:environment => 'test', :active => true)
-    allow(gateway).to receive_messages :source_required => true
+    gateway = Spree::Gateway::Bogus.create(active: true, name: 'Bogus')
+    allow(gateway).to receive_messages source_required: true
     gateway
   end
 
-  let(:card) do
-    Spree::CreditCard.create!(
-      number: "4111111111111111",
-      month: "12",
-      year: Time.now.year + 1,
-      verification_value: "123",
-      name: "Name",
-      imported: false
-    )
-  end
+  let(:card) { create :credit_card }
 
   let(:payment) do
     payment = Spree::Payment.new
@@ -34,6 +25,7 @@ describe Spree::Payment, :type => :model do
     payment.amount = 5
     payment
   end
+
 
   let(:amount_in_cents) { (payment.amount * 100).round }
 
