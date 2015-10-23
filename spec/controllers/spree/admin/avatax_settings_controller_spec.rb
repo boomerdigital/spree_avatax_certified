@@ -29,14 +29,6 @@ module Spree
         end
       end
 
-      describe '/avatax_settings/validate_address' do
-        it 'flashes message' do
-          subject { spree_get :validate_address }
-          response.should be_success
-          flash.should_not be_nil
-        end
-      end
-
       describe "#update" do
         let(:params) do
           {

@@ -8,12 +8,10 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
   let(:included_in_price) { false }
   let!(:rate) { create(:tax_rate, :tax_category => tax_category, :amount => 0.00, :included_in_price => included_in_price, zone: zone) }
   let!(:calculator) { Spree::Calculator::AvalaraTransactionCalculator.new(:calculable => rate ) }
-  let!(:order) { create(:order) }
+  let!(:order) { create(:order_with_line_items) }
   let!(:line_item) { create(:line_item, :price => 10, :quantity => 3, :tax_category => tax_category) }
-  let(:address) { Spree::Address.create(firstname: "Allison", lastname: "Reilly", address1: "220 Paul W Bryant Dr", city: "Tuscaloosa", zipcode: "35401", phone: "9733492462", state_name: "Alabama", state_id: 39, country_id: 1) }
 
   before :each do
-    order.update_attributes(ship_address: address)
     zone.zone_members.create!(zoneable: country)
   end
 
@@ -45,13 +43,13 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
           before { line_item.promo_total = -1 }
 
           it "should be equal to the item's pre-tax total * rate" do
-            expect(calculator.compute(line_item)).to eq(1.2)
+            expect(calculator.compute(line_item)).to eq(1.73)
           end
         end
 
         context "when the variant matches the tax category" do
           it "should be equal to the item pre-tax total * rate" do
-            expect(calculator.compute(line_item)).to eq(1.2)
+            expect(calculator.compute(line_item)).to eq(1.73)
           end
         end
       end
@@ -60,21 +58,19 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
       let!(:shipping_tax_category) { Spree::TaxCategory.create(name: 'Shipping', tax_code: 'FR000000') }
       let!(:shipping_calculator) { Spree::Calculator::AvalaraTransactionCalculator.new(:calculable => rate ) }
       let!(:shipping_rate) { create(:tax_rate, :tax_category => shipping_tax_category, :amount => 0.00, :included_in_price => false, zone: zone) }
-      let!(:shipment) { create(:shipment, :cost => 15) }
 
-      before :each do
-        shipment.shipping_method.update_attributes(tax_category: shipping_tax_category)
-        shipment.selected_shipping_rate.update_attributes(tax_rate: Spree::TaxRate.last)
-        shipment.order.line_items << line_item
+      before do
+        order.shipments.first.selected_shipping_rate.update_attributes(tax_rate: shipping_rate)
+        order.reload
       end
 
       it "should be equal 0.6" do
-        expect(calculator.compute(shipment)).to eq(0.6)
+        expect(calculator.compute(order.shipments.first)).to eq(4.0)
       end
 
       it "takes discounts into consideration" do
-        shipment.promo_total = -1
-        expect(calculator.compute(shipment)).to eq(0.6)
+        order.shipments.first.update_attributes(promo_total: -1)
+        expect(calculator.compute(order.shipments.first)).to eq(3.96)
       end
     end
   end
