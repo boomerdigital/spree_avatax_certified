@@ -131,12 +131,9 @@ module SpreeAvataxCertified
 
     def country_enabled?(current_country)
       Spree::Config.avatax_address_validation_enabled_countries.each do |country|
-        if current_country.name == country
-          return true
-        else
-          false
-        end
+        return true if current_country.name == country
       end
+      false
     end
 
     private
