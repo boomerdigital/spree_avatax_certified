@@ -32,15 +32,6 @@
       <%= f.text_field :exemption_number, class: 'fullwidth' %>
       <% end %>
     </div>
-    <div class="alpha six columns">
-      <% if @user.ship_address.nil? %>
-      <p>No Address given</p>
-      <% else %>
-      <%= link_to({controller: :avatax_settings, action: :validate_address, remote: true, user_address: @user.ship_address }, {class: 'btn btn-small'}) do %>
-      <button>Validate Address</button>
-      <% end %>
-      <% end %>
-    </div>
     <br><br><br>
     <div class="alpha fullwidth" data-hook="admin_user_edit_form_button">
       <%= render partial: 'spree/admin/shared/edit_resource_links', locals: { :collection_url => admin_users_url } %>

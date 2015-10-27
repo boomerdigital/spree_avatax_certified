@@ -7,13 +7,19 @@ require 'logging'
 
 class TaxSvc
   def get_tax(request_hash)
-    if tax_calculation_enabled?
-      log(__method__, request_hash)
-      RestClient.log = logger.logger
-      res = response('get', request_hash)
-      logger.info 'RestClient call'
-      logger.debug res
-      JSON.parse(res.body)
+    log(__method__, request_hash)
+    RestClient.log = logger.logger
+    res = response('get', request_hash)
+    logger.info 'RestClient call'
+    logger.debug res
+    response = JSON.parse(res.body)
+
+    if response['ResultCode'] != 'Success'
+      logger.info 'Avatax Error'
+      logger.debug response, 'error in Tax'
+      raise 'error in Tax'
+    else
+      response
     end
   rescue => e
     logger.info 'Rest Client Error'
@@ -61,7 +67,7 @@ class TaxSvc
   protected
 
   def logger
-    AvataxHelper::AvataxLog.new('tax_svc', 'tax_service', 'call to tax service')
+    AvataxHelper::AvataxLog.new('tax_svc', "tax_service", 'call to tax service')
   end
 
   private
@@ -71,7 +77,7 @@ class TaxSvc
   end
 
   def credential
-    'Basic ' + Base64.encode64(account_number + ':' + license_key)
+    'Basic ' + Base64.encode64(account_number + ":" + license_key)
   end
 
   def service_url

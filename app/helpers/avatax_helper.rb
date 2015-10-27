@@ -27,11 +27,14 @@ module AvataxHelper
       end
     end
 
-    def info_and_debug(log_info, request_hash)
+    def info_and_debug(log_info, response)
       if logger_enabled?
         logger.info log_info
-        logger.debug request_hash
-        logger.debug JSON.generate(request_hash)
+        if response.is_a?(Hash)
+          logger.debug JSON.generate(response)
+        else
+          logger.debug response
+        end
       end
     end
 

@@ -37,20 +37,6 @@ module Spree
         end
       end
 
-      def validate_address
-        address_validation = AddressSvc.new
-        address = Spree::Address.find(params['user_address'])
-        address_result = address_validation.validate(address)
-        if address_result['ResultCode'] == 'Success'
-          flash[:success] = 'Address Validation Successful'
-        else
-          flash[:error] = 'Address Validation Error'
-        end
-        respond_to do |format|
-          format.js
-        end
-      end
-
       def update
         origin = params[:address]
         taxpref = params[:settings]
