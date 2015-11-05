@@ -9,10 +9,12 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
   let!(:rate) { create(:tax_rate, :tax_category => tax_category, :amount => 0.00, :included_in_price => included_in_price, zone: zone) }
   let!(:calculator) { Spree::Calculator::AvalaraTransactionCalculator.new(:calculable => rate ) }
   let!(:order) { create(:order_with_line_items) }
-  let!(:line_item) { create(:line_item, :price => 10, :quantity => 3, :tax_category => tax_category) }
+  let(:line_item) { order.line_items.first }
 
-  before :each do
+  before do
+    MyConfigPreferences.set_preferences
     zone.zone_members.create!(zoneable: country)
+    order.state = 'delivery'
   end
 
   context "#compute" do
@@ -43,17 +45,18 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
           before { line_item.promo_total = -1 }
 
           it "should be equal to the item's pre-tax total * rate" do
-            expect(calculator.compute(line_item)).to eq(1.73)
+            expect(calculator.compute(line_item)).to eq(0.4)
           end
         end
 
         context "when the variant matches the tax category" do
           it "should be equal to the item pre-tax total * rate" do
-            expect(calculator.compute(line_item)).to eq(1.73)
+            expect(calculator.compute(line_item)).to eq(0.4)
           end
         end
       end
     end
+
     context "when given a shipment" do
       let!(:shipping_tax_category) { Spree::TaxCategory.create(name: 'Shipping', tax_code: 'FR000000') }
       let!(:shipping_calculator) { Spree::Calculator::AvalaraTransactionCalculator.new(:calculable => rate ) }
@@ -62,6 +65,7 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
       before do
         order.shipments.first.selected_shipping_rate.update_attributes(tax_rate: shipping_rate)
         order.reload
+        order.state = 'delivery'
       end
 
       it "should be equal 0.6" do
