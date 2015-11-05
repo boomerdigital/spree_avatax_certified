@@ -131,7 +131,6 @@ module Spree
       mytax = TaxSvc.new
 
       AVALARA_TRANSACTION_LOGGER.info '********** hitting the api'
-      puts '********** hitting the api'
 
       getTaxResult = mytax.get_tax(gettaxes)
 
