@@ -83,9 +83,6 @@ module Spree
       avatax_address = SpreeAvataxCertified::Address.new(order)
       avatax_line = SpreeAvataxCertified::Line.new(order, invoice_detail)
 
-      AVALARA_TRANSACTION_LOGGER.debug avatax_address
-      AVALARA_TRANSACTION_LOGGER.debug avatax_line
-
       response = avatax_address.validate
 
       unless response.nil?
