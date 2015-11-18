@@ -125,7 +125,7 @@ describe Spree::AvalaraTransaction, :type => :model do
           order.avalara_capture
           response = order.avalara_transaction.commit_avatax_final('ReturnInvoice', refund.id)
           expect(response).to eq({ TotalTax: '0.00' })
-      end
+        end
       end
     end
   end

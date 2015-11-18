@@ -13,7 +13,6 @@ module Spree
     has_many :adjustments, as: :source
 
     def lookup_avatax
-      order = Spree::Order.find(order_id)
       post_order_to_avalara(false, 'SalesOrder')
     end
 
@@ -52,7 +51,7 @@ module Spree
 
     private
 
-    def cancel_order_to_avalara(doc_type='SalesInvoice', cancel_code='DocVoided')
+    def cancel_order_to_avalara(doc_type = 'SalesInvoice', cancel_code = 'DocVoided')
       AVALARA_TRANSACTION_LOGGER.info('cancel order to avalara')
 
       cancel_tax_request = {
@@ -98,12 +97,12 @@ module Spree
       end
 
       gettaxes = {
-        CustomerCode: order.user ? order.user.id : 'Guest',
+        CustomerCode: customer_code,
         DocDate: Date.today.strftime('%F'),
 
         CompanyCode: Spree::Config.avatax_company_code,
-        CustomerUsageType: order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
-        ExemptionNo: order.user.try(:exemption_number),
+        CustomerUsageType: customer_usage_type,
+        ExemptionNo: user.try(:exemption_number),
         Client:  AVATAX_CLIENT_VERSION || 'SpreeExtV3.0',
         DocCode: order.number,
 
@@ -156,12 +155,12 @@ module Spree
       }
 
       gettaxes = {
-        CustomerCode: order.user ? order.user.id : 'Guest',
+        CustomerCode: customer_code,
         DocDate: Date.today.strftime('%F'),
 
         CompanyCode: Spree::Config.avatax_company_code,
-        CustomerUsageType: order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
-        ExemptionNo: order.user.try(:exemption_number),
+        CustomerUsageType: customer_usage_type,
+        ExemptionNo: user.try(:exemption_number),
         Client:  AVATAX_CLIENT_VERSION || 'SpreeExtV3.0',
         DocCode: order.number.to_s + '.' + refund_id.to_s,
 
@@ -195,6 +194,18 @@ module Spree
         end
       end
       @myrtntax
+    end
+
+    def customer_usage_type
+      user ? user.avalara_entity_use_code.try(:use_code) : ''
+    end
+
+    def user
+      order.user
+    end
+
+    def customer_code
+      user ? user.id : 'Guest'
     end
 
     def document_committing_enabled?

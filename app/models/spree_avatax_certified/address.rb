@@ -63,7 +63,6 @@ module SpreeAvataxCertified
       stock_location_ids = packages.map(&:to_shipment).map(&:stock_location_id)
 
       Spree::StockLocation.where(id: stock_location_ids).each do |stock_location|
-
         stock_location_address = {
           AddressCode: "#{stock_location.id}",
           Line1: stock_location.address1,
@@ -83,7 +82,8 @@ module SpreeAvataxCertified
 
     def validate
       address = order.ship_address
-      if address_validation_enabled? && country_enabled?(Spree::Country.find(address[:country_id]))
+      country = Spree::Country.find(address[:country_id])
+      if address_validation_enabled? && country_enabled?(country)
 
         return address if address.nil?
 
