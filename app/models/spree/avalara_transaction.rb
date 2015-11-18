@@ -56,10 +56,10 @@ module Spree
       AVALARA_TRANSACTION_LOGGER.info('cancel order to avalara')
 
       cancel_tax_request = {
-        :CompanyCode => Spree::Config.avatax_company_code,
-        :DocType => doc_type,
-        :DocCode => order.number,
-        :CancelCode => cancel_code
+        CompanyCode: Spree::Config.avatax_company_code,
+        DocType: doc_type,
+        DocCode: order.number,
+        CancelCode: cancel_code
       }
 
       AVALARA_TRANSACTION_LOGGER.debug cancel_tax_request
@@ -98,23 +98,23 @@ module Spree
       end
 
       gettaxes = {
-        :CustomerCode => order.user ? order.user.id : 'Guest',
-        :DocDate => Date.today.strftime('%F'),
+        CustomerCode: order.user ? order.user.id : 'Guest',
+        DocDate: Date.today.strftime('%F'),
 
-        :CompanyCode => Spree::Config.avatax_company_code,
-        :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
-        :ExemptionNo => order.user.try(:exemption_number),
-        :Client =>  AVATAX_CLIENT_VERSION || 'SpreeExtV3.0',
-        :DocCode => order.number,
+        CompanyCode: Spree::Config.avatax_company_code,
+        CustomerUsageType: order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
+        ExemptionNo: order.user.try(:exemption_number),
+        Client:  AVATAX_CLIENT_VERSION || 'SpreeExtV3.0',
+        DocCode: order.number,
 
-        :Discount => order.all_adjustments.where(source_type: 'Spree::PromotionAction').any? ? order.all_adjustments.where(source_type: 'Spree::PromotionAction').pluck(:amount).reduce(&:+).to_f.abs : 0,
+        Discount: order.all_adjustments.where(source_type: 'Spree::PromotionAction').any? ? order.all_adjustments.where(source_type: 'Spree::PromotionAction').pluck(:amount).reduce(&:+).to_f.abs : 0,
 
-        :ReferenceCode => order.number,
-        :DetailLevel => 'Tax',
-        :Commit => commit,
-        :DocType => invoice_detail ? invoice_detail : 'SalesInvoice',
-        :Addresses => avatax_address.addresses,
-        :Lines => avatax_line.lines
+        ReferenceCode: order.number,
+        DetailLevel: 'Tax',
+        Commit: commit,
+        DocType: invoice_detail ? invoice_detail : 'SalesInvoice',
+        Addresses: avatax_address.addresses,
+        Lines: avatax_line.lines
       }
 
       AVALARA_TRANSACTION_LOGGER.debug gettaxes
@@ -149,28 +149,28 @@ module Spree
       AVALARA_TRANSACTION_LOGGER.debug avatax_line
 
       taxoverride = {
-        :TaxOverrideType => 'TaxDate',
-        :Reason => 'Adjustment for return',
-        :TaxDate => order.completed_at.strftime('%F'),
-        :TaxAmount => '0'
+        TaxOverrideType: 'TaxDate',
+        Reason: 'Adjustment for return',
+        TaxDate: order.completed_at.strftime('%F'),
+        TaxAmount: '0'
       }
 
       gettaxes = {
-        :CustomerCode => order.user ? order.user.id : 'Guest',
-        :DocDate => Date.today.strftime('%F'),
+        CustomerCode: order.user ? order.user.id : 'Guest',
+        DocDate: Date.today.strftime('%F'),
 
-        :CompanyCode => Spree::Config.avatax_company_code,
-        :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
-        :ExemptionNo => order.user.try(:exemption_number),
-        :Client =>  AVATAX_CLIENT_VERSION || 'SpreeExtV3.0',
-        :DocCode => order.number.to_s + '.' + refund_id.to_s,
+        CompanyCode: Spree::Config.avatax_company_code,
+        CustomerUsageType: order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
+        ExemptionNo: order.user.try(:exemption_number),
+        Client:  AVATAX_CLIENT_VERSION || 'SpreeExtV3.0',
+        DocCode: order.number.to_s + '.' + refund_id.to_s,
 
-        :ReferenceCode => order.number,
-        :DetailLevel => 'Tax',
-        :Commit => commit,
-        :DocType => invoice_detail ? invoice_detail : 'ReturnOrder',
-        :Addresses => avatax_address.addresses,
-        :Lines => avatax_line.lines
+        ReferenceCode: order.number,
+        DetailLevel: 'Tax',
+        Commit: commit,
+        DocType: invoice_detail ? invoice_detail : 'ReturnOrder',
+        Addresses: avatax_address.addresses,
+        Lines: avatax_line.lines
       }
 
       gettaxes[:TaxOverride] = taxoverride
