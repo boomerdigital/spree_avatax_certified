@@ -12,7 +12,7 @@ Spree::Refund.class_eval do
   end
 
   def avalara_lookup
-    REIMBURSEMENT_LOGGER.debug 'avalara lookup reimbursement'
+    REFUND_LOGGER.debug 'avalara lookup reimbursement'
     create_avalara_transaction_refund
     :lookup_avatax
   end
