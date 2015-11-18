@@ -1,7 +1,7 @@
 module Spree
   class Calculator::AvalaraTransactionCalculator < Calculator::DefaultTax
     def self.description
-      Spree.t(:avalara_transaction)
+      Spree.t(:avalara_transaction_calculator)
     end
 
     def compute_order(order)
@@ -23,7 +23,7 @@ module Spree
     alias_method :compute_line_item, :compute_shipment_or_line_item
 
     def compute_shipping_rate(shipping_rate)
-      if rate.included_in_price
+      if rate.tax_rate.included_in_price
         raise 'AvalaraTransaction cannot calculate inclusive sales taxes.'
       else
         return 0
@@ -39,7 +39,6 @@ module Spree
         retrieve_rates_from_cache(order)
       end
     end
-
 
     def cache_key(order)
       key = order.avatax_cache_key
@@ -79,9 +78,9 @@ module Spree
 
       return 0 if %w(address cart).include?(order.state)
       return 0 if item_address.nil?
-      return 0 if !self.calculable.zone.include?(item_address)
+      return 0 unless calculable.zone.include?(item_address)
       return 0 if avalara_response[:TotalTax] == '0.00'
-      return 0 if avalara_response == nil
+      return 0 if avalara_response.nil?
       # think about if totaltax is 0 because of an error, adding a message to the order so a user will be available.
 
       avalara_response['TaxLines'].each do |line|

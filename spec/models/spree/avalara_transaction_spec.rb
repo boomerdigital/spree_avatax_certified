@@ -69,7 +69,7 @@ describe Spree::AvalaraTransaction, :type => :model do
       context 'tax calculation disabled' do
         it 'should respond with total tax of 0' do
           Spree::Config.avatax_tax_calculation = false
-          expect(order.avalara_transaction.commit_avatax('SalesInvoice')[:TotalTax]).to eq("0.00")
+          expect(order.avalara_transaction.commit_avatax_final('SalesInvoice')[:TotalTax]).to eq("0.00")
         end
       end
     end
@@ -78,6 +78,54 @@ describe Spree::AvalaraTransaction, :type => :model do
       it 'should receive cancel_order_to_avalara' do
         expect(order.avalara_transaction).to receive(:cancel_order_to_avalara)
         order.avalara_transaction.cancel_order
+      end
+
+      it 'should receive error' do
+        order = create(:order)
+        order.avalara_transaction = Spree::AvalaraTransaction.create
+        expect(order.avalara_transaction).to receive(:cancel_order_to_avalara).and_return('Error in Tax')
+        order.avalara_transaction.cancel_order
+      end
+    end
+  end
+
+  context 'return orders' do
+    let(:refund_reason) { create(:refund_reason) }
+    let(:reimbursement) { create(:reimbursement) }
+    let(:order) { reimbursement.order }
+    let!(:refund) {Spree::Refund.create(payment: order.payments.first, amount: BigDecimal.new(10), reason: refund_reason, transaction_id: nil, reimbursement: reimbursement)}
+
+    before do
+      order.avalara_capture_finalize
+      order.reload
+    end
+
+    describe '#commit_avatax' do
+      it 'should receive post_return_to_avalara' do
+        expect(order.avalara_transaction).to receive(:post_return_to_avalara)
+        order.avalara_transaction.commit_avatax('ReturnInvoice')
+      end
+    end
+
+    describe '#commit_avatax_final' do
+      it "should commit avatax final" do
+        response = order.avalara_transaction.commit_avatax_final('ReturnInvoice', refund.id)
+        expect(response).to be_kind_of(Hash)
+        expect(response['ResultCode']).to eq('Success')
+      end
+
+      it 'should receive post_order_to_avalara' do
+        expect(order.avalara_transaction).to receive(:post_return_to_avalara)
+        order.avalara_transaction.commit_avatax_final('ReturnInvoice', refund.id)
+      end
+
+      context 'fail' do
+        it "should commit avatax final" do
+          order = create(:completed_order_with_totals)
+          order.avalara_capture
+          response = order.avalara_transaction.commit_avatax_final('ReturnInvoice', refund.id)
+          expect(response).to eq({ TotalTax: '0.00' })
+      end
       end
     end
   end

@@ -1,5 +1,6 @@
 en:
   spree:
+    avalara_transaction_calculator: Avalara Transaction Calculator
     avalara:
       settings: Avalara Settings
       settings_tax_use_codes: Avalara Settings Tax Use Codes
