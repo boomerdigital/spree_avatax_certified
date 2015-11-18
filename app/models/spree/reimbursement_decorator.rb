@@ -23,7 +23,7 @@ Spree::Reimbursement.class_eval do
     else
       errored!
       reimbursement_failure_hooks.each { |h| h.call self }
-      raise IncompleteReimbursementError, Spree.t('validation.unpaid_amount_not_zero', amount: unpaid_amount)
+      raise Spree::Reimbursement::IncompleteReimbursementError, Spree.t('validation.unpaid_amount_not_zero', amount: unpaid_amount)
     end
   end
 
