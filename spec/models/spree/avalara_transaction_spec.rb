@@ -101,8 +101,8 @@ describe Spree::AvalaraTransaction, :type => :model do
     end
 
     describe '#commit_avatax' do
-      it 'should receive post_return_order_to_avalara' do
-        expect(order.avalara_transaction).to receive(:post_return_order_to_avalara)
+      it 'should receive post_return_to_avalara' do
+        expect(order.avalara_transaction).to receive(:post_return_to_avalara)
         order.avalara_transaction.commit_avatax('ReturnInvoice')
       end
     end
@@ -115,7 +115,7 @@ describe Spree::AvalaraTransaction, :type => :model do
       end
 
       it 'should receive post_order_to_avalara' do
-        expect(order.avalara_transaction).to receive(:post_return_order_to_avalara)
+        expect(order.avalara_transaction).to receive(:post_return_to_avalara)
         order.avalara_transaction.commit_avatax_final('ReturnInvoice', refund.id)
       end
 
