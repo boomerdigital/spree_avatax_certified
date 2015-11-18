@@ -11,10 +11,20 @@ Spree::Refund.class_eval do
     Spree::Config.avatax_iseligible
   end
 
-  def avalara_lookup
-    REFUND_LOGGER.debug 'avalara lookup reimbursement'
-    create_avalara_transaction_refund
-    :lookup_avatax
+  def avalara_capture
+    REFUND_LOGGER.debug 'avalara capture refund avalara_capture'
+    begin
+      avalara_transaction_refund = Spree::AvalaraTransaction.find_by_order_id(self.payment.order.id)
+
+      @rtn_tax = avalara_transaction_refund.commit_avatax('ReturnInvoice', self.id)
+
+      REFUND_LOGGER.info 'tax amount'
+      REFUND_LOGGER.debug @rtn_tax
+      @rtn_tax
+    rescue => e
+      REFUND_LOGGER.debug e
+      REFUND_LOGGER.debug 'error in avalara capture refund'
+    end
   end
 
   def avalara_capture_finalize
