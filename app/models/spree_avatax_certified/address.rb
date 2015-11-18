@@ -25,13 +25,13 @@ module SpreeAvataxCertified
       origin = JSON.parse(Spree::Config.avatax_origin)
 
       orig_address = {
-        :AddressCode => 'Orig',
-        :Line1 => origin['Address1'],
-        :Line2 => origin['Address2'],
-        :City => origin['City'],
-        :Region => origin['Region'],
-        :PostalCode => origin['Zip5'],
-        :Country => origin['Country']
+        AddressCode: 'Orig',
+        Line1: origin['Address1'],
+        Line2: origin['Address2'],
+        City: origin['City'],
+        Region: origin['Region'],
+        PostalCode: origin['Zip5'],
+        Country: origin['Country']
       }
 
       @logger.debug orig_address
@@ -43,13 +43,13 @@ module SpreeAvataxCertified
       return if order.ship_address.nil?
 
       shipping_address = {
-        :AddressCode => 'Dest',
-        :Line1 => order.ship_address.address1,
-        :Line2 => order.ship_address.address2,
-        :City => order.ship_address.city,
-        :Region => order.ship_address.state_name,
-        :Country => Spree::Country.find(order.ship_address.country_id).iso,
-        :PostalCode => order.ship_address.zipcode
+        AddressCode: 'Dest',
+        Line1: order.ship_address.address1,
+        Line2: order.ship_address.address2,
+        City: order.ship_address.city,
+        Region: order.ship_address.state_name,
+        Country: Spree::Country.find(order.ship_address.country_id).iso,
+        PostalCode: order.ship_address.zipcode
       }
 
       @logger.debug shipping_address
@@ -65,12 +65,12 @@ module SpreeAvataxCertified
       Spree::StockLocation.where(id: stock_location_ids).each do |stock_location|
 
         stock_location_address = {
-          :AddressCode => "#{stock_location.id}",
-          :Line1 => stock_location.address1,
-          :Line2 => stock_location.address2,
-          :City => stock_location.city,
-          :PostalCode => stock_location.zipcode,
-          :Country => Spree::Country.find(stock_location.country_id).iso
+          AddressCode: "#{stock_location.id}",
+          Line1: stock_location.address1,
+          Line2: stock_location.address2,
+          City: stock_location.city,
+          PostalCode: stock_location.zipcode,
+          Country: Spree::Country.find(stock_location.country_id).iso
         }
 
         @logger.debug stock_location_address.to_xml

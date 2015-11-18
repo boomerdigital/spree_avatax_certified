@@ -28,16 +28,16 @@ module SpreeAvataxCertified
       stock_location = get_stock_location(@stock_locations, line_item)
 
       line = {
-        :LineNo => "#{line_item.id}-LI",
-        :Description => line_item.name[0..255],
-        :TaxCode => line_item.tax_category.try(:tax_code) || 'P0000000',
-        :ItemCode => line_item.variant.sku,
-        :Qty => line_item.quantity,
-        :Amount => line_item.discounted_amount.to_f,
-        :OriginCode => stock_location,
-        :DestinationCode => 'Dest',
-        :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
-        :Discounted => line_item.promo_total > 0.0
+        LineNo: "#{line_item.id}-LI",
+        Description: line_item.name[0..255],
+        TaxCode: line_item.tax_category.try(:tax_code) || 'P0000000',
+        ItemCode: line_item.variant.sku,
+        Qty: line_item.quantity,
+        Amount: line_item.discounted_amount.to_f,
+        OriginCode: stock_location,
+        DestinationCode: 'Dest',
+        CustomerUsageType: order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
+        Discounted: line_item.promo_total > 0.0
       }
 
       @logger.debug line
@@ -77,15 +77,15 @@ module SpreeAvataxCertified
       @logger.info('build shipment line')
 
       shipment_line = {
-        :LineNo => "#{shipment.id}-FR",
-        :ItemCode => shipment.shipping_method.name,
-        :Qty => 1,
-        :Amount => shipment.discounted_amount.to_f,
-        :OriginCode => "#{shipment.stock_location_id}",
-        :DestinationCode => 'Dest',
-        :CustomerUsageType => order.user ? customer_usage_type : '',
-        :Description => 'Shipping Charge',
-        :TaxCode => shipment.shipping_method.tax_category.try(:tax_code) || 'FR000000'
+        LineNo: "#{shipment.id}-FR",
+        ItemCode: shipment.shipping_method.name,
+        Qty: 1,
+        Amount: shipment.discounted_amount.to_f,
+        OriginCode: "#{shipment.stock_location_id}",
+        DestinationCode: 'Dest',
+        CustomerUsageType: order.user ? customer_usage_type : '',
+        Description: 'Shipping Charge',
+        TaxCode: shipment.shipping_method.tax_category.try(:tax_code) || 'FR000000'
       }
 
       @logger.debug shipment_line
@@ -99,14 +99,14 @@ module SpreeAvataxCertified
         next if refund.reimbursement.try(:reimbursement_status) == 'reimbursed'
 
         refund_line = {
-          :LineNo => "#{refund.id}-RA",
-          :ItemCode => refund.transaction_id || 'Refund',
-          :Qty => 1,
-          :Amount => -refund.reimbursement.return_items.sum(:pre_tax_amount).to_f,
-          :OriginCode => 'Orig',
-          :DestinationCode => 'Dest',
-          :CustomerUsageType => order.user ? customer_usage_type : '',
-          :Description => 'Refund'
+          LineNo: "#{refund.id}-RA",
+          ItemCode: refund.transaction_id || 'Refund',
+          Qty: 1,
+          Amount: -refund.reimbursement.return_items.sum(:pre_tax_amount).to_f,
+          OriginCode: 'Orig',
+          DestinationCode: 'Dest',
+          CustomerUsageType: order.user ? customer_usage_type : '',
+          Description: 'Refund'
         }
 
         @logger.debug refund_line
