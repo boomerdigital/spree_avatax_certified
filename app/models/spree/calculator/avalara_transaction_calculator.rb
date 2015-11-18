@@ -1,7 +1,7 @@
 module Spree
   class Calculator::AvalaraTransactionCalculator < Calculator::DefaultTax
     def self.description
-      Spree.t(:avalara_transaction)
+      Spree.t(:avalara_transaction_calculator)
     end
 
     def compute_order(order)
