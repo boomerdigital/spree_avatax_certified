@@ -46,7 +46,7 @@ class TaxSvc
       return nil if coordinates.nil?
       sale_amount = 0 if sale_amount.nil?
 
-      uri = URI(service_url + coordinates[:latitude].to_s + ',' + coordinates[:longitude].to_s + '/get?saleamount=' + sale_amount.to_s )
+      uri = URI(service_url + coordinates[:latitude].to_s + ',' + coordinates[:longitude].to_s + '/get?saleamount=' + sale_amount.to_s)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -61,13 +61,13 @@ class TaxSvc
 
   def ping
     logger.info 'Ping Call'
-    self.estimate_tax({ latitude: '40.714623', longitude: '-74.006605'}, 0)
+    self.estimate_tax({ latitude: '40.714623', longitude: '-74.006605' }, 0)
   end
 
   protected
 
   def logger
-    AvataxHelper::AvataxLog.new('tax_svc', "tax_service", 'call to tax service')
+    AvataxHelper::AvataxLog.new('tax_svc', 'tax_service', 'call to tax service')
   end
 
   private
@@ -77,7 +77,7 @@ class TaxSvc
   end
 
   def credential
-    'Basic ' + Base64.encode64(account_number + ":" + license_key)
+    'Basic ' + Base64.encode64(account_number + ':' + license_key)
   end
 
   def service_url
@@ -100,9 +100,8 @@ class TaxSvc
 
   def log(method, request_hash = nil)
     logger.info method.to_s + ' call'
-    unless request_hash.nil?
-      logger.debug request_hash
-      logger.debug JSON.generate(request_hash)
-    end
+    return if request_hash.nil?
+    logger.debug request_hash
+    logger.debug JSON.generate(request_hash)
   end
 end

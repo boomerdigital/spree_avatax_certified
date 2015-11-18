@@ -40,7 +40,6 @@ module Spree
       end
     end
 
-
     def cache_key(order)
       key = order.avatax_cache_key
       key << (order.ship_address.try(:cache_key) || order.bill_address.try(:cache_key)).to_s
@@ -79,9 +78,9 @@ module Spree
 
       return 0 if %w(address cart).include?(order.state)
       return 0 if item_address.nil?
-      return 0 if !self.calculable.zone.include?(item_address)
+      return 0 unless calculable.zone.include?(item_address)
       return 0 if avalara_response[:TotalTax] == '0.00'
-      return 0 if avalara_response == nil
+      return 0 if avalara_response.nil?
       # think about if totaltax is 0 because of an error, adding a message to the order so a user will be available.
 
       avalara_response['TaxLines'].each do |line|

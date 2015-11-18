@@ -83,7 +83,7 @@ module SpreeAvataxCertified
         :Amount => shipment.discounted_amount.to_f,
         :OriginCode => "#{shipment.stock_location_id}",
         :DestinationCode => 'Dest',
-        :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
+        :CustomerUsageType => order.user ? customer_usage_type : '',
         :Description => 'Shipping Charge',
         :TaxCode => shipment.shipping_method.tax_category.try(:tax_code) || 'FR000000'
       }
@@ -105,7 +105,7 @@ module SpreeAvataxCertified
           :Amount => -refund.reimbursement.return_items.sum(:pre_tax_amount).to_f,
           :OriginCode => 'Orig',
           :DestinationCode => 'Dest',
-          :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
+          :CustomerUsageType => order.user ? customer_usage_type : '',
           :Description => 'Refund'
         }
 
@@ -120,20 +120,25 @@ module SpreeAvataxCertified
     def order_stock_locations
       @logger.info('getting stock locations')
 
-      stock_location_ids = Spree::Stock::Coordinator.new(order).packages.map(&:to_shipment).map(&:stock_location_id)
+      packages = Spree::Stock::Coordinator.new(order).packages
+      stock_location_ids = packages.map(&:to_shipment).map(&:stock_location_id)
       stock_locations = Spree::StockLocation.where(id: stock_location_ids)
       @logger.debug stock_locations
       stock_locations
     end
 
     def get_stock_location(stock_locations, line_item)
-      line_item_stock_locations = stock_locations.joins(:stock_items).where(spree_stock_items: {variant_id: line_item.variant_id})
+      line_item_stock_locations = stock_locations.joins(:stock_items).where(spree_stock_items: { variant_id: line_item.variant_id })
 
       if line_item_stock_locations.empty?
         'Orig'
       else
         "#{line_item_stock_locations.first.id}"
       end
+    end
+
+    def customer_usage_type
+      order.user.avalara_entity_use_code.try(:use_code)
     end
   end
 end

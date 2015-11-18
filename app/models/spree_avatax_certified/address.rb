@@ -6,7 +6,6 @@ require 'logger'
 
 module SpreeAvataxCertified
   class Address
-
     attr_reader :order, :addresses
 
     def initialize(order)
@@ -41,27 +40,27 @@ module SpreeAvataxCertified
     end
 
     def order_ship_address
-      unless order.ship_address.nil?
+      return if order.ship_address.nil?
 
-        shipping_address = {
-          :AddressCode => 'Dest',
-          :Line1 => order.ship_address.address1,
-          :Line2 => order.ship_address.address2,
-          :City => order.ship_address.city,
-          :Region => order.ship_address.state_name,
-          :Country => Spree::Country.find(order.ship_address.country_id).iso,
-          :PostalCode => order.ship_address.zipcode
-        }
+      shipping_address = {
+        :AddressCode => 'Dest',
+        :Line1 => order.ship_address.address1,
+        :Line2 => order.ship_address.address2,
+        :City => order.ship_address.city,
+        :Region => order.ship_address.state_name,
+        :Country => Spree::Country.find(order.ship_address.country_id).iso,
+        :PostalCode => order.ship_address.zipcode
+      }
 
-        @logger.debug shipping_address
+      @logger.debug shipping_address
 
-        addresses << shipping_address
-      end
+      addresses << shipping_address
     end
 
     def origin_ship_addresses
       stock_addresses = []
-      stock_location_ids = Spree::Stock::Coordinator.new(order).packages.map(&:to_shipment).map(&:stock_location_id)
+      packages = Spree::Stock::Coordinator.new(order).packages
+      stock_location_ids = packages.map(&:to_shipment).map(&:stock_location_id)
 
       Spree::StockLocation.where(id: stock_location_ids).each do |stock_location|
 
@@ -108,18 +107,18 @@ module SpreeAvataxCertified
 
         response = JSON.parse(res.body)
 
-        if response["Address"]["City"] == address[:city] || response["Address"]["Region"] == Spree::State.find(address[:state_id]).abbr
+        if response['Address']['City'] == address[:city] || response['Address']['Region'] == Spree::State.find(address[:state_id]).abbr
           return response
         else
-          response["ResultCode"] = "Error"
-          suggested_address = response["Address"]
-          response["Messages"] = [{
-                                    "Summary" => "Did you mean #{suggested_address['Line1']}, #{suggested_address['City']}, #{suggested_address['Region']}, #{suggested_address['PostalCode']}?"
+          response['ResultCode'] = 'Error'
+          suggested_address = response['Address']
+          response['Messages'] = [{
+                                    'Summary' => "Did you mean #{suggested_address['Line1']}, #{suggested_address['City']}, #{suggested_address['Region']}, #{suggested_address['PostalCode']}?"
           }]
           return response
         end
       else
-        "Address validation disabled"
+        'Address validation disabled'
       end
     rescue => e
       'error in address validation'
@@ -139,7 +138,7 @@ module SpreeAvataxCertified
     private
 
     def credential
-      'Basic ' + Base64.encode64(account_number + ":" + license_key)
+      'Basic ' + Base64.encode64(account_number + ':' + license_key)
     end
 
     def service_url

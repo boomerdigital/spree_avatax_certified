@@ -13,7 +13,7 @@ module Spree
     has_many :adjustments, as: :source
 
     def lookup_avatax
-      order = Spree::Order.find(self.order_id)
+      order = Spree::Order.find(order_id)
       post_order_to_avalara(false, 'SalesOrder')
     end
 
@@ -136,10 +136,10 @@ module Spree
           @myrtntax = get_tax_result
         end
       end
-      return @myrtntax
+      @myrtntax
     end
 
-    def post_return_to_avalara(commit = false, invoice_detail = nil, refund_id)
+    def post_return_to_avalara(commit = false, invoice_detail = nil, refund_id = nil)
       AVALARA_TRANSACTION_LOGGER.info('starting post return order to avalara')
 
       avatax_address = SpreeAvataxCertified::Address.new(order)
@@ -194,7 +194,7 @@ module Spree
           @myrtntax = get_tax_result
         end
       end
-      return @myrtntax
+      @myrtntax
     end
 
     def document_committing_enabled?
