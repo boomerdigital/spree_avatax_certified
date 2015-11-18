@@ -17,10 +17,10 @@ module Spree
       post_order_to_avalara(false, 'SalesOrder')
     end
 
-    def commit_avatax(invoice_dt = nil)
+    def commit_avatax(invoice_dt = nil, refund_id = nil)
       if tax_calculation_enabled?
         if invoice_dt == 'ReturnInvoice'
-          post_return_order_to_avalara(false, invoice_dt)
+          post_return_order_to_avalara(false, invoice_dt, refund_id)
         else
           post_order_to_avalara(false, invoice_dt)
         end
