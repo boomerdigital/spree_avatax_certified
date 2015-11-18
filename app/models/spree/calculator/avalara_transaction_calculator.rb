@@ -23,7 +23,7 @@ module Spree
     alias_method :compute_line_item, :compute_shipment_or_line_item
 
     def compute_shipping_rate(shipping_rate)
-      if rate.included_in_price
+      if rate.tax_rate.included_in_price
         raise 'AvalaraTransaction cannot calculate inclusive sales taxes.'
       else
         return 0
