@@ -66,10 +66,23 @@ describe Spree::Refund, type: :model do
     end
   end
 
+  describe "#avalara_capture" do
+    it "should recieve avalara_capture and return hash" do
+      expect(refund).to receive(:avalara_capture).and_return(Hash)
+      refund.avalara_capture
+    end
+    it "should response with Hash object" do
+      expect(refund.avalara_capture).to be_kind_of(Hash)
+    end
+  end
+
   describe "#avalara_capture_finalize" do
     it "should recieve avalara_capture_finalize and return hash" do
       expect(refund).to receive(:avalara_capture_finalize).and_return(Hash)
       refund.save
+    end
+    it "should response with Hash object" do
+      expect(refund.avalara_capture_finalize).to be_kind_of(Hash)
     end
   end
 end
