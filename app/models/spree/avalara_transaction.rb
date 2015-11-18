@@ -102,7 +102,7 @@ module Spree
 
         CompanyCode: Spree::Config.avatax_company_code,
         CustomerUsageType: customer_usage_type,
-        ExemptionNo: user.try(:exemption_number),
+        ExemptionNo: order.user.try(:exemption_number),
         Client:  AVATAX_CLIENT_VERSION || 'SpreeExtV3.0',
         DocCode: order.number,
 
@@ -144,9 +144,6 @@ module Spree
       avatax_address = SpreeAvataxCertified::Address.new(order)
       avatax_line = SpreeAvataxCertified::Line.new(order, invoice_detail)
 
-      AVALARA_TRANSACTION_LOGGER.debug avatax_address
-      AVALARA_TRANSACTION_LOGGER.debug avatax_line
-
       taxoverride = {
         TaxOverrideType: 'TaxDate',
         Reason: 'Adjustment for return',
@@ -160,7 +157,7 @@ module Spree
 
         CompanyCode: Spree::Config.avatax_company_code,
         CustomerUsageType: customer_usage_type,
-        ExemptionNo: user.try(:exemption_number),
+        ExemptionNo: order.user.try(:exemption_number),
         Client:  AVATAX_CLIENT_VERSION || 'SpreeExtV3.0',
         DocCode: order.number.to_s + '.' + refund_id.to_s,
 
@@ -197,15 +194,11 @@ module Spree
     end
 
     def customer_usage_type
-      user ? user.avalara_entity_use_code.try(:use_code) : ''
-    end
-
-    def user
-      order.user
+      order.user ? order.user.avalara_entity_use_code.try(:use_code) : ''
     end
 
     def customer_code
-      user ? user.id : 'Guest'
+      order.user ? order.user.id : 'Guest'
     end
 
     def document_committing_enabled?

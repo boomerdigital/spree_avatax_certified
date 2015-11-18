@@ -13,6 +13,7 @@ module SpreeAvataxCertified
       @addresses = []
       @logger ||= AvataxHelper::AvataxLog.new('avalara_order_addresses', 'SpreeAvataxCertified::Address', 'building addresses')
       build_addresses
+      @logger.debug @addresses
     end
 
     def build_addresses

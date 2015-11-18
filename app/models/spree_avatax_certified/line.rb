@@ -9,6 +9,7 @@ module SpreeAvataxCertified
       @lines = []
       @stock_locations = order_stock_locations
       build_lines
+      @logger.debug @lines
     end
 
     def build_lines
