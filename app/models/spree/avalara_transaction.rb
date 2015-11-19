@@ -94,42 +94,28 @@ module Spree
       end
 
       gettaxes = {
-        CustomerCode: customer_code,
-        DocDate: Date.today.strftime('%F'),
-
-        CompanyCode: Spree::Config.avatax_company_code,
-        CustomerUsageType: customer_usage_type,
-        ExemptionNo: order.user.try(:exemption_number),
-        Client:  AVATAX_CLIENT_VERSION || 'SpreeExtV3.0',
         DocCode: order.number,
-
-        Discount: order.promotion_discount_total,
-
-        ReferenceCode: order.number,
-        DetailLevel: 'Tax',
+        Discount: order.promo_total.to_s,
         Commit: commit,
         DocType: invoice_detail ? invoice_detail : 'SalesInvoice',
         Addresses: avatax_address.addresses,
         Lines: avatax_line.lines
-      }
+      }.merge(base_tax_hash)
 
       AVALARA_TRANSACTION_LOGGER.debug gettaxes
 
       mytax = TaxSvc.new
 
-      AVALARA_TRANSACTION_LOGGER.info '********** hitting the api'
+      tax_result = mytax.get_tax(gettaxes)
 
-      get_tax_result = mytax.get_tax(gettaxes)
+      AVALARA_TRANSACTION_LOGGER.info_and_debug('tax result', tax_result)
 
-      AVALARA_TRANSACTION_LOGGER.debug get_tax_result
-
-      if get_tax_result == 'error in Tax'
+      if tax_result == 'error in Tax'
         @myrtntax = { TotalTax: '0.00' }
       else
-        if get_tax_result['ResultCode'] == 'Success'
-          AVALARA_TRANSACTION_LOGGER.info 'total tax'
-          AVALARA_TRANSACTION_LOGGER.debug get_tax_result['TotalTax'].to_s
-          @myrtntax = get_tax_result
+        if tax_result['ResultCode'] == 'Success'
+          AVALARA_TRANSACTION_LOGGER.info_and_debug('total tax', tax_result['TotalTax'].to_s)
+          @myrtntax = tax_result
         end
       end
       @myrtntax
@@ -149,22 +135,12 @@ module Spree
       }
 
       gettaxes = {
-        CustomerCode: customer_code,
-        DocDate: Date.today.strftime('%F'),
-
-        CompanyCode: Spree::Config.avatax_company_code,
-        CustomerUsageType: customer_usage_type,
-        ExemptionNo: order.user.try(:exemption_number),
-        Client:  AVATAX_CLIENT_VERSION || 'SpreeExtV3.0',
         DocCode: order.number.to_s + '.' + refund_id.to_s,
-
-        ReferenceCode: order.number,
-        DetailLevel: 'Tax',
         Commit: commit,
         DocType: invoice_detail ? invoice_detail : 'ReturnOrder',
         Addresses: avatax_address.addresses,
         Lines: avatax_line.lines
-      }
+      }.merge(base_tax_hash)
 
       gettaxes[:TaxOverride] = taxoverride
 
@@ -172,22 +148,32 @@ module Spree
 
       mytax = TaxSvc.new
 
-      AVALARA_TRANSACTION_LOGGER.info '********** hitting the api'
+      tax_result = mytax.get_tax(gettaxes)
 
-      get_tax_result = mytax.get_tax(gettaxes)
+      AVALARA_TRANSACTION_LOGGER.info_and_debug('tax result', tax_result)
 
-      AVALARA_TRANSACTION_LOGGER.debug get_tax_result
-
-      if get_tax_result == 'error in Tax'
+      if tax_result == 'error in Tax'
         @myrtntax = { TotalTax: '0.00' }
       else
-        if get_tax_result['ResultCode'] == 'Success'
-          AVALARA_TRANSACTION_LOGGER.info 'total tax'
-          AVALARA_TRANSACTION_LOGGER.debug get_tax_result['TotalTax'].to_s
-          @myrtntax = get_tax_result
+        if tax_result['ResultCode'] == 'Success'
+          AVALARA_TRANSACTION_LOGGER.info_and_debug('total tax', tax_result['TotalTax'].to_s)
+          @myrtntax = tax_result
         end
       end
       @myrtntax
+    end
+
+    def base_tax_hash
+      {
+        CustomerCode: customer_code,
+        DocDate: Date.today.strftime('%F'),
+        CompanyCode: Spree::Config.avatax_company_code,
+        CustomerUsageType: customer_usage_type,
+        ExemptionNo: order.user.try(:exemption_number),
+        Client:  avatax_client_version,
+        ReferenceCode: order.number,
+        DetailLevel: 'Tax'
+      }
     end
 
     def customer_usage_type
@@ -196,6 +182,10 @@ module Spree
 
     def customer_code
       order.user ? order.user.id : 'Guest'
+    end
+
+    def avatax_client_version
+      AVATAX_CLIENT_VERSION || 'SpreeExtV3.0'
     end
 
     def document_committing_enabled?

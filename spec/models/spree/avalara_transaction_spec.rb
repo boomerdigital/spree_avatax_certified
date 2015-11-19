@@ -48,6 +48,13 @@ describe Spree::AvalaraTransaction, :type => :model do
           expect(order.avalara_transaction.commit_avatax('SalesInvoice')[:TotalTax]).to eq("0.00")
         end
       end
+
+      context 'promo' do
+        it 'applies discount' do
+          order.promo_total = 10
+          expect(order.avalara_transaction.commit_avatax('SalesInvoice')['TotalDiscount']).to eq('10')
+        end
+      end
     end
 
     describe "#commit_avatax_final" do
