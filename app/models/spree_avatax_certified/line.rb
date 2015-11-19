@@ -9,6 +9,7 @@ module SpreeAvataxCertified
       @lines = []
       @stock_locations = order_stock_locations
       build_lines
+      @logger.debug @lines
     end
 
     def build_lines
@@ -37,7 +38,7 @@ module SpreeAvataxCertified
         OriginCode: stock_location,
         DestinationCode: 'Dest',
         CustomerUsageType: order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
-        Discounted: line_item.promo_total > 0.0
+        Discounted: order.promo_total > 0.0
       }
 
       @logger.debug line
@@ -120,8 +121,7 @@ module SpreeAvataxCertified
     def order_stock_locations
       @logger.info('getting stock locations')
 
-      packages = Spree::Stock::Coordinator.new(order).packages
-      stock_location_ids = packages.map(&:to_shipment).map(&:stock_location_id)
+      stock_location_ids = Spree::Stock::Coordinator.new(order).packages.map(&:to_shipment).map(&:stock_location_id)
       stock_locations = Spree::StockLocation.where(id: stock_location_ids)
       @logger.debug stock_locations
       stock_locations

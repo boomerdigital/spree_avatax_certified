@@ -13,7 +13,6 @@ module Spree
     has_many :adjustments, as: :source
 
     def lookup_avatax
-      order = Spree::Order.find(order_id)
       post_order_to_avalara(false, 'SalesOrder')
     end
 
@@ -47,19 +46,19 @@ module Spree
     end
 
     def cancel_order
-      cancel_order_to_avalara('SalesInvoice', 'DocVoided')
+      cancel_order_to_avalara('SalesInvoice')
     end
 
     private
 
-    def cancel_order_to_avalara(doc_type='SalesInvoice', cancel_code='DocVoided')
+    def cancel_order_to_avalara(doc_type = 'SalesInvoice')
       AVALARA_TRANSACTION_LOGGER.info('cancel order to avalara')
 
       cancel_tax_request = {
         CompanyCode: Spree::Config.avatax_company_code,
         DocType: doc_type,
         DocCode: order.number,
-        CancelCode: cancel_code
+        CancelCode: 'DocVoided'
       }
 
       AVALARA_TRANSACTION_LOGGER.debug cancel_tax_request
@@ -84,9 +83,6 @@ module Spree
       avatax_address = SpreeAvataxCertified::Address.new(order)
       avatax_line = SpreeAvataxCertified::Line.new(order, invoice_detail)
 
-      AVALARA_TRANSACTION_LOGGER.debug avatax_address
-      AVALARA_TRANSACTION_LOGGER.debug avatax_line
-
       response = avatax_address.validate
 
       unless response.nil?
@@ -98,42 +94,28 @@ module Spree
       end
 
       gettaxes = {
-        CustomerCode: order.user ? order.user.id : 'Guest',
-        DocDate: Date.today.strftime('%F'),
-
-        CompanyCode: Spree::Config.avatax_company_code,
-        CustomerUsageType: order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
-        ExemptionNo: order.user.try(:exemption_number),
-        Client:  AVATAX_CLIENT_VERSION || 'SpreeExtV3.0',
         DocCode: order.number,
-
-        Discount: order.all_adjustments.where(source_type: 'Spree::PromotionAction').any? ? order.all_adjustments.where(source_type: 'Spree::PromotionAction').pluck(:amount).reduce(&:+).to_f.abs : 0,
-
-        ReferenceCode: order.number,
-        DetailLevel: 'Tax',
+        Discount: order.promo_total.to_s,
         Commit: commit,
         DocType: invoice_detail ? invoice_detail : 'SalesInvoice',
         Addresses: avatax_address.addresses,
         Lines: avatax_line.lines
-      }
+      }.merge(base_tax_hash)
 
       AVALARA_TRANSACTION_LOGGER.debug gettaxes
 
       mytax = TaxSvc.new
 
-      AVALARA_TRANSACTION_LOGGER.info '********** hitting the api'
+      tax_result = mytax.get_tax(gettaxes)
 
-      get_tax_result = mytax.get_tax(gettaxes)
+      AVALARA_TRANSACTION_LOGGER.info_and_debug('tax result', tax_result)
 
-      AVALARA_TRANSACTION_LOGGER.debug get_tax_result
-
-      if get_tax_result == 'error in Tax'
+      if tax_result == 'error in Tax'
         @myrtntax = { TotalTax: '0.00' }
       else
-        if get_tax_result['ResultCode'] == 'Success'
-          AVALARA_TRANSACTION_LOGGER.info 'total tax'
-          AVALARA_TRANSACTION_LOGGER.debug get_tax_result['TotalTax'].to_s
-          @myrtntax = get_tax_result
+        if tax_result['ResultCode'] == 'Success'
+          AVALARA_TRANSACTION_LOGGER.info_and_debug('total tax', tax_result['TotalTax'].to_s)
+          @myrtntax = tax_result
         end
       end
       @myrtntax
@@ -145,9 +127,6 @@ module Spree
       avatax_address = SpreeAvataxCertified::Address.new(order)
       avatax_line = SpreeAvataxCertified::Line.new(order, invoice_detail)
 
-      AVALARA_TRANSACTION_LOGGER.debug avatax_address
-      AVALARA_TRANSACTION_LOGGER.debug avatax_line
-
       taxoverride = {
         TaxOverrideType: 'TaxDate',
         Reason: 'Adjustment for return',
@@ -156,22 +135,12 @@ module Spree
       }
 
       gettaxes = {
-        CustomerCode: order.user ? order.user.id : 'Guest',
-        DocDate: Date.today.strftime('%F'),
-
-        CompanyCode: Spree::Config.avatax_company_code,
-        CustomerUsageType: order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
-        ExemptionNo: order.user.try(:exemption_number),
-        Client:  AVATAX_CLIENT_VERSION || 'SpreeExtV3.0',
         DocCode: order.number.to_s + '.' + refund_id.to_s,
-
-        ReferenceCode: order.number,
-        DetailLevel: 'Tax',
         Commit: commit,
         DocType: invoice_detail ? invoice_detail : 'ReturnOrder',
         Addresses: avatax_address.addresses,
         Lines: avatax_line.lines
-      }
+      }.merge(base_tax_hash)
 
       gettaxes[:TaxOverride] = taxoverride
 
@@ -179,22 +148,44 @@ module Spree
 
       mytax = TaxSvc.new
 
-      AVALARA_TRANSACTION_LOGGER.info '********** hitting the api'
+      tax_result = mytax.get_tax(gettaxes)
 
-      get_tax_result = mytax.get_tax(gettaxes)
+      AVALARA_TRANSACTION_LOGGER.info_and_debug('tax result', tax_result)
 
-      AVALARA_TRANSACTION_LOGGER.debug get_tax_result
-
-      if get_tax_result == 'error in Tax'
+      if tax_result == 'error in Tax'
         @myrtntax = { TotalTax: '0.00' }
       else
-        if get_tax_result['ResultCode'] == 'Success'
-          AVALARA_TRANSACTION_LOGGER.info 'total tax'
-          AVALARA_TRANSACTION_LOGGER.debug get_tax_result['TotalTax'].to_s
-          @myrtntax = get_tax_result
+        if tax_result['ResultCode'] == 'Success'
+          AVALARA_TRANSACTION_LOGGER.info_and_debug('total tax', tax_result['TotalTax'].to_s)
+          @myrtntax = tax_result
         end
       end
       @myrtntax
+    end
+
+    def base_tax_hash
+      {
+        CustomerCode: customer_code,
+        DocDate: Date.today.strftime('%F'),
+        CompanyCode: Spree::Config.avatax_company_code,
+        CustomerUsageType: customer_usage_type,
+        ExemptionNo: order.user.try(:exemption_number),
+        Client:  avatax_client_version,
+        ReferenceCode: order.number,
+        DetailLevel: 'Tax'
+      }
+    end
+
+    def customer_usage_type
+      order.user ? order.user.avalara_entity_use_code.try(:use_code) : ''
+    end
+
+    def customer_code
+      order.user ? order.user.id : 'Guest'
+    end
+
+    def avatax_client_version
+      AVATAX_CLIENT_VERSION || 'SpreeExtV3.0'
     end
 
     def document_committing_enabled?
