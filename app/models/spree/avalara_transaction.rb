@@ -112,7 +112,7 @@ module Spree
         :Client =>  AVATAX_CLIENT_VERSION || 'SpreeExtV2.3',
         :DocCode => order.number,
 
-        :Discount => order.all_adjustments.where(source_type: 'Spree::PromotionAction').any? ? order.all_adjustments.where(source_type: 'Spree::PromotionAction').pluck(:amount).reduce(&:+).to_f.abs : 0,
+        :Discount => order.promo_total.to_s,
 
         :ReferenceCode => order_num ? order_num : order.number,
         :DetailLevel => 'Tax',
