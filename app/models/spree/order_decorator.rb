@@ -61,6 +61,10 @@ Spree::Order.class_eval do
     key.join('-')
   end
 
+  def promotion_discount_total
+    all_adjustments.promotion.eligible.any? ? all_adjustments.promotion.eligible.pluck(:amount).reduce(&:+).to_f.abs : 0
+  end
+
   private
 
   def logger

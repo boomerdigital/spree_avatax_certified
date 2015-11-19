@@ -46,19 +46,19 @@ module Spree
     end
 
     def cancel_order
-      cancel_order_to_avalara('SalesInvoice', 'DocVoided')
+      cancel_order_to_avalara('SalesInvoice')
     end
 
     private
 
-    def cancel_order_to_avalara(doc_type = 'SalesInvoice', cancel_code = 'DocVoided')
+    def cancel_order_to_avalara(doc_type = 'SalesInvoice')
       AVALARA_TRANSACTION_LOGGER.info('cancel order to avalara')
 
       cancel_tax_request = {
         CompanyCode: Spree::Config.avatax_company_code,
         DocType: doc_type,
         DocCode: order.number,
-        CancelCode: cancel_code
+        CancelCode: 'DocVoided'
       }
 
       AVALARA_TRANSACTION_LOGGER.debug cancel_tax_request
@@ -103,7 +103,7 @@ module Spree
         Client:  AVATAX_CLIENT_VERSION || 'SpreeExtV3.0',
         DocCode: order.number,
 
-        Discount: order.all_adjustments.where(source_type: 'Spree::PromotionAction').any? ? order.all_adjustments.where(source_type: 'Spree::PromotionAction').pluck(:amount).reduce(&:+).to_f.abs : 0,
+        Discount: order.promotion_discount_total,
 
         ReferenceCode: order.number,
         DetailLevel: 'Tax',
