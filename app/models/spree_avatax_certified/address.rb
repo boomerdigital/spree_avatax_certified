@@ -60,8 +60,7 @@ module SpreeAvataxCertified
 
     def origin_ship_addresses
       stock_addresses = []
-      packages = Spree::Stock::Coordinator.new(order).packages
-      stock_location_ids = packages.map(&:to_shipment).map(&:stock_location_id)
+      stock_location_ids = Spree::Stock::Coordinator.new(order).packages.map(&:to_shipment).map(&:stock_location_id)
 
       Spree::StockLocation.where(id: stock_location_ids).each do |stock_location|
         stock_location_address = {
@@ -97,16 +96,7 @@ module SpreeAvataxCertified
           PostalCode: address[:zipcode]
         }
 
-        encodedquery = Addressable::URI.new
-        encodedquery.query_values = address_hash
-        uri = URI(service_url + encodedquery.query)
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = true
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-        res = http.get(uri.request_uri, 'Authorization' => credential)
-
-        response = JSON.parse(res.body)
+        response = validation_response(address_hash)
 
         if response['Address']['City'] == address[:city] || response['Address']['Region'] == Spree::State.find(address[:state_id]).abbr
           return response
@@ -137,6 +127,19 @@ module SpreeAvataxCertified
     end
 
     private
+
+    def validation_response(address)
+      encodedquery = Addressable::URI.new
+      encodedquery.query_values = address
+      uri = URI(service_url + encodedquery.query)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+      res = http.get(uri.request_uri, 'Authorization' => credential)
+
+      JSON.parse(res.body)
+    end
 
     def credential
       'Basic ' + Base64.encode64(account_number + ':' + license_key)
