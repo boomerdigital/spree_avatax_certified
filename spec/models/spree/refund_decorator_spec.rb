@@ -74,6 +74,12 @@ describe Spree::Refund, type: :model do
     it "should response with Hash object" do
       expect(refund.avalara_capture).to be_kind_of(Hash)
     end
+    context 'error' do
+      it 'should raise error' do
+        Spree::AvalaraTransaction.find_by_order_id(refund.payment.order.id).destroy
+        expect(refund.avalara_capture).to eq('error in avalara capture refund')
+      end
+    end
   end
 
   describe "#avalara_capture_finalize" do

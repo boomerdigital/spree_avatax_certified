@@ -37,7 +37,7 @@ module SpreeAvataxCertified
         Amount: line_item.discounted_amount.to_f,
         OriginCode: stock_location,
         DestinationCode: 'Dest',
-        CustomerUsageType: order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
+        CustomerUsageType: order.user ? customer_usage_type : '',
         Discounted: order.promo_total > 0.0
       }
 
@@ -64,9 +64,9 @@ module SpreeAvataxCertified
 
       ship_lines = []
       order.shipments.each do |shipment|
-        if shipment.tax_category
-          ship_lines << shipment_line(shipment)
-        end
+        next unless shipment.tax_category
+
+        ship_lines << shipment_line(shipment)
 
         @logger.info_and_debug('shipment_lines_array', ship_lines)
 

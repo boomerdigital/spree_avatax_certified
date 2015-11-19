@@ -94,7 +94,9 @@ class TaxSvc
 
   def response(uri, request_hash)
     url = service_url + uri
-    res = RestClient.post(url, JSON.generate(request_hash), authorization: credential, content_type: 'application/json')
+    res = RestClient.post(url, JSON.generate(request_hash), authorization: credential, content_type: 'application/json') do |response|
+      response
+    end
     JSON.parse(res)
   end
 
