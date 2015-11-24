@@ -38,7 +38,7 @@ module SpreeAvataxCertified
         OriginCode: stock_location,
         DestinationCode: 'Dest',
         CustomerUsageType: order.user ? customer_usage_type : '',
-        Discounted: order.promo_total > 0.0
+        Discounted: order.promo_total.abs > 0.0
       }
 
       @logger.debug line
