@@ -181,7 +181,7 @@ module Spree
     end
 
     def customer_code
-      order.user ? order.user.id : 'Guest'
+      order.user ? order.user.id : order.email
     end
 
     def avatax_client_version
