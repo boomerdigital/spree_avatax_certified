@@ -9,7 +9,8 @@ module Spree
     end
 
     def compute_shipment_or_line_item(item)
-      if rate.included_in_price
+      # NEED TO TEST VAT
+      if item.tax_category.try(:tax_rates) && item.tax_category.tax_rates.any? { |rate| rate.included_in_price == true }
         raise 'AvalaraTransaction cannot calculate inclusive sales taxes.'
       else
         avalara_response = get_avalara_response(item.order)
@@ -22,7 +23,7 @@ module Spree
     alias_method :compute_line_item, :compute_shipment_or_line_item
 
     def compute_shipping_rate(shipping_rate)
-      if rate.try(:tax_rate).try(:included_in_price)
+      if shipping_rate.try(:tax_rate).try(:included_in_price) == true
         raise 'AvalaraTransaction cannot calculate inclusive sales taxes.'
       else
         return 0
@@ -78,9 +79,9 @@ module Spree
 
       return 0 if %w(address cart).include?(order.state)
       return 0 if item_address.nil?
-      return 0 if !self.calculable.zone.include?(item_address)
+      return 0 unless calculable.zone.include?(item_address)
       return 0 if avalara_response[:TotalTax] == '0.00'
-      return 0 if avalara_response == nil
+      return 0 if avalara_response.nil?
       # think about if totaltax is 0 because of an error, adding a message to the order so a user will be available.
 
       avalara_response['TaxLines'].each do |line|
