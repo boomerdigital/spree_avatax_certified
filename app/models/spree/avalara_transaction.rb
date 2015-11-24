@@ -107,7 +107,7 @@ module Spree
         :Client =>  AVATAX_CLIENT_VERSION || 'SpreeExtV2.4',
         :DocCode => order.number,
 
-        :Discount => order.promo_total.to_s,
+        :Discount => order.promo_total.abs.to_s,
 
         :ReferenceCode => order.number,
         :DetailLevel => 'Tax',
