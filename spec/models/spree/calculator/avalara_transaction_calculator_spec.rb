@@ -84,6 +84,7 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
       end
       context 'when given a shipping rate' do
         it 'raises exception' do
+          order.shipments.first.selected_shipping_rate.tax_rate.update_attributes(included_in_price: true)
           expect{calculator.compute(order.shipments.first.selected_shipping_rate)}.to raise_exception
         end
       end
