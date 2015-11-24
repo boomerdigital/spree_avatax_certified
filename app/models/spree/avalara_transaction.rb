@@ -98,7 +98,7 @@ module Spree
       end
 
       gettaxes = {
-        :CustomerCode => order.user ? order.user.id : 'Guest',
+        :CustomerCode => order.user ? order.user.id : order.email,
         :DocDate => Date.today.strftime('%F'),
 
         :CompanyCode => Spree::Config.avatax_company_code,
