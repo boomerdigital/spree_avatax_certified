@@ -29,11 +29,11 @@ module Spree
       end
     end
 
-    def commit_avatax_final(invoice_dt = nil, refund_id = nil)
+    def commit_avatax_final(invoice_dt = nil, refund = nil)
       if document_committing_enabled?
         if tax_calculation_enabled?
           if invoice_dt == 'ReturnInvoice'
-            post_return_order_to_avalara(true, invoice_dt, refund_id)
+            post_return_order_to_avalara(true, invoice_dt, refund)
           else
             post_order_to_avalara(true, invoice_dt)
           end
@@ -139,20 +139,19 @@ module Spree
       return @myrtntax
     end
 
-    def post_return_order_to_avalara(commit = false, invoice_detail = nil, refund_id)
+    def post_return_order_to_avalara(commit = false, invoice_detail = nil, refund=nil)
       AVALARA_TRANSACTION_LOGGER.info('starting post return order to avalara')
 
       avatax_address = SpreeAvataxCertified::Address.new(order)
-      avatax_line = SpreeAvataxCertified::Line.new(order, invoice_detail)
+      avatax_line = SpreeAvataxCertified::Line.new(order, invoice_detail, refund)
 
       AVALARA_TRANSACTION_LOGGER.debug avatax_address
       AVALARA_TRANSACTION_LOGGER.debug avatax_line
 
       taxoverride = {
-        :TaxOverrideType => 'TaxDate',
-        :Reason => 'Adjustment for return',
-        :TaxDate => order.completed_at.strftime('%F'),
-        :TaxAmount => '0'
+        :TaxOverrideType => 'None',
+        :Reason => 'Return',
+        :TaxDate => order.completed_at.strftime('%F')
       }
 
       gettaxes = {
@@ -163,7 +162,7 @@ module Spree
         :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
         :ExemptionNo => order.user.try(:exemption_number),
         :Client =>  AVATAX_CLIENT_VERSION || 'SpreeExtV2.4',
-        :DocCode => order.number.to_s + '.' + refund_id.to_s,
+        :DocCode => order.number.to_s + '.' + refund.id.to_s,
 
         :ReferenceCode => order.number,
         :DetailLevel => 'Tax',
