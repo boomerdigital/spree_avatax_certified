@@ -57,6 +57,7 @@ module SpreeAvataxCertified
       @logger.info_and_debug('item_lines_array', line_item_lines)
 
       lines.concat(line_item_lines) unless line_item_lines.empty?
+      line_item_lines
     end
 
     def shipment_lines_array
@@ -71,6 +72,7 @@ module SpreeAvataxCertified
 
       @logger.info_and_debug('shipment_lines_array', ship_lines)
       lines.concat(ship_lines) unless ship_lines.empty?
+      ship_lines
     end
 
     def shipment_line(shipment)
@@ -109,6 +111,7 @@ module SpreeAvataxCertified
 
       @logger.info_and_debug('return_authorization_lines', return_auth_lines)
       lines.concat(return_auth_lines) unless return_auth_lines.empty?
+      return_auth_lines
     end
 
     def return_item_line(line_item, quantity, amount)

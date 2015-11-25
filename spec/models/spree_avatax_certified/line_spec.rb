@@ -2,6 +2,12 @@ require 'spec_helper'
 
 describe SpreeAvataxCertified::Line, :type => :model do
   let(:country){ FactoryGirl.create(:country) }
+  let!(:zone) { create(:zone, :name => "North America", :default_tax => true, :zone_members => []) }
+  let(:zone_member) { Spree::ZoneMember.create() }
+  let!(:tax_category) { Spree::TaxCategory.create(name: 'Shipping', description: 'FR000000') }
+  let(:included_in_price) { false }
+  let!(:rate) { create(:tax_rate, :tax_category => tax_category, :amount => 0.00, :included_in_price => included_in_price, zone: zone) }
+  let!(:calculator) { Spree::Calculator::AvalaraTransactionCalculator.new(:calculable => rate ) }
   let(:address){ FactoryGirl.create(:address) }
   let(:order) { FactoryGirl.create(:order_with_line_items) }
   let(:shipped_order) { FactoryGirl.create(:shipped_order) }
@@ -10,6 +16,7 @@ describe SpreeAvataxCertified::Line, :type => :model do
 
   before do
     order.ship_address.update_attributes(city: 'Tuscaloosa', address1: '220 Paul W Bryant Dr')
+    order.shipments.first.selected_shipping_rate.update_attributes(tax_rate: rate)
   end
 
   let(:sales_lines) { SpreeAvataxCertified::Line.new(order, 'SalesOrder') }
@@ -25,8 +32,8 @@ describe SpreeAvataxCertified::Line, :type => :model do
     it 'should have lines be an array' do
       expect(sales_lines.lines).to be_kind_of(Array)
     end
-    it 'lines should be a length of 5' do
-      expect(sales_lines.lines.length).to eq(5)
+    it 'lines should be a length of 6' do
+      expect(sales_lines.lines.length).to eq(6)
     end
     it 'should have stock locations' do
       expect(sales_lines.stock_locations).to eq(sales_lines.order_stock_locations)
