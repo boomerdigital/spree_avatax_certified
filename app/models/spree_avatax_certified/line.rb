@@ -65,13 +65,11 @@ module SpreeAvataxCertified
       ship_lines = []
       order.shipments.each do |shipment|
         next unless shipment.tax_category
-
         ship_lines << shipment_line(shipment)
-
-        @logger.info_and_debug('shipment_lines_array', ship_lines)
-
-        lines.concat(ship_lines) unless ship_lines.empty?
       end
+
+      @logger.info_and_debug('shipment_lines_array', ship_lines)
+      lines.concat(ship_lines) unless ship_lines.empty?
     end
 
     def shipment_line(shipment)
