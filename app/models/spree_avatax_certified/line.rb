@@ -1,12 +1,13 @@
 module SpreeAvataxCertified
   class Line
-    attr_reader :order, :invoice_type, :lines, :stock_locations
+    attr_reader :order, :invoice_type, :lines, :stock_locations, :return_authorization
 
-    def initialize(order, invoice_type)
+    def initialize(order, invoice_type, return_authorization=nil)
       @logger ||= AvataxHelper::AvataxLog.new('avalara_order_lines', 'SpreeAvataxCertified::Line', 'building lines')
       @order = order
       @invoice_type = invoice_type
       @lines = []
+      @return_authorization = return_authorization
       @stock_locations = order_stock_locations
       build_lines
     end
@@ -99,25 +100,38 @@ module SpreeAvataxCertified
       return_auth_lines = []
 
       order.return_authorizations.each do |return_auth|
-        next if return_auth.state == 'received'
-
-        return_auth_line = {
-          :LineNo => "#{return_auth.id}-RA",
-          :ItemCode => return_auth.number || 'return_authorization',
-          :Qty => 1,
-          :Amount => -return_auth.amount.to_f,
-          :OriginCode => 'Orig',
-          :DestinationCode => 'Dest',
-          :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
-          :Description => 'return_authorization'
-        }
-
-        @logger.debug return_auth_line
-
-        return_auth_lines << return_auth_line
+        next if return_auth != return_authorization
+        amount = return_auth.amount / return_auth.inventory_units.select(:line_item_id).uniq.count
+        return_auth.inventory_units.group_by(&:line_item_id).each_value do |inv_unit|
+          quantity = inv_unit.uniq.count
+          return_auth_lines << return_item_line(inv_unit.first.line_item, quantity, amount)
+        end
       end
 
+      @logger.info_and_debug('return_authorization_lines', return_auth_lines)
       lines.concat(return_auth_lines) unless return_auth_lines.empty?
+    end
+
+    def return_item_line(line_item, quantity, amount)
+      @logger.info('build line_item line')
+
+      stock_location = get_stock_location(@stock_locations, line_item)
+
+      line = {
+        :LineNo => "#{line_item.id}-LI",
+        :Description => line_item.name[0..255],
+        :TaxCode => line_item.tax_category.try(:description) || 'P0000000',
+        :ItemCode => line_item.variant.sku,
+        :Qty => quantity,
+        :Amount => -amount.to_f,
+        :OriginCode => stock_location,
+        :DestinationCode => 'Dest',
+        :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : ''
+      }
+
+      @logger.debug line
+
+      line
     end
 
     def order_stock_locations

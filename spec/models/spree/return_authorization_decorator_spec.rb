@@ -36,7 +36,7 @@ describe Spree::ReturnAuthorization, type: :model do
       expect(return_authorization.avalara_capture).to be_kind_of(Hash)
     end
     it 'should have avalara_transaction receive commit_avatax when called' do
-      expect(return_authorization.avalara_transaction).to receive(:commit_avatax)
+      expect(return_authorization.order.avalara_transaction).to receive(:commit_avatax)
       return_authorization.avalara_capture
     end
   end
@@ -66,7 +66,7 @@ describe Spree::ReturnAuthorization, type: :model do
     end
 
     it 'avalara_transaction should receive commit_avatax_final when return auth is received' do
-      expect(return_authorization.avalara_transaction).to receive(:commit_avatax_final)
+      expect(return_authorization.order.avalara_transaction).to receive(:commit_avatax_final)
       return_authorization.receive!
     end
   end
