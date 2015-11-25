@@ -16,10 +16,10 @@ module Spree
       post_order_to_avalara(false, 'SalesOrder')
     end
 
-    def commit_avatax(invoice_dt = nil, refund_id = nil)
+    def commit_avatax(invoice_dt = nil, refund = nil)
       if tax_calculation_enabled?
         if invoice_dt == 'ReturnInvoice'
-          post_return_to_avalara(false, invoice_dt, refund_id)
+          post_return_to_avalara(false, invoice_dt, refund)
         else
           post_order_to_avalara(false, invoice_dt)
         end
@@ -28,11 +28,11 @@ module Spree
       end
     end
 
-    def commit_avatax_final(invoice_dt = nil, refund_id = nil)
+    def commit_avatax_final(invoice_dt = nil, refund = nil)
       if document_committing_enabled?
         if tax_calculation_enabled?
           if invoice_dt == 'ReturnInvoice'
-            post_return_to_avalara(true, invoice_dt, refund_id)
+            post_return_to_avalara(true, invoice_dt, refund)
           else
             post_order_to_avalara(true, invoice_dt)
           end
@@ -97,7 +97,7 @@ module Spree
         DocCode: order.number,
         Discount: order.promo_total.abs.to_s,
         Commit: commit,
-        DocType: invoice_detail ? invoice_detail : 'SalesInvoice',
+        DocType: invoice_detail ? invoice_detail : 'SalesOrder',
         Addresses: avatax_address.addresses,
         Lines: avatax_line.lines
       }.merge(base_tax_hash)
@@ -121,21 +121,20 @@ module Spree
       @myrtntax
     end
 
-    def post_return_to_avalara(commit = false, invoice_detail = nil, refund_id = nil)
+    def post_return_to_avalara(commit = false, invoice_detail = nil, refund = nil)
       AVALARA_TRANSACTION_LOGGER.info('starting post return order to avalara')
 
       avatax_address = SpreeAvataxCertified::Address.new(order)
-      avatax_line = SpreeAvataxCertified::Line.new(order, invoice_detail)
+      avatax_line = SpreeAvataxCertified::Line.new(order, invoice_detail, refund)
 
       taxoverride = {
-        TaxOverrideType: 'TaxDate',
-        Reason: 'Adjustment for return',
-        TaxDate: order.completed_at.strftime('%F'),
-        TaxAmount: '0'
+        TaxOverrideType: 'None',
+        Reason: 'Return',
+        TaxDate: order.completed_at.strftime('%F')
       }
 
       gettaxes = {
-        DocCode: order.number.to_s + '.' + refund_id.to_s,
+        DocCode: order.number.to_s + '.' + refund.id.to_s,
         Commit: commit,
         DocType: invoice_detail ? invoice_detail : 'ReturnOrder',
         Addresses: avatax_address.addresses,

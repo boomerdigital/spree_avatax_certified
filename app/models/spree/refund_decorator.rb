@@ -16,7 +16,7 @@ Spree::Refund.class_eval do
     begin
       avalara_transaction_refund = Spree::AvalaraTransaction.find_by_order_id(payment.order.id)
 
-      @rtn_tax = avalara_transaction_refund.commit_avatax('ReturnInvoice', id)
+      @rtn_tax = avalara_transaction_refund.commit_avatax('ReturnInvoice', self)
 
       REFUND_LOGGER.info 'tax amount'
       REFUND_LOGGER.debug @rtn_tax
@@ -32,7 +32,7 @@ Spree::Refund.class_eval do
     begin
       avalara_transaction_refund = Spree::AvalaraTransaction.find_by_order_id(payment.order.id)
 
-      @rtn_tax = avalara_transaction_refund.commit_avatax_final('ReturnInvoice', id)
+      @rtn_tax = avalara_transaction_refund.commit_avatax_final('ReturnInvoice', self)
 
       REFUND_LOGGER.info 'tax amount'
       REFUND_LOGGER.debug @rtn_tax
