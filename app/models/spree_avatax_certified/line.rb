@@ -2,7 +2,7 @@ module SpreeAvataxCertified
   class Line
     attr_reader :order, :invoice_type, :lines, :stock_locations, :refund
 
-    def initialize(order, invoice_type, refund=nil)
+    def initialize(order, invoice_type, refund = nil)
       @logger ||= AvataxHelper::AvataxLog.new('avalara_order_lines', 'SpreeAvataxCertified::Line', 'building lines')
       @order = order
       @invoice_type = invoice_type
@@ -10,12 +10,13 @@ module SpreeAvataxCertified
       @refund = refund
       @stock_locations = order_stock_locations
       build_lines
+      @logger.debug @lines
     end
 
     def build_lines
       @logger.info('build lines')
 
-      if invoice_type == 'ReturnInvoice' || invoice_type == 'ReturnOrder'
+      if %w(ReturnInvoice ReturnOrder).include?(invoice_type)
         refund_lines
       else
         item_lines_array
@@ -65,9 +66,8 @@ module SpreeAvataxCertified
 
       ship_lines = []
       order.shipments.each do |shipment|
-        if shipment.tax_category
-          ship_lines << shipment_line(shipment)
-        end
+        next unless shipment.tax_category
+        ship_lines << shipment_line(shipment)
       end
 
       @logger.info_and_debug('shipment_lines_array', ship_lines)

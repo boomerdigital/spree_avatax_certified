@@ -5,21 +5,20 @@ require 'base64'
 require 'rest-client'
 require 'logging'
 
+# Avatax tax calculation API calls
 class TaxSvc
   def get_tax(request_hash)
     log(__method__, request_hash)
     RestClient.log = logger.logger
-    res = response("get", request_hash)
-    logger.info 'RestClient call'
-    logger.debug res
-    response = JSON.parse(res.body)
+    res = response('get', request_hash)
+    logger.info_and_debug('RestClient call', res)
 
-    if response['ResultCode'] != 'Success'
+    if res['ResultCode'] != 'Success'
       logger.info 'Avatax Error'
-      logger.debug response, 'error in Tax'
+      logger.debug res, 'error in Tax'
       raise 'error in Tax'
     else
-      response
+      res
     end
   rescue => e
     logger.info 'Rest Client Error'
@@ -30,9 +29,9 @@ class TaxSvc
   def cancel_tax(request_hash)
     if tax_calculation_enabled?
       log(__method__, request_hash)
-      res = response("cancel", request_hash)
+      res = response('cancel', request_hash)
       logger.debug res
-      JSON.parse(res.body)["CancelTaxResult"]
+      res['CancelTaxResult']
     end
   rescue => e
     logger.debug e, 'error in Cancel Tax'
@@ -45,8 +44,9 @@ class TaxSvc
 
       return nil if coordinates.nil?
       sale_amount = 0 if sale_amount.nil?
+      coor = coordinates[:latitude].to_s + ',' + coordinates[:longitude].to_s
 
-      uri = URI(service_url + coordinates[:latitude].to_s + "," + coordinates[:longitude].to_s + "/get?saleamount=" + sale_amount.to_s )
+      uri = URI(service_url + coor + '/get?saleamount=' + sale_amount.to_s)
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -61,13 +61,13 @@ class TaxSvc
 
   def ping
     logger.info 'Ping Call'
-    self.estimate_tax({ latitude: "40.714623", longitude: "-74.006605"}, 0)
+    estimate_tax({ latitude: '40.714623', longitude: '-74.006605' }, 0)
   end
 
   protected
 
   def logger
-    AvataxHelper::AvataxLog.new("tax_svc", "tax_service", 'call to tax service')
+    AvataxHelper::AvataxLog.new('tax_svc', 'tax_service', 'call to tax service')
   end
 
   private
@@ -77,7 +77,7 @@ class TaxSvc
   end
 
   def credential
-    'Basic ' + Base64.encode64(account_number + ":" + license_key)
+    'Basic ' + Base64.encode64(account_number + ':' + license_key)
   end
 
   def service_url
@@ -93,16 +93,17 @@ class TaxSvc
   end
 
   def response(uri, request_hash)
-    RestClient.post(service_url + uri, JSON.generate(request_hash), authorization: credential, content_type: 'application/json') do |response, request, result|
+    url = service_url + uri
+    res = RestClient.post(url, JSON.generate(request_hash), authorization: credential, content_type: 'application/json') do |response|
       response
     end
+    JSON.parse(res)
   end
 
   def log(method, request_hash = nil)
     logger.info method.to_s + ' call'
-    unless request_hash.nil?
-      logger.debug request_hash
-      logger.debug JSON.generate(request_hash)
-    end
+    return if request_hash.nil?
+    logger.debug request_hash
+    logger.debug JSON.generate(request_hash)
   end
 end

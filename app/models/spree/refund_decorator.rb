@@ -11,12 +11,6 @@ Spree::Refund.class_eval do
     Spree::Config.avatax_iseligible
   end
 
-  def avalara_lookup
-    REFUND_LOGGER.debug 'avalara lookup reimbursement'
-    create_avalara_transaction_refund
-    :lookup_avatax
-  end
-
   def avalara_capture_finalize
     REFUND_LOGGER.debug 'avalara capture refund avalara_capture_finalize'
     begin
