@@ -5,12 +5,12 @@ module Spree
     end
 
     def compute_order(order)
-      raise 'Spree::AvalaraTransaction is designed to calculate taxes at the shipment and line-item levels.'
+      raise 'AvalaraTransaction cannot calculate taxes at order level.'
     end
 
     def compute_shipment_or_line_item(item)
       # NEED TO TEST VAT
-      if rate.included_in_price
+      if item.tax_category.try(:tax_rates) && item.tax_category.tax_rates.any? { |rate| rate.included_in_price == true }
         raise 'AvalaraTransaction cannot calculate inclusive sales taxes.'
       else
         avalara_response = get_avalara_response(item.order)
@@ -23,7 +23,7 @@ module Spree
     alias_method :compute_line_item, :compute_shipment_or_line_item
 
     def compute_shipping_rate(shipping_rate)
-      if rate.tax_rate.included_in_price
+      if shipping_rate.try(:tax_rate).try(:included_in_price) == true
         raise 'AvalaraTransaction cannot calculate inclusive sales taxes.'
       else
         return 0

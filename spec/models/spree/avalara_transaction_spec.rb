@@ -110,29 +110,20 @@ describe Spree::AvalaraTransaction, :type => :model do
     describe '#commit_avatax' do
       it 'should receive post_return_to_avalara' do
         expect(order.avalara_transaction).to receive(:post_return_to_avalara)
-        order.avalara_transaction.commit_avatax('ReturnInvoice')
+        order.avalara_transaction.commit_avatax('ReturnInvoice', refund)
       end
     end
 
     describe '#commit_avatax_final' do
       it "should commit avatax final" do
-        response = order.avalara_transaction.commit_avatax_final('ReturnInvoice', refund.id)
+        response = order.avalara_transaction.commit_avatax_final('ReturnInvoice', refund)
         expect(response).to be_kind_of(Hash)
         expect(response['ResultCode']).to eq('Success')
       end
 
       it 'should receive post_order_to_avalara' do
         expect(order.avalara_transaction).to receive(:post_return_to_avalara)
-        order.avalara_transaction.commit_avatax_final('ReturnInvoice', refund.id)
-      end
-
-      context 'fail' do
-        it "should commit avatax final" do
-          order = create(:completed_order_with_totals)
-          order.avalara_capture
-          response = order.avalara_transaction.commit_avatax_final('ReturnInvoice', refund.id)
-          expect(response).to eq({ TotalTax: '0.00' })
-        end
+        order.avalara_transaction.commit_avatax_final('ReturnInvoice', refund)
       end
     end
   end

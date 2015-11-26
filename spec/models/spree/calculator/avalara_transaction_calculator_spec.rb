@@ -51,7 +51,7 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
           before { line_item.promo_total = -1 }
 
           it "should be equal to the item's pre-tax total * rate" do
-            expect(calculator.compute(line_item)).to eq(0.4)
+            expect(calculator.compute(line_item)).to eq(0.36)
           end
         end
 
@@ -84,6 +84,7 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
       end
       context 'when given a shipping rate' do
         it 'raises exception' do
+          order.shipments.first.selected_shipping_rate.tax_rate.update_attributes(included_in_price: true)
           expect{calculator.compute(order.shipments.first.selected_shipping_rate)}.to raise_exception
         end
       end

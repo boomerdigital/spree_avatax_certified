@@ -16,10 +16,10 @@ module Spree
       post_order_to_avalara(false, 'SalesOrder')
     end
 
-    def commit_avatax(invoice_dt = nil, refund_id = nil)
+    def commit_avatax(invoice_dt = nil, refund = nil)
       if tax_calculation_enabled?
-        if invoice_dt == 'ReturnInvoice'
-          post_return_to_avalara(false, invoice_dt, refund_id)
+        if %w(ReturnInvoice ReturnOrder).include?(invoice_dt)
+          post_return_to_avalara(false, invoice_dt, refund)
         else
           post_order_to_avalara(false, invoice_dt)
         end
@@ -28,11 +28,11 @@ module Spree
       end
     end
 
-    def commit_avatax_final(invoice_dt = nil, refund_id = nil)
+    def commit_avatax_final(invoice_dt = nil, refund = nil)
       if document_committing_enabled?
         if tax_calculation_enabled?
-          if invoice_dt == 'ReturnInvoice'
-            post_return_to_avalara(true, invoice_dt, refund_id)
+          if %w(ReturnInvoice ReturnOrder).include?(invoice_dt)
+            post_return_to_avalara(true, invoice_dt, refund)
           else
             post_order_to_avalara(true, invoice_dt)
           end
@@ -61,8 +61,6 @@ module Spree
         CancelCode: 'DocVoided'
       }
 
-      AVALARA_TRANSACTION_LOGGER.debug cancel_tax_request
-
       mytax = TaxSvc.new
       cancel_tax_result = mytax.cancel_tax(cancel_tax_request)
 
@@ -71,10 +69,7 @@ module Spree
       if cancel_tax_result == 'error in Tax'
         return 'Error in Tax'
       else
-        if cancel_tax_result['ResultCode'] == 'Success'
-          AVALARA_TRANSACTION_LOGGER.debug cancel_tax_result
-          return cancel_tax_result
-        end
+        return cancel_tax_result
       end
     end
 
@@ -95,9 +90,9 @@ module Spree
 
       gettaxes = {
         DocCode: order.number,
-        Discount: order.promo_total.to_s,
+        Discount: order.promo_total.abs.to_s,
         Commit: commit,
-        DocType: invoice_detail ? invoice_detail : 'SalesInvoice',
+        DocType: invoice_detail ? invoice_detail : 'SalesOrder',
         Addresses: avatax_address.addresses,
         Lines: avatax_line.lines
       }.merge(base_tax_hash)
@@ -110,32 +105,24 @@ module Spree
 
       AVALARA_TRANSACTION_LOGGER.info_and_debug('tax result', tax_result)
 
-      if tax_result == 'error in Tax'
-        @myrtntax = { TotalTax: '0.00' }
-      else
-        if tax_result['ResultCode'] == 'Success'
-          AVALARA_TRANSACTION_LOGGER.info_and_debug('total tax', tax_result['TotalTax'].to_s)
-          @myrtntax = tax_result
-        end
-      end
-      @myrtntax
+      return { TotalTax: '0.00' } if tax_result == 'error in Tax'
+      return tax_result if tax_result['ResultCode'] == 'Success'
     end
 
-    def post_return_to_avalara(commit = false, invoice_detail = nil, refund_id = nil)
+    def post_return_to_avalara(commit = false, invoice_detail = nil, refund = nil)
       AVALARA_TRANSACTION_LOGGER.info('starting post return order to avalara')
 
       avatax_address = SpreeAvataxCertified::Address.new(order)
-      avatax_line = SpreeAvataxCertified::Line.new(order, invoice_detail)
+      avatax_line = SpreeAvataxCertified::Line.new(order, invoice_detail, refund)
 
       taxoverride = {
-        TaxOverrideType: 'TaxDate',
-        Reason: 'Adjustment for return',
-        TaxDate: order.completed_at.strftime('%F'),
-        TaxAmount: '0'
+        TaxOverrideType: 'None',
+        Reason: 'Return',
+        TaxDate: order.completed_at.strftime('%F')
       }
 
       gettaxes = {
-        DocCode: order.number.to_s + '.' + refund_id.to_s,
+        DocCode: order.number.to_s + '.' + refund.id.to_s,
         Commit: commit,
         DocType: invoice_detail ? invoice_detail : 'ReturnOrder',
         Addresses: avatax_address.addresses,
@@ -152,15 +139,8 @@ module Spree
 
       AVALARA_TRANSACTION_LOGGER.info_and_debug('tax result', tax_result)
 
-      if tax_result == 'error in Tax'
-        @myrtntax = { TotalTax: '0.00' }
-      else
-        if tax_result['ResultCode'] == 'Success'
-          AVALARA_TRANSACTION_LOGGER.info_and_debug('total tax', tax_result['TotalTax'].to_s)
-          @myrtntax = tax_result
-        end
-      end
-      @myrtntax
+      return { TotalTax: '0.00' } if tax_result == 'error in Tax'
+      return tax_result if tax_result['ResultCode'] == 'Success'
     end
 
     def base_tax_hash
@@ -181,7 +161,7 @@ module Spree
     end
 
     def customer_code
-      order.user ? order.user.id : 'Guest'
+      order.user ? order.user.id : order.email
     end
 
     def avatax_client_version

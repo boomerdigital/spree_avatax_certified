@@ -1,12 +1,13 @@
 module SpreeAvataxCertified
   class Line
-    attr_reader :order, :invoice_type, :lines, :stock_locations
+    attr_reader :order, :invoice_type, :lines, :stock_locations, :refund
 
-    def initialize(order, invoice_type)
+    def initialize(order, invoice_type, refund = nil)
       @logger ||= AvataxHelper::AvataxLog.new('avalara_order_lines', 'SpreeAvataxCertified::Line', 'building lines')
       @order = order
       @invoice_type = invoice_type
       @lines = []
+      @refund = refund
       @stock_locations = order_stock_locations
       build_lines
       @logger.debug @lines
@@ -15,7 +16,7 @@ module SpreeAvataxCertified
     def build_lines
       @logger.info('build lines')
 
-      if invoice_type == 'ReturnInvoice' || invoice_type == 'ReturnOrder'
+      if %w(ReturnInvoice ReturnOrder).include?(invoice_type)
         refund_lines
       else
         item_lines_array
@@ -37,8 +38,8 @@ module SpreeAvataxCertified
         Amount: line_item.discounted_amount.to_f,
         OriginCode: stock_location,
         DestinationCode: 'Dest',
-        CustomerUsageType: order.user ? customer_usage_type : '',
-        Discounted: order.promo_total > 0.0
+        CustomerUsageType: customer_usage_type,
+        Discounted: order.promo_total.abs > 0.0
       }
 
       @logger.debug line
@@ -57,6 +58,7 @@ module SpreeAvataxCertified
       @logger.info_and_debug('item_lines_array', line_item_lines)
 
       lines.concat(line_item_lines) unless line_item_lines.empty?
+      line_item_lines
     end
 
     def shipment_lines_array
@@ -65,13 +67,12 @@ module SpreeAvataxCertified
       ship_lines = []
       order.shipments.each do |shipment|
         next unless shipment.tax_category
-
         ship_lines << shipment_line(shipment)
-
-        @logger.info_and_debug('shipment_lines_array', ship_lines)
-
-        lines.concat(ship_lines) unless ship_lines.empty?
       end
+
+      @logger.info_and_debug('shipment_lines_array', ship_lines)
+      lines.concat(ship_lines) unless ship_lines.empty?
+      ship_lines
     end
 
     def shipment_line(shipment)
@@ -84,7 +85,7 @@ module SpreeAvataxCertified
         Amount: shipment.discounted_amount.to_f,
         OriginCode: "#{shipment.stock_location_id}",
         DestinationCode: 'Dest',
-        CustomerUsageType: order.user ? customer_usage_type : '',
+        CustomerUsageType: customer_usage_type,
         Description: 'Shipping Charge',
         TaxCode: shipment.shipping_method.tax_category.try(:tax_code) || 'FR000000'
       }
@@ -96,26 +97,57 @@ module SpreeAvataxCertified
 
     def refund_lines
       refunds = []
-      order.refunds.each do |refund|
-        next if refund.reimbursement.try(:reimbursement_status) == 'reimbursed'
-
-        refund_line = {
-          LineNo: "#{refund.id}-RA",
-          ItemCode: refund.transaction_id || 'Refund',
-          Qty: 1,
-          Amount: -refund.reimbursement.return_items.sum(:pre_tax_amount).to_f,
-          OriginCode: 'Orig',
-          DestinationCode: 'Dest',
-          CustomerUsageType: order.user ? customer_usage_type : '',
-          Description: 'Refund'
-        }
-
-        @logger.debug refund_line
-
+      if refund.reimbursement.nil?
         refunds << refund_line
+      else
+        return_items = refund.reimbursement.customer_return.return_items
+        li_ids = Spree::InventoryUnit.where(id: return_items.pluck(:inventory_unit_id)).select(:line_item_id)
+        amount = return_items.sum(:pre_tax_amount) / li_ids.uniq.count
+
+        return_items.map(&:inventory_unit).group_by(&:line_item_id).each_value do |inv_unit|
+          quantity = inv_unit.uniq.count
+          refunds << return_item_line(inv_unit.first.line_item, quantity, amount)
+        end
       end
 
+      @logger.debug refunds
       lines.concat(refunds) unless refunds.empty?
+      refunds
+    end
+
+    def refund_line
+      {
+        LineNo: "#{refund.id}-RA",
+        ItemCode: refund.transaction_id || 'Refund',
+        Qty: 1,
+        Amount: -refund.amount.to_f,
+        OriginCode: 'Orig',
+        DestinationCode: 'Dest',
+        CustomerUsageType: customer_usage_type,
+        Description: 'Refund'
+      }
+    end
+
+    def return_item_line(line_item, quantity, amount)
+      @logger.info('build line_item line')
+
+      stock_location = get_stock_location(@stock_locations, line_item)
+
+      line = {
+        LineNo: "#{line_item.id}-LI",
+        Description: line_item.name[0..255],
+        TaxCode: line_item.tax_category.try(:description) || 'P0000000',
+        ItemCode: line_item.variant.sku,
+        Qty: quantity,
+        Amount: -amount.to_f,
+        OriginCode: stock_location,
+        DestinationCode: 'Dest',
+        CustomerUsageType: customer_usage_type
+      }
+
+      @logger.debug line
+
+      line
     end
 
     def order_stock_locations
@@ -138,7 +170,7 @@ module SpreeAvataxCertified
     end
 
     def customer_usage_type
-      order.user.avalara_entity_use_code.try(:use_code)
+      order.user ? order.user.avalara_entity_use_code.try(:use_code) : ''
     end
   end
 end
