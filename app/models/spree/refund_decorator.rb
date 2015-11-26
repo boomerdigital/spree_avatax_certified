@@ -14,9 +14,7 @@ Spree::Refund.class_eval do
   def avalara_capture
     REFUND_LOGGER.debug 'avalara capture refund avalara_capture'
     begin
-      avalara_transaction_refund = Spree::AvalaraTransaction.find_by_order_id(payment.order.id)
-
-      @rtn_tax = avalara_transaction_refund.commit_avatax('ReturnInvoice', self)
+      @rtn_tax = payment.order.avalara_transaction.commit_avatax('ReturnInvoice', self)
 
       REFUND_LOGGER.info 'tax amount'
       REFUND_LOGGER.debug @rtn_tax
@@ -30,9 +28,7 @@ Spree::Refund.class_eval do
   def avalara_capture_finalize
     REFUND_LOGGER.debug 'avalara capture refund avalara_capture_finalize'
     begin
-      avalara_transaction_refund = Spree::AvalaraTransaction.find_by_order_id(payment.order.id)
-
-      @rtn_tax = avalara_transaction_refund.commit_avatax_final('ReturnInvoice', self)
+      @rtn_tax = payment.order.avalara_transaction.commit_avatax_final('ReturnInvoice', self)
 
       REFUND_LOGGER.info 'tax amount'
       REFUND_LOGGER.debug @rtn_tax

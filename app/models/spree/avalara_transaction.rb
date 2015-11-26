@@ -18,7 +18,7 @@ module Spree
 
     def commit_avatax(invoice_dt = nil, refund = nil)
       if tax_calculation_enabled?
-        if invoice_dt == 'ReturnInvoice'
+        if %w(ReturnInvoice ReturnOrder).include?(invoice_dt)
           post_return_to_avalara(false, invoice_dt, refund)
         else
           post_order_to_avalara(false, invoice_dt)
@@ -31,7 +31,7 @@ module Spree
     def commit_avatax_final(invoice_dt = nil, refund = nil)
       if document_committing_enabled?
         if tax_calculation_enabled?
-          if invoice_dt == 'ReturnInvoice'
+          if %w(ReturnInvoice ReturnOrder).include?(invoice_dt)
             post_return_to_avalara(true, invoice_dt, refund)
           else
             post_order_to_avalara(true, invoice_dt)
@@ -61,8 +61,6 @@ module Spree
         CancelCode: 'DocVoided'
       }
 
-      AVALARA_TRANSACTION_LOGGER.debug cancel_tax_request
-
       mytax = TaxSvc.new
       cancel_tax_result = mytax.cancel_tax(cancel_tax_request)
 
@@ -71,10 +69,7 @@ module Spree
       if cancel_tax_result == 'error in Tax'
         return 'Error in Tax'
       else
-        if cancel_tax_result['ResultCode'] == 'Success'
-          AVALARA_TRANSACTION_LOGGER.debug cancel_tax_result
-          return cancel_tax_result
-        end
+        return cancel_tax_result
       end
     end
 
@@ -110,15 +105,8 @@ module Spree
 
       AVALARA_TRANSACTION_LOGGER.info_and_debug('tax result', tax_result)
 
-      if tax_result == 'error in Tax'
-        @myrtntax = { TotalTax: '0.00' }
-      else
-        if tax_result['ResultCode'] == 'Success'
-          AVALARA_TRANSACTION_LOGGER.info_and_debug('total tax', tax_result['TotalTax'].to_s)
-          @myrtntax = tax_result
-        end
-      end
-      @myrtntax
+      return { TotalTax: '0.00' } if tax_result == 'error in Tax'
+      return tax_result if tax_result['ResultCode'] == 'Success'
     end
 
     def post_return_to_avalara(commit = false, invoice_detail = nil, refund = nil)
@@ -151,15 +139,8 @@ module Spree
 
       AVALARA_TRANSACTION_LOGGER.info_and_debug('tax result', tax_result)
 
-      if tax_result == 'error in Tax'
-        @myrtntax = { TotalTax: '0.00' }
-      else
-        if tax_result['ResultCode'] == 'Success'
-          AVALARA_TRANSACTION_LOGGER.info_and_debug('total tax', tax_result['TotalTax'].to_s)
-          @myrtntax = tax_result
-        end
-      end
-      @myrtntax
+      return { TotalTax: '0.00' } if tax_result == 'error in Tax'
+      return tax_result if tax_result['ResultCode'] == 'Success'
     end
 
     def base_tax_hash

@@ -101,7 +101,8 @@ module SpreeAvataxCertified
         refunds << refund_line
       else
         return_items = refund.reimbursement.customer_return.return_items
-        amount = return_items.sum(:pre_tax_amount) / Spree::InventoryUnit.where(id: return_items.pluck(:inventory_unit_id)).select(:line_item_id).uniq.count
+        li_ids = Spree::InventoryUnit.where(id: return_items.pluck(:inventory_unit_id)).select(:line_item_id)
+        amount = return_items.sum(:pre_tax_amount) / li_ids.uniq.count
 
         return_items.map(&:inventory_unit).group_by(&:line_item_id).each_value do |inv_unit|
           quantity = inv_unit.uniq.count
@@ -133,15 +134,15 @@ module SpreeAvataxCertified
       stock_location = get_stock_location(@stock_locations, line_item)
 
       line = {
-        :LineNo => "#{line_item.id}-LI",
-        :Description => line_item.name[0..255],
-        :TaxCode => line_item.tax_category.try(:description) || 'P0000000',
-        :ItemCode => line_item.variant.sku,
-        :Qty => quantity,
-        :Amount => -amount.to_f,
-        :OriginCode => stock_location,
-        :DestinationCode => 'Dest',
-        :CustomerUsageType => customer_usage_type
+        LineNo: "#{line_item.id}-LI",
+        Description: line_item.name[0..255],
+        TaxCode: line_item.tax_category.try(:description) || 'P0000000',
+        ItemCode: line_item.variant.sku,
+        Qty: quantity,
+        Amount: -amount.to_f,
+        OriginCode: stock_location,
+        DestinationCode: 'Dest',
+        CustomerUsageType: customer_usage_type
       }
 
       @logger.debug line

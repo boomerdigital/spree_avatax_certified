@@ -5,7 +5,7 @@ module Spree
     end
 
     def compute_order(order)
-      raise 'Spree::AvalaraTransaction is designed to calculate taxes at the shipment and line-item levels.'
+      raise 'AvalaraTransaction cannot calculate taxes at order level.'
     end
 
     def compute_shipment_or_line_item(item)

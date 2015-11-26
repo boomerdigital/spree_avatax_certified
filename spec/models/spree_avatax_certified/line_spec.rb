@@ -96,9 +96,7 @@ describe SpreeAvataxCertified::Line, :type => :model do
     let(:gateway_response_params) { {} }
     let(:gateway_response_options) { {} }
 
-    let(:reimbursement) { create(:reimbursement) }
-
-    let(:refund) {Spree::Refund.new(payment: payment, amount: BigDecimal.new(10), reason: refund_reason, transaction_id: nil, reimbursement: reimbursement)}
+    let(:refund) {Spree::Refund.new(payment: payment, amount: BigDecimal.new(10), reason: refund_reason, transaction_id: nil)}
     let(:shipped_order) { FactoryGirl.create(:shipped_order) }
     let(:return_lines) { SpreeAvataxCertified::Line.new(shipped_order, 'ReturnOrder', refund) }
 
