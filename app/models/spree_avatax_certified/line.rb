@@ -98,6 +98,7 @@ module SpreeAvataxCertified
     def refund_lines
       refunds = []
       if refund.reimbursement.nil?
+        raise "SpreeAvataxCertified#refund_lines called on a refund, but the refund is not attached to a reimbursement"
         refunds << refund_line
       else
         return_items = refund.reimbursement.customer_return.return_items
