@@ -19,7 +19,7 @@ From Avalara's own explanation of the certification program:
 Installation
 ------------
 ```ruby
-gem 'spree_avatax_certified', github: 'railsdog/spree_avatax_certified', branch: 'master'
+gem 'spree_avatax_certified', github: 'boomerdigital/spree_avatax_certified', branch: 'master'
 ```
 ```shell
 bundle install
@@ -57,7 +57,7 @@ Be sure to bundle your dependencies and then create a dummy test app for the spe
     $ bundle exec rake test_app
     $ bundle exec rspec spec
 
-Copyright (c) 2014, 2015 RailsDog LLC, released under the New BSD License
+Copyright (c) 2016 Boomer Digital, released under the New BSD License
 
 # CHANGELOG
 See [CHANGELOG.md](CHANGELOG.md) for change history.
