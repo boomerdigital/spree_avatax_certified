@@ -19,15 +19,6 @@ describe Spree::Order, type: :model do
     end
   end
 
-  describe "#avalara_lookup" do
-    it "should return lookup_avatax" do
-      expect(order.avalara_lookup).to eq(:lookup_avatax)
-    end
-    it "creates new avalara_transaction" do
-      expect{order.avalara_lookup}.to change{Spree::AvalaraTransaction.count}.by(1)
-    end
-  end
-
   describe "#cancel_avalara" do
     let(:completed_order) {create(:completed_order_with_totals)}
 
