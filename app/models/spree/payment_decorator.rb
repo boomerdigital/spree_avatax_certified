@@ -12,13 +12,11 @@ Spree::Payment.class_eval do
   end
 
   def avalara_finalize
-    if order.additional_tax_total > 0
-      if self.amount != order.total
-        self.update_attributes(amount: order.total)
-        order.avalara_capture_finalize if avalara_eligible?
-      else
-        order.avalara_capture_finalize if avalara_eligible?
-      end
+    if self.amount != order.total
+      self.update_attributes(amount: order.total)
+      order.avalara_capture_finalize if avalara_eligible?
+    else
+      order.avalara_capture_finalize if avalara_eligible?
     end
   end
 end
