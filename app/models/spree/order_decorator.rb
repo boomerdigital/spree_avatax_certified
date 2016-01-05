@@ -12,12 +12,6 @@ Spree::Order.class_eval do
     Spree::Config.avatax_iseligible
   end
 
-  def avalara_lookup
-    logger.debug 'avalara lookup'
-    create_avalara_transaction if avalara_transaction.nil?
-    :lookup_avatax
-  end
-
   def cancel_avalara
     return nil unless avalara_transaction.present?
     self.avalara_transaction.cancel_order
@@ -25,12 +19,11 @@ Spree::Order.class_eval do
 
   def avalara_capture
     logger.debug 'avalara capture'
-
     begin
       create_avalara_transaction if avalara_transaction.nil?
       line_items.reload
 
-      @rtn_tax = self.avalara_transaction.commit_avatax('SalesOrder')
+      @rtn_tax = self.avalara_transaction.commit_avatax('SalesInvoice')
 
       logger.info_and_debug('tax amount', @rtn_tax)
       @rtn_tax
