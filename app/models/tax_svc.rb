@@ -4,6 +4,7 @@ require 'addressable/uri'
 require 'base64'
 require 'rest-client'
 require 'logging'
+require 'savon'
 
 class TaxSvc
   def get_tax(request_hash)
@@ -62,6 +63,10 @@ class TaxSvc
   def ping
     logger.info 'Ping Call'
     self.estimate_tax({ latitude: '40.714623', longitude: '-74.006605'}, 0)
+  end
+
+  def soap_client
+
   end
 
   protected
