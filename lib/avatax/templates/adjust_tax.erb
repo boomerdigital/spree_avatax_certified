@@ -1,0 +1,62 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://avatax.avalara.com/services">
+  <soapenv:Header>
+    <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+       <wsse:UsernameToken wsu:Id="UsernameToken-7" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+          <wsse:Username><%= @username %></wsse:Username>
+          <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText"><%= @password %></wsse:Password>
+       </wsse:UsernameToken>
+    </wsse:Security>
+    <ser:Profile>
+       <ser:Name><%= @name %></ser:Name>
+       <ser:Client><%= @clientname %></ser:Client>
+       <ser:Adapter><%= @adapter %></ser:Adapter>
+       <ser:Machine><%= @machine %></ser:Machine>
+    </ser:Profile>
+  </soapenv:Header>
+    <soapenv:Body>
+      <ser:AdjustTax>
+       <ser:AdjustTaxRequest>
+          <ser:AdjustmentReason><%= @AdjustmentReason %></ser:AdjustmentReason>
+          <ser:AdjustmentDescription><%= @AdjustmentDescription %></ser:AdjustmentDescription>
+         <ser:GetTaxRequest>
+         <ser:CompanyCode><%= @CompanyCode %></ser:CompanyCode>
+         <ser:DocType><%= @DocType %></ser:DocType>
+         <ser:DocCode><%= @DocCode %></ser:DocCode>
+         <ser:DocDate><%= @DocDate %></ser:DocDate>
+         <ser:CustomerCode><%= @CustomerCode %></ser:CustomerCode>
+         <ser:CustomerUsageType><%= @CustomerUsageType %></ser:CustomerUsageType>
+         <ser:Discount><%= @Discount %></ser:Discount>
+         <ser:ExemptionNo><%= @ExemptionNo %></ser:ExemptionNo>
+         <ser:Addresses><% @Addresses.each do |addr| %>
+         <ser:BaseAddress>
+           <ser:AddressCode><%= addr[:AddressCode] %></ser:AddressCode>
+           <ser:Line1><%= addr[:Line1] %></ser:Line1>
+           <ser:Line2><%= addr[:Line2] %></ser:Line2>
+           <ser:City><%= addr[:City] %></ser:City>
+           <ser:Region><%= addr[:Region] %></ser:Region>
+           <ser:PostalCode><%= addr[:PostalCode] %></ser:PostalCode>
+           <ser:Country><%= addr[:Country] %></ser:Country>
+         </ser:BaseAddress><% end %>
+         </ser:Addresses>
+         <ser:Lines><% @Lines.each do |lin| %>
+         <ser:Line>
+           <ser:No><%= lin[:LineNo] %></ser:No>
+           <ser:Description><%= lin[:Description] %></ser:Description>
+           <ser:TaxCode><%= lin[:TaxCode] %></ser:TaxCode>
+           <ser:ItemCode><%= lin[:ItemCode] %></ser:ItemCode>
+           <ser:Qty><%= lin[:Qty] %></ser:Qty>
+           <ser:Amount><%= lin[:Amount] %></ser:Amount>
+           <ser:OriginCode><%= lin[:OriginCode] %></ser:OriginCode>
+           <ser:DestinationCode><%= lin[:DestinationCode] %></ser:DestinationCode>
+           <ser:CustomerUsageType><%= lin[:CustomerUsageType] %></ser:CustomerUsageType>
+           <ser:Discounted><%= lin[:Discounted] %></ser:Discounted>
+         </ser:Line><% end %>
+        </ser:Lines>
+        <ser:DetailLevel><%= @DetailLevel %></ser:DetailLevel>
+        <ser:ReferenceCode><%= @ReferenceCode %></ser:ReferenceCode>
+        <ser:Commit><%= @Commit %></ser:Commit>
+        </ser:GetTaxRequest>
+      </ser:AdjustTaxRequest>
+    </ser:AdjustTax>
+  </soapenv:Body>
+</soapenv:Envelope>
