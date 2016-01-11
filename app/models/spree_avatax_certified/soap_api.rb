@@ -1,6 +1,6 @@
 require 'savon'
 
-module Avatax
+module SpreeAvataxCertified
   class SoapApi
     def initialize
       @username = Spree::Config.avatax_account
@@ -12,8 +12,8 @@ module Avatax
       @name = 'test'
       @adapter = spec.summary + spec.version.to_s
       @machine = 'test'
-      @ping_template = ERB.new(File.read("#{spec.gem_dir}/lib/avatax/templates/ping.erb"))
-      @adjusttax_template = ERB.new(File.read("#{spec.gem_dir}/lib/avatax/templates/adjust_tax.erb"))
+      @ping_template = ERB.new(File.read("#{spec.gem_dir}/lib/spree_avatax_certified/templates/ping.erb"))
+      @adjusttax_template = ERB.new(File.read("#{spec.gem_dir}/lib/spree_avatax_certified/templates/adjust_tax.erb"))
       @client = Savon.client(wsdl: 'https://development.avalara.net/tax/taxsvcaltsec.wsdl', endpoint: URI.parse(Spree::Config.avatax_endpoint + "/Tax/TaxSvc.asmx"))
     end
 
