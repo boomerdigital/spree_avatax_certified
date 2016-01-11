@@ -79,12 +79,13 @@ module Spree
       order = item.order
       item_address = order.ship_address || order.billing_address
       response = SpreeAvataxCertified::Response.new(avalara_response)
+      prev_tax_amount = item.additional_tax_total
 
-      return 0 if avalara_response.nil?
-      return 0 if %w(address cart).include?(order.state)
-      return 0 if item_address.nil?
-      return 0 unless calculable.zone.include?(item_address)
-      return 0 if response.total_tax == '0.00'
+      return prev_tax_amount if avalara_response.nil?
+      return prev_tax_amount if %w(address cart).include?(order.state)
+      return prev_tax_amount if item_address.nil?
+      return prev_tax_amount unless calculable.zone.include?(item_address)
+      return prev_tax_amount if response.total_tax == '0.00'
 
       response.tax_lines.each do |line|
         return line['TaxCalculated'].to_f if line['LineNo'] == "#{item.id}-#{item.avatax_line_code}"
