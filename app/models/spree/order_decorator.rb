@@ -18,9 +18,9 @@ Spree::Order.class_eval do
   end
 
   def adjust_avalara
-    logger.debug 'avalara adjust'
-
+    logger.debug 'adjust avalara order'
     begin
+      create_avalara_transaction if avalara_transaction.nil?
       @rtn_tax = self.avalara_transaction.adjust_avatax
       logger.info_and_debug('tax amount', @rtn_tax)
       @rtn_tax
