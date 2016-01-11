@@ -90,6 +90,20 @@ describe Spree::Order, type: :model do
     end
   end
 
+
+  describe "#adjust_avalara" do
+    let(:adjust_order) {
+      order.avalara_capture_finalize
+      order
+    }
+    it "should response with Hash object" do
+      expect(adjust_order.adjust_avalara).to be_kind_of(Hash)
+    end
+    it 'should have a ResultCode of success' do
+      expect(adjust_order.adjust_avalara[:result_code]).to eq('Success')
+    end
+  end
+
   describe '#avatax_cache_key' do
     it 'should respond with a cache key' do
       expected_response = "Spree::Order-#{order.number}-#{order.promo_total}"

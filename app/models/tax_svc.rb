@@ -42,7 +42,6 @@ class TaxSvc
 
   def adjust_tax(request_hash)
     log(__method__, request_hash)
-    RestClient.log = logger.logger
     soap = SpreeAvataxCertified::SoapApi.new
     response = soap.adjust_tax(request_hash)[:adjust_tax_response][:adjust_tax_result]
 
