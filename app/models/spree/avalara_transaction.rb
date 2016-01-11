@@ -48,7 +48,36 @@ module Spree
       cancel_order_to_avalara('SalesInvoice')
     end
 
+    def adjust_avatax
+      adjust_order_to_avalara
+    end
+
     private
+
+    def adjust_order_to_avalara
+      AVALARA_TRANSACTION_LOGGER.info('post adjust order to avalara')
+      avatax_address = SpreeAvataxCertified::Address.new(order)
+      avatax_line = SpreeAvataxCertified::Line.new(order, 'SalesInvoice')
+
+      gettaxes = {
+        DocCode: order.number,
+        Discount: order.promo_total.abs.to_s,
+        Commit: true,
+        DocType: 'SalesInvoice',
+        Addresses: avatax_address.addresses,
+        Lines: avatax_line.lines
+      }.merge(base_tax_hash)
+
+      AVALARA_TRANSACTION_LOGGER.debug gettaxes
+
+      mytax = TaxSvc.new
+      tax_result = mytax.adjust_tax(gettaxes)
+
+      AVALARA_TRANSACTION_LOGGER.info_and_debug('tax result', tax_result)
+
+      return { TotalTax: '0.00' } if tax_result == 'error in Tax'
+      return tax_result if tax_result[:result_code] == 'Success'
+    end
 
     def cancel_order_to_avalara(doc_type = 'SalesInvoice')
       AVALARA_TRANSACTION_LOGGER.info('cancel order to avalara')

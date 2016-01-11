@@ -88,6 +88,7 @@ module SpreeAvataxCertified
         :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
         :Description => 'Shipping Charge',
         :TaxCode => shipment.shipping_method.tax_category.try(:description) || 'FR000000',
+        :Discounted => false
       }
 
       @logger.debug shipment_line

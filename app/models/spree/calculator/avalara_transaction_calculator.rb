@@ -33,7 +33,9 @@ module Spree
     private
 
     def get_avalara_response(order)
-      if order.state == 'complete'
+      if order.state == 'complete' && order.payments.completed.any?
+        order.adjust_avalara
+      elsif order.state == 'completed'
         order.avalara_capture
       else
         retrieve_rates_from_cache(order)
@@ -76,18 +78,17 @@ module Spree
     def tax_for_item(item, avalara_response)
       order = item.order
       item_address = order.ship_address || order.billing_address
+      response = SpreeAvataxCertified::Response.new(avalara_response)
 
+      return 0 if avalara_response.nil?
       return 0 if %w(address cart).include?(order.state)
       return 0 if item_address.nil?
       return 0 unless calculable.zone.include?(item_address)
-      return 0 if avalara_response[:TotalTax] == '0.00'
-      return 0 if avalara_response.nil?
-      # think about if totaltax is 0 because of an error, adding a message to the order so a user will be available.
+      return 0 if response.total_tax == '0.00'
 
-      avalara_response['TaxLines'].each do |line|
-        if line['LineNo'] == "#{item.id}-#{item.avatax_line_code}"
-          return line['TaxCalculated'].to_f
-        end
+      response.tax_lines.each do |line|
+        return line['TaxCalculated'].to_f if line['LineNo'] == "#{item.id}-#{item.avatax_line_code}"
+        return line[:tax_calculated].to_f if line[:no] == "#{item.id}-#{item.avatax_line_code}"
       end
       0
     end

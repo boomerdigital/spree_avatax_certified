@@ -14,8 +14,7 @@ class TaxSvc
     logger.info 'RestClient call'
     logger.debug res
     response = JSON.parse(res.body)
-
-    if response['ResultCode'] != 'Success'
+    if SpreeAvataxCertified::Response.new(response).success?
       logger.info 'Avatax Error'
       logger.debug response, 'error in Tax'
       raise 'error in Tax'
@@ -38,6 +37,25 @@ class TaxSvc
   rescue => e
     logger.debug e, 'error in Cancel Tax'
     'error in Cancel Tax'
+  end
+
+  def adjust_tax(request_hash)
+    log(__method__, request_hash)
+    RestClient.log = logger.logger
+    soap = SpreeAvataxCertified::SoapApi.new
+    response = soap.adjust_tax(request_hash)[:adjust_tax_response][:adjust_tax_result]
+
+    if response[:result_code] != 'Success'
+      logger.info 'Avatax Error'
+      logger.debug response, 'error in Tax'
+      raise 'error in Tax'
+    else
+      response
+    end
+  rescue => e
+    logger.info 'Soap Client Error'
+    logger.debug e, 'error in Tax'
+    'error in Tax'
   end
 
   def estimate_tax(coordinates, sale_amount)
@@ -70,6 +88,13 @@ class TaxSvc
   end
 
   protected
+
+  def response(response_hash)
+  end
+
+  def result_success?(response)
+    response['ResultCode'] == 'Success' || response['result_code'] == 'Success'
+  end
 
   def logger
     AvataxHelper::AvataxLog.new('tax_svc', 'tax_service', 'call to tax service')
