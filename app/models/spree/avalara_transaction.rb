@@ -142,9 +142,10 @@ module Spree
     end
 
     def base_tax_hash
+      doc_date = order.complete? ? order.completed_at.strftime('%F') : Date.today.strftime('%F')
       {
         CustomerCode: customer_code,
-        DocDate: Date.today.strftime('%F'),
+        DocDate: doc_date,
         CompanyCode: Spree::Config.avatax_company_code,
         CustomerUsageType: customer_usage_type,
         ExemptionNo: order.user.try(:exemption_number),
