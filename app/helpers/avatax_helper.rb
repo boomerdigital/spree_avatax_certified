@@ -18,7 +18,7 @@ module AvataxHelper
     end
 
     def logger_enabled?
-      Spree::Config.avatax_log
+      Spree::Config.avatax_log || Spree::Config.avatax_log_to_stdout
     end
 
     def progname(progname = nil)
@@ -52,7 +52,7 @@ module AvataxHelper
         if text.nil?
           error
         else
-          logger.debug "[AVATAX] text"
+          logger.debug "[AVATAX] #{text}"
           text
         end
       end

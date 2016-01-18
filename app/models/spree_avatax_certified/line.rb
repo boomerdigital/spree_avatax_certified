@@ -24,7 +24,7 @@ module SpreeAvataxCertified
     end
 
     def item_line(line_item)
-      @logger.info('build line_item line')
+      @logger.info("build line_item line: #{line_item.name}")
 
       stock_location = get_stock_location(@stock_locations, line_item)
 
@@ -76,7 +76,7 @@ module SpreeAvataxCertified
     end
 
     def shipment_line(shipment)
-      @logger.info('build shipment line')
+      @logger.info("build shipment line: Shipment ID: #{shipment.id}")
 
       shipment_line = {
         :LineNo => "#{shipment.id}-FR",
@@ -115,7 +115,7 @@ module SpreeAvataxCertified
     end
 
     def return_item_line(line_item, quantity, amount)
-      @logger.info('build line_item line')
+      @logger.info("build return_line_item line: #{line_item.name}")
 
       stock_location = get_stock_location(@stock_locations, line_item)
 
