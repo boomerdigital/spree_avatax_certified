@@ -142,7 +142,7 @@ module Spree
     end
 
     def base_tax_hash
-      doc_date = order.complete? ? order.completed_at.strftime('%F') : Date.today.strftime('%F')
+      doc_date = order.completed? ? order.completed_at.strftime('%F') : Date.today.strftime('%F')
       {
         CustomerCode: customer_code,
         DocDate: doc_date,
