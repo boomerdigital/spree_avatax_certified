@@ -74,7 +74,7 @@ module SpreeAvataxCertified
           :Country => Spree::Country.find(stock_location.country_id).iso
         }
 
-        @logger.debug stock_location_address.to_xml
+        @logger.debug stock_location_address
 
         stock_addresses << stock_location_address
       end
