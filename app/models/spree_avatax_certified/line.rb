@@ -98,8 +98,19 @@ module SpreeAvataxCertified
     def refund_lines
       refunds = []
       if refund.reimbursement.nil?
-        raise "SpreeAvataxCertified#refund_lines called on a refund, but the refund is not attached to a reimbursement"
-        refunds << refund_line
+        # raise "SpreeAvataxCertified#refund_lines called on a refund, but the refund is not attached to a reimbursement"
+
+        unless refund.try(:try_on_guarantee_request_id).nil?
+          tog_item = TryOnGuaranteeRequest.find(refund.try_on_guarantee_request_id)
+          amount = tog_item.pre_tax_amount
+          line_item = tog_item.inventory_unit.line_item
+
+          refunds << tog_item_line(line_item, amount)
+
+        else
+          refunds << refund_line
+        end
+
       else
         return_items = refund.reimbursement.customer_return.return_items
         amount = return_items.sum(:pre_tax_amount) / Spree::InventoryUnit.where(id: return_items.pluck(:inventory_unit_id)).select(:line_item_id).uniq.count
@@ -113,6 +124,28 @@ module SpreeAvataxCertified
       @logger.debug refunds
       lines.concat(refunds) unless refunds.empty?
       refunds
+    end
+
+    def tog_item_line(line_item, amount)
+      @logger.info('build tog_item line')
+
+      stock_location = get_stock_location(@stock_locations, line_item)
+
+      line = {
+          :LineNo => "#{line_item.id}-TOG",
+          :Description => line_item.name[0..255],
+          :TaxCode => line_item.tax_category.try(:description) || 'P0000000',
+          :ItemCode => line_item.variant.sku,
+          :Qty => 1,
+          :Amount => -amount.to_f,
+          :OriginCode => 'Orig',
+          :DestinationCode => 'Dest',
+          :CustomerUsageType => customer_usage_type
+      }
+
+      @logger.debug line
+
+      line
     end
 
     def refund_line
