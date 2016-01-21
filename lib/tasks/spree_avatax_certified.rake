@@ -4,7 +4,7 @@ namespace :spree_avatax_certified do
   end
 
   task :commit_orders, [:path] => [:environment] do |t, args|
-    SmarterCSV.process("#{Rails.root}/tmp/#{args[:path]}").each do |chunk|
+    SmarterCSV.process("#{Rails.root}/#{args[:path]}").each do |chunk|
       begin
         order = Spree::Order.find_by_number(chunk[:doccode]).avalara_capture_finalize
       rescue => e
