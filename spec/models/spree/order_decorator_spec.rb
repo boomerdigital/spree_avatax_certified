@@ -5,14 +5,12 @@ describe Spree::Order, type: :model do
   it { should have_one :avalara_transaction }
 
   let(:order) {FactoryGirl.create(:order_with_line_items)}
-  let(:completed_order) { create(:completed_order_with_totals) }
   let(:variant) { create(:variant) }
 
   before do
     MyConfigPreferences.set_preferences
     stock_location = FactoryGirl.create(:stock_location)
     order.line_items.first.tax_category.update_attributes(name: "Clothing", description: "PC030000")
-    completed_order.line_items.first.tax_category.update_attributes(name: "Clothing", description: "PC030000")
   end
 
   describe "#avalara_eligible?" do
@@ -77,30 +75,21 @@ describe Spree::Order, type: :model do
     it 'should have a ResultCode of success' do
       expect(order.avalara_capture_finalize['ResultCode']).to eq('Success')
     end
-
-    context 'commit on completed at date' do
-      before do
-        completed_order.update_attributes(completed_at: 5.days.ago)
-      end
-
-      it 'has a docdate of completed at date' do
-        response = completed_order.avalara_capture_finalize
-        expect(response['DocDate']).to eq(5.days.ago.strftime('%F'))
-      end
-    end
   end
 
 
   describe "#adjust_avalara" do
-    let(:adjust_order) {
-      order.avalara_capture_finalize
-      order
-    }
-    it "should response with Hash object" do
-      expect(adjust_order.adjust_avalara).to be_kind_of(Hash)
-    end
-    it 'should have a ResultCode of success' do
-      expect(adjust_order.adjust_avalara[:result_code]).to eq('Success')
+    context 'committed order' do
+      let(:adjust_order) {
+        order.avalara_capture_finalize
+        order
+      }
+      it "should response with Hash object" do
+        expect(adjust_order.adjust_avalara).to be_kind_of(Hash)
+      end
+      it 'should have a ResultCode of success' do
+        expect(adjust_order.adjust_avalara[:result_code]).to eq('Success')
+      end
     end
   end
 

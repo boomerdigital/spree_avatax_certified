@@ -51,4 +51,5 @@ RSpec.configure do |config|
   end
 
   require 'support/config_avatax_preferences'
+  require 'factories/request_hash'
 end
