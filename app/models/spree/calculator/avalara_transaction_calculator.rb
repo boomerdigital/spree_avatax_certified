@@ -83,9 +83,11 @@ module Spree
 
       return prev_tax_amount if avalara_response.nil?
       return prev_tax_amount if %w(address cart).include?(order.state)
+      return prev_tax_amount if avalara_response.nil?
+      return prev_tax_amount if avalara_response[:TotalTax] == '0.00'
+      return prev_tax_amount if response.total_tax == '0.00'
       return prev_tax_amount if item_address.nil?
       return prev_tax_amount unless calculable.zone.include?(item_address)
-      return prev_tax_amount if response.total_tax == '0.00'
 
       response.tax_lines.each do |line|
         return line['TaxCalculated'].to_f if line['LineNo'] == "#{item.id}-#{item.avatax_line_code}"

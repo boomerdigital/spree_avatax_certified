@@ -16,8 +16,7 @@ class TaxSvc
     response = JSON.parse(res.body)
 
     if response['ResultCode'] != 'Success'
-      logger.info 'Avatax Error'
-      logger.debug response, 'error in Tax'
+      logger.info_and_debug("Avatax Error: Order ##{request_hash[:DocCode]}", response)
       raise 'error in Tax'
     else
       response
