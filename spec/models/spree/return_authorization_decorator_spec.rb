@@ -15,7 +15,6 @@ describe Spree::ReturnAuthorization, type: :model do
   subject(:return_authorization) { Spree::ReturnAuthorization.create(:order => order, :stock_location => stock_location) }
 
   before do
-    MyConfigPreferences.set_preferences
     @inventory_unit = order.shipments.first.inventory_units.first
     @variant = order.variants.first
   end
