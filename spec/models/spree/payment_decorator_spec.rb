@@ -3,7 +3,6 @@ require 'spec_helper'
 describe Spree::Payment, :type => :model do
   subject(:order) do
     order = FactoryGirl.create(:completed_order_with_totals)
-    order.line_items.first.tax_category.update_attributes(name: "Clothing", description: "PC030000")
     Spree::AvalaraTransaction.create(order: order)
     order
   end
