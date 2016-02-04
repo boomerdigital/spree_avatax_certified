@@ -46,7 +46,7 @@ module Spree
     end
 
     def cancel_order
-      cancel_order_to_avalara('SalesInvoice')
+      cancel_order_to_avalara('SalesInvoice') if tax_calculation_enabled?
     end
 
     private
