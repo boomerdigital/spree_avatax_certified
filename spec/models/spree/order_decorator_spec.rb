@@ -8,13 +8,6 @@ describe Spree::Order, type: :model do
   let(:completed_order) { create(:completed_order_with_totals) }
   let(:variant) { create(:variant) }
 
-  before do
-    MyConfigPreferences.set_preferences
-    stock_location = FactoryGirl.create(:stock_location)
-    order.line_items.first.tax_category.update_attributes(name: "Clothing", description: "PC030000")
-    completed_order.line_items.first.tax_category.update_attributes(name: "Clothing", description: "PC030000")
-  end
-
   describe "#avalara_eligible?" do
     it "should return true" do
       expect(order.avalara_eligible?).to eq(true)
