@@ -66,8 +66,8 @@ module Spree
 
       AVALARA_TRANSACTION_LOGGER.debug cancel_tax_result
 
-      if cancel_tax_result == 'error in Tax'
-        return 'Error in Tax'
+      if cancel_tax_result == 'Error in Cancel Tax'
+        return 'Error in Cancel Tax'
       else
         return cancel_tax_result
       end
