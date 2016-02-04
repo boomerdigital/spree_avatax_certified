@@ -4,6 +4,7 @@ describe TaxSvc, :type => :model do
   MyConfigPreferences.set_preferences
   let(:taxsvc) { TaxSvc.new }
   let(:request_hash) { attributes_for(:request_hash) }
+
   describe "#get_tax" do
     it "gets tax when all credentials are there" do
       result = taxsvc.get_tax(request_hash)
