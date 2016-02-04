@@ -72,11 +72,11 @@ module Spree
 
       mytax = TaxSvc.new
       tax_result = mytax.adjust_tax(gettaxes)
+      response = SpreeAvataxCertified::Response.new(tax_result)
 
       AVALARA_TRANSACTION_LOGGER.info_and_debug('tax result', tax_result)
 
-      return { TotalTax: '0.00' } if tax_result == 'error in Tax'
-      return tax_result if tax_result[:result_code] == 'Success'
+      response.tax_result
     end
 
     def cancel_order_to_avalara(doc_type = 'SalesInvoice')
@@ -128,14 +128,14 @@ module Spree
       AVALARA_TRANSACTION_LOGGER.debug gettaxes
 
       mytax = TaxSvc.new
-
       tax_result = mytax.get_tax(gettaxes)
+      response = SpreeAvataxCertified::Response.new(tax_result)
 
       AVALARA_TRANSACTION_LOGGER.info_and_debug('tax result', tax_result)
 
-      return { TotalTax: '0.00' } if tax_result == 'error in Tax'
-      return tax_result if tax_result['ResultCode'] == 'Success'
+      response.tax_result
     end
+
     def post_return_to_avalara(commit = false, invoice_detail = nil, return_auth = nil)
       AVALARA_TRANSACTION_LOGGER.info('starting post return order to avalara')
 
@@ -161,13 +161,12 @@ module Spree
       AVALARA_TRANSACTION_LOGGER.debug gettaxes
 
       mytax = TaxSvc.new
-
       tax_result = mytax.get_tax(gettaxes)
+      response = SpreeAvataxCertified::Response.new(tax_result)
 
       AVALARA_TRANSACTION_LOGGER.info_and_debug('tax result', tax_result)
 
-      return { TotalTax: '0.00' } if tax_result == 'error in Tax'
-      return tax_result if tax_result['ResultCode'] == 'Success'
+      response.tax_result
     end
 
     def base_tax_hash

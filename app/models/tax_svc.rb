@@ -86,24 +86,11 @@ class TaxSvc
     self.estimate_tax({ latitude: '40.714623', longitude: '-74.006605'}, 0)
   end
 
-  def soap_client
-
-  end
-
-  protected
-
-  def response(response_hash)
-  end
-
-  def result_success?(response)
-    response['ResultCode'] == 'Success' || response['result_code'] == 'Success'
-  end
+  private
 
   def logger
     AvataxHelper::AvataxLog.new('tax_svc', 'tax_service', 'call to tax service')
   end
-
-  private
 
   def tax_calculation_enabled?
     Spree::Config.avatax_tax_calculation
