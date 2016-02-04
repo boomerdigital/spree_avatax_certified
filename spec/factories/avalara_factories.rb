@@ -16,3 +16,10 @@ FactoryGirl.define do
     Lines [{:LineNo=>'1-LI', :ItemCode=>'ROR-00013', :Qty=>3, :Amount=>62.97, :OriginCode=>'9', :DestinationCode=>'Dest', :Description=>'Ruby on Rails Jr. Spaghetti', :TaxCode=>'P0000000', :Discounted=>false}]
   end
 end
+
+FactoryGirl.modify do
+  factory :tax_category, class: Spree::TaxCategory do
+    name { "TaxCategory - #{rand(999999)}" }
+    description { 'PC030000' }
+  end
+end
