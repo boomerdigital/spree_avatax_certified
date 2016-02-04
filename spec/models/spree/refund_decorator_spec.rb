@@ -39,7 +39,6 @@ describe Spree::Refund, type: :model do
 
   let(:refund) {Spree::Refund.new(payment: payment, amount: BigDecimal.new(10), reason: refund_reason, transaction_id: nil, reimbursement: reimbursement)}
   before do
-    MyConfigPreferences.set_preferences
     allow(payment.payment_method)
     .to receive(:credit)
     .with(amount_in_cents, payment.source, payment.transaction_id, {originator: an_instance_of(Spree::Refund)})
