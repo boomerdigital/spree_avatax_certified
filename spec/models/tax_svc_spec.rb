@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe TaxSvc, :type => :model do
-  MyConfigPreferences.set_preferences
   let(:taxsvc) { TaxSvc.new }
   let(:request_hash) { attributes_for(:request_hash) }
 

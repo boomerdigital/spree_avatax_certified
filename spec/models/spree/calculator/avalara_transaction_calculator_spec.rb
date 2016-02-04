@@ -12,7 +12,6 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
   let!(:line_item) { order.line_items.first }
 
   before :each do
-    MyConfigPreferences.set_preferences
     zone.zone_members.create!(zoneable: country)
     order.state = 'delivery'
   end

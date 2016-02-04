@@ -22,6 +22,7 @@ require 'spree/testing_support/controller_requests'
 require 'spree/testing_support/authorization_helpers'
 require 'spree/testing_support/factories'
 require 'spree_avatax_certified/factories'
+require 'factories/request_hash'
 
 Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each { |f| require f }
 
@@ -45,11 +46,10 @@ RSpec.configure do |config|
 
   config.before :each do
     DatabaseCleaner.start
+    MyConfigPreferences.set_preferences
   end
+
   config.after :each do
     DatabaseCleaner.clean
   end
-
-  require 'support/config_avatax_preferences'
-  require 'factories/request_hash'
 end
