@@ -8,7 +8,6 @@ describe Spree::Order, type: :model do
   let(:variant) { create(:variant) }
 
   before do
-    MyConfigPreferences.set_preferences
     stock_location = FactoryGirl.create(:stock_location)
     order.line_items.first.tax_category.update_attributes(name: "Clothing", description: "PC030000")
   end
