@@ -46,10 +46,10 @@ RSpec.configure do |config|
 
   config.before :each do
     DatabaseCleaner.start
+    MyConfigPreferences.set_preferences
   end
+
   config.after :each do
     DatabaseCleaner.clean
   end
-
-  require 'support/config_avatax_preferences'
 end

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe TaxSvc, :type => :model do
-  MyConfigPreferences.set_preferences
   let(:taxsvc) { TaxSvc.new }
   let(:success_params) {
     code = rand(100000).to_s
