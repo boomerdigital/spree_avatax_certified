@@ -8,8 +8,8 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
   let(:included_in_price) { false }
   let!(:rate) { create(:tax_rate, :tax_category => tax_category, :amount => 0.00, :included_in_price => included_in_price, zone: zone) }
   let!(:calculator) { Spree::Calculator::AvalaraTransactionCalculator.new(:calculable => rate ) }
-  let!(:order) { create(:order_with_line_items) }
-  let!(:line_item) { order.line_items.first }
+  let(:order) { create(:order_with_line_items) }
+  let(:line_item) { order.line_items.first }
 
   before :each do
     zone.zone_members.create!(zoneable: country)
@@ -40,11 +40,30 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
       end
 
       context "when tax is not included in price" do
-        context "when the line item is discounted" do
-          before { line_item.promo_total = -1 }
+        context "when the order is discounted" do
+          let(:promotion) { create(:promotion, :with_order_adjustment) }
+
+          before do
+            create(:adjustment, order: order, source: promotion.promotion_actions.first, adjustable: order)
+            order.update!
+          end
 
           it "should be equal to the item's pre-tax total * rate" do
-            expect(calculator.compute(line_item)).to eq(0.4)
+            expect(calculator.compute(line_item)).to eq(0.32)
+          end
+        end
+        context "when the line item is discounted" do
+          let!(:promotion) { create(:promotion_with_item_adjustment, adjustment_rate: 2) }
+
+          before do
+            order.line_items.each do |li|
+              create(:adjustment, order: order, source: promotion.promotion_actions.first, adjustable: li)
+            end
+            order.update!
+          end
+
+          it "should be equal to the item's pre-tax total * rate" do
+            expect(calculator.compute(line_item)).to eq(0.32)
           end
         end
 

@@ -38,7 +38,7 @@ module SpreeAvataxCertified
         :OriginCode => stock_location,
         :DestinationCode => 'Dest',
         :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
-        :Discounted => order.promo_total.abs > 0.0
+        :Discounted => true
       }
 
       @logger.debug line
