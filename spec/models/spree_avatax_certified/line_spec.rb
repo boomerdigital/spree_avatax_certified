@@ -4,7 +4,7 @@ describe SpreeAvataxCertified::Line, :type => :model do
   let(:country){ FactoryGirl.create(:country) }
   let!(:zone) { create(:zone, :name => "North America", :default_tax => true, :zone_members => []) }
   let(:zone_member) { Spree::ZoneMember.create() }
-  let!(:tax_category) { Spree::TaxCategory.create(name: 'Shipping', description: 'FR000000') }
+  let!(:tax_category) { Spree::TaxCategory.create(name: 'Shipping', tax_code: 'FR000000') }
   let(:included_in_price) { false }
   let!(:rate) { create(:tax_rate, :tax_category => tax_category, :amount => 0.00, :included_in_price => included_in_price, zone: zone) }
   let!(:calculator) { Spree::Calculator::AvalaraTransactionCalculator.new(:calculable => rate ) }

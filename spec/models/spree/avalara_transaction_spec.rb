@@ -14,12 +14,6 @@ describe Spree::AvalaraTransaction, :type => :model do
   let(:state) { create(:state) }
   let(:order) { create(:order_with_line_items) }
 
-  before :each do
-    MyConfigPreferences.set_preferences
-    stock_location = FactoryGirl.create(:stock_location)
-    order.line_items.first.tax_category.update_attributes(name: "Clothing", description: "PC030000")
-  end
-
   context 'captured orders' do
 
     before :each do
