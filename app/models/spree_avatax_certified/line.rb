@@ -135,15 +135,15 @@ module SpreeAvataxCertified
       stock_location = get_stock_location(@stock_locations, line_item)
 
       line = {
-        LineNo: "#{line_item.id}-LI",
-        Description: line_item.name[0..255],
-        TaxCode: line_item.tax_category.try(:tax_code) || 'P0000000',
-        ItemCode: line_item.variant.sku,
-        Qty: quantity,
-        Amount: -amount.to_f,
-        OriginCode: stock_location,
-        DestinationCode: 'Dest',
-        CustomerUsageType: customer_usage_type
+        :LineNo => "#{line_item.id}-LI",
+        :Description => line_item.name[0..255],
+        :TaxCode => line_item.tax_category.try(:tax_code) || 'P0000000',
+        :ItemCode => line_item.variant.sku,
+        :Qty => quantity,
+        :Amount => -amount.to_f,
+        :OriginCode => stock_location,
+        :DestinationCode => 'Dest',
+        :CustomerUsageType => customer_usage_type
       }
 
       @logger.debug line

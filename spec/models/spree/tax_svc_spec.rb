@@ -2,13 +2,11 @@ require 'spec_helper'
 
 describe TaxSvc, :type => :model do
   let(:taxsvc) { TaxSvc.new }
-  let(:success_params) {
-    code = rand(100000).to_s
-    {:CustomerCode=>"1",:DocDate=>"2014-11-03",:CompanyCode=>"54321",:CustomerUsageType=>"",:ExemptionNo=>nil,:Client=>"SpreeExtV1.0",:DocCode=>code,:ReferenceCode=>code,:DetailLevel=>"Tax",:Commit=>false,:DocType=>"SalesInvoice",:Addresses=>[{:AddressCode=>9,:Line1=>"31 South St",:City=>"Morristown",:PostalCode=>"07960",:Country=>"US"},{:AddressCode=>"Dest",:Line1=>"73 Glenmere Drive",:Line2=>"",:City=>"Chatham",:Region=>"NJ",:Country=>"US",:PostalCode=>"07928"},{:AddressCode=>"Orig",:Line1=>"73 Glenmere Drive",:City=>"Chatham",:PostalCode=>"07928",:Country=>"United States"}],:Lines=>[{:LineNo=>1,:ItemCode=>"ROR-00013",:Qty=>3,:Amount=>62.97,:OriginCode=>9,:DestinationCode=>"Dest",:Description=>"Ruby on Rails Jr. Spaghetti",:TaxCode=>""}]}
-  }
+  let(:request_hash) { attributes_for(:request_hash) }
+
   describe "#get_tax" do
     it "gets tax when all credentials are there" do
-      result = taxsvc.get_tax(success_params)
+      result = taxsvc.get_tax(request_hash)
       expect(result["ResultCode"]).to eq("Success")
     end
 
@@ -18,14 +16,14 @@ describe TaxSvc, :type => :model do
       end
 
       it 'responds with error when result code is not a success' do
-        result = taxsvc.get_tax(
-        {:CustomerCode=>"1",:DocDate=>"2014-11-03",:CompanyCode=>"54321",:CustomerUsageType=>"",:ExemptionNo=>nil,:Client=>"SpreeExtV1.0",:DocCode=>"R731071205",:ReferenceCode=>"R731071205",:DetailLevel=>"Tax",:Commit=>false,:DocType=>"SalesInvoice",:Addresses=>[{:AddressCode=>9,:Line1=>"31 South St",:City=>"Morristown",:PostalCode=>"07960",:Country=>"US"},{:AddressCode=>"Dest",:Line1=>"",:Line2=>"",:City=>"Chatham",:Region=>"NJ",:Country=>"US",:PostalCode=>"07928"},{:AddressCode=>"Orig",:Line1=>"73 Glenmere Drive",:City=>"Chatham",:PostalCode=>"07928",:Country=>"United States"}],:Lines=>[{:LineNo=>1,:ItemCode=>"ROR-00013",:Qty=>3,:Amount=>62.97,:OriginCode=>9,:DestinationCode=>"Dest",:Description=>"Ruby on Rails Jr. Spaghetti",:TaxCode=>"sdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdf"}]}
-        )
+        req = attributes_for(:request_hash)
+        req[:Lines][0][:TaxCode] = 'sdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdf'
+        result = taxsvc.get_tax(req)
         expect(result).to eq('error in Tax')
       end
 
       it 'fails when no lines are given' do
-        expect(taxsvc.get_tax({:CustomerCode=>"1",:DocDate=>"2014-11-03",:CompanyCode=>"54321",:CustomerUsageType=>"",:ExemptionNo=>nil,:Client=>"SpreeExtV1.0",:DocCode=>"R731071205",:ReferenceCode=>"R731071205",:DetailLevel=>"Tax",:Commit=>false,:DocType=>"SalesInvoice",:Addresses=>[{:AddressCode=>9,:Line1=>"31 South St",:City=>"Morristown",:PostalCode=>"07960",:Country=>"US"},{:AddressCode=>"Dest",:Line1=>"73 Glenmere Drive",:Line2=>"",:City=>"Chatham",:Region=>"NJ",:Country=>"US",:PostalCode=>"07928"},{:AddressCode=>"Orig",:Line1=>"73 Glenmere Drive",:City=>"Chatham",:PostalCode=>"07928",:Country=>"United States"}]})).to eq('error in Tax')
+        expect(taxsvc.get_tax(attributes_for(:request_hash, Lines: []))).to eq('error in Tax')
       end
     end
   end
@@ -41,11 +39,11 @@ describe TaxSvc, :type => :model do
     end
 
     it 'respond with success' do
-      success_res = taxsvc.get_tax(success_params)
+      success_res = taxsvc.get_tax(request_hash)
       result = taxsvc.cancel_tax({
         :CompanyCode=> "54321",
         :DocType => "SalesInvoice",
-        :DocCode => success_params[:DocCode],
+        :DocCode => request_hash[:DocCode],
         :CancelCode => "DocVoided"
       })
 

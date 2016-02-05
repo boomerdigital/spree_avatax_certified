@@ -7,7 +7,6 @@ describe Spree::Refund, type: :model do
   subject(:order) do
     order = create(:shipped_order)
     Spree::AvalaraTransaction.create(order: order)
-    order.line_items.first.tax_category.update_attributes(tax_code: 'PC030000')
     order.reload
   end
 
@@ -38,6 +37,7 @@ describe Spree::Refund, type: :model do
   let(:reimbursement) { create(:reimbursement) }
 
   let(:refund) {Spree::Refund.new(payment: payment, amount: BigDecimal.new(10), reason: refund_reason, transaction_id: nil, reimbursement: reimbursement)}
+
   before do
     allow(payment.payment_method)
     .to receive(:credit)

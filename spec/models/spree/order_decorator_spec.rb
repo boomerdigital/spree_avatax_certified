@@ -15,8 +15,6 @@ describe Spree::Order, type: :model do
   end
 
   describe "#cancel_avalara" do
-    let(:completed_order) {create(:completed_order_with_totals)}
-
     before do
       completed_order.avalara_capture_finalize
       @response = completed_order.cancel_avalara
