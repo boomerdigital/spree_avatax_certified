@@ -14,12 +14,6 @@ describe Spree::AvalaraTransaction, :type => :model do
   let(:state) { create(:state) }
   let(:order) { create(:order_with_line_items) }
 
-  before :each do
-    MyConfigPreferences.set_preferences
-    stock_location = FactoryGirl.create(:stock_location)
-    order.line_items.first.tax_category.update_attributes(name: "Clothing", description: "PC030000")
-  end
-
   context 'captured orders' do
 
     before :each do
@@ -34,24 +28,29 @@ describe Spree::AvalaraTransaction, :type => :model do
 
     describe "#commit_avatax" do
       it "should commit avatax" do
-        expect(order.avalara_transaction.commit_avatax('SalesInvoice')["TotalTax"]).to eq("0.4")
+        expect(order.avalara_transaction.commit_avatax('SalesOrder')["TotalTax"]).to eq("0.4")
       end
 
       it 'should receive post_order_to_avalara' do
         expect(order.avalara_transaction).to receive(:post_order_to_avalara)
-        order.avalara_transaction.commit_avatax('SalesInvoice')
+        order.avalara_transaction.commit_avatax('SalesOrder')
       end
 
       context 'tax calculation disabled' do
         it 'should respond with total tax of 0' do
           Spree::Config.avatax_tax_calculation = false
-          expect(order.avalara_transaction.commit_avatax('SalesInvoice')[:TotalTax]).to eq("0.00")
+          expect(order.avalara_transaction.commit_avatax('SalesOrder')[:TotalTax]).to eq("0.00")
         end
       end
 
       context 'promo' do
+        let(:promotion) { create(:promotion, :with_order_adjustment) }
+
+        before do
+          create(:adjustment, order: order, source: promotion.promotion_actions.first, adjustable: order)
+          order.update!
+        end
         it 'applies discount' do
-          order.promo_total = 10
           expect(order.avalara_transaction.commit_avatax('SalesInvoice')['TotalDiscount']).to eq('10')
         end
       end
@@ -100,7 +99,7 @@ describe Spree::AvalaraTransaction, :type => :model do
     let(:refund_reason) { create(:refund_reason) }
     let(:reimbursement) { create(:reimbursement) }
     let(:order) { reimbursement.order }
-    let!(:refund) {Spree::Refund.create(payment: order.payments.first, amount: BigDecimal.new(10), reason: refund_reason, transaction_id: nil, reimbursement: reimbursement)}
+    let(:refund) {Spree::Refund.create(payment: order.payments.first, amount: BigDecimal.new(10), reason: refund_reason, transaction_id: nil, reimbursement: reimbursement)}
 
     before do
       order.avalara_capture_finalize
@@ -110,20 +109,20 @@ describe Spree::AvalaraTransaction, :type => :model do
     describe '#commit_avatax' do
       it 'should receive post_return_to_avalara' do
         expect(order.avalara_transaction).to receive(:post_return_to_avalara)
-        order.avalara_transaction.commit_avatax('ReturnInvoice', refund)
+        order.avalara_transaction.commit_avatax('ReturnOrder', refund)
       end
     end
 
     describe '#commit_avatax_final' do
       it "should commit avatax final" do
-        response = order.avalara_transaction.commit_avatax_final('ReturnInvoice', refund)
+        response = order.avalara_transaction.commit_avatax_final('ReturnOrder', refund)
         expect(response).to be_kind_of(Hash)
         expect(response['ResultCode']).to eq('Success')
       end
 
       it 'should receive post_order_to_avalara' do
         expect(order.avalara_transaction).to receive(:post_return_to_avalara)
-        order.avalara_transaction.commit_avatax_final('ReturnInvoice', refund)
+        order.avalara_transaction.commit_avatax_final('ReturnOrder', refund)
       end
     end
   end
