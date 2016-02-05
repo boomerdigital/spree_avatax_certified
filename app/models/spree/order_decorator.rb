@@ -16,32 +16,22 @@ Spree::Order.class_eval do
 
   def avalara_capture
     logger.debug 'avalara capture'
-    begin
-      create_avalara_transaction if avalara_transaction.nil?
+    create_avalara_transaction if avalara_transaction.nil?
 
-      @rtn_tax = avalara_transaction.commit_avatax('SalesInvoice')
+    @rtn_tax = avalara_transaction.commit_avatax('SalesOrder')
 
-      logger.info_and_debug('tax amount', @rtn_tax)
-      @rtn_tax
-    rescue => e
-      logger.debug e
-      logger.debug 'error in avalara capture'
-    end
+    logger.info_and_debug('tax amount', @rtn_tax)
+    @rtn_tax
   end
 
   def avalara_capture_finalize
     logger.debug 'avalara capture finalize'
-    begin
-      create_avalara_transaction if avalara_transaction.nil?
+    create_avalara_transaction if avalara_transaction.nil?
 
-      @rtn_tax = avalara_transaction.commit_avatax_final('SalesInvoice')
+    @rtn_tax = avalara_transaction.commit_avatax_final('SalesInvoice')
 
-      logger.info_and_debug('tax amount', @rtn_tax)
-      @rtn_tax
-    rescue => e
-      logger.debug e
-      logger.debug 'error in avalara capture finalize'
-    end
+    logger.info_and_debug('tax amount', @rtn_tax)
+    @rtn_tax
   end
 
   def avatax_cache_key

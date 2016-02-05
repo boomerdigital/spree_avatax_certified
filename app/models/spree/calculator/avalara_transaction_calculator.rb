@@ -75,13 +75,13 @@ module Spree
     def tax_for_item(item, avalara_response)
       order = item.order
       item_address = order.ship_address || order.billing_address
+      prev_tax_amount = item.additional_tax_total
 
-      return 0 if %w(address cart).include?(order.state)
-      return 0 if item_address.nil?
-      return 0 unless calculable.zone.include?(item_address)
-      return 0 if avalara_response[:TotalTax] == '0.00'
-      return 0 if avalara_response.nil?
-      # think about if totaltax is 0 because of an error, adding a message to the order so a user will be available.
+      return prev_tax_amount if %w(address cart).include?(order.state)
+      return prev_tax_amount if avalara_response.nil?
+      return prev_tax_amount if avalara_response[:TotalTax] == '0.00'
+      return prev_tax_amount if item_address.nil?
+      return prev_tax_amount unless calculable.zone.include?(item_address)
 
       avalara_response['TaxLines'].each do |line|
         if line['LineNo'] == "#{item.id}-#{item.avatax_line_code}"

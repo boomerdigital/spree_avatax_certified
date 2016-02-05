@@ -46,7 +46,7 @@ module Spree
     end
 
     def cancel_order
-      cancel_order_to_avalara('SalesInvoice')
+      cancel_order_to_avalara('SalesInvoice') if tax_calculation_enabled?
     end
 
     private
@@ -66,8 +66,8 @@ module Spree
 
       AVALARA_TRANSACTION_LOGGER.debug cancel_tax_result
 
-      if cancel_tax_result == 'error in Tax'
-        return 'Error in Tax'
+      if cancel_tax_result == 'Error in Cancel Tax'
+        return 'Error in Cancel Tax'
       else
         return cancel_tax_result
       end
@@ -90,7 +90,7 @@ module Spree
 
       gettaxes = {
         DocCode: order.number,
-        Discount: order.promo_total.abs.to_s,
+        Discount: order.adjustments.eligible.promotion.sum(:amount).abs.to_s,
         Commit: commit,
         DocType: invoice_detail ? invoice_detail : 'SalesOrder',
         Addresses: avatax_address.addresses,
@@ -144,9 +144,10 @@ module Spree
     end
 
     def base_tax_hash
+      doc_date = order.completed? ? order.completed_at.strftime('%F') : Date.today.strftime('%F')
       {
         CustomerCode: customer_code,
-        DocDate: Date.today.strftime('%F'),
+        DocDate: doc_date,
         CompanyCode: Spree::Config.avatax_company_code,
         CustomerUsageType: customer_usage_type,
         ExemptionNo: order.user.try(:exemption_number),
