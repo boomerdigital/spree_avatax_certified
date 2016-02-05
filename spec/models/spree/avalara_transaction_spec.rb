@@ -28,24 +28,29 @@ describe Spree::AvalaraTransaction, :type => :model do
 
     describe "#commit_avatax" do
       it "should commit avatax" do
-        expect(order.avalara_transaction.commit_avatax('SalesInvoice')["TotalTax"]).to eq("0.4")
+        expect(order.avalara_transaction.commit_avatax('SalesOrder')["TotalTax"]).to eq("0.4")
       end
 
       it 'should receive post_order_to_avalara' do
         expect(order.avalara_transaction).to receive(:post_order_to_avalara)
-        order.avalara_transaction.commit_avatax('SalesInvoice')
+        order.avalara_transaction.commit_avatax('SalesOrder')
       end
 
       context 'tax calculation disabled' do
         it 'should respond with total tax of 0' do
           Spree::Config.avatax_tax_calculation = false
-          expect(order.avalara_transaction.commit_avatax('SalesInvoice')[:TotalTax]).to eq("0.00")
+          expect(order.avalara_transaction.commit_avatax('SalesOrder')[:TotalTax]).to eq("0.00")
         end
       end
 
       context 'promo' do
+        let(:promotion) { create(:promotion, :with_order_adjustment) }
+
+        before do
+          create(:adjustment, order: order, source: promotion.promotion_actions.first, adjustable: order)
+          order.update!
+        end
         it 'applies discount' do
-          order.promo_total = 10
           expect(order.avalara_transaction.commit_avatax('SalesInvoice')['TotalDiscount']).to eq('10')
         end
       end

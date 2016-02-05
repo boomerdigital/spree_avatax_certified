@@ -28,15 +28,14 @@ class TaxSvc
 
   def cancel_tax(request_hash)
     log(__method__, request_hash)
-    res = response('cancel', request_hash)
+    res = response('cancel', request_hash)['CancelTaxResult']
     logger.debug res
-    response = JSON.parse(res.body)['CancelTaxResult']
 
-    if response['ResultCode'] != 'Success'
-      logger.info_and_debug("Avatax Error: Order ##{response['Messages'][0]['Details']}", response)
+    if res['ResultCode'] != 'Success'
+      logger.info_and_debug("Avatax Error: Order ##{res['Messages'][0]['Details']}", res)
     end
 
-    response
+    res
   rescue => e
     logger.debug e, 'Error in Cancel Tax'
     'Error in Cancel Tax'
