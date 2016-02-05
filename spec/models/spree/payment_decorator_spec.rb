@@ -4,7 +4,6 @@ describe Spree::Payment, :type => :model do
   subject(:order) do
     order = FactoryGirl.create(:completed_order_with_totals)
     Spree::AvalaraTransaction.create(order: order)
-    order.avalara_capture_finalize
     order
   end
 
@@ -73,15 +72,31 @@ describe Spree::Payment, :type => :model do
   end
 
   describe "#void_transaction!" do
-      it "receive cancel_avalara" do
-        expect(payment).to receive(:cancel_avalara)
-        payment.void_transaction!
+    it "receive cancel_avalara" do
+      expect(payment).to receive(:cancel_avalara)
+      payment.void_transaction!
     end
   end
+
   describe '#cancel_avalara' do
     it 'should receive cancel order on avalara transaction' do
       expect(payment.order.avalara_transaction).to receive(:cancel_order)
       payment.cancel_avalara
+    end
+
+    context 'uncommitted order' do
+      it 'should recieve error message' do
+        response = payment.cancel_avalara
+        expect(response['ResultCode']).to eq('Error')
+      end
+    end
+
+    context 'committed order' do
+      it 'should receive result of success' do
+        payment.avalara_finalize
+        response = payment.cancel_avalara
+        expect(response['ResultCode']).to eq('Success')
+      end
     end
   end
 end
