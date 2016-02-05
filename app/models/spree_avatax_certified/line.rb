@@ -39,7 +39,7 @@ module SpreeAvataxCertified
         OriginCode: stock_location,
         DestinationCode: 'Dest',
         CustomerUsageType: customer_usage_type,
-        Discounted: order.promo_total.abs > 0.0
+        Discounted: true
       }
 
       @logger.debug line
@@ -87,7 +87,8 @@ module SpreeAvataxCertified
         DestinationCode: 'Dest',
         CustomerUsageType: customer_usage_type,
         Description: 'Shipping Charge',
-        TaxCode: shipment.shipping_method.tax_category.try(:tax_code) || 'FR000000'
+        TaxCode: shipment.shipping_method.tax_category.try(:tax_code) || 'FR000000',
+        Discounted: false
       }
 
       @logger.debug shipment_line
