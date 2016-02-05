@@ -2,21 +2,13 @@ require 'spec_helper'
 
 describe Spree::ReturnAuthorization, type: :model do
   it { should have_one :avalara_transaction }
-  subject(:user) { FactoryGirl.create(:user) }
-  subject(:stock_location) { FactoryGirl.create(:stock_location) }
-
-  subject(:order) do
-    order = FactoryGirl.create(:shipped_order)
-    Spree::AvalaraTransaction.find_or_create_by(order: order)
-    order.reload
-    order
-  end
-
-  subject(:return_authorization) { Spree::ReturnAuthorization.create(:order => order, :stock_location => stock_location) }
+  let(:order) { create(:shipped_order) }
+    let(:inventory_unit) { order.shipments.first.inventory_units.first }
+  let(:return_authorization) { create(:new_return_authorization, order: order, inventory_units: [inventory_unit]) }
 
   before do
-    @inventory_unit = order.shipments.first.inventory_units.first
-    @variant = order.variants.first
+    order.avalara_capture_finalize
+    order.reload
   end
 
   describe "#avalara_eligible?" do
@@ -48,8 +40,6 @@ describe Spree::ReturnAuthorization, type: :model do
 
   context "received" do
     before do
-      return_authorization.inventory_units << @inventory_unit
-      return_authorization.add_variant(@variant.id, 1)
       return_authorization.state = "authorized"
       allow(order).to receive(:update!)
     end

@@ -5,6 +5,7 @@ describe Spree::Order, type: :model do
   it { should have_one :avalara_transaction }
 
   let(:order) {FactoryGirl.create(:order_with_line_items)}
+  let(:completed_order) {create(:completed_order_with_totals)}
   let(:variant) { create(:variant) }
 
   describe "#avalara_eligible?" do
@@ -14,7 +15,6 @@ describe Spree::Order, type: :model do
   end
 
   describe "#cancel_avalara" do
-    let(:completed_order) {create(:completed_order_with_totals)}
 
     before do
       completed_order.avalara_capture_finalize
@@ -68,6 +68,17 @@ describe Spree::Order, type: :model do
     end
     it 'should have a ResultCode of success' do
       expect(order.avalara_capture_finalize['ResultCode']).to eq('Success')
+    end
+
+    context 'commit on completed at date' do
+      before do
+        completed_order.update_attributes(completed_at: 5.days.ago)
+      end
+
+      it 'has a docdate of completed at date' do
+        response = completed_order.avalara_capture_finalize
+        expect(response['DocDate']).to eq(5.days.ago.strftime('%F'))
+      end
     end
   end
 
