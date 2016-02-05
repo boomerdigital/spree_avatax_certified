@@ -40,6 +40,11 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
       end
 
       context "when tax is not included in price" do
+
+        it "should be equal to the item pre-tax total * rate" do
+          expect(calculator.compute(line_item)).to eq(0.4)
+        end
+
         context "when the order is discounted" do
           let(:promotion) { create(:promotion, :with_order_adjustment) }
 
@@ -66,12 +71,6 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
             expect(calculator.compute(line_item)).to eq(0.32)
           end
         end
-
-        context "when the variant matches the tax category" do
-          it "should be equal to the item pre-tax total * rate" do
-            expect(calculator.compute(line_item)).to eq(0.4)
-          end
-        end
       end
     end
 
@@ -86,7 +85,7 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
         order.state = 'delivery'
       end
 
-      it "should be equal 0.6" do
+      it "should be equal 4.0" do
         expect(calculator.compute(order.shipments.first)).to eq(4.0)
       end
 
