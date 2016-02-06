@@ -16,25 +16,25 @@ module Spree
       post_order_to_avalara(false, 'SalesOrder')
     end
 
-    def commit_avatax(invoice_dt = nil, refund = nil)
+    def commit_avatax(doc_type = nil, refund = nil)
       if tax_calculation_enabled?
-        if %w(ReturnInvoice ReturnOrder).include?(invoice_dt)
-          post_return_to_avalara(false, invoice_dt, refund)
+        if %w(ReturnInvoice ReturnOrder).include?(doc_type)
+          post_return_to_avalara(false, doc_type, refund)
         else
-          post_order_to_avalara(false, invoice_dt)
+          post_order_to_avalara(false, doc_type)
         end
       else
         { TotalTax: '0.00' }
       end
     end
 
-    def commit_avatax_final(invoice_dt = nil, refund = nil)
+    def commit_avatax_final(doc_type = nil, refund = nil)
       if document_committing_enabled?
         if tax_calculation_enabled?
-          if %w(ReturnInvoice ReturnOrder).include?(invoice_dt)
-            post_return_to_avalara(true, invoice_dt, refund)
+          if %w(ReturnInvoice ReturnOrder).include?(doc_type)
+            post_return_to_avalara(true, doc_type, refund)
           else
-            post_order_to_avalara(true, invoice_dt)
+            post_order_to_avalara(true, doc_type)
           end
         else
           { TotalTax: '0.00' }
@@ -73,10 +73,10 @@ module Spree
       end
     end
 
-    def post_order_to_avalara(commit = false, invoice_detail = nil)
+    def post_order_to_avalara(commit = false, doc_type = nil)
       AVALARA_TRANSACTION_LOGGER.info('post order to avalara')
       avatax_address = SpreeAvataxCertified::Address.new(order)
-      avatax_line = SpreeAvataxCertified::Line.new(order, invoice_detail)
+      avatax_line = SpreeAvataxCertified::Line.new(order, doc_type)
 
       response = avatax_address.validate
 
@@ -92,7 +92,7 @@ module Spree
         DocCode: order.number,
         Discount: order.adjustments.eligible.promotion.sum(:amount).abs.to_s,
         Commit: commit,
-        DocType: invoice_detail ? invoice_detail : 'SalesOrder',
+        DocType: doc_type ? doc_type : 'SalesOrder',
         Addresses: avatax_address.addresses,
         Lines: avatax_line.lines
       }.merge(base_tax_hash)
@@ -109,11 +109,11 @@ module Spree
       return tax_result if tax_result['ResultCode'] == 'Success'
     end
 
-    def post_return_to_avalara(commit = false, invoice_detail = nil, refund = nil)
+    def post_return_to_avalara(commit = false, doc_type = nil, refund = nil)
       AVALARA_TRANSACTION_LOGGER.info('starting post return order to avalara')
 
       avatax_address = SpreeAvataxCertified::Address.new(order)
-      avatax_line = SpreeAvataxCertified::Line.new(order, invoice_detail, refund)
+      avatax_line = SpreeAvataxCertified::Line.new(order, doc_type, refund)
 
       taxoverride = {
         TaxOverrideType: 'None',
@@ -124,7 +124,7 @@ module Spree
       gettaxes = {
         DocCode: order.number.to_s + '.' + refund.id.to_s,
         Commit: commit,
-        DocType: invoice_detail ? invoice_detail : 'ReturnOrder',
+        DocType: doc_type ? doc_type : 'ReturnOrder',
         Addresses: avatax_address.addresses,
         Lines: avatax_line.lines
       }.merge(base_tax_hash)
