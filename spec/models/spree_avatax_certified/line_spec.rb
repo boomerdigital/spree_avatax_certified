@@ -33,9 +33,6 @@ describe SpreeAvataxCertified::Line, :type => :model do
     it 'lines should be a length of 2' do
       expect(sales_lines.lines.length).to eq(2)
     end
-    it 'should have stock locations' do
-      expect(sales_lines.stock_locations).to eq(sales_lines.order_stock_locations)
-    end
   end
 
   context 'sales order' do
@@ -96,9 +93,7 @@ describe SpreeAvataxCertified::Line, :type => :model do
     let(:gateway_response_params) { {} }
     let(:gateway_response_options) { {} }
 
-    let(:reimbursement) { create(:reimbursement) }
-
-    let(:refund) {Spree::Refund.new(payment: payment, amount: BigDecimal.new(10), reason: refund_reason, transaction_id: nil, reimbursement: reimbursement)}
+    let(:refund) {Spree::Refund.new(payment: payment, amount: BigDecimal.new(10), reason: refund_reason, transaction_id: nil)}
     let(:shipped_order) { FactoryGirl.create(:shipped_order) }
     let(:return_lines) { SpreeAvataxCertified::Line.new(shipped_order, 'ReturnOrder', refund) }
 
