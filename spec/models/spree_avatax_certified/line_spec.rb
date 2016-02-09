@@ -35,9 +35,6 @@ describe SpreeAvataxCertified::Line, :type => :model do
     it 'lines should be a length of 6' do
       expect(sales_lines.lines.length).to eq(6)
     end
-    it 'should have stock locations' do
-      expect(sales_lines.stock_locations).to eq(sales_lines.order_stock_locations)
-    end
   end
 
   context 'sales order' do
