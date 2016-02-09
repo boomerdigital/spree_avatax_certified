@@ -24,9 +24,6 @@ describe SpreeAvataxCertified::Line, :type => :model do
     it 'should have order' do
       expect(sales_lines.order).to eq(order)
     end
-    it 'should have invoice_type' do
-      expect(sales_lines.invoice_type).to eq('SalesOrder')
-    end
     it 'should have lines be an array' do
       expect(sales_lines.lines).to be_kind_of(Array)
     end
