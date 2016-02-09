@@ -43,7 +43,7 @@ module SpreeAvataxCertified
         Line2: @ship_address.address2,
         City: @ship_address.city,
         Region: @ship_address.state_name,
-        Country: Spree::Country.find(@ship_address.country_id).iso,
+        Country: @ship_address.country.try(:iso),
         PostalCode: @ship_address.zipcode
       }
     end
@@ -56,7 +56,7 @@ module SpreeAvataxCertified
           Line2: stock_location.address2,
           City: stock_location.city,
           PostalCode: stock_location.zipcode,
-          Country: stock_location.country.iso
+          Country: stock_location.country.try(:iso)
         }
       end
     end
@@ -66,19 +66,19 @@ module SpreeAvataxCertified
       return @ship_address if @ship_address.nil?
 
       address_hash = {
-        Line1: @ship_address[:address1],
-        Line2: @ship_address[:address2],
-        City: @ship_address[:city],
-        Region: Spree::State.find(@ship_address[:state_id]).abbr,
-        Country: Spree::Country.find(@ship_address[:country_id]).iso,
-        PostalCode: @ship_address[:zipcode]
+        Line1: @ship_address.address1,
+        Line2: @ship_address.address2,
+        City: @ship_address.city,
+        Region: @ship_address.state.try(:abbr),
+        Country: @ship_address.country.try(:iso),
+        PostalCode: @ship_address.zipcode
       }
 
       validation_response(address_hash)
     end
 
     def country_enabled?
-      enabled_countries.any? { |c| @ship_address.country.name == c }
+      enabled_countries.any? { |c| @ship_address.country.try(:name) == c }
     end
 
     private
