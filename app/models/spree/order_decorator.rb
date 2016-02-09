@@ -48,6 +48,15 @@ Spree::Order.class_eval do
     key.join('-')
   end
 
+  def customer_usage_type
+    user ? user.avalara_entity_use_code.try(:use_code) : ''
+  end
+
+  def stock_locations
+    stock_loc_ids = Spree::Stock::Coordinator.new(self).packages.map(&:to_shipment).map(&:stock_location_id)
+    Spree::StockLocation.where(id: stock_loc_ids)
+  end
+
   private
 
   def logger
