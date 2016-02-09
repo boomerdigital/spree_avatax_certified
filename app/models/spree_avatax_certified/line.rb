@@ -35,7 +35,8 @@ module SpreeAvataxCertified
         OriginCode: stock_location,
         DestinationCode: 'Dest',
         CustomerUsageType: customer_usage_type,
-        Discounted: true
+        Discounted: true,
+        TaxIncluded: tax_included_in_price?(line_item)
       }
     end
 
@@ -72,7 +73,8 @@ module SpreeAvataxCertified
         CustomerUsageType: customer_usage_type,
         Description: 'Shipping Charge',
         TaxCode: shipment.shipping_method_tax_code,
-        Discounted: false
+        Discounted: false,
+        TaxIncluded: tax_included_in_price?(shipment)
       }
     end
 
@@ -115,6 +117,14 @@ module SpreeAvataxCertified
         'Orig'
       else
         "#{line_item_stock_locations.first.id}"
+      end
+    end
+
+    def tax_included_in_price?(item)
+      if item.tax_category.try(:tax_rates).any?
+        item.tax_category.tax_rates.first.included_in_price
+      else
+        false
       end
     end
 
