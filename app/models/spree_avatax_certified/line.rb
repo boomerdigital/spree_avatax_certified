@@ -60,7 +60,7 @@ module SpreeAvataxCertified
         DestinationCode: 'Dest',
         CustomerUsageType: order.customer_usage_type,
         Description: 'Shipping Charge',
-        TaxCode: shipment.shipping_method.tax_category.try(:tax_code) || 'FR000000',
+        TaxCode: shipment.shipping_method_tax_code,
         Discounted: false
       }
     end

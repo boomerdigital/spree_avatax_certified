@@ -11,4 +11,8 @@ Spree::Shipment.class_eval do
   def avatax_line_code
     'FR'
   end
+
+  def shipping_method_tax_code
+    shipping_method.tax_category.try(:tax_code) || 'FR000000'
+  end
 end
