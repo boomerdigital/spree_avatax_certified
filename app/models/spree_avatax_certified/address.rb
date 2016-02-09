@@ -94,8 +94,7 @@ module SpreeAvataxCertified
       response = JSON.parse(res.body)
       address = response['Address']
 
-      if address['City'] == @ship_address.city || address['Region'] == @ship_address.state.abbr
-      else
+      if address['City'] != @ship_address.city || address['Region'] != @ship_address.state.abbr
         response['ResultCode'] = 'Error'
         response['Messages'] = [
           {
