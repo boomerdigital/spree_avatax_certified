@@ -17,4 +17,10 @@ describe Spree::Shipment, type: :model do
       expect(shipment.avatax_line_code).to eq('FR')
     end
   end
+
+  describe '#shipping_method_tax_code' do
+    it 'should return tax code' do
+      expect(shipment.shipping_method_tax_code).to eq('FR000000')
+    end
+  end
 end
