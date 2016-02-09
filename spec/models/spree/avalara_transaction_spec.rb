@@ -59,6 +59,17 @@ describe Spree::AvalaraTransaction, :type => :model do
           expect(order.avalara_transaction.commit_avatax('SalesOrder')["TotalTax"]).to eq("1.9")
         end
       end
+
+      context 'included_in_price' do
+        before do
+          rate.update_attributes(included_in_price: true)
+          order.reload
+        end
+
+        it 'calculates the included tax amount from item total' do
+          expect(order.avalara_transaction.commit_avatax('SalesOrder')["TotalTax"]).to eq("1.9")
+        end
+      end
     end
 
     describe "#commit_avatax_final" do

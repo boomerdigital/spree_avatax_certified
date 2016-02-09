@@ -39,10 +39,6 @@ module SpreeAvataxCertified
         Discounted: true,
         TaxIncluded: tax_included_in_price?(line_item)
       }
-
-      @logger.debug line
-
-      line
     end
 
     def item_lines_array
@@ -88,10 +84,6 @@ module SpreeAvataxCertified
         Discounted: false,
         TaxIncluded: tax_included_in_price?(shipment)
       }
-
-      @logger.debug shipment_line
-
-      shipment_line
     end
 
     def return_authorization_lines
@@ -144,8 +136,8 @@ module SpreeAvataxCertified
       stock_locations
     end
 
-    def get_stock_location(stock_locations, line_item)
-      line_item_stock_locations = stock_locations.joins(:stock_items).where(spree_stock_items: {variant_id: line_item.variant_id})
+    def get_stock_location(line_item)
+      line_item_stock_locations = @stock_locations.joins(:stock_items).where(spree_stock_items: {variant_id: line_item.variant_id})
 
       if line_item_stock_locations.empty?
         'Orig'

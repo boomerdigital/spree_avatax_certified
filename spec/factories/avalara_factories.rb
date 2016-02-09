@@ -16,6 +16,11 @@ FactoryGirl.define do
     Lines [{:LineNo=>'1-LI', :ItemCode=>'ROR-00013', :Qty=>3, :Amount=>62.97, :OriginCode=>'9', :DestinationCode=>'Dest', :Description=>'Ruby on Rails Jr. Spaghetti', :TaxCode=>'P0000000', :Discounted=>false}]
   end
 
+  factory :use_code, class: Spree::AvalaraEntityUseCode do
+    use_code "A"
+    use_code_description "Federal government"
+  end
+
   factory :avalara_transaction_calculator, class: Spree::Calculator::AvalaraTransactionCalculator do
   end
 

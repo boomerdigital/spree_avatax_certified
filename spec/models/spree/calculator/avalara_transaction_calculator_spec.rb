@@ -70,18 +70,18 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
       end
 
       it "should be equal 0.6" do
-        expect(calculator.compute(order.shipments.first)).to eq(4.0)
+        expect(shipping_calculator.compute(order.shipments.first)).to eq(4.0)
       end
 
       it "takes discounts into consideration" do
         order.shipments.first.update_attributes(promo_total: -1)
-        expect(calculator.compute(order.shipments.first)).to eq(3.96)
+        expect(shipping_calculator.compute(order.shipments.first)).to eq(3.96)
       end
 
       context 'included_in_price' do
         let(:included_in_price) { true }
         it 'should be equal to 3.85' do
-          expect(calculator.compute(order.shipments.first)).to eq(3.85)
+          expect(shipping_calculator.compute(order.shipments.first)).to eq(4.0)
         end
       end
     end
