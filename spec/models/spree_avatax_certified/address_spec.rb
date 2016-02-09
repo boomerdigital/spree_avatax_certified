@@ -69,20 +69,9 @@ describe SpreeAvataxCertified::Address, :type => :model do
     end
   end
 
-  describe '#address_validation_enabled?' do
-    it 'returns true' do
-      expect(address_lines.address_validation_enabled?).to be_truthy
-    end
-
-    it 'returns false' do
-      Spree::Config.avatax_address_validation = false
-      expect(address_lines.address_validation_enabled?).to be_falsey
-    end
-  end
-
   describe '#country_enabled?' do
     it 'returns true if the current country is enabled' do
-      expect(address_lines.country_enabled?(Spree::Country.first)).to be_truthy
+      expect(address_lines.country_enabled?).to be_truthy
     end
   end
 end
