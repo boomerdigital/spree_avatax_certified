@@ -35,7 +35,7 @@ module SpreeAvataxCertified
         Amount: line_item.discounted_amount.to_f,
         OriginCode: stock_location,
         DestinationCode: 'Dest',
-        CustomerUsageType: customer_usage_type,
+        CustomerUsageType: order.customer_usage_type,
         Discounted: true
       }
     end
@@ -70,7 +70,7 @@ module SpreeAvataxCertified
         Amount: shipment.discounted_amount.to_f,
         OriginCode: "#{shipment.stock_location_id}",
         DestinationCode: 'Dest',
-        CustomerUsageType: customer_usage_type,
+        CustomerUsageType: order.customer_usage_type,
         Description: 'Shipping Charge',
         TaxCode: shipment.shipping_method.tax_category.try(:tax_code) || 'FR000000',
         Discounted: false
@@ -101,7 +101,7 @@ module SpreeAvataxCertified
         Amount: -@refund.amount.to_f,
         OriginCode: 'Orig',
         DestinationCode: 'Dest',
-        CustomerUsageType: customer_usage_type,
+        CustomerUsageType: order.customer_usage_type,
         Description: 'Refund'
       }
     end
@@ -118,7 +118,7 @@ module SpreeAvataxCertified
         Amount: -amount.to_f,
         OriginCode: stock_location,
         DestinationCode: 'Dest',
-        CustomerUsageType: customer_usage_type
+        CustomerUsageType: order.customer_usage_type
       }
 
       line

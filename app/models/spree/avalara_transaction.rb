@@ -149,16 +149,12 @@ module Spree
         CustomerCode: customer_code,
         DocDate: doc_date,
         CompanyCode: Spree::Config.avatax_company_code,
-        CustomerUsageType: customer_usage_type,
+        CustomerUsageType: order.customer_usage_type,
         ExemptionNo: order.user.try(:exemption_number),
         Client:  avatax_client_version,
         ReferenceCode: order.number,
         DetailLevel: 'Tax'
       }
-    end
-
-    def customer_usage_type
-      order.user ? order.user.avalara_entity_use_code.try(:use_code) : ''
     end
 
     def customer_code
