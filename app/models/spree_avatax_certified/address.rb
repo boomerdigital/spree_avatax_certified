@@ -5,16 +5,15 @@ require 'logger'
 
 module SpreeAvataxCertified
   class Address
-    attr_reader :order, :addresses, :origin_address, :stock_addresses
+    attr_reader :order, :addresses
 
     def initialize(order)
       @order = order
       @ship_address = order.ship_address
       @origin_address = JSON.parse(Spree::Config.avatax_origin)
       @stock_loc_ids = Spree::Stock::Coordinator.new(order).packages.map(&:to_shipment).map(&:stock_location_id)
-      @stock_addresses = []
       @addresses = []
-      @logger ||= AvataxHelper::AvataxLog.new('avalara_order_addresses', 'SpreeAvataxCertified::Address', 'building addresses')
+      @logger ||= AvataxHelper::AvataxLog.new('avalara_order_addresses', 'SpreeAvataxCertified::Address', "Building Addresses for Order#: #{order.number}")
       build_addresses
       @logger.debug @addresses
     end
@@ -26,7 +25,7 @@ module SpreeAvataxCertified
     end
 
     def origin_address
-      orig_address = {
+      addresses << {
         AddressCode: 'Orig',
         Line1: @origin_address['Address1'],
         Line2: @origin_address['Address2'],
@@ -35,62 +34,51 @@ module SpreeAvataxCertified
         PostalCode: @origin_address['Zip5'],
         Country: @origin_address['Country']
       }
-
-      addresses << orig_address
     end
 
     def order_ship_address
-      shipping_address = {
+      addresses << {
         AddressCode: 'Dest',
         Line1: @ship_address.address1,
         Line2: @ship_address.address2,
         City: @ship_address.city,
         Region: @ship_address.state_name,
-        Country: Spree::Country.find(@ship_address.country_id).iso,
+        Country: @ship_address.country.try(:iso),
         PostalCode: @ship_address.zipcode
       }
-
-      addresses << shipping_address
     end
 
     def origin_ship_addresses
       Spree::StockLocation.where(id: @stock_loc_ids).each do |stock_location|
-        stock_location_address = {
+        addresses << {
           AddressCode: "#{stock_location.id}",
           Line1: stock_location.address1,
           Line2: stock_location.address2,
           City: stock_location.city,
           PostalCode: stock_location.zipcode,
-          Country: Spree::Country.find(stock_location.country_id).iso
+          Country: stock_location.country.try(:iso)
         }
-
-        @stock_addresses << stock_location_address
       end
     end
 
     def validate
-      country = Spree::Country.find(@ship_address[:country_id])
-      if address_validation_enabled? && country_enabled?(country)
+      return 'Address validation disabled' unless address_validation_enabled?
+      return @ship_address if @ship_address.nil?
 
-        return @ship_address if @ship_address.nil?
+      address_hash = {
+        Line1: @ship_address.address1,
+        Line2: @ship_address.address2,
+        City: @ship_address.city,
+        Region: @ship_address.state.try(:abbr),
+        Country: @ship_address.country.try(:iso),
+        PostalCode: @ship_address.zipcode
+      }
 
-        address_hash = {
-          Line1: @ship_address[:address1],
-          Line2: @ship_address[:address2],
-          City: @ship_address[:city],
-          Region: Spree::State.find(@ship_address[:state_id]).abbr,
-          Country: Spree::Country.find(@ship_address[:country_id]).iso,
-          PostalCode: @ship_address[:zipcode]
-        }
-
-        return validation_response(address_hash)
-      else
-        'Address validation disabled'
-      end
+      validation_response(address_hash)
     end
 
-    def country_enabled?(current_country)
-      enabled_countries.any? { |c| current_country.name == c }
+    def country_enabled?
+      enabled_countries.any? { |c| @ship_address.country.try(:name) == c }
     end
 
     private
@@ -103,25 +91,24 @@ module SpreeAvataxCertified
       res = http.get(uri.request_uri, 'Authorization' => credential)
 
       response = JSON.parse(res.body)
+      address = response['Address']
 
-      if response['Address']['City'] == @ship_address[:city] || response['Address']['Region'] == Spree::State.find(@ship_address[:state_id]).abbr
-        return response
-      else
+      if address['City'] != @ship_address.city || address['Region'] != @ship_address.state.abbr
         response['ResultCode'] = 'Error'
-        suggested_address = response['Address']
         response['Messages'] = [
           {
-            'Summary' => "Did you mean #{suggested_address['Line1']}, #{suggested_address['City']}, #{suggested_address['Region']}, #{suggested_address['PostalCode']}?"
+            'Summary' => "Did you mean #{address['Line1']}, #{address['City']}, #{address['Region']}, #{address['PostalCode']}?"
           }
         ]
-        return response
       end
+
+      return response
     rescue => e
       "error in address validation: #{e}"
     end
 
     def address_validation_enabled?
-      Spree::Config.avatax_address_validation
+      Spree::Config.avatax_address_validation && country_enabled?
     end
 
     def credential

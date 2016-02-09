@@ -88,4 +88,20 @@ describe Spree::Order, type: :model do
       expect(order.avatax_cache_key).to eq(expected_response)
     end
   end
+
+  describe '#customer_usage_type' do
+    let(:use_code) { create(:avalara_entity_use_code) }
+
+    before do
+      order.user.update_attributes(avalara_entity_use_code: use_code)
+    end
+
+    it 'should respond with user usage type' do
+      expect(order.customer_usage_type).to eq('A')
+    end
+    it 'should respond with blank string if no user' do
+      order.update_attributes(user: nil)
+      expect(order.customer_usage_type).to eq('')
+    end
+  end
 end

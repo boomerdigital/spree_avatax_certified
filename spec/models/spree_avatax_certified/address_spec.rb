@@ -19,12 +19,6 @@ describe SpreeAvataxCertified::Address, :type => :model do
     it 'should have addresses be an array' do
       expect(address_lines.addresses).to be_kind_of(Array)
     end
-    it 'should have stock_addresses be an array' do
-      expect(address_lines.stock_addresses).to be_kind_of(Array)
-    end
-    it 'should have origin_address be an array' do
-      expect(address_lines.origin_address).to be_kind_of(Array)
-    end
   end
 
   describe '#build_addresses' do
@@ -77,7 +71,7 @@ describe SpreeAvataxCertified::Address, :type => :model do
 
   describe '#country_enabled?' do
     it 'returns true if the current country is enabled' do
-      expect(address_lines.country_enabled?(Spree::Country.first)).to be_truthy
+      expect(address_lines.country_enabled?).to be_truthy
     end
   end
 end
