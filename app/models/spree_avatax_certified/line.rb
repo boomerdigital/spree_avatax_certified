@@ -77,30 +77,20 @@ module SpreeAvataxCertified
     end
 
     def return_authorization_lines
-      @logger.info('build return return_authorization lines')
-
-      return_auth_lines = []
-
       order.return_authorizations.each do |return_auth|
-        next if return_auth != return_authorization
+        next if return_auth != @return_authorization
         amount = return_auth.amount / return_auth.inventory_units.select(:line_item_id).uniq.count
         return_auth.inventory_units.group_by(&:line_item_id).each_value do |inv_unit|
           quantity = inv_unit.uniq.count
-          return_auth_lines << return_item_line(inv_unit.first.line_item, quantity, amount)
+          lines << return_item_line(inv_unit.first.line_item, quantity, amount)
         end
       end
-
-      @logger.info_and_debug('return_authorization_lines', return_auth_lines)
-      lines.concat(return_auth_lines) unless return_auth_lines.empty?
-      return_auth_lines
     end
 
     def return_item_line(line_item, quantity, amount)
-      @logger.info("build return_line_item line: #{line_item.name}")
+      stock_location = get_stock_location(line_item)
 
-      stock_location = get_stock_location(@stock_locations, line_item)
-
-      line = {
+      {
         LineNo: "#{line_item.id}-LI",
         Description: line_item.name[0..255],
         TaxCode: line_item.tax_category.try(:description) || 'P0000000',
@@ -111,10 +101,6 @@ module SpreeAvataxCertified
         DestinationCode: 'Dest',
         CustomerUsageType: customer_usage_type
       }
-
-      @logger.debug line
-
-      line
     end
 
     def order_stock_locations
