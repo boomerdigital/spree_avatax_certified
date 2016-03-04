@@ -81,6 +81,10 @@ module SpreeAvataxCertified
       enabled_countries.any? { |c| @ship_address.country.try(:name) == c }
     end
 
+    def address_validation_enabled?
+      Spree::Config.avatax_address_validation && country_enabled?
+    end
+
     private
 
     def validation_response(address)
@@ -107,9 +111,6 @@ module SpreeAvataxCertified
       "error in address validation: #{e}"
     end
 
-    def address_validation_enabled?
-      Spree::Config.avatax_address_validation && country_enabled?
-    end
 
     def credential
       'Basic ' + Base64.encode64(account_number + ':' + license_key)
