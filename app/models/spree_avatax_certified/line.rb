@@ -24,21 +24,20 @@ module SpreeAvataxCertified
     end
 
     def item_line(line_item)
-      @logger.info("build line_item line: #{line_item.name}")
+      stock_location = get_stock_location(line_item)
 
-      stock_location = get_stock_location(@stock_locations, line_item)
-
-      line = {
-        :LineNo => "#{line_item.id}-LI",
-        :Description => line_item.name[0..255],
-        :TaxCode => line_item.tax_category.try(:description) || 'P0000000',
-        :ItemCode => line_item.variant.sku,
-        :Qty => line_item.quantity,
-        :Amount => line_item.discounted_amount.to_f,
-        :OriginCode => stock_location,
-        :DestinationCode => 'Dest',
-        :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
-        :Discounted => order.promo_total.abs > 0.0
+      {
+        LineNo: "#{line_item.id}-LI",
+        Description: line_item.name[0..255],
+        TaxCode: line_item.tax_category.try(:description) || 'P0000000',
+        ItemCode: line_item.variant.sku,
+        Qty: line_item.quantity,
+        Amount: line_item.discounted_amount.to_f,
+        OriginCode: stock_location,
+        DestinationCode: 'Dest',
+        CustomerUsageType: customer_usage_type,
+        Discounted: true,
+        TaxIncluded: tax_included_in_price?(line_item)
       }
 
       @logger.debug line
@@ -76,18 +75,18 @@ module SpreeAvataxCertified
     end
 
     def shipment_line(shipment)
-      @logger.info("build shipment line: Shipment ID: #{shipment.id}")
-
-      shipment_line = {
-        :LineNo => "#{shipment.id}-FR",
-        :ItemCode => shipment.shipping_method.name,
-        :Qty => 1,
-        :Amount => shipment.discounted_amount.to_f,
-        :OriginCode => "#{shipment.stock_location_id}",
-        :DestinationCode => 'Dest',
-        :CustomerUsageType => order.user ? order.user.avalara_entity_use_code.try(:use_code) : '',
-        :Description => 'Shipping Charge',
-        :TaxCode => shipment.shipping_method_tax_code,
+      {
+        LineNo: "#{shipment.id}-FR",
+        ItemCode: shipment.shipping_method.name,
+        Qty: 1,
+        Amount: shipment.discounted_amount.to_f,
+        OriginCode: "#{shipment.stock_location_id}",
+        DestinationCode: 'Dest',
+        CustomerUsageType: customer_usage_type,
+        Description: 'Shipping Charge',
+        TaxCode: shipment.shipping_method_tax_code,
+        Discounted: false,
+        TaxIncluded: tax_included_in_price?(shipment)
       }
 
       @logger.debug shipment_line
@@ -153,6 +152,18 @@ module SpreeAvataxCertified
       else
         "#{line_item_stock_locations.first.id}"
       end
+    end
+
+    def tax_included_in_price?(item)
+      if item.tax_category.try(:tax_rates).any?
+        item.tax_category.tax_rates.first.included_in_price
+      else
+        false
+      end
+    end
+
+    def customer_usage_type
+      order.user ? order.user.avalara_entity_use_code.try(:use_code) : ''
     end
   end
 end
