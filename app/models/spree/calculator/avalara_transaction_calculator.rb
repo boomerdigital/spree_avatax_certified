@@ -33,10 +33,8 @@ module Spree
     private
 
     def get_avalara_response(order)
-      if order.state == 'complete'
+      Rails.cache.fetch(cache_key(order), time_to_idle: 5.minutes) do
         order.avalara_capture
-      else
-        retrieve_rates_from_cache(order)
       end
     end
 
@@ -65,13 +63,6 @@ module Spree
     end
 
     alias_method_chain :cache_key, :short_hash
-
-    def retrieve_rates_from_cache(order)
-      Rails.cache.fetch(cache_key(order), time_to_idle: 5.minutes) do
-        # this is the fallback value written to the cache if there is no value
-        order.avalara_capture
-      end
-    end
 
     def tax_for_item(item, avalara_response)
       order = item.order
