@@ -8,15 +8,11 @@ describe Spree::AvalaraTransaction, :type => :model do
   it { should have_db_index :order_id }
   it { should have_many :adjustments }
 
-  let(:country) { create(:country) }
-  let(:state) { create(:state) }
-  let(:order) { create(:order_with_line_items) }
-
-  before :each do
-    MyConfigPreferences.set_preferences
-    stock_location = FactoryGirl.create(:stock_location)
-    order.line_items.first.tax_category.update_attributes(name: "Clothing", description: "PC030000")
-  end
+  let(:order) {
+    order = create(:order_with_line_items)
+    order.reload
+  }
+  let!(:rate) { create(:avalara_tax_rate, tax_category: order.line_items.first.tax_category) }
 
   context 'captured orders' do
 
@@ -32,18 +28,41 @@ describe Spree::AvalaraTransaction, :type => :model do
 
     describe "#commit_avatax" do
       it "should commit avatax" do
-        expect(order.avalara_transaction.commit_avatax('SalesInvoice')["TotalTax"]).to eq("2")
+        expect(order.avalara_transaction.commit_avatax('SalesOrder')["TotalTax"]).to eq("2")
       end
 
       it 'should receive post_order_to_avalara' do
         expect(order.avalara_transaction).to receive(:post_order_to_avalara)
-        order.avalara_transaction.commit_avatax('SalesInvoice')
+        order.avalara_transaction.commit_avatax('SalesOrder')
       end
 
       context 'tax calculation disabled' do
         it 'should respond with total tax of 0' do
           Spree::Config.avatax_tax_calculation = false
-          expect(order.avalara_transaction.commit_avatax('SalesInvoice')[:TotalTax]).to eq("0.00")
+          expect(order.avalara_transaction.commit_avatax('SalesOrder')[:TotalTax]).to eq("0.00")
+        end
+      end
+
+      context 'promo' do
+        let(:promotion) { create(:promotion, :with_order_adjustment) }
+
+        before do
+          create(:adjustment, order: order, source: promotion.promotion_actions.first, adjustable: order)
+          order.update!
+        end
+        it 'applies discount' do
+          expect(order.avalara_transaction.commit_avatax('SalesInvoice')['TotalDiscount']).to eq('10')
+        end
+      end
+
+      context 'included_in_price' do
+        before do
+          rate.update_attributes(included_in_price: true)
+          order.reload
+        end
+
+        it 'calculates the included tax amount from item total' do
+          expect(order.avalara_transaction.commit_avatax('SalesOrder')["TotalTax"]).to eq("1.9")
         end
       end
     end
@@ -67,7 +86,7 @@ describe Spree::AvalaraTransaction, :type => :model do
       context 'tax calculation disabled' do
         it 'should respond with total tax of 0' do
           Spree::Config.avatax_tax_calculation = false
-          expect(order.avalara_transaction.commit_avatax('SalesInvoice')[:TotalTax]).to eq("0.00")
+          expect(order.avalara_transaction.commit_avatax_final('SalesInvoice')[:TotalTax]).to eq("0.00")
         end
       end
     end
@@ -76,6 +95,60 @@ describe Spree::AvalaraTransaction, :type => :model do
       it 'should receive cancel_order_to_avalara' do
         expect(order.avalara_transaction).to receive(:cancel_order_to_avalara)
         order.avalara_transaction.cancel_order
+      end
+
+      it 'should receive error' do
+        order = create(:order)
+        order.avalara_transaction = Spree::AvalaraTransaction.create
+        expect(order.avalara_transaction).to receive(:cancel_order_to_avalara).and_return('Error in Tax')
+        order.avalara_transaction.cancel_order
+      end
+    end
+
+    describe '#adjust_avatax' do
+      let(:adjusted_order) {
+        order.avalara_capture_finalize
+        order.reload
+      }
+      subject { adjusted_order.avalara_transaction.adjust_avatax }
+
+      it 'should receive adjust_order_to_avalara' do
+        expect(adjusted_order.avalara_transaction).to receive(:adjust_order_to_avalara)
+        subject
+      end
+
+      it "should be successful" do
+        expect(subject[:total_tax]).to eq("2")
+      end
+    end
+  end
+
+  context 'return orders' do
+    let(:order) { create(:shipped_order) }
+    let(:inventory_unit) { order.shipments.first.inventory_units.first }
+    let(:return_auth) { create(:return_authorization, order: order, inventory_units: [inventory_unit]) }
+
+    before do
+      test = order.avalara_capture_finalize
+      order.reload
+    end
+
+    describe '#commit_avatax' do
+      it 'should receive post_return_to_avalara' do
+        expect(order.avalara_transaction).to receive(:post_return_to_avalara)
+        order.avalara_transaction.commit_avatax('ReturnOrder', return_auth)
+      end
+    end
+
+    describe '#commit_avatax_final' do
+      it 'should commit avatax final' do
+        response = order.avalara_transaction.commit_avatax_final('ReturnOrder', return_auth)
+        expect(response).to be_kind_of(Hash)
+        expect(response['ResultCode']).to eq('Success')
+      end
+      it 'should receive post_return_to_avalara' do
+        expect(order.avalara_transaction).to receive(:post_return_to_avalara)
+        order.avalara_transaction.commit_avatax_final('ReturnOrder', return_auth)
       end
     end
   end

@@ -9,14 +9,8 @@ module Spree
     end
 
     def compute_shipment_or_line_item(item)
-      # NEED TO TEST VAT
-      if item.tax_category.try(:tax_rates) && item.tax_category.tax_rates.any? { |rate| rate.included_in_price == true }
-        raise 'AvalaraTransaction cannot calculate inclusive sales taxes.'
-      else
-        avalara_response = get_avalara_response(item.order)
-
-        tax_for_item(item, avalara_response)
-      end
+      avalara_response = get_avalara_response(item.order)
+      tax_for_item(item, avalara_response)
     end
 
     alias_method :compute_shipment, :compute_shipment_or_line_item
@@ -67,18 +61,19 @@ module Spree
     def tax_for_item(item, avalara_response)
       order = item.order
       item_address = order.ship_address || order.billing_address
+
+      response = SpreeAvataxCertified::Response.new(avalara_response)
       prev_tax_amount = item.additional_tax_total
 
       return prev_tax_amount if %w(address cart).include?(order.state)
       return prev_tax_amount if avalara_response.nil?
-      return prev_tax_amount if avalara_response[:TotalTax] == '0.00'
+      return prev_tax_amount if response.total_tax == '0.00'
       return prev_tax_amount if item_address.nil?
       return prev_tax_amount unless calculable.zone.include?(item_address)
 
-      avalara_response['TaxLines'].each do |line|
-        if line['LineNo'] == "#{item.id}-#{item.avatax_line_code}"
-          return line['TaxCalculated'].to_f
-        end
+      response.tax_lines.each do |line|
+        return line['TaxCalculated'].to_f if line['LineNo'] == "#{item.id}-#{item.avatax_line_code}"
+        return line[:tax_calculated].to_f if line[:no] == "#{item.id}-#{item.avatax_line_code}"
       end
       0
     end

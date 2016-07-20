@@ -3,9 +3,7 @@ require 'spec_helper'
 describe Spree::Payment, :type => :model do
   subject(:order) do
     order = FactoryGirl.create(:completed_order_with_totals)
-    order.line_items.first.tax_category.update_attributes(name: "Clothing", description: "PC030000")
     Spree::AvalaraTransaction.create(order: order)
-    order.avalara_capture_finalize
     order
   end
 
@@ -62,11 +60,13 @@ describe Spree::Payment, :type => :model do
     before do
       order.update_attributes(additional_tax_total: 1.to_f)
     end
+
     it 'should update the amount to be the order total' do
       initial_amount = payment.amount
       payment.avalara_finalize
       expect(payment.amount).not_to eq(initial_amount)
     end
+
     it 'should receive avalara_capture_finalize on order' do
       expect(payment.order).to receive(:avalara_capture_finalize)
       payment.avalara_finalize
@@ -79,10 +79,26 @@ describe Spree::Payment, :type => :model do
         payment.void_transaction!
     end
   end
+
   describe '#cancel_avalara' do
     it 'should receive cancel order on avalara transaction' do
       expect(payment.order.avalara_transaction).to receive(:cancel_order)
       payment.cancel_avalara
+    end
+
+    context 'uncommitted order' do
+      it 'should recieve error message' do
+        response = payment.cancel_avalara
+        expect(response['ResultCode']).to eq('Error')
+      end
+    end
+
+    context 'committed order' do
+      it 'should receive result of success' do
+        payment.avalara_finalize
+        response = payment.cancel_avalara
+        expect(response['ResultCode']).to eq('Success')
+      end
     end
   end
 end

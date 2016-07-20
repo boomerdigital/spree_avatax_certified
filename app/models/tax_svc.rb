@@ -4,6 +4,7 @@ require 'addressable/uri'
 require 'base64'
 require 'rest-client'
 require 'logging'
+require 'savon'
 
 class TaxSvc
   def get_tax(request_hash)
@@ -14,11 +15,12 @@ class TaxSvc
     logger.debug res
     response = JSON.parse(res.body)
 
-    if response['ResultCode'] != 'Success'
-      logger.info_and_debug("Avatax Error: Order ##{request_hash[:DocCode]}", response)
-      raise 'error in Tax'
-    else
+    if SpreeAvataxCertified::Response.new(response).success?
       response
+    else
+      logger.info 'Avatax Error'
+      logger.debug response, 'error in Tax'
+      raise 'error in Tax'
     end
   rescue => e
     logger.info 'Rest Client Error'
@@ -27,15 +29,37 @@ class TaxSvc
   end
 
   def cancel_tax(request_hash)
-    if tax_calculation_enabled?
-      log(__method__, request_hash)
-      res = response('cancel', request_hash)
-      logger.debug res
-      JSON.parse(res.body)['CancelTaxResult']
+    log(__method__, request_hash)
+    res = response('cancel', request_hash)
+    logger.debug res
+    response = JSON.parse(res.body)['CancelTaxResult']
+
+    if response['ResultCode'] != 'Success'
+      logger.info_and_debug("Avatax Error: Order ##{response['Messages'][0]['Details']}", response)
+    end
+
+    response
+  rescue => e
+    logger.debug e, 'Error in Cancel Tax'
+    'Error in Cancel Tax'
+  end
+
+  def adjust_tax(request_hash)
+    log(__method__, request_hash)
+    soap = SpreeAvataxCertified::SoapApi.new
+    response = soap.adjust_tax(request_hash)[:adjust_tax_response][:adjust_tax_result]
+
+    if response[:result_code] != 'Success'
+      logger.info 'Avatax Error'
+      logger.debug response, 'error in Tax'
+      raise 'error in Tax'
+    else
+      response
     end
   rescue => e
-    logger.debug e, 'error in Cancel Tax'
-    'error in Cancel Tax'
+    logger.info 'Soap Client Error'
+    logger.debug e, 'error in Tax'
+    'error in Tax'
   end
 
   def estimate_tax(coordinates, sale_amount)
@@ -63,13 +87,11 @@ class TaxSvc
     self.estimate_tax({ latitude: '40.714623', longitude: '-74.006605'}, 0)
   end
 
-  protected
+  private
 
   def logger
     AvataxHelper::AvataxLog.new('tax_svc', 'tax_service', 'call to tax service')
   end
-
-  private
 
   def tax_calculation_enabled?
     Spree::Config.avatax_tax_calculation
