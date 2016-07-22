@@ -90,4 +90,20 @@ describe Spree::Refund, type: :model do
       expect(refund.avalara_capture_finalize).to be_kind_of(Hash)
     end
   end
+
+
+  context 'full refund' do
+    it 'returns correct tax calculations' do
+      clothing_tax_rate = create(:clothing_tax_rate)
+      order = create(:avalara_order, tax_category: clothing_tax_rate.tax_category)
+      order.update_attributes(state: 'complete', completed_at: Time.now)
+      payment = create(:payment, order: order, amount: order.total.to_f)
+      refund = build(:refund, payment: payment, amount: order.total.to_f)
+
+      response = refund.avalara_capture
+
+      expect(response['TotalAmount'].to_f.abs).to eq(order.total - order.additional_tax_total)
+      expect(response['TotalTax'].to_f.abs).to eq(order.additional_tax_total)
+    end
+  end
 end
