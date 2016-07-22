@@ -40,8 +40,8 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
     context "when computing a line item" do
       context "when tax is included in price" do
         let(:included_in_price) { true }
-        it "should raise error" do
-          expect{calculator.compute(line_item)}.to raise_error(RuntimeError)
+        it "should be equal to the item pre-tax total * rate" do
+          expect(calculator.compute(line_item)).to eq(0.38)
         end
       end
 
@@ -92,17 +92,18 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
       end
 
       it "should be equal 4.0" do
-        expect(calculator.compute(order.shipments.first)).to eq(4.0)
+        expect(shipping_calculator.compute(order.shipments.first)).to eq(4.0)
       end
 
       it "takes discounts into consideration" do
         order.shipments.first.update_attributes(promo_total: -1)
-        expect(calculator.compute(order.shipments.first)).to eq(3.96)
+        expect(shipping_calculator.compute(order.shipments.first)).to eq(3.96)
       end
-      context 'when given a shipping rate' do
-        it 'raises exception' do
-          order.shipments.first.selected_shipping_rate.tax_rate.update_attributes(included_in_price: true)
-          expect{calculator.compute(order.shipments.first.selected_shipping_rate)}.to raise_exception
+
+      context 'included_in_price' do
+        let(:included_in_price) { true }
+        it 'should be equal to 3.85' do
+          expect(shipping_calculator.compute(order.shipments.first)).to eq(4.0)
         end
       end
     end

@@ -17,10 +17,33 @@ FactoryGirl.define do
   end
 
   factory :avalara_entity_use_code, class: Spree::AvalaraEntityUseCode do
-    use_code 'A'
+    use_code "A"
+    use_code_description "Federal government"
   end
 
   factory :avalara_transaction_calculator, class: Spree::Calculator::AvalaraTransactionCalculator do
+  end
+
+  factory :zone_member, class: Spree::ZoneMember do
+    association :zoneable, factory: :country
+  end
+
+  factory :us_zone, class: Spree::Zone do
+    name { "USA - #{rand(999999)}" }
+    description { generate(:random_string) }
+    transient do
+      zone_members_count 1
+    end
+    after(:create) do |zone, evaluator|
+      create_list(:zone_member, evaluator.zone_members_count, zone: zone)
+    end
+  end
+
+  factory :avalara_tax_rate, class: Spree::TaxRate do
+    association(:zone, factory: :us_zone, default_tax: true)
+    amount 0.0
+    tax_category
+    association(:calculator, factory: :avalara_transaction_calculator)
   end
 
   factory :clothing_tax_rate, class: Spree::TaxRate do
