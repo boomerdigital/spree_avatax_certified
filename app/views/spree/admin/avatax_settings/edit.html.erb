@@ -134,7 +134,7 @@
         <td><%= link_to("Download", {controller: :avatax_settings, action: :get_file_txt_tax_svc}) %>
         </td>
         <td>
-          <%= link_to("Clear Data", {controller: :avatax_settings, action: :erase_data, remote: true, path: "log/tax_svc.log"}) %>
+          <%= link_to("Clear Data", {controller: :avatax_settings, action: :erase_data, remote: true, log_name: "tax_svc"}) %>
         </td>
       </tr>
       <tr>
@@ -142,7 +142,7 @@
         <td><%= link_to("Download", {controller: :avatax_settings, action: :get_file_post_order_to_avalara}) %>
         </td>
         <td>
-          <%= link_to("Clear Data", {controller: :avatax_settings, action: :erase_data, remote: true, path: "log/post_order_to_avalara.log"}) %>
+          <%= link_to("Clear Data", {controller: :avatax_settings, action: :erase_data, remote: true, log_name: "post_order_to_avalara"}) %>
         </td>
       </tr>
       <tr>
@@ -150,7 +150,7 @@
         <td><%= link_to("Download", {controller: :avatax_settings, action: :get_file_avalara_order}) %>
         </td>
         <td>
-          <%= link_to("Clear Data", {controller: :avatax_settings, action: :erase_data, remote: true, path: "log/avalara_order.log"}) %>
+          <%= link_to("Clear Data", {controller: :avatax_settings, action: :erase_data, remote: true, log_name: "avalara_order"}) %>
         </td>
       </tr>
     </table>
