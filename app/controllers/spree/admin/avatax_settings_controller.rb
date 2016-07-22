@@ -20,7 +20,9 @@ module Spree
       end
 
       def erase_data
-        File.open(params["path"], 'w') {}
+        File.open("log/#{params['log_name']}.log", 'w') {}
+
+        render nothing: true
       end
 
       def ping_my_service
