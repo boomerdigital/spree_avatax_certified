@@ -8,9 +8,11 @@ describe Spree::AvalaraTransaction, :type => :model do
   it { should have_db_index :order_id }
   it { should have_many :adjustments }
 
-  let(:country) { create(:country) }
-  let(:state) { create(:state) }
-  let(:order) { create(:order_with_line_items) }
+  let(:order) {
+    order = create(:order_with_line_items)
+    order.reload
+  }
+  let!(:rate) { create(:avalara_tax_rate, tax_category: order.line_items.first.tax_category) }
 
   before :each do
     MyConfigPreferences.set_preferences
@@ -44,6 +46,28 @@ describe Spree::AvalaraTransaction, :type => :model do
         it 'should respond with total tax of 0' do
           Spree::Config.avatax_tax_calculation = false
           expect(order.avalara_transaction.commit_avatax('SalesInvoice')[:TotalTax]).to eq("0.00")
+        end
+      end
+
+      context 'included_in_price' do
+        before do
+          rate.update_attributes(included_in_price: true)
+          order.reload
+        end
+
+        it 'calculates the included tax amount from item total' do
+          expect(order.avalara_transaction.commit_avatax('SalesOrder')["TotalTax"]).to eq("1.9")
+        end
+      end
+
+      context 'included_in_price' do
+        before do
+          rate.update_attributes(included_in_price: true)
+          order.reload
+        end
+
+        it 'calculates the included tax amount from item total' do
+          expect(order.avalara_transaction.commit_avatax('SalesOrder')["TotalTax"]).to eq("1.9")
         end
       end
     end

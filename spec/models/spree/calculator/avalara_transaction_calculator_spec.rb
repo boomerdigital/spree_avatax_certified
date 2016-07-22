@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
+
   let!(:country) { create(:country) }
   let!(:zone) { create(:zone, :name => "North America", :default_tax => true, :zone_members => []) }
   let(:zone_member) { Spree::ZoneMember.create() }
@@ -20,7 +21,7 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
   context "#compute" do
     context "when given an order" do
       let!(:line_item_1) { line_item }
-      let!(:line_item_2) { create(:line_item, :price => 10, :quantity => 3, :tax_category => tax_category) }
+      let!(:line_item_2) { create(:line_item, :price => 10, :quantity => 3, :tax_category => line_item.tax_category) }
 
       before do
         allow(order).to receive_messages :line_items => [line_item_1, line_item_2]
@@ -35,8 +36,8 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
     context "when computing a line item" do
       context "when tax is included in price" do
         let(:included_in_price) { true }
-        it "should raise error" do
-          expect{calculator.compute(line_item)}.to raise_error(RuntimeError)
+        it "should be equal to the item pre-tax total * rate" do
+          expect(calculator.compute(line_item)).to eq(0.38)
         end
       end
 
@@ -69,12 +70,19 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
       end
 
       it "should be equal 0.6" do
-        expect(calculator.compute(order.shipments.first)).to eq(4.0)
+        expect(shipping_calculator.compute(order.shipments.first)).to eq(4.0)
       end
 
       it "takes discounts into consideration" do
         order.shipments.first.update_attributes(promo_total: -1)
-        expect(calculator.compute(order.shipments.first)).to eq(3.96)
+        expect(shipping_calculator.compute(order.shipments.first)).to eq(3.96)
+      end
+
+      context 'included_in_price' do
+        let(:included_in_price) { true }
+        it 'should be equal to 3.85' do
+          expect(shipping_calculator.compute(order.shipments.first)).to eq(4.0)
+        end
       end
     end
   end
