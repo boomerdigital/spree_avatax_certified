@@ -40,6 +40,19 @@ module Spree
         end
       end
 
+      describe '/avatax_settings/erase_data' do
+        it 'erases the log' do
+          Dir.mkdir('log') unless Dir.exist?('log')
+          file = File.open("log/test.log", 'w') { |f| f.write('Hyah!') }
+
+          expect(File.read('log/test.log')).to eq('Hyah!')
+
+          spree_get :erase_data, { log_name: 'test' }
+
+          expect(File.read('log/test.log')).to eq('')
+        end
+      end
+
       describe "#update" do
         let(:params) do
           {
