@@ -13,6 +13,7 @@ describe Spree::AvalaraTransaction, :type => :model do
   let(:country) { create(:country) }
   let(:state) { create(:state) }
   let(:order) { create(:order_with_line_items) }
+  let!(:rate) { create(:avalara_tax_rate, tax_category: order.line_items.first.tax_category) }
 
   context 'captured orders' do
 
@@ -52,6 +53,17 @@ describe Spree::AvalaraTransaction, :type => :model do
         end
         it 'applies discount' do
           expect(order.avalara_transaction.commit_avatax('SalesInvoice')['TotalDiscount']).to eq('10')
+        end
+      end
+
+      context 'included_in_price' do
+        before do
+          rate.update_attributes(included_in_price: true)
+          order.reload
+        end
+
+        it 'calculates the included tax amount from item total' do
+          expect(order.avalara_transaction.commit_avatax('SalesOrder')["TotalTax"]).to eq("0.38")
         end
       end
     end
