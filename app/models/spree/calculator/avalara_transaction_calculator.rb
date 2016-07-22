@@ -1,7 +1,7 @@
 module Spree
   class Calculator::AvalaraTransactionCalculator < Calculator::DefaultTax
     def self.description
-      Spree.t(:avalara_transaction)
+      Spree.t(:avalara_transaction_calculator)
     end
 
     def compute_order(order)
@@ -9,14 +9,8 @@ module Spree
     end
 
     def compute_shipment_or_line_item(item)
-      # NEED TO TEST VAT
-      if item.tax_category.try(:tax_rates) && item.tax_category.tax_rates.any? { |rate| rate.included_in_price == true }
-        raise 'AvalaraTransaction cannot calculate inclusive sales taxes.'
-      else
-        avalara_response = get_avalara_response(item.order)
-
-        tax_for_item(item, avalara_response)
-      end
+      avalara_response = get_avalara_response(item.order)
+      tax_for_item(item, avalara_response)
     end
 
     alias_method :compute_shipment, :compute_shipment_or_line_item

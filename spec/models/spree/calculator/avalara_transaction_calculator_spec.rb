@@ -16,6 +16,12 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
     order.state = 'delivery'
   end
 
+  describe '#description' do
+    it 'responds with avalara_transaction' do
+      expect(calculator.description).to eq('Avalara Transaction Calculator')
+    end
+  end
+
   context "#compute" do
     context "when given an order" do
       let!(:line_item_1) { line_item }
@@ -34,8 +40,8 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
     context "when computing a line item" do
       context "when tax is included in price" do
         let(:included_in_price) { true }
-        it "should raise error" do
-          expect{calculator.compute(line_item)}.to raise_error(RuntimeError)
+        it "should be equal to the item pre-tax total * rate" do
+          expect(calculator.compute(line_item)).to eq(0.38)
         end
       end
 

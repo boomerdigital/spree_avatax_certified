@@ -21,4 +21,8 @@ Spree::Shipment.class_eval do
       tax_code
     end
   end
+
+  def tax_category
+    selected_shipping_rate.try(:tax_rate).try(:tax_category) || shipping_method.try(:tax_category)
+  end
 end
