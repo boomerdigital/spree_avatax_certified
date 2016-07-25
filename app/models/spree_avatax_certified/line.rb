@@ -33,7 +33,8 @@ module SpreeAvataxCertified
         OriginCode: get_stock_location(line_item),
         DestinationCode: 'Dest',
         CustomerUsageType: order.customer_usage_type,
-        Discounted: true
+        Discounted: true,
+        TaxIncluded: tax_included_in_price?(line_item)
       }
     end
 
@@ -61,7 +62,8 @@ module SpreeAvataxCertified
         CustomerUsageType: order.customer_usage_type,
         Description: 'Shipping Charge',
         TaxCode: shipment.shipping_method_tax_code,
-        Discounted: false
+        Discounted: false,
+        TaxIncluded: tax_included_in_price?(shipment)
       }
     end
 
@@ -83,12 +85,24 @@ module SpreeAvataxCertified
         LineNo: "#{@refund.id}-RA",
         ItemCode: @refund.transaction_id || 'Refund',
         Qty: 1,
-        Amount: -@refund.amount.to_f,
+        Amount: -return_amount.to_f,
         OriginCode: 'Orig',
         DestinationCode: 'Dest',
         CustomerUsageType: order.customer_usage_type,
         Description: 'Refund'
       }
+    end
+
+    def return_amount
+      if @refund.payment.amount < @refund.amount
+        item_total = @order.item_total
+        item_tax_total = @order.all_adjustments.where(adjustable_type: 'Spree::LineItem').sum(:amount)
+
+        tax_rate = item_tax_total / item_total
+        tax_rate * @refund.amount
+      else
+        @order.total.to_f - @order.all_adjustments.tax.sum(:amount)
+      end
     end
 
     def return_item_line(line_item, quantity, amount)
@@ -110,5 +124,14 @@ module SpreeAvataxCertified
 
       li_stock_locs.empty? ? 'Orig' : "#{li_stock_locs.first.id}"
     end
+
+    def tax_included_in_price?(item)
+      if item.tax_category.try(:tax_rates).any?
+        item.tax_category.tax_rates.first.included_in_price
+      else
+        false
+      end
+    end
+
   end
 end
