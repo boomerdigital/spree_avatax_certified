@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.1.0'
 
   s.author    = 'Allison Reilly'
-  s.email     = 'allison@railsdog.com'
-  s.homepage  = 'http://railsdog.com'
+  s.email     = 'acreilly3@gmail.com'
+  s.homepage  = 'http://boomer.digital'
 
   #s.files       = `git ls-files`.split("\n")
   #s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
