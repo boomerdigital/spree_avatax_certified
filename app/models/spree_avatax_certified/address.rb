@@ -78,7 +78,7 @@ module SpreeAvataxCertified
     end
 
     def country_enabled?
-      enabled_countries.any? { |c| @ship_address.country.try(:name) == c }
+      enabled_countries.include?(@ship_address.try(:country).try(:name))
     end
 
     private
