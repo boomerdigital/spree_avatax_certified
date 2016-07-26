@@ -9,7 +9,15 @@ module Spree
     end
 
     def compute_shipment_or_line_item(item)
-      avalara_response = get_avalara_response(item.order)
+      order = item.order
+      item_address = order.ship_address || order.billing_address
+      prev_tax_amount = prev_tax_amount(item)
+
+      return prev_tax_amount if %w(address cart).include?(order.state)
+      return prev_tax_amount if item_address.nil?
+      return prev_tax_amount unless calculable.zone.include?(item_address)
+
+      avalara_response = get_avalara_response(order)
       tax_for_item(item, avalara_response)
     end
 
@@ -17,14 +25,18 @@ module Spree
     alias_method :compute_line_item, :compute_shipment_or_line_item
 
     def compute_shipping_rate(shipping_rate)
-      if shipping_rate.try(:tax_rate).try(:included_in_price) == true
-        raise 'AvalaraTransaction cannot calculate inclusive sales taxes.'
-      else
-        return 0
-      end
+      return 0
     end
 
     private
+
+    def prev_tax_amount(item)
+      if rate.included_in_price
+        item.included_tax_total
+      else
+        item.additional_tax_total
+      end
+    end
 
     def get_avalara_response(order)
       Rails.cache.fetch(cache_key(order), time_to_idle: 5.minutes) do
@@ -59,15 +71,10 @@ module Spree
     alias_method_chain :cache_key, :short_hash
 
     def tax_for_item(item, avalara_response)
-      order = item.order
-      item_address = order.ship_address || order.billing_address
-      prev_tax_amount = item.additional_tax_total
+      prev_tax_amount = prev_tax_amount(item)
 
-      return prev_tax_amount if %w(address cart).include?(order.state)
       return prev_tax_amount if avalara_response.nil?
       return prev_tax_amount if avalara_response[:TotalTax] == '0.00'
-      return prev_tax_amount if item_address.nil?
-      return prev_tax_amount unless calculable.zone.include?(item_address)
 
       avalara_response['TaxLines'].each do |line|
         if line['LineNo'] == "#{item.id}-#{item.avatax_line_code}"
