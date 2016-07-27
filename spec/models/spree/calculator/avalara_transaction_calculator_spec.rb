@@ -43,12 +43,37 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
         it "should be equal to the item pre-tax total * rate" do
           expect(calculator.compute(line_item)).to eq(0.38)
         end
+
+        it 'should be equal to the previous included_tax_total is order is at cart' do
+          order.state = 'cart'
+          line_item.included_tax_total = 0.1
+          expect(calculator.compute(line_item)).to eq(0.1)
+        end
+
+        it 'should be equal to the previous included_tax_total is order is at address' do
+          order.state = 'address'
+          line_item.included_tax_total = 0.1
+          expect(calculator.compute(line_item)).to eq(0.1)
+        end
       end
 
       context "when tax is not included in price" do
 
         it "should be equal to the item pre-tax total * rate" do
           expect(calculator.compute(line_item)).to eq(0.4)
+        end
+
+
+        it 'should be equal to the previous additional_tax_total is order is at cart' do
+          order.state = 'cart'
+          line_item.additional_tax_total = 0.1
+          expect(calculator.compute(line_item)).to eq(0.1)
+        end
+
+        it 'should be equal to the previous additional_tax_total is order is at address' do
+          order.state = 'address'
+          line_item.additional_tax_total = 0.1
+          expect(calculator.compute(line_item)).to eq(0.1)
         end
 
         context "when the order is discounted" do
