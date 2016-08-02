@@ -13,7 +13,7 @@ describe Spree::AvalaraTransaction, :type => :model do
   let(:country) { create(:country) }
   let(:state) { create(:state) }
   let(:order) { create(:order_with_line_items) }
-  let!(:rate) { create(:avalara_tax_rate, tax_category: order.line_items.first.tax_category) }
+  let!(:rate) { create(:clothing_tax_rate, tax_category: order.line_items.first.tax_category) }
 
   context 'captured orders' do
 
@@ -58,7 +58,7 @@ describe Spree::AvalaraTransaction, :type => :model do
 
       context 'included_in_price' do
         before do
-          rate.update_attributes(included_in_price: true)
+          Spree::TaxRate.where(name: 'Tax').update_all(included_in_price: true)
           order.reload
         end
 

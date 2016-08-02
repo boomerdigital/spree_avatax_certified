@@ -17,47 +17,29 @@ FactoryGirl.define do
   end
 
   factory :avalara_entity_use_code, class: Spree::AvalaraEntityUseCode do
-    use_code "A"
-    use_code_description "Federal government"
-  end
-
-  factory :zone_member, class: Spree::ZoneMember do
-    association :zoneable, factory: :country
-  end
-
-  factory :us_zone, class: Spree::Zone do
-    name { "USA - #{rand(999999)}" }
-    description { generate(:random_string) }
-    transient do
-      zone_members_count 1
-    end
-    after(:create) do |zone, evaluator|
-      create_list(:zone_member, evaluator.zone_members_count, zone: zone)
-    end
-  end
-
-  factory :avalara_tax_rate, class: Spree::TaxRate do
-    association(:zone, factory: :us_zone, default_tax: true)
-    amount 0.0
-    tax_category
-    association(:calculator, factory: :avalara_transaction_calculator)
+    use_code 'A'
+    use_code_description 'Federal government'
   end
 
   factory :avalara_transaction_calculator, class: Spree::Calculator::AvalaraTransactionCalculator do
   end
 
   factory :clothing_tax_rate, class: Spree::TaxRate do
+    name 'Tax'
     amount 0.0
     tax_category { Spree::TaxCategory.find_or_create_by(tax_code: 'PC030000') }
     association(:calculator, factory: :avalara_transaction_calculator)
     zone { Spree::Zone.find_or_create_by(name: 'GlobalZone') }
+    show_rate_in_label false
   end
 
   factory :shipping_tax_rate, class: Spree::TaxRate do
+    name 'Shipping Tax'
     amount 0.0
     tax_category { create(:tax_category, tax_code: 'FR000000') }
     association(:calculator, factory: :avalara_transaction_calculator)
     zone { Spree::Zone.find_or_create_by(name: 'GlobalZone') }
+    show_rate_in_label false
   end
 
   factory :avalara_order, class: Spree::Order do
@@ -72,12 +54,27 @@ FactoryGirl.define do
     transient do
       line_items_price BigDecimal.new(10)
       line_items_count 1
+      line_items_quantity 1
       shipment_cost 5
       tax_category Spree::TaxCategory.first
     end
 
+    before(:create) do |order, evaluator|
+      if Spree::Country.count == 0
+        create(:country)
+      end
+      if Spree::Zone.find_by(name: 'GlobalZone').nil?
+        create(:global_zone, default_tax: true)
+      end
+      if Spree::TaxCategory.first.nil?
+        create(:clothing_tax_rate, tax_category: create(:tax_category))
+      else
+        create(:clothing_tax_rate, tax_category: Spree::TaxCategory.first)
+      end
+    end
+
     after(:create) do |order, evaluator|
-      create_list(:line_item, evaluator.line_items_count, order: order, price: evaluator.line_items_price, tax_category: evaluator.tax_category)
+      create_list(:line_item, evaluator.line_items_count, order: order, price: evaluator.line_items_price, tax_category: evaluator.tax_category, quantity: evaluator.line_items_quantity)
       order.line_items.reload
 
       create(:avalara_shipment, order: order, cost: evaluator.shipment_cost )
@@ -98,12 +95,15 @@ FactoryGirl.define do
   end
 
   factory :avalara_shipping_method, class: Spree::ShippingMethod do
-    zones { |a| [Spree::Zone.global] }
+    zones { |a| [Spree::Zone.find_by(name: 'GlobalZone') || create(:zone, :with_country, default_tax: true)] }
     name 'Avalara Ground'
     code 'Avalara_Ground'
     association(:calculator, factory: :shipping_calculator, strategy: :create)
 
     before(:create) do |shipping_method, evaluator|
+      if Spree::Country.count == 0
+        create(:country)
+      end
       shipping_tax_rate = create(:shipping_tax_rate)
       shipping_method.tax_category = shipping_tax_rate.tax_category
       if shipping_method.shipping_categories.empty?
@@ -153,7 +153,14 @@ FactoryGirl.modify do
     phone '555-555-0199'
     alternative_phone '555-555-0199'
 
-    state { |address| address.association(:state) }
+    state do |address|
+      if !Spree::State.find_by(name: address.state_name).nil?
+        Spree::State.find_by(name: address.state_name)
+      else
+         address.association(:state)
+      end
+    end
+
     country do |address|
       if address.state
         address.state.country
