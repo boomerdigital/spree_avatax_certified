@@ -155,7 +155,8 @@ module Spree
         ExemptionNo: order.user.try(:exemption_number),
         Client:  avatax_client_version,
         ReferenceCode: order.number,
-        DetailLevel: 'Tax'
+        DetailLevel: 'Tax',
+        CurrencyCode: order.currency
       }
     end
 
