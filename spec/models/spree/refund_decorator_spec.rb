@@ -50,18 +50,18 @@ describe Spree::Refund, type: :model do
   context "transaction id exists" do
     let(:transaction_id) { "12kfjas0" }
     subject { create(:refund, payment: payment, amount: amount, reason: refund_reason, transaction_id: transaction_id) }
-    describe "#avalara_eligible?" do
+    describe "#avalara_tax_enabled?" do
       it "should return true" do
-        expect(subject.avalara_eligible?).to eq(true)
+        expect(subject.avalara_tax_enabled?).to eq(true)
       end
     end
   end
 
-  describe "#avalara_eligible?" do
+  describe "#avalara_tax_enabled?" do
     let(:transaction_id) { "12kfjas0" }
     subject { create(:refund, payment: payment, amount: amount, reason: refund_reason, transaction_id: transaction_id) }
     it "should return true" do
-      expect(subject.avalara_eligible?).to eq(true)
+      expect(subject.avalara_tax_enabled?).to eq(true)
     end
   end
 

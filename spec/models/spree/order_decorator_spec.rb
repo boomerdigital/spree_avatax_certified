@@ -8,9 +8,9 @@ describe Spree::Order, type: :model do
   let(:completed_order) { create(:completed_order_with_totals) }
   let(:variant) { create(:variant) }
 
-  describe "#avalara_eligible?" do
+  describe "#avalara_tax_enabled?" do
     it "should return true" do
-      expect(order.avalara_eligible?).to eq(true)
+      expect(order.avalara_tax_enabled?).to eq(true)
     end
   end
 

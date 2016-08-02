@@ -43,14 +43,6 @@
     </fieldset>
 
     <fieldset>
-      <legend><%= t('eligible') %></legend>
-      <p>
-        <label><%= t('enable_avatax') %></label><br />
-        <%= check_box_tag('settings[avatax_iseligible]','yes' , Spree::Config.avatax_iseligible, class: 'avatax') %>
-      </p>
-    </fieldset>
-
-    <fieldset>
       <legend><%= t('avatax_log') %></legend>
       <p>
         <label><%= t('enable_avatax_logging') %></label><br />
