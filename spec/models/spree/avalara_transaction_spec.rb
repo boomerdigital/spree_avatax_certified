@@ -90,6 +90,17 @@ describe Spree::AvalaraTransaction, :type => :model do
           expect(order.avalara_transaction.commit_avatax_final('SalesInvoice')[:TotalTax]).to eq("0.00")
         end
       end
+
+      context 'with CustomerUsageType' do
+        let(:use_code) { create(:avalara_entity_use_code) }
+        before do
+          order.user.update_attributes(avalara_entity_use_code: use_code)
+        end
+
+        it 'does not add additional tax' do
+          expect(order.avalara_transaction.commit_avatax('SalesInvoice')['TotalTax']).to eq('0')
+        end
+      end
     end
 
     describe '#cancel_order' do
