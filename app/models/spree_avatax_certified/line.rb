@@ -85,24 +85,13 @@ module SpreeAvataxCertified
         LineNo: "#{@refund.id}-RA",
         ItemCode: @refund.transaction_id || 'Refund',
         Qty: 1,
-        Amount: -return_amount.to_f,
+        Amount: -@refund.amount.to_f,
         OriginCode: 'Orig',
         DestinationCode: 'Dest',
         CustomerUsageType: order.customer_usage_type,
-        Description: 'Refund'
+        Description: 'Refund',
+        TaxIncluded: true
       }
-    end
-
-    def return_amount
-      if @refund.payment.amount < @refund.amount
-        item_total = @order.item_total
-        item_tax_total = @order.all_adjustments.where(adjustable_type: 'Spree::LineItem').sum(:amount)
-
-        tax_rate = item_tax_total / item_total
-        tax_rate * @refund.amount
-      else
-        @order.total.to_f - @order.all_adjustments.tax.sum(:amount)
-      end
     end
 
     def return_item_line(line_item, quantity, amount)
