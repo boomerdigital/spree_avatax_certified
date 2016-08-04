@@ -88,14 +88,21 @@ module Spree
         end
       end
 
+      doc_date = order.completed? ? order.completed_at.strftime('%F') : Date.today.strftime('%F')
+
       gettaxes = {
         DocCode: order.number,
+        DocDate: doc_date,
         Discount: order.adjustments.eligible.promotion.sum(:amount).abs.to_s,
         Commit: commit,
         DocType: doc_type ? doc_type : 'SalesOrder',
         Addresses: avatax_address.addresses,
         Lines: avatax_line.lines
       }.merge(base_tax_hash)
+
+      if !business_id_no.blank?
+        gettaxes[:BusinessIdentificationNo] = business_id_no
+      end
 
       AVALARA_TRANSACTION_LOGGER.debug gettaxes
 
@@ -116,18 +123,23 @@ module Spree
       avatax_line = SpreeAvataxCertified::Line.new(order, doc_type, refund)
 
       taxoverride = {
-        TaxOverrideType: 'None',
+        TaxOverrideType: 'TaxDate',
         Reason: 'Return',
         TaxDate: order.completed_at.strftime('%F')
       }
 
       gettaxes = {
         DocCode: order.number.to_s + '.' + refund.id.to_s,
+        DocDate: Date.today.strftime('%F'),
         Commit: commit,
         DocType: doc_type ? doc_type : 'ReturnOrder',
         Addresses: avatax_address.addresses,
         Lines: avatax_line.lines
       }.merge(base_tax_hash)
+
+      if !business_id_no.blank?
+        gettaxes[:BusinessIdentificationNo] = business_id_no
+      end
 
       gettaxes[:TaxOverride] = taxoverride
 
@@ -144,21 +156,24 @@ module Spree
     end
 
     def base_tax_hash
-      doc_date = order.completed? ? order.completed_at.strftime('%F') : Date.today.strftime('%F')
       {
         CustomerCode: customer_code,
-        DocDate: doc_date,
         CompanyCode: Spree::Config.avatax_company_code,
         CustomerUsageType: order.customer_usage_type,
         ExemptionNo: order.user.try(:exemption_number),
         Client:  avatax_client_version,
         ReferenceCode: order.number,
-        DetailLevel: 'Tax'
+        DetailLevel: 'Tax',
+        CurrencyCode: order.currency
       }
     end
 
     def customer_code
       order.user ? order.user.id : order.email
+    end
+
+    def business_id_no
+      Spree::Config.avatax_vat_id
     end
 
     def avatax_client_version

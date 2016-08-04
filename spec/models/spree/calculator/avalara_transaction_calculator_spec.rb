@@ -76,6 +76,14 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
           expect(calculator.compute(line_item)).to eq(0.1)
         end
 
+
+        it 'should be equal to the previous tax total if preference tax_calculation is false' do
+          Spree::Config.avatax_tax_calculation = false
+
+          line_item.additional_tax_total = 0.1
+          expect(calculator.compute(line_item)).to eq(0.1)
+        end
+
         context "when the order is discounted" do
           let(:promotion) { create(:promotion, :with_order_adjustment) }
 

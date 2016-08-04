@@ -19,16 +19,16 @@
     <td><%= Spree::Config.avatax_endpoint %></td>
   </tr>
   <tr>
+    <th scope="row"><%= t("avatax_vat_id") %>:</th>
+    <td><%= Spree::Config.avatax_vat_id %></td>
+  </tr>
+  <tr>
     <th scope="row"><%= t("avatax_servicepath_tax") %>:</th>
     <td><%= AVATAX_SERVICEPATH_TAX %></td>
   </tr>
   <tr>
     <th scope="row"><%= t("avatax_servicepath_address") %>:</th>
     <td><%= AVATAX_SERVICEPATH_ADDRESS %></td>
-  </tr>
-  <tr>
-    <th scope="row"><%= t("enable_avatax") %>:</th>
-    <td><%= Spree::Config.avatax_iseligible %></td>
   </tr>
   <tr>
     <th scope="row"><%= t("enable_avatax_logging") %>:</th>

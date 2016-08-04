@@ -50,18 +50,18 @@ describe Spree::Refund, type: :model do
   context "transaction id exists" do
     let(:transaction_id) { "12kfjas0" }
     subject { create(:refund, payment: payment, amount: amount, reason: refund_reason, transaction_id: transaction_id) }
-    describe "#avalara_eligible?" do
+    describe "#avalara_tax_enabled?" do
       it "should return true" do
-        expect(subject.avalara_eligible?).to eq(true)
+        expect(subject.avalara_tax_enabled?).to eq(true)
       end
     end
   end
 
-  describe "#avalara_eligible?" do
+  describe "#avalara_tax_enabled?" do
     let(:transaction_id) { "12kfjas0" }
     subject { create(:refund, payment: payment, amount: amount, reason: refund_reason, transaction_id: transaction_id) }
     it "should return true" do
-      expect(subject.avalara_eligible?).to eq(true)
+      expect(subject.avalara_tax_enabled?).to eq(true)
     end
   end
 
@@ -94,13 +94,14 @@ describe Spree::Refund, type: :model do
 
   context 'full refund' do
     it 'returns correct tax calculations' do
-      clothing_tax_rate = create(:clothing_tax_rate)
-      order = create(:avalara_order, tax_category: clothing_tax_rate.tax_category)
-      order.update_attributes(state: 'complete', completed_at: Time.now)
+      order = create(:avalara_order)
+      order.update_attributes(state: 'complete', completed_at: 2.days.ago)
+      order.avalara_capture_finalize
+
       payment = create(:payment, order: order, amount: order.total.to_f)
       refund = build(:refund, payment: payment, amount: order.total.to_f)
 
-      response = refund.avalara_capture
+      response = refund.avalara_capture_finalize
 
       expect(response['TotalAmount'].to_f.abs).to eq(order.total - order.additional_tax_total)
       expect(response['TotalTax'].to_f.abs).to eq(order.additional_tax_total)

@@ -13,6 +13,7 @@ module Spree
       item_address = order.ship_address || order.billing_address
       prev_tax_amount = prev_tax_amount(item)
 
+      return prev_tax_amount unless Spree::Config.avatax_tax_calculation
       return prev_tax_amount if %w(address cart).include?(order.state)
       return prev_tax_amount if item_address.nil?
       return prev_tax_amount unless calculable.zone.include?(item_address)

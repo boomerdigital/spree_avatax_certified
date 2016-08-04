@@ -13,7 +13,7 @@ describe Spree::AvalaraTransaction, :type => :model do
   let(:country) { create(:country) }
   let(:state) { create(:state) }
   let(:order) { create(:order_with_line_items) }
-  let!(:rate) { create(:avalara_tax_rate, tax_category: order.line_items.first.tax_category) }
+  let!(:rate) { create(:clothing_tax_rate, tax_category: order.line_items.first.tax_category) }
 
   context 'captured orders' do
 
@@ -58,7 +58,7 @@ describe Spree::AvalaraTransaction, :type => :model do
 
       context 'included_in_price' do
         before do
-          rate.update_attributes(included_in_price: true)
+          Spree::TaxRate.where(name: 'Tax').update_all(included_in_price: true)
           order.reload
         end
 
@@ -88,6 +88,17 @@ describe Spree::AvalaraTransaction, :type => :model do
         it 'should respond with total tax of 0' do
           Spree::Config.avatax_tax_calculation = false
           expect(order.avalara_transaction.commit_avatax_final('SalesInvoice')[:TotalTax]).to eq("0.00")
+        end
+      end
+
+      context 'with CustomerUsageType' do
+        let(:use_code) { create(:avalara_entity_use_code) }
+        before do
+          order.user.update_attributes(avalara_entity_use_code: use_code)
+        end
+
+        it 'does not add additional tax' do
+          expect(order.avalara_transaction.commit_avatax('SalesInvoice')['TotalTax']).to eq('0')
         end
       end
     end
