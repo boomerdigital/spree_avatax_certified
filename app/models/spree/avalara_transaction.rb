@@ -100,6 +100,10 @@ module Spree
         Lines: avatax_line.lines
       }.merge(base_tax_hash)
 
+      if !business_id_no.blank?
+        gettaxes[:BusinessIdentificationNo] = business_id_no
+      end
+
       AVALARA_TRANSACTION_LOGGER.debug gettaxes
 
       mytax = TaxSvc.new
@@ -133,6 +137,10 @@ module Spree
         Lines: avatax_line.lines
       }.merge(base_tax_hash)
 
+      if !business_id_no.blank?
+        gettaxes[:BusinessIdentificationNo] = business_id_no
+      end
+
       gettaxes[:TaxOverride] = taxoverride
 
       AVALARA_TRANSACTION_LOGGER.debug gettaxes
@@ -162,6 +170,10 @@ module Spree
 
     def customer_code
       order.user ? order.user.id : order.email
+    end
+
+    def business_id_no
+      Spree::Config.avatax_vat_id
     end
 
     def avatax_client_version

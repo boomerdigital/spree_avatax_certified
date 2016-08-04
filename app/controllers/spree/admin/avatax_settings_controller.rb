@@ -59,6 +59,7 @@ module Spree
         Spree::Config.avatax_endpoint = taxpref[:avatax_endpoint]
         Spree::Config.avatax_account = taxpref[:avatax_account]
         Spree::Config.avatax_license_key = taxpref[:avatax_license_key]
+        Spree::Config.avatax_vat_id = taxpref[:avatax_vat_id]
         Spree::Config.avatax_log = taxpref[:avatax_log]
         Spree::Config.avatax_address_validation = taxpref[:avatax_address_validation]
         Spree::Config.avatax_address_validation_enabled_countries = taxpref[:avatax_address_validation_enabled_countries]
