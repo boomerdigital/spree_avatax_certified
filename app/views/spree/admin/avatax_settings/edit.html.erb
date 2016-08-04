@@ -20,6 +20,11 @@
         <label><%= t('avatax_license_key') %></label><br />
         <%= text_field_tag('settings[avatax_license_key]', Spree::Config.avatax_license_key, maxlength: 256, class: 'avatax') %>
       </p>
+      <p>
+        <label><%= t('avatax_vat_id') %></label><br />
+        <p><strong>Please leave blank if you are not a VAT user</strong></p>
+        <%= text_field_tag('settings[avatax_vat_id]', Spree::Config.avatax_vat_id, :maxlength => 256, :class => 'avatax') %>
+      </p>
     </fieldset>
 
     <fieldset>
