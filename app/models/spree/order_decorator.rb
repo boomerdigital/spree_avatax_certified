@@ -3,10 +3,12 @@ require 'logger'
 Spree::Order.class_eval do
   has_one :avalara_transaction, dependent: :destroy
 
-  self.state_machine.before_transition to: :canceled, do: :cancel_avalara, if: :avalara_eligible?
+  self.state_machine.before_transition :to => :canceled,
+                                      :do => :cancel_avalara,
+                                      :if => :avalara_tax_enabled?
 
-  def avalara_eligible?
-    Spree::Config.avatax_iseligible
+  def avalara_tax_enabled?
+    Spree::Config.avatax_tax_calculation
   end
 
   def cancel_avalara

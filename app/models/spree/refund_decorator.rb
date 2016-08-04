@@ -5,10 +5,10 @@ Spree::Refund.class_eval do
   REFUND_LOGGER.info('start refund processing')
 
   has_one :avalara_transaction
-  after_create :avalara_capture_finalize, if: :avalara_eligible?
+  after_create :avalara_capture_finalize, if: :avalara_tax_enabled?
 
-  def avalara_eligible?
-    Spree::Config.avatax_iseligible
+  def avalara_tax_enabled?
+    Spree::Config.avatax_tax_calculation
   end
 
   def avalara_capture
