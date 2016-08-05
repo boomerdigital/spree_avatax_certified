@@ -71,11 +71,15 @@ module SpreeAvataxCertified
       return lines << refund_line if @refund.reimbursement.nil?
 
       return_items = @refund.reimbursement.customer_return.return_items
-      li_ids = Spree::InventoryUnit.where(id: return_items.pluck(:inventory_unit_id)).select(:line_item_id)
-      amount = return_items.sum(:pre_tax_amount) / li_ids.uniq.count
+      inventory_units = Spree::InventoryUnit.where(id: return_items.pluck(:inventory_unit_id))
 
-      return_items.map(&:inventory_unit).group_by(&:line_item_id).each_value do |inv_unit|
+      inventory_units.group_by(&:line_item_id).each_value do |inv_unit|
+
+        inv_unit_ids = inv_unit.map { |iu| iu.id }
+        return_items = Spree::ReturnItem.where(inventory_unit_id: inv_unit_ids)
         quantity = inv_unit.uniq.count
+        amount = return_items.sum(:pre_tax_amount)
+
         lines << return_item_line(inv_unit.first.line_item, quantity, amount)
       end
     end
