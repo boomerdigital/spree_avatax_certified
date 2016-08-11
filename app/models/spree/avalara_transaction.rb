@@ -173,7 +173,7 @@ module Spree
     end
 
     def business_id_no
-      Spree::Config.avatax_vat_id
+      order.user.try(:vat_id)
     end
 
     def avatax_client_version
