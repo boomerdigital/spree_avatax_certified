@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe SpreeAvataxCertified::Address, :type => :model do
-  let(:country){ FactoryGirl.create(:country) }
+  let(:country){ FactoryGirl.create(:country, name: 'United States') }
   let(:address){ FactoryGirl.create(:address) }
   let(:order) { FactoryGirl.create(:order_with_line_items) }
 

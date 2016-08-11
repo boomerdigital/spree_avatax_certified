@@ -115,7 +115,7 @@ module SpreeAvataxCertified
     end
 
     def tax_included_in_price?(item)
-      if item.tax_category.try(:tax_rates).any?
+      if item.tax_category.try(:tax_rates).present?
         item.tax_category.tax_rates.first.included_in_price
       else
         false
