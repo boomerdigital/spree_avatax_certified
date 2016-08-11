@@ -168,9 +168,14 @@ FactoryGirl.modify do
     phone '555-555-0199'
     alternative_phone '555-555-0199'
 
-    country { Spree::Country.find_or_create_by(name: 'United States', iso: 'US', iso_name: 'US') }
-
-    state { Spree::State.find_or_create_by(name: 'Alabama', abbr: 'AL', country: Spree::Country.last) }
+    state { |address| Spree::State.find_by(abbr: 'AL') || address.association(:state, abbr: 'AL')}
+    country do |address|
+      if address.state
+        address.state.country
+      else
+        address.association(:country)
+      end
+    end
 
     after(:create) do |address, evalulator|
       zone = Spree::Zone.first || create(:global_zone)
@@ -178,5 +183,13 @@ FactoryGirl.modify do
       zone.zone_members.create(zoneable: address.country)
 
     end
+  end
+
+  factory :country, class: Spree::Country do
+    sequence(:iso_name) { |n| "ISO_NAME_#{n}" }
+    name 'United States'
+    iso 'US'
+    iso3 'USA'
+    numcode 840
   end
 end

@@ -1,13 +1,10 @@
 require 'spec_helper'
 
 describe SpreeAvataxCertified::Address, :type => :model do
-  let(:country){ FactoryGirl.create(:country, name: 'United States') }
-  let(:address){ FactoryGirl.create(:address) }
-  let(:order) { FactoryGirl.create(:order_with_line_items) }
+  let(:order) { create(:avalara_order) }
 
   before do
     Spree::Config.avatax_address_validation = true
-    order.ship_address.update_attributes(city: 'Tuscaloosa', address1: '220 Paul W Bryant Dr')
   end
 
   let(:address_lines) { SpreeAvataxCertified::Address.new(order) }

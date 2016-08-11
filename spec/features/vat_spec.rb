@@ -29,7 +29,7 @@ describe "VAT" do
 
     context 'Seller does not have Nexus Jurisdition registered' do
       let(:cr_address) { create(:address, address1: '350 Av Central', city: 'Tamarindo', zipcode: '50309', state_name: '', country: cr) }
-      let!(:avalara_order) { create(:avalara_order, state: 'address', ship_address: cr_address) }
+      let!(:avalara_order) { create(:avalara_order, state: 'address', ship_address: cr_address, bill_address: cr_address) }
 
       let(:res) { avalara_order.avalara_capture }
       before { prep_avalara_order }
