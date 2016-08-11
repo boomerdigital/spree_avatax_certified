@@ -3,6 +3,7 @@ Spree::Core::Engine.routes.draw do
     resources :users do
       member do
         get :avalara_information
+        put :avalara_information
       end
     end
     resource :avatax_settings do

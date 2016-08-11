@@ -17,7 +17,6 @@ module SpreeAvataxCertified
         preference :avatax_company_code, :string
         preference :avatax_endpoint, :string
         preference :avatax_account, :string
-        preference :avatax_vat_id, :string
         preference :avatax_license_key, :string
         preference :avatax_log, :boolean, default: true
         preference :avatax_address_validation, :boolean, default: true

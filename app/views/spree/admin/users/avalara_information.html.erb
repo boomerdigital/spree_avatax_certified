@@ -13,29 +13,40 @@
   </div>
 
   <div data-hook="admin_user_edit_form">
-    <%= form_for [:admin, @user], as: :user, url: admin_user_url(@user), method: :put do |f| %>
+    <%= form_for [:admin, @user], as: :user, url: avalara_information_admin_user_url(@user), method: :put do |f| %>
     <div class="alpha six columns">
       <div class="field">
         <label>Customer Code</label>
         <input type="text" class="fullwidth" placeholder="<%= @user.id %>", readonly>
       </div>
     </div>
+    <% use_codes_list = Spree::AvalaraEntityUseCode.all.map {|use_code| ["#{use_code.use_code}) #{use_code.use_code_description}", use_code.id]} %>
     <div class="omega six columns">
       <%= f.field_container :avalara_entity_use_code_id do %>
-      <%= label_tag :avalara_entity_use_code_id, t(:avalara_entity_use_code) %><br />
-      <%= hidden_field_tag 'user[avalara_entity_use_code_id]', f.object.avalara_entity_use_code_id , class: "use_code_picker fullwidth" %>
+        <%= label_tag :avalara_entity_use_code_id, t(:avalara_entity_use_code) %><br />
+        <%= f.select(:avalara_entity_use_code_id, use_codes_list) %>
+      <% end %>
+    </div>
+    <div class="clear"></div>
+    <div class="alpha six columns">
+      <%= f.field_container :exemption_number do %>
+        <%= f.label :exemption_number, Spree.t(:exemption_number) %>
+        <%= f.text_field :exemption_number, :class => 'fullwidth' %>
       <% end %>
     </div>
     <div class="omega six columns">
-      <%= f.field_container :exemption_number do %>
-      <%= f.label :exemption_number, Spree.t(:exemption_number) %>
-      <%= f.text_field :exemption_number, class: 'fullwidth' %>
+      <%= f.field_container :vat_id do %>
+        <%= f.label :vat_id, Spree.t(:vat_identification_number) %>
+        <%= f.text_field :vat_id, :class => 'fullwidth' %>
       <% end %>
     </div>
     <br><br><br>
-    <div class="alpha fullwidth" data-hook="admin_user_edit_form_button">
-      <%= render partial: 'spree/admin/shared/edit_resource_links', locals: { :collection_url => admin_users_url } %>
-    </div>
+    <div class="clear"></div>
+    <% if can?(:update, @user) %>
+      <div data-hook="admin_user_edit_form_button">
+        <%= render :partial => 'spree/admin/shared/edit_resource_links', :locals => { :collection_url => admin_users_url } %>
+        </div>
+    <% end %>
   </div>
   <% end %>
 </fieldset>

@@ -50,7 +50,7 @@ describe "VAT" do
 
       context 'with BusinessIdentificationNo' do
         before do
-          Spree::Config.avatax_vat_id = '123456789'
+          avalara_order.user.update_attributes(vat_id: '123456789')
         end
 
         it 'origin country zero rate is returned' do
@@ -97,7 +97,7 @@ describe "VAT" do
 
       context 'with BusinessIdentificationNo' do
         before do
-          Spree::Config.avatax_vat_id = '123456789'
+          avalara_order.user.update_attributes(vat_id: '123456789')
         end
 
         it 'origin country zero rate is returned' do
@@ -125,7 +125,7 @@ describe "VAT" do
 
       context 'with BusinessIdentificationNo' do
         before do
-          Spree::Config.avatax_vat_id = '123456789'
+          avalara_order.user.update_attributes(vat_id: '123456789')
         end
 
         it 'origin country zero rate is returned' do
@@ -147,7 +147,6 @@ describe "VAT" do
 
   def prep_avalara_order
     set_seller_location
-    Spree::Config.avatax_vat_id = nil
     avalara_order.reload
     avalara_order.next!
   end
