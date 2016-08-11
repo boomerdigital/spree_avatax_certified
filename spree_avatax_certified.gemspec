@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.requirements << 'none'
 
-  s.add_dependency 'spree_core', '~> 3.0.0'
+  s.add_dependency 'spree_core', '~> 3.1.0'
   s.add_dependency 'json', '~> 1.7'
   s.add_dependency 'addressable', '~> 2.3'
   s.add_dependency 'rest-client', '~> 1.7'
@@ -39,5 +39,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'selenium-webdriver'
   s.add_development_dependency 'simplecov', '~> 0.8'
   s.add_development_dependency 'sqlite3'
-  s.add_development_dependency 'shoulda-matchers'
+  s.add_development_dependency 'shoulda-matchers', '~> 2.8.0'
 end
