@@ -27,6 +27,12 @@ module SpreeAvataxCertified
       end
     end
 
+    initializer 'spree.avatax_certified.calculators', after: 'spree.register.calculators' do |app|
+
+      Rails.application.config.spree.calculators.tax_rates << Spree::Calculator::AvalaraTransactionCalculator
+
+    end
+
     def self.activate
       Dir.glob(File.join(File.dirname(__FILE__), '../../app/models/**/*.rb')) do |c|
         Rails.configuration.cache_classes ? require(c) : load(c)
