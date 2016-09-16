@@ -109,9 +109,14 @@ module SpreeAvataxCertified
     end
 
     def get_stock_location(li)
-      li_stock_locs = order.stock_locations.joins(:stock_items).where(spree_stock_items: { variant_id: li.variant_id })
+      inventory_units = li.inventory_units
 
-      li_stock_locs.empty? ? 'Orig' : "#{li_stock_locs.first.id}"
+      return 'Orig' if inventory_units.blank?
+
+      # What if inventory units have different stock locations?
+      stock_loc_id = inventory_units.first.try(:shipment).try(:stock_location_id)
+
+      stock_loc_id.nil? ? 'Orig' : "#{stock_loc_id}"
     end
 
     def tax_included_in_price?(item)
