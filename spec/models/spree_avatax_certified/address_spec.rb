@@ -34,6 +34,63 @@ describe SpreeAvataxCertified::Address, :type => :model do
         expect(address_lines).to receive(:origin_ship_addresses)
         address_lines.build_addresses
     end
+
+    context 'Destination Address contents' do
+      let(:dest_address_line) { address_lines.addresses[1] }
+
+      it 'AddressCode' do
+        expect(dest_address_line[:AddressCode]).to eq('Dest')
+      end
+
+      it 'Line1' do
+        expect(dest_address_line[:Line1]).to eq(order.ship_address.address1)
+      end
+
+      it 'City' do
+        expect(dest_address_line[:City]).to eq(order.ship_address.city)
+      end
+
+      it 'Region' do
+        expect(dest_address_line[:Region]).to eq(order.ship_address.state_name)
+      end
+
+      it 'Country' do
+        expect(dest_address_line[:Country]).to eq(order.ship_address.country.iso)
+      end
+
+      it 'PostalCode' do
+        expect(dest_address_line[:PostalCode]).to eq(order.ship_address.zipcode)
+      end
+    end
+
+    context 'Stock location address contents' do
+      let(:stock_address_line) { address_lines.addresses.last }
+      let(:stock_location) { order.shipments.first.stock_location }
+
+      it 'AddressCode' do
+        expect(stock_address_line[:AddressCode]).to eq(stock_location.id.to_s)
+      end
+
+      it 'Line1' do
+        expect(stock_address_line[:Line1]).to eq(stock_location.address1)
+      end
+
+      it 'City' do
+        expect(stock_address_line[:City]).to eq(stock_location.city)
+      end
+
+      it 'Region' do
+        expect(stock_address_line[:Region]).to eq(stock_location.state_name)
+      end
+
+      it 'Country' do
+        expect(stock_address_line[:Country]).to eq(stock_location.country.iso)
+      end
+
+      it 'PostalCode' do
+        expect(stock_address_line[:PostalCode]).to eq(stock_location.zipcode)
+      end
+    end
   end
 
   describe '#origin_address' do
