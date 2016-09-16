@@ -208,4 +208,37 @@ describe SpreeAvataxCertified::Line, :type => :model do
       end
     end
   end
+
+  describe 'multiple stock locations' do
+    let(:stock_loc_2) { create(:stock_location) }
+    let(:var1) {
+      variant = create(:variant)
+      variant.stock_items.destroy_all
+      variant.stock_items.create(stock_location_id: Spree::StockLocation.first.id, backorderable: true)
+      variant
+    }
+    let(:var2) {
+      variant = create(:variant)
+      variant.stock_items.destroy_all
+      variant.stock_items.create(stock_location_id: stock_loc_2.id, backorderable: true)
+      variant
+    }
+    let(:line_item1) { create(:line_item, variant: var1) }
+    let(:line_item2) { create(:line_item, variant: var2) }
+    let(:order) { create(:order_with_line_items, line_items: [line_item1, line_item2]) }
+
+    before do
+      order.create_proposed_shipments
+      order.reload
+      order.shipments.reload
+    end
+
+    it 'should have correct address codes' do
+      order_lines = SpreeAvataxCertified::Line.new(order, 'SalesOrder')
+      line_item = order.line_items[1]
+      item_line = order_lines.lines[1]
+
+      expect(item_line[:OriginCode]).to eq(line_item.inventory_units.first.shipment.stock_location_id.to_s)
+    end
+  end
 end
