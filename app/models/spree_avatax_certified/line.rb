@@ -71,11 +71,15 @@ module SpreeAvataxCertified
       return lines << refund_line if @refund.reimbursement.nil?
 
       return_items = @refund.reimbursement.customer_return.return_items
-      li_ids = Spree::InventoryUnit.where(id: return_items.pluck(:inventory_unit_id)).select(:line_item_id)
-      amount = return_items.sum(:pre_tax_amount) / li_ids.uniq.count
+      inventory_units = Spree::InventoryUnit.where(id: return_items.pluck(:inventory_unit_id))
 
-      return_items.map(&:inventory_unit).group_by(&:line_item_id).each_value do |inv_unit|
+      inventory_units.group_by(&:line_item_id).each_value do |inv_unit|
+
+        inv_unit_ids = inv_unit.map { |iu| iu.id }
+        return_items = Spree::ReturnItem.where(inventory_unit_id: inv_unit_ids)
         quantity = inv_unit.uniq.count
+        amount = return_items.sum(:pre_tax_amount)
+
         lines << return_item_line(inv_unit.first.line_item, quantity, amount)
       end
     end
@@ -109,18 +113,22 @@ module SpreeAvataxCertified
     end
 
     def get_stock_location(li)
-      li_stock_locs = order.stock_locations.joins(:stock_items).where(spree_stock_items: { variant_id: li.variant_id })
+      inventory_units = li.inventory_units
 
-      li_stock_locs.empty? ? 'Orig' : "#{li_stock_locs.first.id}"
+      return 'Orig' if inventory_units.blank?
+
+      # What if inventory units have different stock locations?
+      stock_loc_id = inventory_units.first.try(:shipment).try(:stock_location_id)
+
+      stock_loc_id.nil? ? 'Orig' : "#{stock_loc_id}"
     end
 
     def tax_included_in_price?(item)
-      if item.tax_category.try(:tax_rates).any?
-        item.tax_category.tax_rates.first.included_in_price
+      if item.tax_category.present?
+        order.tax_zone.tax_rates.where(tax_category: item.tax_category).try(:first).try(:included_in_price)
       else
-        false
+        order.tax_zone.tax_rates.try(:first).try(:included_in_price)
       end
     end
-
   end
 end

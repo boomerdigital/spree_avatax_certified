@@ -11,7 +11,6 @@ module SpreeAvataxCertified
       @order = order
       @ship_address = order.ship_address
       @origin_address = JSON.parse(Spree::Config.avatax_origin)
-      @stock_loc_ids = Spree::Stock::Coordinator.new(order).packages.map(&:to_shipment).map(&:stock_location_id)
       @addresses = []
       @logger ||= AvataxHelper::AvataxLog.new('avalara_order_addresses', 'SpreeAvataxCertified::Address', "Building Addresses for Order#: #{order.number}")
       build_addresses
@@ -49,15 +48,18 @@ module SpreeAvataxCertified
     end
 
     def origin_ship_addresses
-      Spree::StockLocation.where(id: @stock_loc_ids).each do |stock_location|
-        addresses << {
-          AddressCode: "#{stock_location.id}",
-          Line1: stock_location.address1,
-          Line2: stock_location.address2,
-          City: stock_location.city,
-          PostalCode: stock_location.zipcode,
-          Country: stock_location.country.try(:iso)
-        }
+      if order.shipments.any?
+        stock_loc_ids = order.shipments.pluck(:stock_location_id).uniq
+        Spree::StockLocation.where(id: stock_loc_ids).each do |stock_location|
+          addresses << {
+            AddressCode: "#{stock_location.id}",
+            Line1: stock_location.address1,
+            Line2: stock_location.address2,
+            City: stock_location.city,
+            PostalCode: stock_location.zipcode,
+            Country: stock_location.country.try(:iso)
+          }
+        end
       end
     end
 

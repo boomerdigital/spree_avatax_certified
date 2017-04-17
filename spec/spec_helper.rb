@@ -1,19 +1,24 @@
+require 'simplecov'
+SimpleCov.start do
+  add_filter 'spec/dummy'
+  add_group 'Controllers', 'app/controllers'
+  add_group 'Helpers', 'app/helpers'
+  add_group 'Mailers', 'app/mailers'
+  add_group 'Models', 'app/models'
+  add_group 'Views', 'app/views'
+  add_group 'Libraries', 'lib'
+end
+
 ENV['RAILS_ENV'] ||= 'test'
 
-require "codeclimate-test-reporter"
-CodeClimate::TestReporter.start
-
 require File.expand_path('../dummy/config/environment.rb',  __FILE__)
+
 require 'dotenv'
 Dotenv.load
 
 require 'rspec/rails'
-require 'rspec/its'
-require 'ffaker'
-require 'factory_girl'
 require 'database_cleaner'
-require 'capybara/rspec'
-require 'capybara/rails'
+require 'ffaker'
 require 'shoulda/matchers'
 
 require 'spree/testing_support/preferences'
@@ -21,8 +26,8 @@ require 'spree/testing_support/url_helpers'
 require 'spree/testing_support/controller_requests'
 require 'spree/testing_support/authorization_helpers'
 require 'spree/testing_support/factories'
-require 'factories/avalara_factories'
 
+Dir[File.join(File.dirname(__FILE__), 'factories/*.rb')].each { |f| require f }
 Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each { |f| require f }
 
 RSpec.configure do |config|

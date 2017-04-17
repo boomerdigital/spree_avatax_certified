@@ -2,10 +2,10 @@ require 'spec_helper'
 
 describe "VAT" do
   let!(:us) { create(:country, iso: 'US', name: 'United States') }
-  let!(:it) { create(:country, iso: 'IT', name: 'Italy') }
-  let!(:nl) { create(:country, iso: 'NL', name: 'Netherlands') }
-  let!(:fr) { create(:country, iso: 'FR', name: 'France') }
-  let!(:cr) { create(:country, iso: 'CR', name: 'Costa Rica') }
+  let!(:it) { create(:country, iso: 'IT', name: 'Italy', iso_name: 'ITALY') }
+  let!(:nl) { create(:country, iso: 'NL', name: 'Netherlands', iso_name: 'NETHERLANDS') }
+  let!(:fr) { create(:country, iso: 'FR', name: 'France', iso_name: 'FRANCE') }
+  let!(:cr) { create(:country, iso: 'CR', name: 'Costa Rica', iso_name: 'COSTA RICA') }
 
   let(:res) { avalara_order.avalara_capture }
 
@@ -29,7 +29,7 @@ describe "VAT" do
 
     context 'Seller does not have Nexus Jurisdition registered' do
       let(:cr_address) { create(:address, address1: '350 Av Central', city: 'Tamarindo', zipcode: '50309', state_name: '', country: cr) }
-      let!(:avalara_order) { create(:avalara_order, state: 'address', ship_address: cr_address) }
+      let!(:avalara_order) { create(:avalara_order, state: 'address', ship_address: cr_address, bill_address: cr_address) }
 
       let(:res) { avalara_order.avalara_capture }
       before { prep_avalara_order }
@@ -50,7 +50,7 @@ describe "VAT" do
 
       context 'with BusinessIdentificationNo' do
         before do
-          Spree::Config.avatax_vat_id = '123456789'
+          avalara_order.user.update_attributes(vat_id: '123456789')
         end
 
         it 'origin country zero rate is returned' do
@@ -97,7 +97,7 @@ describe "VAT" do
 
       context 'with BusinessIdentificationNo' do
         before do
-          Spree::Config.avatax_vat_id = '123456789'
+          avalara_order.user.update_attributes(vat_id: '123456789')
         end
 
         it 'origin country zero rate is returned' do
@@ -125,7 +125,7 @@ describe "VAT" do
 
       context 'with BusinessIdentificationNo' do
         before do
-          Spree::Config.avatax_vat_id = '123456789'
+          avalara_order.user.update_attributes(vat_id: '123456789')
         end
 
         it 'origin country zero rate is returned' do
@@ -147,7 +147,6 @@ describe "VAT" do
 
   def prep_avalara_order
     set_seller_location
-    Spree::Config.avatax_vat_id = nil
     avalara_order.reload
     avalara_order.next!
   end

@@ -17,15 +17,20 @@ module SpreeAvataxCertified
         preference :avatax_company_code, :string
         preference :avatax_endpoint, :string
         preference :avatax_account, :string
-        preference :avatax_vat_id, :string
         preference :avatax_license_key, :string
         preference :avatax_log, :boolean, default: true
         preference :avatax_address_validation, :boolean, default: true
-        preference :avatax_address_validation_enabled_countries, :array, default: ['United States of America', 'Canada']
+        preference :avatax_address_validation_enabled_countries, :array, default: ['United States', 'Canada']
         preference :avatax_tax_calculation, :boolean, default: true
         preference :avatax_document_commit, :boolean, default: true
         preference :avatax_origin, :string, default: '{}'
       end
+    end
+
+    initializer 'spree.avatax_certified.calculators', after: 'spree.register.calculators' do |app|
+
+      Rails.application.config.spree.calculators.tax_rates << Spree::Calculator::AvalaraTransactionCalculator
+
     end
 
     def self.activate

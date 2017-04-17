@@ -2,4 +2,4 @@ AVATAX_COMPANY_CODE =
 AVATAX_ENDPOINT = https://development.avalara.net
 AVATAX_ACCOUNT =
 AVATAX_LICENSE_KEY =
-AVATAX_VAT_ID = (only needed for VAT users)
+SPREE_BRANCH =

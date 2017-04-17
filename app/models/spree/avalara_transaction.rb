@@ -10,7 +10,6 @@ module Spree
     belongs_to :refund
     validates :order, presence: true
     validates :order_id, uniqueness: true
-    has_many :adjustments, as: :source
 
     def lookup_avatax
       post_order_to_avalara(false, 'SalesOrder')
@@ -173,11 +172,11 @@ module Spree
     end
 
     def business_id_no
-      Spree::Config.avatax_vat_id
+      order.user.try(:vat_id)
     end
 
     def avatax_client_version
-      AVATAX_CLIENT_VERSION || 'SpreeExtV3.0'
+      AVATAX_CLIENT_VERSION || 'a0o33000004FH8l'
     end
 
     def document_committing_enabled?

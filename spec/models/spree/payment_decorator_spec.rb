@@ -9,6 +9,7 @@ describe Spree::Payment, :type => :model do
 
   let(:gateway) do
     gateway = Spree::Gateway::Bogus.create(active: true, name: 'Bogus')
+    allow(gateway).to receive_messages :environment => 'test'
     allow(gateway).to receive_messages source_required: true
     gateway
   end

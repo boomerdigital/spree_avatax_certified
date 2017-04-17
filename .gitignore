@@ -21,10 +21,5 @@ tmp
 _yardoc
 doc/
 spec/dummy
-log/
 log/*
-log/*.txt
-log/post_order_to_avalara.txt
-log/avalara_order.txt
-log/return_authorization.txt
-log/tax_svc.txt
+Gemfile.lock
