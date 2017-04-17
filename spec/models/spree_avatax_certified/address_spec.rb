@@ -62,7 +62,7 @@ describe SpreeAvataxCertified::Address, :type => :model do
     end
 
     context 'Stock location address contents' do
-      let(:order) { create(:avalara_order, ship_address: address) }
+      let(:order) { create(:order_with_line_items, ship_address: address) }
       let(:stock_address_line) { address_lines.addresses.last }
       let(:stock_location) { order.shipments.first.stock_location }
 
@@ -113,9 +113,13 @@ describe SpreeAvataxCertified::Address, :type => :model do
   end
 
   describe '#validate' do
+    subject do
+      VCR.use_cassette('address_validation_success', allow_playback_repeats: true) do
+        address_lines.validate
+      end
+    end
     it 'validates address with success' do
-      result = address_lines.validate
-      expect(address_lines.validate['ResultCode']).to eq('Success')
+      expect(subject['ResultCode']).to eq('Success')
     end
 
     it 'does not validate when config settings are false' do

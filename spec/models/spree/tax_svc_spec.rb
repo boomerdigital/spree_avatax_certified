@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe TaxSvc do
+RSpec.describe TaxSvc, :vcr do
   let(:taxsvc) { TaxSvc.new }
   let(:request_hash) { attributes_for(:request_hash) }
 

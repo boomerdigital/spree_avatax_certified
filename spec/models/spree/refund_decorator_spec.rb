@@ -47,63 +47,38 @@ describe Spree::Refund, type: :model do
   end
 
 
-  context "transaction id exists" do
-    let(:transaction_id) { "12kfjas0" }
-    subject { create(:refund, payment: payment, amount: amount, reason: refund_reason, transaction_id: transaction_id) }
-    describe "#avalara_tax_enabled?" do
-      it "should return true" do
-        expect(subject.avalara_tax_enabled?).to eq(true)
+  describe '#avalara_tax_enabled?' do
+    it 'should return true' do
+      expect(Spree::Refund.new.avalara_tax_enabled?).to eq(true)
+    end
+  end
+
+  describe '#avalara_capture_finalize' do
+    subject do
+      VCR.use_cassette('order_return_capture') do
+        refund.save
       end
     end
-  end
 
-  describe "#avalara_tax_enabled?" do
-    let(:transaction_id) { "12kfjas0" }
-    subject { create(:refund, payment: payment, amount: amount, reason: refund_reason, transaction_id: transaction_id) }
-    it "should return true" do
-      expect(subject.avalara_tax_enabled?).to eq(true)
-    end
-  end
-
-  describe "#avalara_capture" do
-    it "should recieve avalara_capture and return hash" do
-      expect(refund).to receive(:avalara_capture).and_return(Hash)
-      refund.avalara_capture
-    end
-    it "should response with Hash object" do
-      expect(refund.avalara_capture).to be_kind_of(Hash)
-    end
-    context 'error' do
-      it 'should raise error' do
-        Spree::AvalaraTransaction.find_by_order_id(refund.payment.order.id).destroy
-        expect(refund.avalara_capture).to eq('error in avalara capture refund')
-      end
-    end
-  end
-
-  describe "#avalara_capture_finalize" do
-    it "should recieve avalara_capture_finalize and return hash" do
+    it 'should recieve avalara_capture_finalize and return hash' do
       expect(refund).to receive(:avalara_capture_finalize).and_return(Hash)
-      refund.save
-    end
-    it "should response with Hash object" do
-      expect(refund.avalara_capture_finalize).to be_kind_of(Hash)
+      subject
     end
   end
 
 
-  context 'full refund' do
+  context 'full refund', :vcr do
+    let(:order) { create(:completed_avalara_order) }
+    let(:refund) { build(:refund, payment: order.payments.first, amount: order.total.to_f) }
+
+    subject do
+      order.reload
+      refund.avalara_capture_finalize
+    end
+
     it 'returns correct tax calculations' do
-      order = create(:avalara_order)
-      order.update_attributes(state: 'complete', completed_at: 2.days.ago)
-      order.avalara_capture_finalize
-      payment = create(:payment, order: order, amount: order.total.to_f)
-      refund = build(:refund, payment: payment, amount: order.total.to_f)
-
-      response = refund.avalara_capture_finalize
-
-      expect(response['TotalAmount'].to_f.abs).to eq(order.total - order.additional_tax_total)
-      expect(response['TotalTax'].to_f.abs).to eq(order.additional_tax_total)
+      expect(subject['TotalAmount'].to_f.abs).to eq(order.total - order.additional_tax_total)
+      expect(subject['TotalTax'].to_f.abs).to eq(order.additional_tax_total)
     end
   end
 end
