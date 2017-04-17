@@ -4,7 +4,9 @@ Spree::Order.class_eval do
   self.state_machine.before_transition :to => :canceled,
                                       :do => :cancel_avalara,
                                       :if => :avalara_tax_enabled?
-
+  self.state_machine.before_transition :to => :delivery,
+                                      :do => :validate_ship_address,
+                                      :if => :address_validation_enabled?
   def avalara_tax_enabled?
     Spree::Config.avatax_tax_calculation
   end
@@ -39,6 +41,24 @@ Spree::Order.class_eval do
 
   def customer_usage_type
     user ? user.avalara_entity_use_code.try(:use_code) : ''
+  end
+
+  def address_validation_enabled?
+    return false if ship_address.nil?
+
+    ship_address.validation_enabled?
+  end
+
+  def validate_ship_address
+    avatax_address = SpreeAvataxCertified::Address.new(self)
+    response = avatax_address.validate
+
+    return response if response['ResultCode'] == 'Success'
+
+    messages = response['Messages'].each do |message|
+      errors.add(:address_validation_failure, message['Summary'])
+    end
+   return false
   end
 
   # Bringing this over since it isn't in 2.4 or 3.0

@@ -78,19 +78,7 @@ module SpreeAvataxCertified
 
     def validation_response(address)
       validator = TaxSvc.new
-      response = validator.validate_address(address)
-      address = response['Address']
-
-      if address['City'] != @ship_address.city || address['Region'] != @ship_address.state.abbr
-        response['ResultCode'] = 'Error'
-        response['Messages'] = [
-          {
-            'Summary' => "Did you mean #{address['Line1']}, #{address['City']}, #{address['Region']}, #{address['PostalCode']}?"
-          }
-        ]
-      end
-
-      response
+      validator.validate_address(address).validation_result
     end
 
     def stock_loc_ids

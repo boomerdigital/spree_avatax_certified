@@ -108,7 +108,7 @@ describe Spree::AvalaraTransaction, :type => :model do
       it "should fail to commit to avatax if settings are false" do
         Spree::Config.avatax_document_commit = false
 
-        expect(order.avalara_transaction.commit_avatax_final('SalesInvoice')).to eq("avalara document committing disabled")
+        expect(order.avalara_transaction.commit_avatax_final('SalesInvoice')).to eq("Avalara Document Committing Disabled")
       end
 
       context 'tax calculation disabled' do

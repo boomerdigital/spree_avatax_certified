@@ -14,7 +14,7 @@ module Spree
       def erase_data
         File.open("log/avatax.log", 'w') {}
 
-        render nothing: true
+        head :ok
       end
 
       def ping_my_service
