@@ -86,7 +86,7 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
 
           before do
             create(:adjustment, order: order, source: promotion.promotion_actions.first, adjustable: order)
-            order.reload.update!
+            order.reload.update_with_updater!
           end
 
           it "should be equal to the item's pre-tax total * rate" do
@@ -101,7 +101,7 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
             order.line_items.each do |li|
               create(:adjustment, order: order, source: promotion.promotion_actions.first, adjustable: li)
             end
-            order.reload.update!
+            order.reload.update_with_updater!
           end
 
           it "should be equal to the item's pre-tax total * rate" do

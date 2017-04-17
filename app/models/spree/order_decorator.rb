@@ -47,6 +47,11 @@ Spree::Order.class_eval do
     user ? user.avalara_entity_use_code.try(:use_code) : ''
   end
 
+  # Bringing this over since it isn't in 2.4 or 3.0
+  def update_with_updater!
+    updater.update
+  end
+
   private
 
   def logger

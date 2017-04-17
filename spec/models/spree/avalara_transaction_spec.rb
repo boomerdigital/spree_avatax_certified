@@ -46,7 +46,7 @@ describe Spree::AvalaraTransaction, :type => :model do
 
         before do
           create(:adjustment, order: order, source: promotion.promotion_actions.first, adjustable: order)
-          order.update!
+          order.update_with_updater!
         end
         it 'applies discount' do
           expect(order.avalara_transaction.commit_avatax('SalesInvoice')['TotalDiscount']).to eq('10')

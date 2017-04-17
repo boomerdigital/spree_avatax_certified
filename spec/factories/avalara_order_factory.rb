@@ -41,7 +41,7 @@ FactoryGirl.define do
       create(:avalara_shipment, order: order, cost: evaluator.shipment_cost, tax_included: evaluator.tax_included)
       order.shipments.reload
 
-      order.update!
+      order.update_with_updater!
       order.next
     end
 
@@ -55,7 +55,7 @@ FactoryGirl.define do
         order.update_column(:state, 'complete')
         payment = create(:credit_card_payment, amount: order.total, order: order, state: 'completed')
 
-        order.update!
+        order.update_with_updater!
         order.next
 
         payment.avalara_finalize
