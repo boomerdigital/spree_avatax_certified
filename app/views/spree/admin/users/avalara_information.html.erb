@@ -24,7 +24,7 @@
     <div class="omega six columns">
       <%= f.field_container :avalara_entity_use_code_id do %>
         <%= label_tag :avalara_entity_use_code_id, t(:avalara_entity_use_code) %><br />
-        <%= f.select(:avalara_entity_use_code_id, use_codes_list) %>
+        <%= f.select(:avalara_entity_use_code_id, use_codes_list, { include_blank: true } ) %>
       <% end %>
     </div>
     <div class="clear"></div>

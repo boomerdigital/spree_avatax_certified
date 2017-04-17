@@ -2,10 +2,10 @@ require 'spec_helper'
 
 describe "VAT" do
   let!(:us) { create(:country, iso: 'US', name: 'United States') }
-  let!(:it) { create(:country, iso: 'IT', name: 'Italy') }
-  let!(:nl) { create(:country, iso: 'NL', name: 'Netherlands') }
-  let!(:fr) { create(:country, iso: 'FR', name: 'France') }
-  let!(:cr) { create(:country, iso: 'CR', name: 'Costa Rica') }
+  let!(:it) { create(:country, iso: 'IT', name: 'Italy', iso_name: 'ITALY') }
+  let!(:nl) { create(:country, iso: 'NL', name: 'Netherlands', iso_name: 'NETHERLANDS') }
+  let!(:fr) { create(:country, iso: 'FR', name: 'France', iso_name: 'FRANCE') }
+  let!(:cr) { create(:country, iso: 'CR', name: 'Costa Rica', iso_name: 'COSTA RICA') }
 
   let(:res) { avalara_order.avalara_capture }
 

@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe SpreeAvataxCertified::Address, :type => :model do
-  let(:order) { create(:avalara_order) }
+  let(:address){ build(:address) }
+  let(:order) { build(:order_with_line_items, ship_address: address) }
 
   before do
     Spree::Config.avatax_address_validation = true
@@ -110,16 +111,16 @@ describe SpreeAvataxCertified::Address, :type => :model do
     end
   end
 
-  describe "#validate" do
-    it "validates address with success" do
+  describe '#validate' do
+    it 'validates address with success' do
       result = address_lines.validate
-      expect(address_lines.validate["ResultCode"]).to eq("Success")
+      expect(address_lines.validate['ResultCode']).to eq('Success')
     end
 
-    it "does not validate when config settings are false" do
+    it 'does not validate when config settings are false' do
       Spree::Config.avatax_address_validation = false
       result = address_lines.validate
-      expect(address_lines.validate).to eq("Address validation disabled")
+      expect(address_lines.validate).to eq('Address validation disabled')
     end
   end
 
