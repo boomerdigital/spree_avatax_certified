@@ -11,19 +11,17 @@ class TaxSvc
     log(__method__, request_hash)
     RestClient.log = logger.logger
     res = response('get', request_hash)
-    logger.info_and_debug('RestClient call', res)
 
     if res['ResultCode'] != 'Success'
-      logger.info 'Avatax Error'
-      logger.debug res, 'error in Tax'
-      raise 'error in Tax'
+      logger.debug(res, 'Error in Get Tax')
+      raise 'Error in Get Tax'
     else
+      logger.debug(res, 'Get Tax Response')
       res
     end
   rescue => e
-    logger.info 'Rest Client Error'
-    logger.debug e, 'error in Tax'
-    'error in Tax'
+    logger.error e, 'Error in Get Tax'
+    'Error in Tax'
   end
 
   def cancel_tax(request_hash)
@@ -32,12 +30,14 @@ class TaxSvc
     logger.debug res
 
     if res['ResultCode'] != 'Success'
-      logger.info_and_debug("Avatax Error: Order ##{res['Messages'][0]['Details']}", res)
+      logger.debug(res, "Error in Cancel Tax: Order ##{res['Messages'][0]['Details']}")
+    else
+      logger.debug(res, 'Cancel Tax Response')
     end
 
     res
   rescue => e
-    logger.debug e, 'Error in Cancel Tax'
+    logger.error e, 'Error in Cancel Tax'
     'Error in Cancel Tax'
   end
 
@@ -65,12 +65,6 @@ class TaxSvc
   def ping
     logger.info 'Ping Call'
     estimate_tax({ latitude: '40.714623', longitude: '-74.006605' }, 0)
-  end
-
-  protected
-
-  def logger
-    AvataxHelper::AvataxLog.new('tax_svc', 'tax_service', 'call to tax service')
   end
 
   private
@@ -103,10 +97,12 @@ class TaxSvc
     JSON.parse(res)
   end
 
+  def logger
+    @logger ||= SpreeAvataxCertified::AvataxLog.new('TaxSvc class', 'Call to tax service')
+  end
+
   def log(method, request_hash = nil)
-    logger.info method.to_s + ' call'
     return if request_hash.nil?
-    logger.debug request_hash
-    logger.debug JSON.generate(request_hash)
+    logger.debug(request_hash, "#{method.to_s} request hash")
   end
 end

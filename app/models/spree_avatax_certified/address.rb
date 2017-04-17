@@ -1,7 +1,6 @@
 require 'json'
 require 'net/http'
 require 'base64'
-require 'logger'
 
 module SpreeAvataxCertified
   class Address
@@ -12,9 +11,7 @@ module SpreeAvataxCertified
       @ship_address = order.ship_address
       @origin_address = JSON.parse(Spree::Config.avatax_origin)
       @addresses = []
-      @logger ||= AvataxHelper::AvataxLog.new('avalara_order_addresses', 'SpreeAvataxCertified::Address', "Building Addresses for Order#: #{order.number}")
       build_addresses
-      @logger.debug @addresses
     end
 
     def build_addresses

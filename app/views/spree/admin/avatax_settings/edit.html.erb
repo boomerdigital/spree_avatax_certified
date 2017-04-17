@@ -45,8 +45,13 @@
     <fieldset>
       <legend><%= t('avatax_log') %></legend>
       <p>
-        <label><%= t('enable_avatax_logging') %></label><br />
-        <%= check_box_tag('settings[avatax_log]','yes' , Spree::Config.avatax_log, class: 'avatax') %>
+        <label><%= t('log') %></label><br />
+        <%= check_box_tag('settings[avatax_log]', Spree::Config.avatax_log, Spree::Config.avatax_log, class: 'avatax') %>
+      </p>
+
+      <p>
+        <label><%= t('log') %></label><br />
+        <%= check_box_tag('settings[avatax_log_to_stdout]', Spree::Config.avatax_log_to_stdout, Spree::Config.avatax_log_to_stdout, class: 'avatax') %>
       </p>
     </fieldset>
 
@@ -121,27 +126,11 @@
    <td>
     <table>
       <tr>
-        <td>Tax Service calls - tax_svc.log</td>
-        <td><%= link_to("Download", {controller: :avatax_settings, action: :get_file_txt_tax_svc}) %>
+        <td>avatax.log</td>
+        <td><%= link_to("Download", { controller: :avatax_settings, action: :download_avatax_log }) %>
         </td>
         <td>
-          <%= link_to("Clear Data", {controller: :avatax_settings, action: :erase_data, remote: true, log_name: "tax_svc"}) %>
-        </td>
-      </tr>
-      <tr>
-        <td>Avalara Function calls -  post_order_to_avalara.log</td>
-        <td><%= link_to("Download", {controller: :avatax_settings, action: :get_file_post_order_to_avalara}) %>
-        </td>
-        <td>
-          <%= link_to("Clear Data", {controller: :avatax_settings, action: :erase_data, remote: true, log_name: "post_order_to_avalara"}) %>
-        </td>
-      </tr>
-      <tr>
-        <td>Spree Order Item integration calls - avalara_order.log</td>
-        <td><%= link_to("Download", {controller: :avatax_settings, action: :get_file_avalara_order}) %>
-        </td>
-        <td>
-          <%= link_to("Clear Data", {controller: :avatax_settings, action: :erase_data, remote: true, log_name: "avalara_order"}) %>
+          <%= link_to("Clear Data", { controller: :avatax_settings, action: :erase_data, remote: true }) %>
         </td>
       </tr>
     </table>

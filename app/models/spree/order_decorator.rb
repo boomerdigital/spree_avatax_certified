@@ -1,5 +1,3 @@
-require 'logger'
-
 Spree::Order.class_eval do
   has_one :avalara_transaction, dependent: :destroy
 
@@ -17,23 +15,19 @@ Spree::Order.class_eval do
   end
 
   def avalara_capture
-    logger.debug 'avalara capture'
+    logger.info "Start avalara_capture for order #{number}"
+
     create_avalara_transaction if avalara_transaction.nil?
 
-    @rtn_tax = avalara_transaction.commit_avatax('SalesOrder')
-
-    logger.info_and_debug('tax amount', @rtn_tax)
-    @rtn_tax
+    avalara_transaction.commit_avatax('SalesOrder')
   end
 
   def avalara_capture_finalize
-    logger.debug 'avalara capture finalize'
+    logger.info "Start avalara_capture_finalize for order #{number}"
+
     create_avalara_transaction if avalara_transaction.nil?
 
-    @rtn_tax = avalara_transaction.commit_avatax_final('SalesInvoice')
-
-    logger.info_and_debug('tax amount', @rtn_tax)
-    @rtn_tax
+    avalara_transaction.commit_avatax_final('SalesInvoice')
   end
 
   def avatax_cache_key
@@ -55,6 +49,6 @@ Spree::Order.class_eval do
   private
 
   def logger
-    @logger ||= AvataxHelper::AvataxLog.new('avalara_order', 'order class', 'start order processing')
+    @logger ||= SpreeAvataxCertified::AvataxLog.new('Spree::Order class', 'Start order processing')
   end
 end

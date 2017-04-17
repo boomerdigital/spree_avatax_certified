@@ -1,9 +1,4 @@
-require 'logger'
-REFUND_LOGGER = AvataxHelper::AvataxLog.new('refund', 'refund class')
-
 Spree::Refund.class_eval do
-  REFUND_LOGGER.info('start refund processing')
-
   has_one :avalara_transaction
   after_create :avalara_capture_finalize, if: :avalara_tax_enabled?
 
@@ -12,30 +7,30 @@ Spree::Refund.class_eval do
   end
 
   def avalara_capture
-    REFUND_LOGGER.debug 'avalara capture refund avalara_capture'
-    begin
-      @rtn_tax = payment.order.avalara_transaction.commit_avatax('ReturnOrder', self)
+    logger.info "Start Spree::Refund#avalara_capture for order #{payment.order.number}"
 
-      REFUND_LOGGER.info 'tax amount'
-      REFUND_LOGGER.debug @rtn_tax
-      @rtn_tax
+    begin
+      payment.order.avalara_transaction.commit_avatax('ReturnOrder', self)
     rescue => e
-      REFUND_LOGGER.debug e
-      REFUND_LOGGER.debug 'error in avalara capture refund'
+      logger.error e, 'Refund Capture Error'
+      'error in avalara capture refund'
     end
   end
 
   def avalara_capture_finalize
-    REFUND_LOGGER.debug 'avalara capture refund avalara_capture_finalize'
-    begin
-      @rtn_tax = payment.order.avalara_transaction.commit_avatax_final('ReturnInvoice', self)
+    logger.info "Start Spree::Refund#avalara_capture_finalize for order #{payment.order.number}"
 
-      REFUND_LOGGER.info 'tax amount'
-      REFUND_LOGGER.debug @rtn_tax
-      @rtn_tax
+    begin
+      payment.order.avalara_transaction.commit_avatax_final('ReturnInvoice', self)
     rescue => e
-      REFUND_LOGGER.debug e
-      REFUND_LOGGER.debug 'error in avalara capture refund finalize'
+      logger.error e, 'Refund Capture Finalize Error'
+      'error in avalara capture finalize refund'
     end
+  end
+
+  private
+
+  def logger
+    @logger ||= SpreeAvataxCertified::AvataxLog.new('Spree::Refund class', 'Start refund capture')
   end
 end
