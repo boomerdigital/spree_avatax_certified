@@ -27,8 +27,12 @@
     <td><%= AVATAX_SERVICEPATH_ADDRESS %></td>
   </tr>
   <tr>
-    <th scope="row"><%= t("enable_avatax_logging") %>:</th>
+    <th scope="row"><%= t("log") %>:</th>
     <td><%= Spree::Config.avatax_log %></td>
+  </tr>
+  <tr>
+    <th scope="row"><%= t("log_to_stdout") %>:</th>
+    <td><%= Spree::Config.avatax_log_to_stdout %></td>
   </tr>
   <tr>
     <th scope="row"><%= t("enable_avatax_address_validation") %>:</th>
@@ -79,10 +83,7 @@
       <%= link_to({controller: :avatax_settings, action: :ping_my_service, remote: true }, {class: 'btn btn-small'}) do %>
       <button>Test Connection</button> <% end %>
     </td>
-
   </tr>
-
-
 
   <tr>
    <th>View Log Files</th>
@@ -90,18 +91,8 @@
     Log files are located in the log directory of your spree website.
     <table>
       <tr>
-        <td>Tax Service calls - tax_svc.log</td>
-        <td><%= link_to("Download", {controller: :avatax_settings, action: :get_file_txt_tax_svc}) %>
-        </td>
-      </tr>
-      <tr>
-        <td>Avalara Function calls -  post_order_to_avalara.log</td>
-        <td><%= link_to("Download", {controller: :avatax_settings, action: :get_file_post_order_to_avalara}) %>
-        </td>
-      </tr>
-      <tr>
-        <td>Spree Order Item integration calls - avalara_order.log</td>
-        <td><%= link_to("Download", {controller: :avatax_settings, action: :get_file_avalara_order}) %>
+        <td>avatax.log</td>
+        <td><%= link_to("Download", { controller: :avatax_settings, action: :download_avatax_log }) %>
         </td>
       </tr>
     </table>

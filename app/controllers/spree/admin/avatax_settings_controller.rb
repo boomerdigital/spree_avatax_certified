@@ -7,20 +7,12 @@ module Spree
       def show
       end
 
-      def get_file_txt_tax_svc
-        send_file "#{Rails.root}/log/tax_svc.log"
-      end
-
-      def get_file_post_order_to_avalara
-        send_file "#{Rails.root}/log/post_order_to_avalara.log"
-      end
-
-      def get_file_avalara_order
-        send_file "#{Rails.root}/log/avalara_order.log"
+      def download_avatax_log
+        send_file "#{Rails.root}/log/avatax.log"
       end
 
       def erase_data
-        File.open("log/#{params['log_name']}.log", 'w') {}
+        File.open("log/avatax.log", 'w') {}
 
         render nothing: true
       end
@@ -59,6 +51,7 @@ module Spree
         Spree::Config.avatax_account = pref[:avatax_account]
         Spree::Config.avatax_license_key = pref[:avatax_license_key]
         Spree::Config.avatax_log = pref[:avatax_log]
+        Spree::Config.avatax_log = pref[:avatax_log_to_stdout]
         Spree::Config.avatax_address_validation = pref[:avatax_address_validation]
         Spree::Config.avatax_address_validation_enabled_countries = pref[:avatax_address_validation_enabled_countries]
         Spree::Config.avatax_tax_calculation = pref[:avatax_tax_calculation]

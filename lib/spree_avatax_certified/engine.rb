@@ -19,6 +19,7 @@ module SpreeAvataxCertified
         preference :avatax_account, :string
         preference :avatax_license_key, :string
         preference :avatax_log, :boolean, default: true
+        preference :avatax_log_to_stdout, :boolean, default: false
         preference :avatax_address_validation, :boolean, default: true
         preference :avatax_address_validation_enabled_countries, :array, default: ['United States', 'Canada']
         preference :avatax_tax_calculation, :boolean, default: true

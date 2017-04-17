@@ -3,14 +3,12 @@ module SpreeAvataxCertified
     attr_reader :order, :lines
 
     def initialize(order, invoice_type, refund = nil)
-      @logger ||= AvataxHelper::AvataxLog.new('avalara_order_lines', 'SpreeAvataxCertified::Line', "Building Lines for Order#: #{order.number}")
       @order = order
       @invoice_type = invoice_type
       @lines = []
       @refund = refund
       @refunds = []
       build_lines
-      @logger.debug @lines
     end
 
     def build_lines

@@ -12,18 +12,18 @@ describe TaxSvc, :type => :model do
 
     context 'fails' do
       it 'fails when no params are given' do
-        expect(taxsvc.get_tax({})).to eq('error in Tax')
+        expect(taxsvc.get_tax({})).to eq('Error in Tax')
       end
 
       it 'responds with error when result code is not a success' do
         req = attributes_for(:request_hash)
         req[:Lines][0][:TaxCode] = 'sdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdf'
         result = taxsvc.get_tax(req)
-        expect(result).to eq('error in Tax')
+        expect(result).to eq('Error in Tax')
       end
 
       it 'fails when no lines are given' do
-        expect(taxsvc.get_tax(attributes_for(:request_hash, Lines: []))).to eq('error in Tax')
+        expect(taxsvc.get_tax(attributes_for(:request_hash, Lines: []))).to eq('Error in Tax')
       end
     end
   end
