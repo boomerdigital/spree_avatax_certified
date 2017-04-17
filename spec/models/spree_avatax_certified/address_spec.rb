@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe SpreeAvataxCertified::Address, :type => :model do
   let(:address){ build(:address) }
-  let(:order) { build(:order_with_line_items, ship_address: address) }
+  let(:order) { build(:avalara_order, ship_address: address) }
 
   before do
     Spree::Config.avatax_address_validation = true
@@ -62,6 +62,7 @@ describe SpreeAvataxCertified::Address, :type => :model do
     end
 
     context 'Stock location address contents' do
+      let(:order) { create(:avalara_order, ship_address: address) }
       let(:stock_address_line) { address_lines.addresses.last }
       let(:stock_location) { order.shipments.first.stock_location }
 
