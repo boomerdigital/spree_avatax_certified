@@ -27,11 +27,11 @@ module SpreeAvataxCertified
         TaxCode: line_item.tax_category.try(:tax_code) || 'P0000000',
         ItemCode: line_item.variant.sku,
         Qty: line_item.quantity,
-        Amount: line_item.discounted_amount.to_f,
+        Amount: line_item.amount.to_f,
         OriginCode: get_stock_location(line_item),
         DestinationCode: 'Dest',
         CustomerUsageType: order.customer_usage_type,
-        Discounted: true,
+        Discounted: discounted?(line_item),
         TaxIncluded: tax_included_in_price?(line_item)
       }
     end
@@ -119,6 +119,12 @@ module SpreeAvataxCertified
       stock_loc_id = inventory_units.first.try(:shipment).try(:stock_location_id)
 
       stock_loc_id.nil? ? 'Orig' : "#{stock_loc_id}"
+    end
+
+    private
+
+    def discounted?(line_item)
+      line_item.adjustments.promotion.eligible.any? || order.adjustments.promotion.eligible.any?
     end
 
     def tax_included_in_price?(item)
