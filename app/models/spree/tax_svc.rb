@@ -67,6 +67,22 @@ class TaxSvc
     estimate_tax({ latitude: '40.714623', longitude: '-74.006605' }, 0)
   end
 
+
+  def validate_address(address)
+    begin
+      uri = URI(address_service_url + address.to_query)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      http.open_timeout = 1
+      http.read_timeout = 1
+      request = http.get(uri.request_uri, 'Authorization' => credential)
+      JSON.parse(request.body)
+    rescue => e
+      logger.error(e, 'Error in Address Validation')
+    end
+  end
+
   private
 
   def tax_calculation_enabled?
@@ -79,6 +95,10 @@ class TaxSvc
 
   def service_url
     Spree::Config.avatax_endpoint + AVATAX_SERVICEPATH_TAX
+  end
+
+  def address_service_url
+    Spree::Config.avatax_endpoint + AVATAX_SERVICEPATH_ADDRESS + 'validate?'
   end
 
   def license_key

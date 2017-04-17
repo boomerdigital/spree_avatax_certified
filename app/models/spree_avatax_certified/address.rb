@@ -11,6 +11,7 @@ module SpreeAvataxCertified
       @ship_address = order.ship_address
       @origin_address = JSON.parse(Spree::Config.avatax_origin)
       @addresses = []
+
       build_addresses
     end
 
@@ -45,23 +46,20 @@ module SpreeAvataxCertified
     end
 
     def origin_ship_addresses
-      if order.shipments.any?
-        stock_loc_ids = order.shipments.pluck(:stock_location_id).uniq
-        Spree::StockLocation.where(id: stock_loc_ids).each do |stock_location|
-          addresses << {
-            AddressCode: "#{stock_location.id}",
-            Line1: stock_location.address1,
-            Line2: stock_location.address2,
-            City: stock_location.city,
-            PostalCode: stock_location.zipcode,
-            Country: stock_location.country.try(:iso)
-          }
-        end
+      Spree::StockLocation.where(id: stock_loc_ids).each do |stock_location|
+        addresses << {
+          AddressCode: "#{stock_location.id}",
+          Line1: stock_location.address1,
+          Line2: stock_location.address2,
+          City: stock_location.city,
+          PostalCode: stock_location.zipcode,
+          Country: stock_location.country.try(:iso)
+        }
       end
     end
 
     def validate
-      return 'Address validation disabled' unless address_validation_enabled?
+      return 'Address validation disabled' unless @ship_address.validation_enabled?
       return @ship_address if @ship_address.nil?
 
       address_hash = {
@@ -76,20 +74,11 @@ module SpreeAvataxCertified
       validation_response(address_hash)
     end
 
-    def country_enabled?
-      enabled_countries.include?(@ship_address.try(:country).try(:name))
-    end
-
     private
 
     def validation_response(address)
-      uri = URI(service_url + address.to_query)
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      res = http.get(uri.request_uri, 'Authorization' => credential)
-
-      response = JSON.parse(res.body)
+      validator = TaxSvc.new
+      response = validator.validate_address(address)
       address = response['Address']
 
       if address['City'] != @ship_address.city || address['Region'] != @ship_address.state.abbr
@@ -101,33 +90,11 @@ module SpreeAvataxCertified
         ]
       end
 
-      return response
-    rescue => e
-      "error in address validation: #{e}"
+      response
     end
 
-    def address_validation_enabled?
-      Spree::Config.avatax_address_validation && country_enabled?
-    end
-
-    def credential
-      'Basic ' + Base64.encode64(account_number + ':' + license_key)
-    end
-
-    def service_url
-      Spree::Config.avatax_endpoint + AVATAX_SERVICEPATH_ADDRESS + 'validate?'
-    end
-
-    def license_key
-      Spree::Config.avatax_license_key
-    end
-
-    def account_number
-      Spree::Config.avatax_account
-    end
-
-    def enabled_countries
-      Spree::Config.avatax_address_validation_enabled_countries
+    def stock_loc_ids
+      order.shipments.pluck(:stock_location_id).uniq
     end
   end
 end

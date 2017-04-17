@@ -125,21 +125,6 @@ describe SpreeAvataxCertified::Address, :type => :model do
     end
   end
 
-  describe '#country_enabled?' do
-    it 'returns true if the current country is enabled' do
-      expect(address_lines.country_enabled?).to be_truthy
-    end
-
-    context 'with no ship_address connected to the order' do
-      before do
-        order.ship_address = nil
-      end
-      it 'returns false if there is no @ship_address' do
-        expect(address_lines.country_enabled?).to be_falsey
-      end
-    end
-  end
-
 
   describe 'multiple stock locations' do
     let(:stock_loc_2) { create(:stock_location) }
