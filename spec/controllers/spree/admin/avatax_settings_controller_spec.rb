@@ -56,12 +56,15 @@ module Spree
       describe "#update" do
         let(:params) do
           {
-            address: {},
+            address: {
+              avatax_address1: 'test'
+            },
             settings: {
               avatax_account: "123456789"
             }
           }
         end
+
         subject { spree_put :update, params }
 
         it { is_expected.to redirect_to(spree.admin_avatax_settings_path) }
