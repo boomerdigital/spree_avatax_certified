@@ -47,6 +47,11 @@ Configure specific users to utilize Avalara Entity Use Code, and Exemption numbe
 ![userinfoavalara](https://cloud.githubusercontent.com/assets/6445334/5671095/5e01cdca-9753-11e4-9900-6946c79ad614.png)
 
 
+Versions
+--------
+To help make the gem easier to maintain and to keep users are the same page, we have set up master to support 2-4-stable & up. If you are on those versions, please upgrade to use master.
+
+
 Testing
 -------
 
