@@ -3,6 +3,13 @@
 
 <table class="table table-bordered">
   <tr>
+    <th>Connection Status</th>
+    <td>
+      <%= link_to({controller: :avatax_settings, action: :ping_my_service, remote: true }, {class: 'btn btn-small'}) do %>
+      <button>Test Connection</button> <% end %>
+    </td>
+  </tr>
+  <tr>
     <th scope="row"><%= t("avatax_company_code") %>:</th>
     <td><%= Spree::Config.avatax_company_code %></td>
   </tr>
@@ -27,7 +34,7 @@
     <td><%= AVATAX_SERVICEPATH_ADDRESS %></td>
   </tr>
   <tr>
-    <th scope="row"><%= t("log") %>:</th>
+    <th scope="row"><%= t("log_to_file") %>:</th>
     <td><%= Spree::Config.avatax_log %></td>
   </tr>
   <tr>
@@ -59,10 +66,6 @@
     <th scope="row"><%= t("enable_avatax_document_committing") %>:</th>
     <td><%= Spree::Config.avatax_document_commit %></td>
   </tr>
-  <tr>
-    <th scope="row"><%= t("client_version") %>:</th>
-    <td><%= AVATAX_CLIENT_VERSION %></td>
-  </tr>
 
   <tr>
     <th scope="row"><%= t("business_address") %>:</th>
@@ -76,13 +79,6 @@
       <tr><td><%= t("zip_plus_4") %>: <%= origin["Zip4"] %></td></tr>
       <tr><td><%= t("country_code") %>: <%= origin["Country"] %></td></tr>
     </table></td>
-  </tr>
-  <tr>
-    <th>Connection Status</th>
-    <td>
-      <%= link_to({controller: :avatax_settings, action: :ping_my_service, remote: true }, {class: 'btn btn-small'}) do %>
-      <button>Test Connection</button> <% end %>
-    </td>
   </tr>
 
   <tr>

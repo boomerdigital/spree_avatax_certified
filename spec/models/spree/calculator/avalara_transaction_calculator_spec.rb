@@ -6,38 +6,31 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
   let(:calculator) { Spree::TaxRate.find_by(name: 'Tax').calculator }
   let(:line_item) { order.line_items.first }
 
-  # before do
-  #   order.reload
-  #   calculator.calculable.zone.reload
-  # end
-
   describe '#description' do
     it 'responds with avalara_transaction' do
       expect(Spree::Calculator::AvalaraTransactionCalculator.new.description).to eq('Avalara Transaction Calculator')
     end
   end
 
-  context "#compute" do
+  context '#compute', :vcr do
     let!(:order) { create(:avalara_order, line_items_price: 10, shipment_cost: 100, tax_included: included_in_price) }
 
-    context "when given an order" do
-      let!(:line_item_1) { line_item }
-      let!(:line_item_2) { create(:line_item, :price => 10, :quantity => 3, :tax_category => tax_category) }
+    context 'when given an order' do
 
       before do
-        allow(order).to receive_messages :line_items => [line_item_1, line_item_2]
+        allow(order).to receive_messages :line_items => [line_item]
       end
 
-      context "when computing an order" do
-        it "should raise error" do
+      context 'when computing an order' do
+        it 'should raise error' do
           expect{calculator.compute(order)}.to raise_error(RuntimeError)
         end
       end
     end
-    context "when computing a line item" do
-      context "when tax is included in price" do
+    context 'when computing a line item' do
+      context 'when tax is included in price' do
         let(:included_in_price) { true }
-        it "should be equal to the item pre-tax total * rate" do
+        it 'should be equal to the item pre-tax total * rate' do
           expect(calculator.compute(line_item)).to eq(0.38)
         end
 
@@ -54,9 +47,9 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
         end
       end
 
-      context "when tax is not included in price" do
+      context 'when tax is not included in price' do
 
-        it "should be equal to the item pre-tax total * rate" do
+        it 'should be equal to the item pre-tax total * rate' do
           expect(calculator.compute(line_item)).to eq(0.4)
         end
 

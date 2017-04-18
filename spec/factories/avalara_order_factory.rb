@@ -53,7 +53,7 @@ FactoryGirl.define do
         # order.refresh_shipment_rates
         order.update_column(:completed_at, Time.now)
         order.update_column(:state, 'complete')
-        payment = create(:credit_card_payment, amount: order.total, order: order, state: 'completed')
+        payment = create(:payment, amount: order.total, order: order, state: 'completed')
 
         order.update_with_updater!
         order.next

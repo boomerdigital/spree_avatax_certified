@@ -2,11 +2,15 @@ require 'spec_helper'
 
 describe SpreeAvataxCertified::Line, :type => :model do
 
-  let(:order) { FactoryGirl.create(:avalara_order) }
-  let(:shipped_order) { FactoryGirl.create(:shipped_order) }
-  let(:stock_location) { FactoryGirl.create(:stock_location) }
+  let(:order) { create(:avalara_order) }
 
   let(:sales_lines) { SpreeAvataxCertified::Line.new(order, 'SalesOrder') }
+
+  before do
+    VCR.use_cassette('order_capture', allow_playback_repeats: true) do
+      order
+    end
+  end
 
   describe '#initialize' do
     it 'should have order' do
@@ -164,7 +168,7 @@ describe SpreeAvataxCertified::Line, :type => :model do
     let(:gateway_response_options) { {} }
 
     let(:refund) {Spree::Refund.new(payment: payment, amount: BigDecimal.new(10), reason: refund_reason, transaction_id: nil)}
-    let(:shipped_order) { FactoryGirl.create(:shipped_order) }
+    let(:shipped_order) { build(:shipped_order) }
     let(:return_lines) { SpreeAvataxCertified::Line.new(shipped_order, 'ReturnOrder', refund) }
 
     describe 'build_lines' do
@@ -173,6 +177,7 @@ describe SpreeAvataxCertified::Line, :type => :model do
         return_lines.build_lines
       end
     end
+
     describe '#refund_line' do
       it 'returns an Hash' do
         expect(return_lines.refund_line).to be_kind_of(Hash)
