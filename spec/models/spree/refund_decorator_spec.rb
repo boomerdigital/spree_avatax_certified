@@ -68,7 +68,7 @@ describe Spree::Refund, type: :model do
 
 
   context 'full refund', :vcr do
-    let(:order) { create(:completed_avalara_order) }
+    let(:order) { create(:completed_avalara_order, shipment_cost: 10) }
     let(:refund) { build(:refund, payment: order.payments.first, amount: order.total.to_f) }
 
     subject do
