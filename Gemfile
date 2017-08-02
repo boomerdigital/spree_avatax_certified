@@ -10,4 +10,7 @@ end
 
 gem 'pry', group: [:test, :development]
 
+gem 'pg'
+gem 'mysql2'
+
 gemspec
