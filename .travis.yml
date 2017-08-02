@@ -1,0 +1,22 @@
+sudo: false
+language: ruby
+rvm:
+  - 2.3.3
+before_script:
+  - sh -e /etc/init.d/xvfb start
+  - export DISPLAY=:99.0
+  - bundle exec rake test_app
+script:
+  - bundle exec rspec
+env:
+  matrix:
+    - SPREE_BRANCH=2-4-stable DB=postgres
+    - SPREE_BRANCH=3-0-stable DB=postgres
+    - SPREE_BRANCH=3-1-stable DB=postgres
+    - SPREE_BRANCH=3-2-stable DB=postgres
+    - SPREE_BRANCH=master DB=postgres
+    - SPREE_BRANCH=2-4-stable DB=mysql
+    - SPREE_BRANCH=3-0-stable DB=mysql
+    - SPREE_BRANCH=3-1-stable DB=mysql
+    - SPREE_BRANCH=3-2-stable DB=mysql
+    - SPREE_BRANCH=master DB=mysql
