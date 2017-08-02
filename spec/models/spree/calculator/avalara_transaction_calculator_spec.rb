@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
+describe Spree::Calculator::AvalaraTransactionCalculator, :vcr do
   let(:included_in_price) { false }
   let(:tax_category) { Spree::TaxCategory.find_or_create_by(name: 'Clothing', tax_code: 'P0000000') }
   let(:calculator) { Spree::TaxRate.find_by(name: 'Tax').calculator }
@@ -94,6 +94,7 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
             order.line_items.each do |li|
               create(:adjustment, order: order, source: promotion.promotion_actions.first, adjustable: li)
             end
+
             order.reload.update_with_updater!
           end
 

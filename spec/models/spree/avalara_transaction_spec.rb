@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Spree::AvalaraTransaction, :type => :model do
+describe Spree::AvalaraTransaction, :vcr do
 
   it { should belong_to :order }
   it { should belong_to :reimbursement }

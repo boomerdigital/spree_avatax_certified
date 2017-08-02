@@ -5,11 +5,11 @@ http_interactions:
     uri: https://development.avalara.net/1.0/tax/get
     body:
       encoding: UTF-8
-      string: '{"DocCode":"R110776459.","DocDate":"2017-04-17","Commit":false,"DocType":"ReturnOrder","Addresses":[{"AddressCode":"Orig","Line1":"915
+      string: '{"DocCode":"R854640898.","DocDate":"2017-08-02","Commit":false,"DocType":"ReturnOrder","Addresses":[{"AddressCode":"Orig","Line1":"915
         S Jackson St","Line2":"","City":"Montgomery","Region":"Alabama","PostalCode":"36104","Country":"United
         States"},{"AddressCode":"Dest","Line1":"915 S Jackson St","Line2":"","City":"Montgomery","Region":"Alabama","Country":"US","PostalCode":"36104"},{"AddressCode":"2","Line1":"1600
-        Pennsylvania Ave NW","Line2":null,"City":"Washington","PostalCode":"20500","Country":"US"}],"Lines":[{"LineNo":"-RA","ItemCode":"fake-refund-transaction-1","Qty":1,"Amount":-15.6,"OriginCode":"Orig","DestinationCode":"Dest","CustomerUsageType":null,"Description":"Refund","TaxIncluded":true}],"CustomerCode":1,"CompanyCode":"54321","CustomerUsageType":null,"ExemptionNo":null,"Client":"a0o33000004FH8l","ReferenceCode":"R110776459","DetailLevel":"Tax","CurrencyCode":"USD","TaxOverride":{"TaxOverrideType":"TaxDate","Reason":"Refund
-        for return #1","TaxDate":"2017-04-17"}}'
+        Pennsylvania Ave NW","Line2":null,"City":"Washington","PostalCode":"20500","Country":"US"}],"Lines":[{"LineNo":"-RA","ItemCode":"fake-refund-transaction-1","Qty":1,"Amount":-15.6,"OriginCode":"Orig","DestinationCode":"Dest","CustomerUsageType":null,"Description":"Refund","TaxIncluded":true}],"CustomerCode":1,"CompanyCode":"54321","CustomerUsageType":null,"ExemptionNo":null,"Client":"a0o33000004FH8l","ReferenceCode":"R854640898","DetailLevel":"Tax","CurrencyCode":"USD","TaxOverride":{"TaxOverrideType":"TaxDate","Reason":"Refund
+        for return #2","TaxDate":"2017-08-02"}}'
     headers:
       Accept:
       - "*/*; q=0.5, application/xml"
@@ -41,11 +41,11 @@ http_interactions:
       X-Powered-By:
       - ASP.NET
       Date:
-      - Mon, 17 Apr 2017 20:49:11 GMT
+      - Wed, 02 Aug 2017 23:36:59 GMT
       Content-Length:
-      - '550'
+      - '555'
       Set-Cookie:
-      - TS017f1821=01a8ddc44ee0280ded050dbbc8c0432b1a5f7ddac131bdb2cdf5c707ed130c8d5b764253cfa1b96ab3c096eb00a7ee9b003cfab096;
+      - TS017f1821=01a8ddc44e0356f681d55bbe28ccc9428cab671a987228d910b93b92efd03828e72199994a491debe4e75744946aaa37c954a81549;
         Path=/
     body:
       encoding: ASCII-8BIT
@@ -53,16 +53,16 @@ http_interactions:
         H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3m
         kuwdaUcjKasqgcplVmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZk
         AWz2zkrayZ4hgKrIHz9+fB8/In5x8tGrvFmX7Uk1yz96lH70ej2d5k3z0Sj5
-        6Gk1NZ++2t3defDg0/37D8f6zdOs5W/2dnYfbO/sb+8+wBdvikXetNliFX71
-        Zm/n0f7DR7u744f7+/uf7j/8KW5ctVl5vKjWyxbNt3fv20+fFs3UfL5jPz19
-        ly9WbVEtw4/fZO+yScnY+DDoY/5oZ/yp/9lJVk7XJWE/C77N3j0vlnlDn30v
-        IaLgjxcV/fXR9qtjbWCI8XJHHv04mxRl0V7jm7Ze5/j0CeE+y+rr5/llXuKL
-        49msVqr2B9EfLIAGA3pF+OLPnfHOPvVsWuEjbwSDQ3uat1lR2sGdoLeaMf7q
-        NZq8yi8UoePn+Ps767po3lyvuM/XLUG0nxoi7OziI4L9/pgynBfZgtsdPz9+
-        cvyFIbH7NH395vjNafrm+Pf+6Jck30/wf2mipHRTpR8YxJ4SAwJab5AvK+LM
-        0jS79+nuzj4+7o6dupCPzpiKezv39x48fIhvGG/z/g5JxO79XR2h4oAvHu7e
-        T1+n38mmb5tqmb4WXJQ/vqiW7UW1yAmtX5KM+rh/WRcX3P7/7bibyYhogV+S
-        /D+hoUuuVAQAAA==
+        6Gk1fZq1/Onezu6D7Z2D7Z09fPGmWORNmy1W4Vdv9u49uvfg0c7O+N7+p58+
+        fPDwp7hx1Wbl8aJaL1s03969bz99WjRT8/mO/fT0Xb5YtUW1DD9+k73LJiVj
+        48Ogj/mjnfGn/mcnWTldl4T9LPg2excfEQ3VEODVwf39T/d3Dh4ejPENvfK8
+        WOYNffW9hKiFP15U9NdH26+OtYF59eWOPPpxNinKor3GN229zvHpExruLKuv
+        n+eXeYkvjmezWsndH3efPgAa0OCVDmdnvLNPPZtW+Mgb9DA18jYrSju4E/RW
+        M8ZfvUaTV/mFInT8HH9/Z10XzZvrFff5uiWI9lNDhJ1dfESw3x9ThvMiW3C7
+        4+fHT46/MCR2n6av3xy/OU3fHP/eH/2S5PsJ/i9NlJRuqvQD+vOjh7v309fp
+        d7Lp26Zapq9bQNWvDd5PiaXx8YlO2RfVsr2oFjmRA592KfOyIgkozcv3Pt3d
+        2cfHXYIRXvLRGZN+b+f+3oOHD/END9a8v7O7u7N7fxdk+SXJ6L1x/7IuLvDx
+        zz3umJD/B/BHWkZUBAAA
     http_version: 
-  recorded_at: Mon, 17 Apr 2017 20:49:12 GMT
+  recorded_at: Wed, 02 Aug 2017 23:37:00 GMT
 recorded_with: VCR 3.0.3

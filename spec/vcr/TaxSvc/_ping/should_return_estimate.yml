@@ -33,11 +33,11 @@ http_interactions:
       X-Powered-By:
       - ASP.NET
       Date:
-      - Mon, 17 Apr 2017 21:07:39 GMT
+      - Wed, 02 Aug 2017 23:37:55 GMT
       Content-Length:
-      - '409'
+      - '411'
       Set-Cookie:
-      - TS017f1821=01a8ddc44eb86005da2b6af32b295e4d0c9da51cabab5b456cc8fa2e2917897e254f860967c2e7ae4c2dded5500b7dcfee4b66d6e8;
+      - TS017f1821=01a8ddc44e45a75d655ba3d6865daba891d06e510838a3563138ae3384f30dfd7f06a08f9f45f139f612833a19de1d26465eebf44b;
         Path=/
     body:
       encoding: ASCII-8BIT
@@ -47,13 +47,13 @@ http_interactions:
         "Tax": 0,
         "TaxDetails": [
         {
-        "Country": "US",
-        "Region": "NY",
-        "JurisType": "State",
-        "JurisCode": "36",
         "Rate": 0.04,
         "Tax": 0,
+        "Region": "NY",
+        "Country": "US",
+        "JurisType": "State",
         "JurisName": "NEW YORK",
+        "JurisCode": "36",
         "TaxName": "NY STATE TAX"}
         ,{
         "Country": "US",
@@ -77,5 +77,5 @@ http_interactions:
         ,
         "ResultCode": "Success"}
     http_version: 
-  recorded_at: Mon, 17 Apr 2017 21:07:39 GMT
+  recorded_at: Wed, 02 Aug 2017 23:37:56 GMT
 recorded_with: VCR 3.0.3

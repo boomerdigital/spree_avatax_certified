@@ -37,11 +37,11 @@ http_interactions:
       X-Powered-By:
       - ASP.NET
       Date:
-      - Mon, 17 Apr 2017 21:07:38 GMT
+      - Wed, 02 Aug 2017 23:37:54 GMT
       Content-Length:
       - '210'
       Set-Cookie:
-      - TS017f1821=01a8ddc44efa294760d2a4fac54aba4533e0863ecfec94ce0ca6d21f0504f05137b4e03ad510446cabcdb0e8be9d990f44a0feeb2d;
+      - TS017f1821=01a8ddc44e071121afa1a26f3186cb0b9215287e132655022788b89d62aa0ef0696423f2fd7087735a2afbfef9da796e3818c6c1f3;
         Path=/
     body:
       encoding: UTF-8
@@ -51,13 +51,13 @@ http_interactions:
         "Messages": [
         {
         "Summary": "Lines[0].TaxCode length must be between 0 and 25 characters.",
+        "RefersTo": "Lines[0].TaxCode",
         "Severity": "Error",
-        "Source": "Avalara.AvaTax.Services",
-        "RefersTo": "Lines[0].TaxCode"}
+        "Source": "Avalara.AvaTax.Services"}
         ]
         }
     http_version: 
-  recorded_at: Mon, 17 Apr 2017 21:07:38 GMT
+  recorded_at: Wed, 02 Aug 2017 23:37:55 GMT
 - request:
     method: post
     uri: https://development.avalara.net/1.0/tax/cancel
@@ -95,11 +95,11 @@ http_interactions:
       X-Powered-By:
       - ASP.NET
       Date:
-      - Mon, 17 Apr 2017 21:07:38 GMT
+      - Wed, 02 Aug 2017 23:37:55 GMT
       Content-Length:
       - '211'
       Set-Cookie:
-      - TS017f1821=01a8ddc44e44ab61880029209f05a7b7123eecc0ece76ebe6842dcd584879c61658df818921581879b6a581b193b73843737431668;
+      - TS017f1821=01a8ddc44eef30e8f028ede4014b70b8ddaf29b66ad6001e0bff00b41c281ba86eca29d60f40f8fa511b8d006c4d2c891437b95e06;
         Path=/
     body:
       encoding: ASCII-8BIT
@@ -107,8 +107,8 @@ http_interactions:
         H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3m
         kuwdaUcjKasqgcplVmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZk
         AWz2zkrayZ4hgKrIHz9+fB8/In5x8tFJtpzm5Zvs3au8WZftR49S+vBpNT2b
-        0a8ffXpvZ//hwcNPPxolH72ps2WTTduiWvKX93f3d+/tHNx/uHt/d3d/7x41
-        ERgn1Syn7z96vZ5O86b56JckvyT5fwDR8/M+agAAAA==
+        0a8ffXpvZ//hwcNPPxolH72ps2WTTduiWvKX9/fu3TvY//TB/fs7D+/t7H1K
+        TQTGSTXL6fuPXq+n07xpPvolyS9J/h+rs4GPagAAAA==
     http_version: 
-  recorded_at: Mon, 17 Apr 2017 21:07:39 GMT
+  recorded_at: Wed, 02 Aug 2017 23:37:55 GMT
 recorded_with: VCR 3.0.3
