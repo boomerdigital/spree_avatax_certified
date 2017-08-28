@@ -44,7 +44,7 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   config.before :suite do
-    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.clean_with :truncation
   end
 
