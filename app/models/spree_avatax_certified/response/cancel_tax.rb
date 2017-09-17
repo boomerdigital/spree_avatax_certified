@@ -1,15 +1,11 @@
-module SpreeAvataxCertified
-  module Response
-    class CancelTax < SpreeAvataxCertified::Response::Base
-      alias :tax_result :result
+class SpreeAvataxCertified::Response::CancelTax < SpreeAvataxCertified::Response::Base
+  alias :tax_result :result
 
-      def initialize(result)
-        @result = result['CancelTaxResult']
-      end
+  def initialize(result)
+    @result = result['CancelTaxResult']
+  end
 
-      def description
-        'Cancel Tax'
-      end
-    end
+  def description
+    'Cancel Tax'
   end
 end
