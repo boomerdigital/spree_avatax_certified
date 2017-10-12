@@ -53,20 +53,19 @@ class TaxSvc
   end
 
   def validate_address(address)
-    begin
-      uri = URI(address_service_url + address.to_query)
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      http.open_timeout = 1
-      http.read_timeout = 1
-      request = http.get(uri.request_uri, 'Authorization' => credential)
-    rescue => e
-      logger.error(e)
-    end
-
+    tries ||= 2
+    uri = URI(address_service_url + address.to_query)
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    http.open_timeout = 1
+    http.read_timeout = 1
+    request = http.get(uri.request_uri, 'Authorization' => credential)
     response = SpreeAvataxCertified::Response::AddressValidation.new(request.body)
     handle_response(response)
+  rescue => e
+    retry unless (tries -= 1).zero?
+    logger.error(e)
   end
 
   protected
