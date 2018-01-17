@@ -113,13 +113,31 @@ describe SpreeAvataxCertified::Address, :type => :model do
   end
 
   describe '#validate' do
-    subject do
-      VCR.use_cassette('address_validation_success', allow_playback_repeats: true) do
-        address_lines.validate
+    context 'on success' do
+      subject do
+        VCR.use_cassette('address_validation_success', allow_playback_repeats: true) do
+          address_lines.validate
+        end
+      end
+      it 'validates address with success' do
+        expect(subject['ResultCode']).to eq('Success')
       end
     end
-    it 'validates address with success' do
-      expect(subject['ResultCode']).to eq('Success')
+
+    context 'on failure' do
+      let(:address){ Spree::Address.new(country: create(:country)) }
+      let(:order) { build(:avalara_order, ship_address: address) }
+      let(:address_lines) { SpreeAvataxCertified::Address.new(order)  }
+
+      subject do
+        VCR.use_cassette('address_validation_failure', allow_playback_repeats: true) do
+          address_lines.validate
+        end
+      end
+
+      it 'validates address with error' do
+        expect(subject['ResultCode']).to eq('Error')
+      end
     end
 
     it 'does not validate when config settings are false' do

@@ -75,7 +75,7 @@ class TaxSvc
     result = response.result
     begin
       if response.error?
-        raise response.tax_result
+        raise response.result
       end
 
       logger.debug(result, response.description + ' Response')
