@@ -1,4 +1,4 @@
-class CreateSpreeAvalaraTransactions < ActiveRecord::Migration
+class CreateSpreeAvalaraTransactions < SpreeExtension::Migration[4.2]
   def change
     create_table :spree_avalara_transactions do |t|
       t.references :order
