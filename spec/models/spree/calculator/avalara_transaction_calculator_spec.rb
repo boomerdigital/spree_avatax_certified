@@ -113,9 +113,9 @@ describe Spree::Calculator::AvalaraTransactionCalculator, :type => :model do
         expect(shipping_calculator.compute(order.shipments.first)).to eq(4.0)
       end
 
-      it "takes discounts into consideration" do
-        order.shipments.first.update_attributes(promo_total: -1)
-        expect(shipping_calculator.compute(order.shipments.first)).to eq(3.96)
+      it 'takes discounts into consideration' do
+        shipment.update_attributes(promo_total: -1)
+        expect(shipping_calculator.compute(shipment.reload)).to eq(3.96)
       end
 
       context 'included_in_price' do
