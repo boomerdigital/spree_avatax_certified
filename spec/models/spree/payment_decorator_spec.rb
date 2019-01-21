@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Spree::Payment, :vcr do
   subject(:order) do
-    order = FactoryGirl.create(:completed_order_with_totals)
+    order = FactoryBot.create(:completed_order_with_totals)
     Spree::AvalaraTransaction.create(order: order)
     order
   end

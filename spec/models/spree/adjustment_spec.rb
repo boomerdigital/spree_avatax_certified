@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Spree::Adjustment, type: :model do
+describe Spree::Adjustment, :vcr do
   let(:order) { create :order_with_line_items }
   let(:adjustment) { create(:adjustment, order: order) }
 
