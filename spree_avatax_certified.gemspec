@@ -11,32 +11,39 @@ Gem::Specification.new do |s|
   s.email     = 'acreilly3@gmail.com'
   s.homepage  = 'http://boomer.digital'
 
-  s.files       = `git ls-files`.split("\n")
-  s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.require_path = 'lib'
   s.requirements << 'none'
 
-  s.add_dependency 'spree_core', ['>= 2.4.0', '< 3.3.0']
-  s.add_dependency 'json', '~> 1.7'
-  s.add_dependency 'addressable', '~> 2.3'
-  s.add_dependency 'rest-client', '~> 1.7'
-  s.add_dependency 'logging', '~> 1.8'
+  spree_version = '>= 3.2.0', '< 4.0'
+  s.add_runtime_dependency 'spree_core', spree_version
+  s.add_runtime_dependency 'spree_backend', spree_version
+  s.add_runtime_dependency 'spree_extension'
+  s.add_dependency 'json'
+  s.add_dependency 'addressable'
+  s.add_dependency 'rest-client'
+  s.add_dependency 'psych'
+  s.add_dependency 'logging'
 
   #add gems here for files
   s.add_development_dependency 'dotenv'
-  # s.add_development_dependency 'deface'
+  s.add_development_dependency 'deface'
   s.add_development_dependency 'capybara'
   s.add_development_dependency 'coffee-rails'
   s.add_development_dependency 'database_cleaner'
-  s.add_development_dependency 'factory_girl'
+  s.add_development_dependency 'factory_bot'
   s.add_development_dependency 'ffaker'
-  s.add_development_dependency "rspec-rails", '~> 3.2'
+  s.add_development_dependency 'rspec-rails'
   s.add_development_dependency 'rspec-its'
   s.add_development_dependency 'sass-rails'
   s.add_development_dependency 'selenium-webdriver'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'sqlite3'
-  s.add_development_dependency 'shoulda-matchers', '~> 2.8'
+  s.add_development_dependency 'mysql2', '~> 0.5.1'
+  s.add_development_dependency 'shoulda-matchers'
   s.add_development_dependency 'vcr'
   s.add_development_dependency 'webmock'
+  s.add_development_dependency 'pg', '~> 0.18'
+  s.add_development_dependency 'appraisal'
+  s.add_development_dependency 'puma'
+  s.add_development_dependency 'rails-controller-testing'
 end
