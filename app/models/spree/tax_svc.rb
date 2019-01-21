@@ -119,8 +119,8 @@ class TaxSvc
 
   def request(uri, request_hash)
     res = RestClient::Request.execute(method: :post,
-                                timeout: 1,
-                                open_timeout: 1,
+                                open_timeout: 2,
+                                read_timeout: 6,
                                 url: service_url + uri,
                                 payload:  JSON.generate(request_hash),
                                 headers: {
