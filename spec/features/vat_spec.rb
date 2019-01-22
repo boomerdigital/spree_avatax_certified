@@ -7,7 +7,11 @@ describe "VAT", :vcr do
   let!(:fr) { create(:country, iso: 'FR', name: 'France', iso_name: 'FRANCE') }
   let!(:cr) { create(:country, iso: 'CR', name: 'Costa Rica', iso_name: 'COSTA RICA') }
 
-  let(:res) { avalara_order.avalara_capture }
+  let(:res) {
+    res = avalara_order.avalara_capture
+    puts res
+    res
+  }
 
   context 'Seller in EU country; Buyer in same EU country' do
     let(:it_address) { create(:address, address1: '34 Borgo degli Albizi', city: 'Florence', zipcode: '50122', country: it, state_name: '') }

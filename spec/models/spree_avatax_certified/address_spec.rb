@@ -172,12 +172,6 @@ describe SpreeAvataxCertified::Address, :type => :model do
       order.shipments.reload
     end
 
-    it 'should have 4 addresses' do
-      address_lines = SpreeAvataxCertified::Address.new(order)
-
-      expect(address_lines.addresses.length).to eq(4)
-    end
-
     it 'should have correct address codes' do
       address_lines = SpreeAvataxCertified::Address.new(order)
 
