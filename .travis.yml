@@ -1,30 +1,28 @@
-sudo: false
-language: ruby
-rvm:
-  - 2.5.1
-  - 2.4.2
-  - 2.3.1
+sudo: required
+dist: trusty
+
+env:
+  - DB=postgres
+  - DB=mysql
+
+gemfile:
+  - gemfiles/spree_3_2.gemfile
+  - gemfiles/spree_3_3.gemfile
+  - gemfiles/spree_3_6.gemfile
+  - gemfiles/spree_master.gemfile
 
 script:
   - bundle exec rake test_app
   - bundle exec rake spec
 
+rvm:
+  - 2.5.1
+  - 2.4.4
+  - 2.3.7
+
+matrix:
+    allow_failures:
+          - gemfile: gemfiles/spree_master.gemfile
+
 before_install:
   - mysql -u root -e "GRANT ALL ON *.* TO 'travis'@'%';"
-
-env:
-  matrix:
-    - SPREE_BRANCH=3-2-stable DB=postgres
-    - SPREE_BRANCH=3-3-stable DB=postgres
-    - SPREE_BRANCH=3-4-stable DB=postgres
-    - SPREE_BRANCH=3-5-stable DB=postgres
-    - SPREE_BRANCH=3-6-stable DB=postgres
-    - SPREE_BRANCH=3-7-stable DB=postgres
-    - SPREE_BRANCH=master DB=postgres
-    - SPREE_BRANCH=3-2-stable DB=mysql
-    - SPREE_BRANCH=3-3-stable DB=mysql
-    - SPREE_BRANCH=3-4-stable DB=mysql
-    - SPREE_BRANCH=3-5-stable DB=mysql
-    - SPREE_BRANCH=3-6-stable DB=mysql
-    - SPREE_BRANCH=3-7-stable DB=mysql
-    - SPREE_BRANCH=master DB=mysql
