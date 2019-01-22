@@ -7,6 +7,12 @@ require 'logging'
 
 # Avatax tax calculation API calls
 class TaxSvc
+  AVALARA_OPEN_TIMEOUT = ENV.fetch('AVALARA_OPEN_TIMEOUT', 2).to_i
+  AVALARA_READ_TIMEOUT = ENV.fetch('AVALARA_READ_TIMEOUT', 6).to_i
+  AVALARA_RETRY        = ENV.fetch('AVALARA_RETRY', 2).to_i
+  ERRORS_TO_RETRY = [Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED, EOFError,
+                     Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError].freeze
+
   def get_tax(request_hash)
     log(__method__, request_hash)
     RestClient.log = logger.logger
@@ -118,20 +124,25 @@ class TaxSvc
   end
 
   def request(uri, request_hash)
+    tries ||= AVALARA_RETRY
     res = RestClient::Request.execute(method: :post,
-                                open_timeout: 2,
-                                read_timeout: 6,
-                                url: service_url + uri,
-                                payload:  JSON.generate(request_hash),
-                                headers: {
-                                  authorization: credential,
-                                  content_type: 'application/json'
-                                }
-    )  do |response, request, result|
+                                      open_timeout: AVALARA_OPEN_TIMEOUT,
+                                      read_timeout: AVALARA_READ_TIMEOUT,
+                                      url: service_url + uri,
+                                      payload:  JSON.generate(request_hash),
+                                      headers: {
+                                        authorization: credential,
+                                        content_type: 'application/json'
+                                      }) do |response, _request, _result|
       response
     end
 
     JSON.parse(res)
+  rescue *(ERRORS_TO_RETRY + [RestClient::ExceptionWithResponse,
+                              RestClient::ServerBrokeConnection,
+                              RestClient::SSLCertificateNotVerified]) => e
+    retry unless (tries -= 1).zero?
+    logger.error e, 'Avalara Request Error'
   end
 
   def log(method, request_hash = nil)
