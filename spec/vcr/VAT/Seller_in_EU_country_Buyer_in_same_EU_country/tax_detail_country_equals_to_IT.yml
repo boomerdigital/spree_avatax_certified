@@ -5,13 +5,13 @@ http_interactions:
     uri: https://development.avalara.net/1.0/tax/get
     body:
       encoding: UTF-8
-      string: '{"DocCode":"R234971191","DocDate":"2019-01-23","Discount":"0.0","Commit":false,"DocType":"SalesOrder","Addresses":[{"AddressCode":"Orig","Line1":"34
+      string: '{"DocCode":"R636593019","DocDate":"2019-01-24","Discount":"0.0","Commit":false,"DocType":"SalesOrder","Addresses":[{"AddressCode":"Orig","Line1":"34
         Borgo degli Albizi","Line2":"","City":"Florence","Region":"","PostalCode":"50122","Country":"IT"},{"AddressCode":"Dest","Line1":"34
         Borgo degli Albizi","Line2":"","City":"Florence","Region":"","Country":"IT","PostalCode":"50122"},{"AddressCode":"1","Line1":"34
-        Borgo degli Albizi","Line2":null,"City":"Florence","PostalCode":"20500","Country":"IT"}],"Lines":[{"LineNo":"1-LI","Description":"Product
-        #2 - 1858","TaxCode":"PC030000","ItemCode":"SKU-2","Qty":1,"Amount":19.99,"OriginCode":"1","DestinationCode":"Dest","CustomerUsageType":null,"Discounted":false,"TaxIncluded":true},{"LineNo":"1-FR","ItemCode":"Avalara
+        Borgo degli Albizi","Line2":null,"City":"Florence","PostalCode":"50122","Country":"IT"}],"Lines":[{"LineNo":"1-LI","Description":"Product
+        #2 - 6250","TaxCode":"PC030000","ItemCode":"SKU-2","Qty":1,"Amount":19.99,"OriginCode":"1","DestinationCode":"Dest","CustomerUsageType":null,"Discounted":false,"TaxIncluded":true},{"LineNo":"1-FR","ItemCode":"Avalara
         Ground","Qty":1,"Amount":10.0,"OriginCode":"1","DestinationCode":"Dest","CustomerUsageType":null,"Description":"Shipping
-        Charge","TaxCode":"FR000000","Discounted":false,"TaxIncluded":true}],"CustomerCode":1,"CompanyCode":"54321","CustomerUsageType":null,"ExemptionNo":null,"Client":"a0o33000004FH8l","ReferenceCode":"R234971191","DetailLevel":"Tax","CurrencyCode":"USD"}'
+        Charge","TaxCode":"FR000000","Discounted":false,"TaxIncluded":true}],"CustomerCode":1,"CompanyCode":"54321","CustomerUsageType":null,"ExemptionNo":null,"Client":"a0o33000004FH8l","ReferenceCode":"R636593019","DetailLevel":"Tax","CurrencyCode":"USD"}'
     headers:
       Accept:
       - "*/*"
@@ -33,11 +33,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 22 Jan 2019 20:49:54 GMT
+      - Wed, 23 Jan 2019 18:40:08 GMT
       Content-Type:
       - text/json; charset=utf-8
       Content-Length:
-      - '617'
+      - '612'
       Connection:
       - keep-alive
       Cache-Control:
@@ -55,21 +55,21 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3mkuwdaUcjKasqgcplVmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZkAWz2zkrayZ4hgKrIHz9+fB8/In5x8tGrvFmX7Uk1yz96lH70ej2d5k3z0Sj56Gk1fZq1/Onezu7D7Z3d7b17+OJNscibNlusgq/23uztPNp/+Oj+znj//sH9e5/+FLet2qw8XlTrZcut98f3H9rPnxbN1HyzYz89fZcvVm1RLcOP32Tvskkp6ARQ6At8eH+87390kpXTdUn4z/wvs3fxIdFYDQVe7d3bf/hgd/fhLr6gN54Xy7yhb76XELXwx4uK/vpod/v5mbYwr7482bm3Q49+nE2Ksmiv8U1br3N8+oSGO8vq6+f5ZV7ii58qVvfxRX/QfeIAohBg99PxPSbAKx3Nznhvjzo27fDRvfGn+ldICvf507zNitIO7QS91Yzu2Rs0eZVfKELy93fWddG8uV5xj6a1+dzQQJoS9K+BKwN6kS242dmb4+e/Dz6lNuaz120G8s1ShvVLku8nvyQZEer+rDx7pS8ZjJ69os7o0Y9/9mblYLyHTxg3+jMyzt3xgf4Vzon7/IczJ7fGlMEY6t92Rr6fSJvj2awmXeKERz+gPz+6t58+qeqLKp3lF2WRHpeT4gcFYGsbg/pT0jT4+ESn7FlZ1flyytNmhksfywhfVqSWSvPq/Z3dPR4moSJkO2Ni7+3c33nIY+XRmeYEQphJMcBnt8WSVcXXQBGoMCbvgSIo/P8ATxjDZ7cFAAA=
+        H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3mkuwdaUcjKasqgcplVmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZkAWz2zkrayZ4hgKrIHz9+fB8/In5x8tGrvFmX7Uk1yz96lH70ej2d5k3z0Sj56Gk1fZq1/Onezu7D7Z3d7b19fPGmWORNmy1WwVf33uwePNrfebS7N9679+DBzqe7P8WNqzYrjxfVetly8/3x/Yf286dFMzXf7NhPT9/li1VbVMvw4zfZu2xSCj4BFPoCH94fC3b60UlWTtclDWDmf5m9i4+JBmtI8OrTe5/ef3iPvsYX9MbzYpk39M33EiIX/nhR0V8f7W4/P9MW5tWXJzv3dujRj7NJURbtNb5p63WOT5/QcGdZff08v8xLfPFTxeo+vugPuk8cQBQC7H46vsfovdLR7Iz39qhj0w4f3Rt/qn+FpHCfP83brCjt0E7QW83onr1Bk1f5hSIkf39nXRfNm+sV92ham88NDaQpQf8auDKgF9mCm529OX7+++BTamM+e91mIN8sZVi/JPl+8kuSEaHuz8qzV/qSwejZK+qMHv34Z29WDsZ7+IRxoz8j49wdH+hf4Zy4z384c3JrTBmMof5tZ+T7ibQ5ns1qUiZOePQD+vOje/vpk6q+qNJZflEW6XE5KX5QALa2Mag/JVWDj090yp6VVZ0vpzxtZrj0sYzwZUV6qTSv3t/Z3eNhEipCtjMm9t7O/Z2HPFYenWlOIISZFAN8dlssd/HZDwlFUPj/AQd0Dy+4BQAA
     http_version: 
-  recorded_at: Tue, 22 Jan 2019 20:49:54 GMT
+  recorded_at: Wed, 23 Jan 2019 18:40:07 GMT
 - request:
     method: post
     uri: https://development.avalara.net/1.0/tax/get
     body:
       encoding: UTF-8
-      string: '{"DocCode":"R234971191","DocDate":"2019-01-23","Discount":"0.0","Commit":false,"DocType":"SalesOrder","Addresses":[{"AddressCode":"Orig","Line1":"34
+      string: '{"DocCode":"R636593019","DocDate":"2019-01-24","Discount":"0.0","Commit":false,"DocType":"SalesOrder","Addresses":[{"AddressCode":"Orig","Line1":"34
         Borgo degli Albizi","Line2":"","City":"Florence","Region":"","PostalCode":"50122","Country":"IT"},{"AddressCode":"Dest","Line1":"34
         Borgo degli Albizi","Line2":"","City":"Florence","Region":"","Country":"IT","PostalCode":"50122"},{"AddressCode":"1","Line1":"34
-        Borgo degli Albizi","Line2":null,"City":"Florence","PostalCode":"20500","Country":"IT"}],"Lines":[{"LineNo":"1-LI","Description":"Product
-        #2 - 1858","TaxCode":"PC030000","ItemCode":"SKU-2","Qty":1,"Amount":19.99,"OriginCode":"1","DestinationCode":"Dest","CustomerUsageType":null,"Discounted":false,"TaxIncluded":true},{"LineNo":"1-FR","ItemCode":"Avalara
+        Borgo degli Albizi","Line2":null,"City":"Florence","PostalCode":"50122","Country":"IT"}],"Lines":[{"LineNo":"1-LI","Description":"Product
+        #2 - 6250","TaxCode":"PC030000","ItemCode":"SKU-2","Qty":1,"Amount":19.99,"OriginCode":"1","DestinationCode":"Dest","CustomerUsageType":null,"Discounted":false,"TaxIncluded":true},{"LineNo":"1-FR","ItemCode":"Avalara
         Ground","Qty":1,"Amount":10.0,"OriginCode":"1","DestinationCode":"Dest","CustomerUsageType":null,"Description":"Shipping
-        Charge","TaxCode":"FR000000","Discounted":false,"TaxIncluded":true}],"CustomerCode":1,"CompanyCode":"54321","CustomerUsageType":null,"ExemptionNo":null,"Client":"a0o33000004FH8l","ReferenceCode":"R234971191","DetailLevel":"Tax","CurrencyCode":"USD"}'
+        Charge","TaxCode":"FR000000","Discounted":false,"TaxIncluded":true}],"CustomerCode":1,"CompanyCode":"54321","CustomerUsageType":null,"ExemptionNo":null,"Client":"a0o33000004FH8l","ReferenceCode":"R636593019","DetailLevel":"Tax","CurrencyCode":"USD"}'
     headers:
       Accept:
       - "*/*"
@@ -91,11 +91,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 22 Jan 2019 20:49:56 GMT
+      - Wed, 23 Jan 2019 18:40:11 GMT
       Content-Type:
       - text/json; charset=utf-8
       Content-Length:
-      - '618'
+      - '640'
       Connection:
       - keep-alive
       Cache-Control:
@@ -113,7 +113,7 @@ http_interactions:
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3mkuwdaUcjKasqgcplVmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZkAWz2zkrayZ4hgKrIHz9+fB8/In5x8tGrvFmX7Uk1yz96lH70ej2d5k3z0Sj56Gk1fZq1/Onezu7D7Z3d7b17+OJNscibNlusgq/23uztPNp/+Oj+7vjhg/v3d+/v/RQ3rtqsPF5U62XLzffH9x/az58WzdR8s2M/PX2XL1ZtUS3Dj99k77JJKfgEUOgLfHh/vO9/dJKV03VJA5j5X2bv4mOiwRoSvNq7t//wwe7uw118QW88L5Z5Q998LyFy4Y8XFf310e728zNtYV59ebJzb4ce/TibFGXRXuObtl7n+PQJDXeW1dfP88u8xBc/Vazu44v+oPvEAUQhwO6n43tMgFc6mp3x3h51bNrho3vjT/WvkBTu86d5mxWlHdoJeqsZ3bM3aPIqv1CE5O/vrOuieXO94h5Na/O5oYE0JehfA1cG9CJbcLOzN8fPfx98Sm3MZ6/bDOSbpQzrlyTfT35JMiLU/Vl59kpfMhg9e0Wd0aMf/+zNysF4D58wbvRnZJy74wP9K5wT9/kPZ05ujSmDMdS/7Yx8P5E2x7NZTcrECY9+QH9+dG8/fVLVF1U6yy/KIj0uJ8UPCsDWNgb1p6Rq8PGJTtmzsqrz5ZSnzQyXPpYRvqxIL5Xm1fs7u3s8TEJFyHbGxN7bub/zkMfKozPNCYQwk2KAz26LJauKr4EiUGFM3gNFUPj/AVmWTWO4BQAA
+        H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3mkuwdaUcjKasqgcplVmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZkAWz2zkrayZ4hgKrIHz9+fB8/In5x8tHTanpSzfKPHqUfvfr03qf3H97b2X340Yi/eJq1/MUefbS9s7u9t48v3hSLvGmzxSr46t6b3YNH+zuPdvbH+zv3HtzfO/gpbly1WXm8qNbLlpvvj+8zdP78adFMzTc79tPTd/li1RbVMvz4TfYum5SCTwCFvsCH98eCnX50kpXTdUkDmPlfZu8GxpS9e14s84a++V5CVMEfLyr666Pd7edn2sLQ6eXJzr0devTjbFKURXuNb9p6nePTJzSqWVZfP88v8xJf/FSxuo8vuLkMYvfT8T0exCvFaGe8t0dQDVh8dG/8Kf7q04mQCcanDSOkoxHnbVaUdmj0yddA4VV+oWDP3uDvE+BT86Dlg++s66J5c71iOOZb8/mLbMGfn705fv772E8NPQUA9WeavW4zkG+WMl6/JPl+8kuSEaHuz8qzV/qSgfLsFSFOj378PrPSJ1uM4oZqB+M9fMK40Z8Rmu2OD/SvcJbc5505MfSiNkKMLrmZXkPUNRSQpgT9vTFlMIb6dpKojfksNiPfT6TN8WxW503jhEc/oD8/urefPqnqiyqd5RdlkR6Xk+IHBWBrG4P6U9Io+PhEp+xZWdX5csrTZoZLH8sIX1akfkrz6v2d3T0eJqEiZDtjYu/t3N95yGPl0ZnmBEKYSTHAZ7fFchef/ZBQZOq+ypt12ZrPX6+nU8Lmo1+S/D9wYNqduAUAAA==
     http_version: 
-  recorded_at: Tue, 22 Jan 2019 20:49:56 GMT
+  recorded_at: Wed, 23 Jan 2019 18:40:09 GMT
 recorded_with: VCR 4.0.0

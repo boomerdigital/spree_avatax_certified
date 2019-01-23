@@ -6,6 +6,7 @@ describe "VAT", :vcr do
   let!(:nl) { create(:country, iso: 'NL', name: 'Netherlands', iso_name: 'NETHERLANDS') }
   let!(:fr) { create(:country, iso: 'FR', name: 'France', iso_name: 'FRANCE') }
   let!(:cr) { create(:country, iso: 'CR', name: 'Costa Rica', iso_name: 'COSTA RICA') }
+  let!(:seller_location) { create(:stock_location, address1: '34 Borgo degli Albizi', city: 'Florence', zipcode: '50122', country: it) }
 
   let(:res) {
     res = avalara_order.avalara_capture
@@ -150,8 +151,8 @@ describe "VAT", :vcr do
   end
 
   def prep_avalara_order
-    set_seller_location
     avalara_order.reload
+    set_seller_location
     avalara_order.next!
   end
 end
