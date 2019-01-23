@@ -1,13 +1,9 @@
 source 'http://rubygems.org'
 
-branch = ENV.fetch('SPREE_BRANCH', 'master')
-gem 'spree_core', github: 'spree/spree', branch: branch
-gem 'spree_backend', github: 'spree/spree', branch: branch
+gem 'spree_core', github: 'spree/spree', branch: 'master'
+gem 'spree_backend', github: 'spree/spree', branch: 'master'
 gem 'codeclimate-test-reporter', group: :test, require: nil
 gem 'pry', group: [:test, :development]
 gem 'rails-controller-testing'
-
-gem 'pg'
-gem 'mysql2'
 
 gemspec
