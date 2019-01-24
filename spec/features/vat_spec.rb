@@ -6,18 +6,13 @@ describe "VAT", :vcr do
   let!(:nl) { create(:country, iso: 'NL', name: 'Netherlands', iso_name: 'NETHERLANDS') }
   let!(:fr) { create(:country, iso: 'FR', name: 'France', iso_name: 'FRANCE') }
   let!(:cr) { create(:country, iso: 'CR', name: 'Costa Rica', iso_name: 'COSTA RICA') }
-  let!(:seller_location) { create(:stock_location, address1: '34 Borgo degli Albizi', city: 'Florence', zipcode: '50122', country: it) }
 
-  let(:res) {
-    res = avalara_order.avalara_capture
-    puts res
-    res
-  }
+  let(:res) { avalara_order.avalara_capture }
+  before { prep_avalara_order }
 
   context 'Seller in EU country; Buyer in same EU country' do
     let(:it_address) { create(:address, address1: '34 Borgo degli Albizi', city: 'Florence', zipcode: '50122', country: it, state_name: '') }
     let!(:avalara_order) { create(:avalara_order, tax_included: true, ship_address: it_address, state: 'address') }
-    before { prep_avalara_order }
 
     it 'TotalTax is equal to order included_tax_total' do
       expect(avalara_order.included_tax_total.to_f).to eq(res['TotalTax'].to_f)
@@ -37,7 +32,7 @@ describe "VAT", :vcr do
       let!(:avalara_order) { create(:avalara_order, tax_included: true, state: 'address', ship_address: cr_address, bill_address: cr_address) }
 
       let(:res) { avalara_order.avalara_capture }
-      before { prep_avalara_order }
+
 
       it 'tax detail country equals to IT' do
         tax_detail_country = res['TaxLines'][0]['TaxDetails'][0]['Country']
@@ -69,7 +64,7 @@ describe "VAT", :vcr do
 
     context 'Seller has Nexus Jurisdiction Registered' do
       let!(:avalara_order) { create(:avalara_order, tax_included: true, state: 'address') }
-      before { prep_avalara_order }
+
 
       it 'tax detail country equals to US' do
         tax_detail_country = res['TaxLines'][0]['TaxDetails'][0]['Country']
@@ -88,7 +83,7 @@ describe "VAT", :vcr do
     context 'Seller has Nexus Jurisdition Registered' do
       let(:nl_address) { create(:address, address1: '89 Nieuwendijk', city: 'Amsterdam', zipcode: '1012 MC', country: nl, state_name: '') }
       let!(:avalara_order) { create(:avalara_order, tax_included: true, state: 'address', ship_address: nl_address) }
-      before { prep_avalara_order }
+
 
       it 'destination country tax is returned' do
         tax_detail_country = res['TaxLines'][0]['TaxDetails'][0]['Country']
@@ -117,7 +112,7 @@ describe "VAT", :vcr do
     context 'Seller does not have Nexus Jurisdition Registered' do
       let(:fr_address) { create(:address, address1: '8 Boulevard du Palais', city: 'Paris', zipcode: '75001', country: fr, state_name: '') }
       let!(:avalara_order) { create(:avalara_order, tax_included: true, state: 'address', ship_address: fr_address) }
-      before { prep_avalara_order }
+
 
       it 'origin country tax is returned' do
         tax_detail_country = res['TaxLines'][0]['TaxDetails'][0]['Country']
@@ -155,6 +150,7 @@ describe "VAT", :vcr do
     set_seller_location
     avalara_order.next
     avalara_order.reload.update_with_updater!
+    p avalara_order.shipments
     p avalara_order
   end
 end
