@@ -45,8 +45,9 @@ FactoryBot.define do
       create(:avalara_shipment, order: order, cost: evaluator.shipment_cost, tax_included: evaluator.tax_included)
       order.shipments.reload
 
-      order.update_with_updater!
-      order.next
+      order.reload.next!
+      order.reload.next!
+      order.reload.update_with_updater!
     end
 
     factory :completed_avalara_order do
