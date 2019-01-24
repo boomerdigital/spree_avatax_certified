@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Spree::AvalaraTransaction, :type => :model do
+describe Spree::AvalaraTransaction, :vcr do
 
   let(:included_in_price) { false }
   let(:order) { create(:avalara_order, tax_included: included_in_price) }

@@ -153,8 +153,8 @@ describe "VAT", :vcr do
   def prep_avalara_order
     avalara_order.reload
     set_seller_location
-    p avalara_order
-    avalara_order.reload
+    avalara_order.next
+    avalara_order.reload.update_with_updater!
   end
 end
 
