@@ -4,7 +4,6 @@ require 'addressable/uri'
 require 'base64'
 require 'rest-client'
 require 'logging'
-
 # Avatax tax calculation API calls
 class TaxSvc
   AVALARA_OPEN_TIMEOUT = ENV.fetch('AVALARA_OPEN_TIMEOUT', 2).to_i
