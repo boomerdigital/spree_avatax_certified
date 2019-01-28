@@ -148,40 +148,40 @@ describe SpreeAvataxCertified::Address, :type => :model do
   end
 
 
-  describe 'multiple stock locations' do
-    let(:stock_loc_2) { create(:stock_location) }
-    let(:var1) {
-      variant = create(:variant)
-      variant.stock_items.destroy_all
-      variant.stock_items.create(stock_location_id: Spree::StockLocation.first.id, backorderable: true)
-      variant
-    }
-    let(:var2) {
-      variant = create(:variant)
-      variant.stock_items.destroy_all
-      variant.stock_items.create(stock_location_id: stock_loc_2.id, backorderable: true)
-      variant
-    }
-    let(:line_item1) { create(:line_item, variant: var1) }
-    let(:line_item2) { create(:line_item, variant: var2) }
-    let(:order) { create(:order_with_line_items, line_items: [line_item1, line_item2]) }
-    let(:result_addresses) do
-      addresses = order.shipments.map { |s| s.stock_location.address1 }
-      addresses << order.ship_address.address1
-      addresses << JSON.parse(Spree::Config.avatax_origin)['Address1']
-      addresses
-    end
+  # describe 'multiple stock locations' do
+  #   let(:stock_loc_2) { create(:stock_location) }
+  #   let(:var1) {
+  #     variant = create(:variant)
+  #     variant.stock_items.destroy_all
+  #     variant.stock_items.create(stock_location_id: Spree::StockLocation.first.id, backorderable: true)
+  #     variant
+  #   }
+  #   let(:var2) {
+  #     variant = create(:variant)
+  #     variant.stock_items.destroy_all
+  #     variant.stock_items.create(stock_location_id: stock_loc_2.id, backorderable: true)
+  #     variant
+  #   }
+  #   let(:line_item1) { create(:line_item, variant: var1) }
+  #   let(:line_item2) { create(:line_item, variant: var2) }
+  #   let(:order) { create(:order_with_line_items, line_items: [line_item1, line_item2]) }
+  #   let(:result_addresses) do
+  #     addresses = order.shipments.map { |s| s.stock_location.address1 }
+  #     addresses << order.ship_address.address1
+  #     addresses << JSON.parse(Spree::Config.avatax_origin)['Address1']
+  #     addresses
+  #   end
 
-    before do
-      order.create_proposed_shipments
-      order.reload
-      order.shipments.reload
-    end
+  #   before do
+  #     order.create_proposed_shipments
+  #     order.reload
+  #     order.shipments.reload
+  #   end
 
-    it 'should have correct addresses' do
-      addresses = SpreeAvataxCertified::Address.new(order).addresses.map { |a| a[:Line1] }
+  #   it 'should have correct addresses' do
+  #     addresses = SpreeAvataxCertified::Address.new(order).addresses.map { |a| a[:Line1] }
 
-      expect(addresses).to match_array result_addresses
-    end
-  end
+  #     expect(addresses).to match_array result_addresses
+  #   end
+  # end
 end
