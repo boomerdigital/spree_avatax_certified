@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Spree::AvalaraTransaction, :type => :model do
+describe Spree::AvalaraTransaction, :vcr do
 
   let(:included_in_price) { false }
   let(:order) { create(:avalara_order, tax_included: included_in_price) }
@@ -93,10 +93,12 @@ describe Spree::AvalaraTransaction, :type => :model do
           order.shipments.reload
         end
 
-        it 'should have 3 addresses with correct address codes' do
-          tax_addresses = order.avalara_capture['TaxAddresses']
-          expect(tax_addresses.length).to eq(3)
-          expect(tax_addresses.last['AddressCode']).to eq(order.shipments.last.stock_location_id.to_s)
+        it 'should have correct addresses' do
+          tax_addresses = order.avalara_capture['TaxAddresses'].map { |a| a['Address'] }
+          addresses = order.shipments.map { |s| s.stock_location.address1 }
+          addresses << JSON.parse(Spree::Config.avatax_origin)['Address1']
+
+          expect(tax_addresses).to include(*addresses)
         end
       end
     end
