@@ -69,15 +69,16 @@ describe Spree::AvalaraTransaction, :vcr do
         end
       end
 
-      context 'multiple stock locations', :vcr do
-        let(:stock_loc_2) { create(:stock_location) }
-        let(:var1) {
+       context 'multiple stock locations', :vcr do
+        let!(:stock_loc_1) { create(:stock_location) }
+        let!(:stock_loc_2) { create(:stock_location) }
+        let!(:var1) {
           variant = create(:variant)
           variant.stock_items.destroy_all
-          variant.stock_items.create(stock_location_id: Spree::StockLocation.first.id, backorderable: true)
+          variant.stock_items.create(stock_location_id: stock_loc_1.id, backorderable: true)
           variant
         }
-        let(:var2) {
+        let!(:var2) {
           variant = create(:variant)
           variant.stock_items.destroy_all
           variant.stock_items.create(stock_location_id: stock_loc_2.id, backorderable: true)
