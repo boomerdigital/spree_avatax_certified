@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Spree::Admin::AvalaraEntityUseCodesController do
-  let(:avalara_entity_use_code) { FactoryGirl.create(:avalara_entity_use_code) }
+  let(:avalara_entity_use_code) { FactoryBot.create(:avalara_entity_use_code) }
 
   stub_authorization!
 

@@ -1,0 +1,38 @@
+sudo: required
+dist: trusty
+
+script:
+  - bundle exec rake test_app
+  - bundle exec rake spec
+
+env:
+  global:
+    - AVATAX_COMPANY_CODE=test_company
+    - AVATAX_ACCOUNT=test_account
+    - AVATAX_LICENSE_KEY=test_license_key
+    - AVATAX_ENDPOINT=https://development.avalara.net
+    - RAILS_ENV=test
+    - RACK_ENV=test
+  matrix:
+    - DB=mysql
+    - DB=postgres
+
+language: ruby
+
+rvm:
+- 2.5.3
+- 2.4.5
+- 2.3.8
+
+matrix:
+    allow_failures:
+          - gemfile: gemfiles/spree_master.gemfile
+
+gemfile:
+  - gemfiles/spree_3_2.gemfile
+  - gemfiles/spree_3_3.gemfile
+  - gemfiles/spree_3_6.gemfile
+  - gemfiles/spree_master.gemfile
+
+before_install:
+  - mysql -u root -e "GRANT ALL ON *.* TO 'travis'@'%';"

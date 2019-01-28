@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe Spree::Refund, type: :model do
-
-  it { should have_one :avalara_transaction }
+describe Spree::Refund, :vcr do
 
   subject(:order) do
     order = create(:shipped_order)

@@ -1,7 +1,7 @@
 require_dependency 'spree/order'
 
 module Spree
-  class AvalaraTransaction < ActiveRecord::Base
+  class AvalaraTransaction < Spree::Base
 
     belongs_to :order
     belongs_to :reimbursement

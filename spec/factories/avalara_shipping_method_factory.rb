@@ -1,12 +1,13 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :avalara_shipping_method, class: Spree::ShippingMethod do
     zones { |a| [Spree::Zone.find_by(name: 'GlobalZone') || create(:zone, :with_country, default_tax: true)] }
-    name 'Avalara Ground'
-    code 'Avalara_Ground'
+    name { 'Avalara Ground' }
+    code { 'Avalara_Ground' }
+    display_on { 'both' }
     association(:calculator, factory: :shipping_calculator, strategy: :create)
 
     transient do
-      tax_included false
+      tax_included { false }
     end
 
     before(:create) do |shipping_method, evaluator|

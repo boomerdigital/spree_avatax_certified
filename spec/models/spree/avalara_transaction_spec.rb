@@ -1,13 +1,6 @@
 require 'spec_helper'
 
-describe Spree::AvalaraTransaction, :type => :model do
-
-  it { should belong_to :order }
-  it { should belong_to :reimbursement }
-  it { should belong_to :refund }
-  it { should validate_presence_of :order }
-  it { should validate_uniqueness_of :order_id }
-  it { should have_db_index :order_id }
+describe Spree::AvalaraTransaction, :vcr do
 
   let(:included_in_price) { false }
   let(:order) { create(:avalara_order, tax_included: included_in_price) }
@@ -76,15 +69,16 @@ describe Spree::AvalaraTransaction, :type => :model do
         end
       end
 
-      context 'multiple stock locations', :vcr do
-        let(:stock_loc_2) { create(:stock_location) }
-        let(:var1) {
+       context 'multiple stock locations', :vcr do
+        let!(:stock_loc_1) { create(:stock_location) }
+        let!(:stock_loc_2) { create(:stock_location) }
+        let!(:var1) {
           variant = create(:variant)
           variant.stock_items.destroy_all
-          variant.stock_items.create(stock_location_id: Spree::StockLocation.first.id, backorderable: true)
+          variant.stock_items.create(stock_location_id: stock_loc_1.id, backorderable: true)
           variant
         }
-        let(:var2) {
+        let!(:var2) {
           variant = create(:variant)
           variant.stock_items.destroy_all
           variant.stock_items.create(stock_location_id: stock_loc_2.id, backorderable: true)
@@ -100,10 +94,12 @@ describe Spree::AvalaraTransaction, :type => :model do
           order.shipments.reload
         end
 
-        it 'should have 3 addresses with correct address codes' do
-          tax_addresses = order.avalara_capture['TaxAddresses']
-          expect(tax_addresses.length).to eq(3)
-          expect(tax_addresses.last['AddressCode']).to eq(order.shipments.last.stock_location_id.to_s)
+        it 'should have correct addresses' do
+          tax_addresses = order.avalara_capture['TaxAddresses'].map { |a| a['Address'] }
+          addresses = order.shipments.map { |s| s.stock_location.address1 }
+          addresses << JSON.parse(Spree::Config.avatax_origin)['Address1']
+
+          expect(tax_addresses).to include(*addresses)
         end
       end
     end

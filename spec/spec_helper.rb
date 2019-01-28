@@ -35,7 +35,7 @@ RSpec.configure do |config|
   config.include Spree::TestingSupport::UrlHelpers
   config.include Spree::TestingSupport::AuthorizationHelpers
   config.include Spree::TestingSupport::ControllerRequests, type: :controller
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
 
   config.mock_with :rspec
 
@@ -44,7 +44,7 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   config.before :suite do
-    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.clean_with :truncation
   end
 

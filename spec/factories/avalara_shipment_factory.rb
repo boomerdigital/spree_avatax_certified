@@ -1,13 +1,13 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :avalara_shipment, class: Spree::Shipment do
-    tracking 'U10000'
-    cost BigDecimal.new(10)
-    state 'pending'
+    tracking { 'U10000' }
+    cost { BigDecimal(10) }
+    state { 'pending' }
     order
     stock_location
 
     transient do
-      tax_included false
+      tax_included { false }
     end
 
     after(:create) do |shipment, evalulator|
