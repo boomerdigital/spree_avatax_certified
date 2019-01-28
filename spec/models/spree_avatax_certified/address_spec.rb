@@ -165,6 +165,12 @@ describe SpreeAvataxCertified::Address, :type => :model do
     let(:line_item1) { create(:line_item, variant: var1) }
     let(:line_item2) { create(:line_item, variant: var2) }
     let(:order) { create(:order_with_line_items, line_items: [line_item1, line_item2]) }
+    let(:result_addresses) do
+      addresses = order.shipments.map { |s| s.stock_location.address1 }
+      addresses << order.ship_address.address1
+      addresses << JSON.parse(Spree::Config.avatax_origin)['Address1']
+      addresses
+    end
 
     before do
       order.create_proposed_shipments
@@ -172,10 +178,10 @@ describe SpreeAvataxCertified::Address, :type => :model do
       order.shipments.reload
     end
 
-    it 'should have correct address codes' do
-      address_lines = SpreeAvataxCertified::Address.new(order)
+    it 'should have correct addresses' do
+      addresses = SpreeAvataxCertified::Address.new(order).addresses.map { |a| a[:Line1] }
 
-      expect(address_lines.addresses.last[:AddressCode]).to eq(order.shipments.last.stock_location_id.to_s)
+      expect(addresses).to match_array result_addresses
     end
   end
 end
