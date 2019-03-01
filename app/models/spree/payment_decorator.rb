@@ -13,10 +13,6 @@ Spree::Payment.class_eval do
   def avalara_finalize
     return unless avalara_tax_enabled?
 
-    if self.amount != order.total
-      self.update_attributes(amount: order.total)
-    end
-
     order.avalara_capture_finalize
   end
 end
