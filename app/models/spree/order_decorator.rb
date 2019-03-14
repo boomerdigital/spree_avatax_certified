@@ -1,6 +1,9 @@
 Spree::Order.class_eval do
   has_one :avalara_transaction, dependent: :destroy
 
+  after_save :avalara_capture_finalize, if: :payment_state_changed_to_paid?
+  after_save :cancel_avalara, if: :payment_state_changed_to_void?
+
   self.state_machine.before_transition :to => :canceled,
                                       :do => :cancel_avalara,
                                       :if => :avalara_tax_enabled?
@@ -9,6 +12,14 @@ Spree::Order.class_eval do
                                       :if => :address_validation_enabled?
   def avalara_tax_enabled?
     Spree::Config.avatax_tax_calculation
+  end
+
+  def payment_state_changed_to_paid?
+    saved_change_to_payment_state?(to: 'paid')
+  end
+
+  def payment_state_changed_to_void?
+    saved_change_to_payment_state?(to: 'void')
   end
 
   def cancel_avalara

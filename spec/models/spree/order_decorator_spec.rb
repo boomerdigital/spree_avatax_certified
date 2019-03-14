@@ -45,6 +45,18 @@ describe Spree::Order, :vcr do
         subject
       end
     end
+
+    context 'payment_state changed to :void' do
+      subject do
+        VCR.use_cassette('order_cancel', allow_playback_repeats: true) do
+          avalara_order.update(payment_state: :void)
+        end
+      end
+      it 'should recieve cancel_avalara when payment will be void' do
+        expect(avalara_order).to receive(:cancel_avalara).once
+        subject
+      end
+    end
   end
 
   describe '#avalara_capture' do
@@ -80,6 +92,18 @@ describe Spree::Order, :vcr do
     end
     it 'should have a ResultCode of success' do
       expect(subject['ResultCode']).to eq('Success')
+    end
+
+    context 'payment_state changed to :paid' do
+      subject do
+        VCR.use_cassette('order_cancel', allow_playback_repeats: true) do
+          avalara_order.update(payment_state: :paid)
+        end
+      end
+      it 'should recieve avalara_capture_finalize when payment will be paid' do
+        expect(avalara_order).to receive(:avalara_capture_finalize).once
+        subject
+      end
     end
 
     # VCR makes this spec fail due to the date
