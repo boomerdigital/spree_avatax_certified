@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Spree::Admin::AvalaraEntityUseCodesController do
+RSpec.describe Spree::Admin::AvalaraEntityUseCodesController do
   let(:avalara_entity_use_code) { FactoryBot.create(:avalara_entity_use_code) }
 
   stub_authorization!
@@ -12,25 +12,25 @@ describe Spree::Admin::AvalaraEntityUseCodesController do
   describe "#index" do
     subject { spree_get :index }
 
-    it { is_expected.to be_success }
+    it { is_expected.to be_successful }
   end
 
   describe "#show" do
     subject { spree_get :show, id: avalara_entity_use_code.id }
 
-    it { is_expected.to be_success }
+    it { is_expected.to be_successful }
   end
 
   describe "#new" do
     subject {spree_get :new }
 
-    it { is_expected.to be_success }
+    it { is_expected.to be_successful }
   end
 
   describe "#edit" do
     subject {spree_get :edit, id: avalara_entity_use_code.id}
 
-    it { is_expected.to be_success }
+    it { is_expected.to be_successful }
   end
 
   describe "#update" do
