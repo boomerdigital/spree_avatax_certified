@@ -1,0 +1,63 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://development.avalara.net/1.0/tax/get
+    body:
+      encoding: UTF-8
+      string: '{"DocCode":"R186209994","DocDate":"2019-03-20","Discount":"0.0","Commit":true,"DocType":"SalesInvoice","Addresses":[{"AddressCode":"Orig","Line1":"915
+        S Jackson St","Line2":"","City":"Montgomery","Region":"Alabama","PostalCode":"36104","Country":"United
+        States"},{"AddressCode":"Dest","Line1":"915 S Jackson St","Line2":"","City":"Montgomery","Region":"Alabama","Country":"US","PostalCode":"36104"},{"AddressCode":"2","Line1":"1600
+        Pennsylvania Ave NW","Line2":null,"City":"Washington","PostalCode":"20500","Country":"US"}],"Lines":[{"LineNo":"1-LI","Description":"Product
+        #1 - 2169","TaxCode":"PC030000","ItemCode":"SKU-1","Qty":1,"Amount":10.0,"OriginCode":"2","DestinationCode":"Dest","CustomerUsageType":null,"Discounted":false,"TaxIncluded":null}],"CustomerCode":1,"CompanyCode":"54321","CustomerUsageType":null,"ExemptionNo":null,"Client":"a0o33000004FH8l","ReferenceCode":"R186209994","DetailLevel":"Tax","CurrencyCode":"USD"}'
+    headers:
+      Accept:
+      - "*/*"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - rest-client/2.0.2 (darwin16.7.0 x86_64) ruby/2.5.1p57
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '933'
+      Host:
+      - development.avalara.net
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 20 Mar 2019 16:37:05 GMT
+      Content-Type:
+      - text/json; charset=utf-8
+      Content-Length:
+      - '616'
+      Connection:
+      - keep-alive
+      Cache-Control:
+      - private
+      Content-Encoding:
+      - gzip
+      Vary:
+      - Accept-Encoding
+      Server:
+      - Microsoft-IIS/8.5
+      X-Aspnet-Version:
+      - 4.0.30319
+      X-Powered-By:
+      - ASP.NET
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3mkuwdaUcjKasqgcplVmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZkAWz2zkrayZ4hgKrIHz9+fB8/In5x8tGrvFmX7Uk1yz96lH70ej2d5k3z0Sj56Gk1fZq1/Onezu7D7Z1723s7+OJNscibNluswq/e7H766N6DRzv3xvv3Hj48+PTgp7hx1Wbl8aJaL1s03xUI+PBp0UzNx+7T03f5YtUW1TL8+E32LpuUjIwHgj7FJzvjff+jk6ycrktCfeZ/mb2Lj4aGaQb/avfg072dhw8fmjeeF8u8oW++lxCh8MeLiv76aHf7+Zm2MK++PNm5t0OPfpxNirJor/FNW69zfPqExjrL6uvn+WVe4ovj2axWUvcH3ScOgPoEeKWj2Rnv7FPH/Bk1ko/MAAZJkbdZUdqhnaCrmtH96jWavMovFJvj5/j7O+u6aN5cr7jH1y0BtJ8aCuzs4iOC/b5oMpQX2YKbHT8/fnL8xTE+p1bu0/T1m+M3p+mb49/7o1+SfD/B/6WJUtFNk35Af370cPd++jr9TjZ921TL9HULqPq1wfopcTI+PtHZ+qJathfVIidi4NMuXV5WxPilefnep7s7PIQuuQgv+eiM6b63c3/vwcOH+IYHa97f2d3d2b2/C6r8kmQU4r776c5O+jJfLpvr8jJbFll6fJmnL74LINrMgNnDZ2YA382aebG8aAkdfLp5AIQY9U0fC7b46OkJ/u4M4OF+H3nCXR9CHjPy/wAHGknJTAQAAA==
+    http_version: 
+  recorded_at: Wed, 20 Mar 2019 16:37:04 GMT
+recorded_with: VCR 4.0.0

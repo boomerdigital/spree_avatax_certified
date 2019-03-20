@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Spree::Payment, :vcr do
+RSpec.describe Spree::Payment, :vcr do
   subject(:order) do
     order = FactoryBot.create(:completed_order_with_totals)
     Spree::AvalaraTransaction.create(order: order)
@@ -44,10 +44,8 @@ describe Spree::Payment, :vcr do
 
   describe "#purchase!" do
     subject do
-      VCR.use_cassette('order_capture_finalize', allow_playback_repeats: true) do
-        order.avalara_capture_finalize
-        payment.purchase!
-      end
+      order.avalara_capture_finalize
+      payment.purchase!
     end
 
     it "receive avalara_finalize" do
@@ -58,10 +56,8 @@ describe Spree::Payment, :vcr do
 
   describe '#avalara_finalize' do
     subject do
-      VCR.use_cassette('order_capture_finalize', allow_playback_repeats: true) do
-        order.avalara_capture_finalize
-        payment.avalara_finalize
-      end
+      order.avalara_capture_finalize
+      payment.avalara_finalize
     end
 
     it 'should update the amount to be the order total' do
@@ -89,9 +85,7 @@ describe Spree::Payment, :vcr do
 
     context 'uncommitted order' do
       subject do
-        VCR.use_cassette('order_cancel_error', allow_playback_repeats: true) do
-          payment.cancel_avalara
-        end
+        payment.cancel_avalara
       end
 
       it 'should recieve error message' do
@@ -101,10 +95,8 @@ describe Spree::Payment, :vcr do
 
     context 'committed order' do
       subject do
-        VCR.use_cassette('order_cancel', allow_playback_repeats: true) do
-          order.avalara_capture_finalize
-          payment.cancel_avalara
-        end
+        order.avalara_capture_finalize
+        payment.cancel_avalara
       end
 
       it 'should receive result of success' do

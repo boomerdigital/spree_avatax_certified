@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Spree::Order, :vcr do
+RSpec.describe Spree::Order, :vcr do
 
   let(:order) {FactoryBot.create(:order_with_line_items)}
   let(:avalara_order) { create(:completed_order_with_totals) }
@@ -14,10 +14,8 @@ describe Spree::Order, :vcr do
 
   describe '#cancel_avalara' do
     subject do
-      VCR.use_cassette('order_cancel', allow_playback_repeats: true) do
-        avalara_order.avalara_capture_finalize
-        avalara_order.cancel_avalara
-      end
+      avalara_order.avalara_capture_finalize
+      avalara_order.cancel_avalara
     end
 
     it 'should be successful' do
@@ -35,10 +33,8 @@ describe Spree::Order, :vcr do
 
     context 'state machine event cancel' do
       subject do
-        VCR.use_cassette('order_cancel', allow_playback_repeats: true) do
-          avalara_order.avalara_capture_finalize
-          avalara_order.cancel!
-        end
+        avalara_order.avalara_capture_finalize
+        avalara_order.cancel!
       end
       it 'should recieve cancel_avalara when event cancel is called' do
         expect(avalara_order).to receive(:cancel_avalara)
@@ -49,9 +45,7 @@ describe Spree::Order, :vcr do
 
   describe '#avalara_capture' do
     subject do
-      VCR.use_cassette('order_capture', allow_playback_repeats: true) do
-        avalara_order.avalara_capture
-      end
+      avalara_order.avalara_capture
     end
 
     it 'should response with Hash object' do
@@ -67,9 +61,7 @@ describe Spree::Order, :vcr do
 
   describe '#avalara_capture_finalize' do
     subject do
-      VCR.use_cassette('order_capture_finalize', allow_playback_repeats: true) do
-        avalara_order.avalara_capture_finalize
-      end
+      avalara_order.avalara_capture_finalize
     end
 
     it 'should response with Hash object' do

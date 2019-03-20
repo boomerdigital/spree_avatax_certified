@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SpreeAvataxCertified::AvataxLog, :type => :model do
+RSpec.describe SpreeAvataxCertified::AvataxLog, :type => :model do
   let(:logger) { SpreeAvataxCertified::AvataxLog.new('test_file') }
   let(:request_hash) { attributes_for(:request_hash) }
 

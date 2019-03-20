@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Spree::Shipment, :vcr do
+RSpec.describe Spree::Shipment, :vcr do
   let(:shipment) { create(:shipment) }
 
   describe '#avatax_cache_key' do

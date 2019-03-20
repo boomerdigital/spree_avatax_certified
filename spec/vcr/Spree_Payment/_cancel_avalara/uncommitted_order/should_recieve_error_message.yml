@@ -1,0 +1,59 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://development.avalara.net/1.0/tax/cancel
+    body:
+      encoding: UTF-8
+      string: '{"CompanyCode":"54321","DocType":"SalesInvoice","DocCode":"R169495037","CancelCode":"DocVoided"}'
+    headers:
+      Accept:
+      - "*/*"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - rest-client/2.0.2 (darwin16.7.0 x86_64) ruby/2.5.1p57
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '96'
+      Host:
+      - development.avalara.net
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 20 Mar 2019 16:37:11 GMT
+      Content-Type:
+      - text/json; charset=utf-8
+      Content-Length:
+      - '308'
+      Connection:
+      - keep-alive
+      Cache-Control:
+      - private
+      Content-Encoding:
+      - gzip
+      Vary:
+      - Accept-Encoding
+      Server:
+      - Microsoft-IIS/8.5
+      X-Aspnet-Version:
+      - 4.0.30319
+      X-Powered-By:
+      - ASP.NET
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3mkuwdaUcjKasqgcplVmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZkAWz2zkrayZ4hgKrIHz9+fB8/In5x8tFJtpzm5Zvs3au8WZftR49S+vBNnS2bbNoW1fJsRh/df7D/4OHep/f29nfv7R/cezBKPpLmJ9Usp+8/Oq3rqv6IPv4ib5rsIm/ow+8lBOn1erHI6mv686M38zxts3fprJquF/myTafVupyly6pNJ3l6Xq2XszFAPM3brCgB4aNXu58+3H94f+feA3zxOr/M66JlYLbD19W6njIOx5dZmdXZmH7ScMav8/qymObNmP746Jck309+SfJLkv8H5PSuC/EAAAA=
+    http_version: 
+  recorded_at: Wed, 20 Mar 2019 16:37:11 GMT
+recorded_with: VCR 4.0.0

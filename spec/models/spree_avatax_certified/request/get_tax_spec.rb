@@ -1,14 +1,8 @@
 require 'spec_helper'
 
-RSpec.describe SpreeAvataxCertified::Request::GetTax do
-  let(:order) { create(:avalara_order, line_items_count: 2) }
+RSpec.describe SpreeAvataxCertified::Request::GetTax, :vcr do
+  let!(:order) { create(:avalara_order, line_items_count: 2) }
   subject { described_class.new(order, commit: false, doc_type: 'SalesOrder') }
-
-  before do
-    VCR.use_cassette('order_capture', allow_playback_repeats: true) do
-      order
-    end
-  end
 
   describe '#generate' do
     it 'creates a hash' do

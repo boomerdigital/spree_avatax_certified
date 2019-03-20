@@ -1,16 +1,10 @@
 require 'spec_helper'
 
-describe SpreeAvataxCertified::Line, :type => :model do
+RSpec.describe SpreeAvataxCertified::Line, :vcr do
 
-  let(:order) { create(:avalara_order) }
+  let!(:order) { create(:avalara_order) }
 
   let(:sales_lines) { SpreeAvataxCertified::Line.new(order, 'SalesOrder') }
-
-  before do
-    VCR.use_cassette('order_capture', allow_playback_repeats: true) do
-      order
-    end
-  end
 
   describe '#initialize' do
     it 'should have order' do

@@ -9,55 +9,57 @@ http_interactions:
         South St","City":"Morristown","PostalCode":"07960","Country":"US"},{"AddressCode":"Dest","Line1":"73
         Glenmere Drive","Line2":"","City":"Chatham","Region":"NJ","Country":"US","PostalCode":"07928"},{"AddressCode":"Orig","Line1":"73
         Glenmere Drive","City":"Chatham","PostalCode":"07928","Country":"United States"}],"Lines":[{"LineNo":"1-LI","ItemCode":"ROR-00013","Qty":3,"Amount":62.97,"OriginCode":"9","DestinationCode":"Dest","Description":"Ruby
-        on Rails Jr. Spaghetti","TaxCode":"sdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdf","Discounted":false}]}'
+        on Rails Jr. Spaghetti","TaxCode":"P0000000","Discounted":false}]}'
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
+      - "*/*"
       Accept-Encoding:
       - gzip, deflate
+      User-Agent:
+      - rest-client/2.0.2 (darwin16.7.0 x86_64) ruby/2.5.1p57
       Authorization:
       - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
       Content-Type:
       - application/json
       Content-Length:
-      - '852'
-      User-Agent:
-      - Ruby
+      - '818'
+      Host:
+      - development.avalara.net
   response:
     status:
-      code: 500
-      message: Internal Server Error
+      code: 200
+      message: OK
     headers:
-      Cache-Control:
-      - private
+      Date:
+      - Wed, 20 Mar 2019 17:00:54 GMT
       Content-Type:
       - text/json; charset=utf-8
+      Content-Length:
+      - '584'
+      Connection:
+      - keep-alive
+      Cache-Control:
+      - private
+      Content-Encoding:
+      - gzip
+      Vary:
+      - Accept-Encoding
+      Server:
+      - Microsoft-IIS/8.5
       X-Aspnet-Version:
       - 4.0.30319
       X-Powered-By:
       - ASP.NET
-      Date:
-      - Mon, 17 Apr 2017 21:07:38 GMT
-      Content-Length:
-      - '210'
-      Set-Cookie:
-      - TS017f1821=01a8ddc44efa294760d2a4fac54aba4533e0863ecfec94ce0ca6d21f0504f05137b4e03ad510446cabcdb0e8be9d990f44a0feeb2d;
-        Path=/
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
     body:
-      encoding: UTF-8
-      string: |
-        {
-        "ResultCode": "Error",
-        "Messages": [
-        {
-        "Summary": "Lines[0].TaxCode length must be between 0 and 25 characters.",
-        "Severity": "Error",
-        "Source": "Avalara.AvaTax.Services",
-        "RefersTo": "Lines[0].TaxCode"}
-        ]
-        }
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3mkuwdaUcjKasqgcplVmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZkAWz2zkrayZ4hgKrIHz9+fB8/In5x8tGrvFmX7Uk1yz96lH70ej2d5k3z0Sj56Gk1fZq1/Onezu7+9u7u9s49fPGmWORNmy1W+tVD+nx7b+fN7oNHOzuP7t8b79zbffBwZ/+nuHHVZuXxolovWzT/dG/88IH9/GnRTM03O/bT03f5YtUW1RIfhy+8yd5lk5Jxcu3pw94HJ1k5XZeE/sx9lb2Lj4cGaob/6sG93Z0Hu3s79/EFvfG8WOYNffO9hEiFP15U9NdHu9vPz7SFefXljjz6cTYpyqK9xjdtvc7x6RMa6iyrr5/nl3mJL45ns1qJHR9znz4A7I3/lQ6I/6Av/d8HSJC3WVHaIZ0AfM1ofvUaTV7lF4rFi+/g7++s66J5c73ibl63BM5+akZ+bx8fEezbocbvvsgW/O2L0++m3zl99fr098FX1Mx+8Z309ZvjN6fpm+Pf+6Nfknw/wf+liZLNzYt+QH9+9OBe+nmZLxd5nadP6+KSsdXvDb5PiXvx8YnOz8k8a+fZgj/qkuNlRZxemjd3HjzcO8DHXSoRVvLRGRN7b3f34N6nD/ENj9a8f2+fGIQfGtIoxPzebvq6Wrfz9DUjp9+YNxmWQfiLqiagbXW15E9vxPlTprsgiI++Ps6Yhv8Hv8rW6TQEAAA=
     http_version: 
-  recorded_at: Mon, 17 Apr 2017 21:07:38 GMT
+  recorded_at: Wed, 20 Mar 2019 17:00:54 GMT
 - request:
     method: post
     uri: https://development.avalara.net/1.0/tax/cancel
@@ -66,49 +68,52 @@ http_interactions:
       string: '{"CompanyCode":"54321","DocType":"SalesInvoice","DocCode":"R731071205","CancelCode":"DocVoided"}'
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
+      - "*/*"
       Accept-Encoding:
       - gzip, deflate
+      User-Agent:
+      - rest-client/2.0.2 (darwin16.7.0 x86_64) ruby/2.5.1p57
       Authorization:
       - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
       Content-Type:
       - application/json
       Content-Length:
       - '96'
-      User-Agent:
-      - Ruby
+      Host:
+      - development.avalara.net
   response:
     status:
       code: 200
       message: OK
     headers:
-      Cache-Control:
-      - private
+      Date:
+      - Wed, 20 Mar 2019 17:00:55 GMT
       Content-Type:
       - text/json; charset=utf-8
+      Content-Length:
+      - '211'
+      Connection:
+      - keep-alive
+      Cache-Control:
+      - private
       Content-Encoding:
       - gzip
       Vary:
       - Accept-Encoding
+      Server:
+      - Microsoft-IIS/8.5
       X-Aspnet-Version:
       - 4.0.30319
       X-Powered-By:
       - ASP.NET
-      Date:
-      - Mon, 17 Apr 2017 21:07:38 GMT
-      Content-Length:
-      - '211'
-      Set-Cookie:
-      - TS017f1821=01a8ddc44e44ab61880029209f05a7b7123eecc0ece76ebe6842dcd584879c61658df818921581879b6a581b193b73843737431668;
-        Path=/
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
       string: !binary |-
-        H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3m
-        kuwdaUcjKasqgcplVmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZk
-        AWz2zkrayZ4hgKrIHz9+fB8/In5x8tFJtpzm5Zvs3au8WZftR49S+vBpNT2b
-        0a8ffXpvZ//hwcNPPxolH72ps2WTTduiWvKX93f3d+/tHNx/uHt/d3d/7x41
-        ERgn1Syn7z96vZ5O86b56JckvyT5fwDR8/M+agAAAA==
+        H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3mkuwdaUcjKasqgcplVmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZkAWz2zkrayZ4hgKrIHz9+fB8/In5x8tFJtpzm5Zvs3au8WZftR49S+vBpNT2b0a8ffXpvZ//hwcNPPxolH72ps2WTTduiWvKX9x/sP3i4v3P/3sG9B/d393epicA4qWY5ff/R6/V0mjfNR78k+SXJ/wPnTz6sagAAAA==
     http_version: 
-  recorded_at: Mon, 17 Apr 2017 21:07:39 GMT
-recorded_with: VCR 3.0.3
+  recorded_at: Wed, 20 Mar 2019 17:00:55 GMT
+recorded_with: VCR 4.0.0

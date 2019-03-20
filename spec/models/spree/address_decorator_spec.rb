@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Spree::Address, :vcr do
+RSpec.describe Spree::Address, :vcr do
   let(:address) { build(:address) }
 
   describe '#validation_enabled?' do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Spree::LineItem, :vcr do
+RSpec.describe Spree::LineItem, :vcr do
 
   let(:order) { create :order_with_line_items, line_items_count: 1 }
   let(:line_item) { order.line_items.first }

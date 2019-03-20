@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SpreeAvataxCertified::Address, :type => :model do
+RSpec.describe SpreeAvataxCertified::Address, :vcr do
   let(:address){ build(:address) }
   let(:order) { build(:avalara_order, ship_address: address) }
 
@@ -115,9 +115,7 @@ describe SpreeAvataxCertified::Address, :type => :model do
   describe '#validate' do
     context 'on success' do
       subject do
-        VCR.use_cassette('address_validation_success', allow_playback_repeats: true) do
-          address_lines.validate
-        end
+        address_lines.validate
       end
       it 'validates address with success' do
         expect(subject['ResultCode']).to eq('Success')
@@ -130,9 +128,7 @@ describe SpreeAvataxCertified::Address, :type => :model do
       let(:address_lines) { SpreeAvataxCertified::Address.new(order)  }
 
       subject do
-        VCR.use_cassette('address_validation_failure', allow_playback_repeats: true) do
-          address_lines.validate
-        end
+        address_lines.validate
       end
 
       it 'validates address with error' do

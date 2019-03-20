@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Spree::Refund, :vcr do
+RSpec.describe Spree::Refund, :vcr do
 
   subject(:order) do
     order = create(:shipped_order)
@@ -53,9 +53,7 @@ describe Spree::Refund, :vcr do
 
   describe '#avalara_capture_finalize' do
     subject do
-      VCR.use_cassette('order_return_capture') do
-        refund.save
-      end
+      refund.save
     end
 
     it 'should recieve avalara_capture_finalize and return hash' do
@@ -65,7 +63,7 @@ describe Spree::Refund, :vcr do
   end
 
 
-  context 'full refund', :vcr do
+  context 'full refund' do
     let(:order) { create(:completed_avalara_order, shipment_cost: 10) }
     let(:refund) { build(:refund, payment: order.payments.first, amount: order.total.to_f) }
 
