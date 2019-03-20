@@ -1,0 +1,127 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://development.avalara.net/1.0/tax/get
+    body:
+      encoding: UTF-8
+      string: '{"DocCode":"R969838602","DocDate":"2019-03-20","Discount":"0.0","Commit":false,"DocType":"SalesOrder","Addresses":[{"AddressCode":"Orig","Line1":"34
+        Borgo degli Albizi","Line2":"","City":"Florence","Region":"","PostalCode":"50122","Country":"IT"},{"AddressCode":"Dest","Line1":"89
+        Nieuwendijk","Line2":"","City":"Amsterdam","Region":"","Country":"NL","PostalCode":"1012
+        MC"},{"AddressCode":"1","Line1":"34 Borgo degli Albizi","Line2":null,"City":"Florence","PostalCode":"50122","Country":"IT"}],"Lines":[{"LineNo":"1-LI","Description":"Product
+        #10 - 625","TaxCode":"PC030000","ItemCode":"SKU-10","Qty":1,"Amount":19.99,"OriginCode":"1","DestinationCode":"Dest","CustomerUsageType":null,"Discounted":false,"TaxIncluded":true},{"LineNo":"1-FR","ItemCode":"Avalara
+        Ground","Qty":1,"Amount":10.0,"OriginCode":"1","DestinationCode":"Dest","CustomerUsageType":null,"Description":"Shipping
+        Charge","TaxCode":"FR000000","Discounted":false,"TaxIncluded":true}],"CustomerCode":1,"CompanyCode":"54321","CustomerUsageType":null,"ExemptionNo":null,"Client":"a0o33000004FH8l","ReferenceCode":"R969838602","DetailLevel":"Tax","CurrencyCode":"USD"}'
+    headers:
+      Accept:
+      - "*/*"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - rest-client/2.0.2 (darwin16.7.0 x86_64) ruby/2.5.1p57
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '1132'
+      Host:
+      - development.avalara.net
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 20 Mar 2019 18:27:09 GMT
+      Content-Type:
+      - text/json; charset=utf-8
+      Content-Length:
+      - '669'
+      Connection:
+      - keep-alive
+      Cache-Control:
+      - private
+      Content-Encoding:
+      - gzip
+      Vary:
+      - Accept-Encoding
+      Server:
+      - Microsoft-IIS/8.5
+      X-Aspnet-Version:
+      - 4.0.30319
+      X-Powered-By:
+      - ASP.NET
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3mkuwdaUcjKasqgcplVmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZkAWz2zkrayZ4hgKrIHz9+fB8/In5x8tGrvFmX7Uk1yz96lH70ej2d5k3z0Sj56Gk1NZ++evjpw4N7B5/u7OkXT7OWv9jb2X24vXNve28HX7wpFnnTZotV+NWb3YNHew8e7RyM9w4+3b+/8+CnuHHVZuXxolovW26+P35wYD9/WjRT842Axqen7/LFqi2qZfjxm+xdNikFnwAKfYEP74/3dv3PTrJyui5pBLPg2+zd82KZN/TZ9xKiC/54UdFfH+1uPz/TFoYgL0927u3Qox9nk6Is2mt809brHJ8+IfRnWX39PL/MS3zxU8XqPr7oD6I/WECUAe1+Or7PRH9F+OKDHUKXOjbt8NG98f4D/TMcmvfF07zNitIO7gT91Yzwi+do8iq/UJTk7++s66J5c73iPk1r87mhgjQl6F8HW4b0Iltwuxenb759+ur58Yunr/EdNTXfvG4z0HGWMshfknw/+SXJiEbgT8+zV/qSQezZK+qTHv34Z296iKU/xUeMHP0dGe/u+MG+/hnOjvfFD2d23gNZBmSm4P0m5/uJtDmezWrSJE6g9AP686ODh+mLIl9f5ctZ8dNvAVS/NLg/JT2Cj0902o4XTZvXs2zBH+qA6XMZ48uKtE5p3t3d2d1LvzjBF4SGkO6MKb63c3/n4UN8weMzLxAQ4SlFAp/d20+fVPVFlc7yi7JIj8tJ8YMCb2ob8y6rDoPls7Kq8+WUGcxD8uwNPgiRvE9IsqTEUOQZCVAkEI6yEeX7S5L/ByQcERnKBQAA
+    http_version: 
+  recorded_at: Wed, 20 Mar 2019 18:27:10 GMT
+- request:
+    method: post
+    uri: https://development.avalara.net/1.0/tax/get
+    body:
+      encoding: UTF-8
+      string: '{"DocCode":"R969838602","DocDate":"2019-03-20","Discount":"0.0","Commit":false,"DocType":"SalesOrder","Addresses":[{"AddressCode":"Orig","Line1":"34
+        Borgo degli Albizi","Line2":"","City":"Florence","Region":"","PostalCode":"50122","Country":"IT"},{"AddressCode":"Dest","Line1":"89
+        Nieuwendijk","Line2":"","City":"Amsterdam","Region":"","Country":"NL","PostalCode":"1012
+        MC"},{"AddressCode":"1","Line1":"34 Borgo degli Albizi","Line2":null,"City":"Florence","PostalCode":"50122","Country":"IT"}],"Lines":[{"LineNo":"1-LI","Description":"Product
+        #10 - 625","TaxCode":"PC030000","ItemCode":"SKU-10","Qty":1,"Amount":19.99,"OriginCode":"1","DestinationCode":"Dest","CustomerUsageType":null,"Discounted":false,"TaxIncluded":true},{"LineNo":"1-FR","ItemCode":"Avalara
+        Ground","Qty":1,"Amount":10.0,"OriginCode":"1","DestinationCode":"Dest","CustomerUsageType":null,"Description":"Shipping
+        Charge","TaxCode":"FR000000","Discounted":false,"TaxIncluded":true}],"CustomerCode":1,"CompanyCode":"54321","CustomerUsageType":null,"ExemptionNo":null,"Client":"a0o33000004FH8l","ReferenceCode":"R969838602","DetailLevel":"Tax","CurrencyCode":"USD"}'
+    headers:
+      Accept:
+      - "*/*"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - rest-client/2.0.2 (darwin16.7.0 x86_64) ruby/2.5.1p57
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '1132'
+      Host:
+      - development.avalara.net
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 20 Mar 2019 18:27:11 GMT
+      Content-Type:
+      - text/json; charset=utf-8
+      Content-Length:
+      - '672'
+      Connection:
+      - keep-alive
+      Cache-Control:
+      - private
+      Content-Encoding:
+      - gzip
+      Vary:
+      - Accept-Encoding
+      Server:
+      - Microsoft-IIS/8.5
+      X-Aspnet-Version:
+      - 4.0.30319
+      X-Powered-By:
+      - ASP.NET
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3mkuwdaUcjKasqgcplVmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZkAWz2zkrayZ4hgKrIHz9+fB8/In5x8tGrvFmX7Uk1yz96lH70ej2d5k3z0Sj56Gk1fZq1/Onezu7D7Z1723s7+OJNscibNluswq/e7B482nvwaHdvfP/+3oO9e/d+ihtXbVYeL6r1suXm++MHB/bzp0UzNd8IaHx6+i5frNqiWoYfv8neZZNS8Amg0Bf48P54b9f/7CQrp+uSRjALvs3exUdFwzVEePXw04cH9w4+3dnDF/TG82KZN/TN9xIiGP54UdFfH+1uPz/TFubVlyc793bo0Y+zSVEW7TW+aet1jk+f0IBnWX39PL/MS3zxU8XqPr7oD7tPHkAUEux+Or7P6L3S0ezQAKlj0w4f3RvvP9A/Q2J4XzzN26wo7eBO0F/NCL94jiav8gtFSf7+zroumjfXK+7TtDafGypIU4L+dbBlSC+yBbd7cfrm26evnh+/ePoa31FT883rNgMdZymD/CXJ95NfkoxoBP70PHulLxnEnr2iPunRj3/2pudgvPcpPmLk6O/IeHfHD/b1z3B2vC9+OLPzHsgyIDMF7zc530+kzfFsVpOKcQKlH9CfHx08TF8U+foqX86Kn34LoPqlwf0paR58fKLTdrxo2ryeZQv+UAdMn8sYX1akp0rz7u7O7l76xQm+IDSEdGdM8b2d+zsPH+ILHp95gYAITykS+Ozefvqkqi+qdJZflEV6XE6KHxR4U9uYd1nZGCyflVWdL6fMYB6SZ2/wQYjkfUKSJSWGIs9IgCKBAGV/SfL/AFEfmMfKBQAA
+    http_version: 
+  recorded_at: Wed, 20 Mar 2019 18:27:11 GMT
+recorded_with: VCR 4.0.0
