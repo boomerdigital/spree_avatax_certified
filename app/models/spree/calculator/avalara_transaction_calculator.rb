@@ -82,7 +82,7 @@ module Spree
       prev_tax_amount = prev_tax_amount(item)
 
       return prev_tax_amount if avalara_response.nil?
-      return prev_tax_amount if avalara_response[:TotalTax] == '0.00'
+      return prev_tax_amount if avalara_response['totalTax'] == 0.0
 
       avalara_response['TaxLines'].each do |line|
         if line['LineNo'] == "#{item.id}-#{item.avatax_line_code}"

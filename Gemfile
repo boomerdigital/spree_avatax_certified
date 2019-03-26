@@ -2,8 +2,13 @@ source 'http://rubygems.org'
 
 gem 'spree_core', github: 'spree/spree', branch: 'master'
 gem 'spree_backend', github: 'spree/spree', branch: 'master'
-gem 'codeclimate-test-reporter', group: :test, require: nil
+gem 'avatax-ruby'
+
 gem 'pry', group: [:test, :development]
-gem 'rails-controller-testing'
+
+group :test do
+  gem 'codeclimate-test-reporter', require: nil
+  gem 'rails-controller-testing'
+end
 
 gemspec

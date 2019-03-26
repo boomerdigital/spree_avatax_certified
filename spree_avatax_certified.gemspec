@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'spree_backend', spree_version
   s.add_runtime_dependency 'spree_extension'
   s.add_dependency 'json'
+  s.add_dependency 'avatax-ruby'
   s.add_dependency 'addressable'
   s.add_dependency 'rest-client'
   s.add_dependency 'psych'
@@ -37,9 +38,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'sass-rails'
   s.add_development_dependency 'selenium-webdriver'
   s.add_development_dependency 'simplecov'
-  s.add_development_dependency 'sqlite3'
+  s.add_development_dependency "sqlite3", "~> 1.3.6"
   s.add_development_dependency 'mysql2', '~> 0.5.1'
-  s.add_development_dependency 'pg', '~> 0.18'
+  s.add_development_dependency 'pg', '~> 0.21'
   s.add_development_dependency 'shoulda-matchers'
   s.add_development_dependency 'vcr'
   s.add_development_dependency 'webmock'

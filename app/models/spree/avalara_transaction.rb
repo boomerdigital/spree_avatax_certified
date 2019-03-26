@@ -21,7 +21,7 @@ module Spree
           post_order_to_avalara(false, doc_type)
         end
       else
-        { TotalTax: '0.00' }
+        { 'totalTax' => 0.0 }
       end
     end
 
@@ -34,7 +34,7 @@ module Spree
             post_order_to_avalara(true, doc_type)
           end
         else
-          { TotalTax: '0.00' }
+          { 'totalTax' => 0.0 }
         end
       else
         logger.info 'Avalara Document Committing Disabled'
@@ -65,7 +65,7 @@ module Spree
       mytax = TaxSvc.new
       response = mytax.get_tax(request)
 
-      return { TotalTax: '0.00' } if response.error?
+      return { 'totalTax' => 0.0 } if response.error?
       response.tax_result
     end
 
@@ -77,7 +77,7 @@ module Spree
       mytax = TaxSvc.new
       response = mytax.get_tax(request)
 
-      return { TotalTax: '0.00' } if response.error?
+      return { 'totalTax' => 0.0 } if response.error?
       response.tax_result
     end
 

@@ -25,6 +25,15 @@ module SpreeAvataxCertified
         preference :avatax_tax_calculation, :boolean, default: true
         preference :avatax_document_commit, :boolean, default: true
         preference :avatax_origin, :string, default: '{}'
+        preference :avatax_raise_exceptions, :boolean, default: false
+
+        def self.environment
+          if ENV['AVATAX_ENVIRONMENT'].nil?
+            Rails.env.production? ? :production : :sandbox
+          else
+            ENV['AVATAX_ENVIRONMENT'] == 'production' ? :production : :sandbox
+          end
+        end
       end
     end
 
