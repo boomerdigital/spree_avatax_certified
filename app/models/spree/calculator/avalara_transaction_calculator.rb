@@ -41,7 +41,11 @@ module Spree
 
     def get_avalara_response(order)
       Rails.cache.fetch(cache_key(order), time_to_idle: 5.minutes) do
-        order.avalara_capture
+        if order.can_commit?
+          order.avalara_capture_finalize
+        else
+          order.avalara_capture
+        end
       end
     end
 
@@ -82,11 +86,11 @@ module Spree
       prev_tax_amount = prev_tax_amount(item)
 
       return prev_tax_amount if avalara_response.nil?
-      return prev_tax_amount if avalara_response['totalTax'] == 0.0
+      return 0 if avalara_response['totalTax'] == 0.0
 
-      avalara_response['TaxLines'].each do |line|
-        if line['LineNo'] == "#{item.id}-#{item.avatax_line_code}"
-          return line['TaxCalculated'].to_f
+      avalara_response['lines'].each do |line|
+        if line['lineNumber'] == "#{item.id}-#{item.avatax_line_code}"
+          return line['taxCalculated']
         end
       end
       0

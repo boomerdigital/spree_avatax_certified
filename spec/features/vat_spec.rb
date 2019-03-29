@@ -6,7 +6,7 @@ describe "VAT", :vcr do
   let!(:nl) { create(:country, iso: 'NL', iso3: 'NLD', name: 'Netherlands', iso_name: 'NETHERLANDS') }
   let!(:fr) { create(:country, iso: 'FR', iso3: 'FRA', name: 'France', iso_name: 'FRANCE') }
   let!(:cr) { create(:country, iso: 'CR', iso3: 'CRI', name: 'Costa Rica', iso_name: 'COSTA RICA') }
-  let!(:seller_location) { create(:stock_location, address1: '34 Borgo degli Albizi', city: 'Florence', zipcode: '50122', country: it) }
+  let!(:seller_location) { create(:stock_location, address1: '34 Borgo degli Albizi', city: 'Florence', zipcode: '50122', country: it, state: nil) }
 
   let(:res) {
     res = avalara_order.avalara_capture
@@ -19,12 +19,12 @@ describe "VAT", :vcr do
     let!(:avalara_order) { create(:avalara_order, tax_included: true, ship_address: it_address, state: 'address') }
     before { prep_avalara_order }
 
-    it 'TotalTax is equal to order included_tax_total' do
-      expect(avalara_order.included_tax_total.to_f).to eq(res['TotalTax'].to_f)
+    it 'totalTax is equal to order included_tax_total' do
+      expect(avalara_order.included_tax_total.to_f).to eq(res['totalTax'].to_f)
     end
 
     it 'tax detail country equals to IT' do
-      tax_detail_country = res['TaxLines'][0]['TaxDetails'][0]['Country']
+      tax_detail_country = res['lines'][0]['details'][0]['country']
 
       expect(tax_detail_country).to eq('IT')
     end
@@ -40,17 +40,17 @@ describe "VAT", :vcr do
       before { prep_avalara_order }
 
       it 'tax detail country equals to IT' do
-        tax_detail_country = res['TaxLines'][0]['TaxDetails'][0]['Country']
+        tax_detail_country = res['lines'][0]['details'][0]['country']
 
         expect(tax_detail_country).to eq('IT')
       end
 
-      it 'TotalTax is equal to order included_tax_total' do
-        expect(avalara_order.included_tax_total.to_f).to eq(res['TotalTax'].to_f)
+      it 'totalTax is equal to order included_tax_total' do
+        expect(avalara_order.included_tax_total.to_f).to eq(res['totalTax'].to_f)
       end
 
       it 'total tax is 0 since utah is not in jurisdiction' do
-        expect(res['TotalTax'].to_f).to eq(0)
+        expect(res['totalTax'].to_f).to eq(0)
       end
 
       context 'with BusinessIdentificationNo' do
@@ -59,10 +59,10 @@ describe "VAT", :vcr do
         end
 
         it 'origin country zero rate is returned' do
-          tax_detail_country = res['TaxLines'][0]['TaxDetails'][0]['Country']
+          tax_detail_country = res['lines'][0]['details'][0]['country']
 
           expect(tax_detail_country).to eq('IT')
-          expect(res['TotalTax']).to eq('0')
+          expect(res['totalTax']).to eq(0)
         end
       end
     end
@@ -72,13 +72,13 @@ describe "VAT", :vcr do
       before { prep_avalara_order }
 
       it 'tax detail country equals to US' do
-        tax_detail_country = res['TaxLines'][0]['TaxDetails'][0]['Country']
+        tax_detail_country = res['lines'][0]['details'][0]['country']
 
         expect(tax_detail_country).to eq('US')
       end
 
-      it 'TotalTax is equal to order included_tax_total' do
-        expect(avalara_order.included_tax_total.to_f).to eq(res['TotalTax'].to_f)
+      it 'totalTax is equal to order included_tax_total' do
+        expect(avalara_order.included_tax_total.to_f).to eq(res['totalTax'].to_f)
       end
     end
   end
@@ -91,13 +91,13 @@ describe "VAT", :vcr do
       before { prep_avalara_order }
 
       it 'destination country tax is returned' do
-        tax_detail_country = res['TaxLines'][0]['TaxDetails'][0]['Country']
+        tax_detail_country = res['lines'][0]['details'][0]['country']
 
         expect(tax_detail_country).to eq('NL')
       end
 
-      it 'TotalTax is equal to order included_tax_total' do
-        expect(avalara_order.included_tax_total.to_f).to eq(res['TotalTax'].to_f)
+      it 'totalTax is equal to order included_tax_total' do
+        expect(avalara_order.included_tax_total.to_f).to eq(res['totalTax'].to_f)
       end
 
       context 'with BusinessIdentificationNo' do
@@ -106,10 +106,10 @@ describe "VAT", :vcr do
         end
 
         it 'origin country zero rate is returned' do
-          tax_detail_country = res['TaxLines'][0]['TaxDetails'][0]['Country']
+          tax_detail_country = res['lines'][0]['details'][0]['country']
 
           expect(tax_detail_country).to eq('IT')
-          expect(res['TotalTax']).to eq('0')
+          expect(res['totalTax']).to eq(0)
         end
       end
     end
@@ -120,12 +120,12 @@ describe "VAT", :vcr do
       before { prep_avalara_order }
 
       it 'origin country tax is returned' do
-        tax_detail_country = res['TaxLines'][0]['TaxDetails'][0]['Country']
+        tax_detail_country = res['lines'][0]['details'][0]['country']
         expect(tax_detail_country).to eq('IT')
       end
 
-      it 'TotalTax is equal to order included_tax_total' do
-        expect(avalara_order.included_tax_total.to_f).to eq(res['TotalTax'].to_f)
+      it 'totalTax is equal to order included_tax_total' do
+        expect(avalara_order.included_tax_total.to_f).to eq(res['totalTax'].to_f)
       end
 
       context 'with BusinessIdentificationNo' do
@@ -134,10 +134,10 @@ describe "VAT", :vcr do
         end
 
         it 'origin country zero rate is returned' do
-          tax_detail_country = res['TaxLines'][0]['TaxDetails'][0]['Country']
+          tax_detail_country = res['lines'][0]['details'][0]['country']
 
           expect(tax_detail_country).to eq('IT')
-          expect(res['TotalTax']).to eq('0')
+          expect(res['totalTax']).to eq(0)
         end
       end
     end
@@ -145,7 +145,7 @@ describe "VAT", :vcr do
 
 
   def set_seller_location
-    Spree::Config.avatax_origin = "{\"Address1\":\"34 Borgo degli Albizi\",\"Address2\":\"\",\"City\":\"Florence\",\"Region\":\"\",\"Zip5\":\"50122\",\"Zip4\":\"\",\"Country\":\"IT\"}"
+    Spree::Config.avatax_origin = "{\"Address1\":\"34 Borgo degli Albizi\",\"Address2\":\"\",\"City\":\"Florence\",\"Region\":\"\",\"Zip5\":\"50122\",\"Zip4\":\"\",\"country\":\"IT\"}"
     Spree::TaxRate.update_all(included_in_price: true)
     Spree::StockLocation.update_all(address1: '34 Borgo degli Albizi', city: 'Florence', country_id: it.id)
   end

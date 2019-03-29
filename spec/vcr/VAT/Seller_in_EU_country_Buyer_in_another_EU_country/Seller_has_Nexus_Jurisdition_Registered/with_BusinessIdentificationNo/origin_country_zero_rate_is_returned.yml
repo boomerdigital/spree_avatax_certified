@@ -2,126 +2,147 @@
 http_interactions:
 - request:
     method: post
-    uri: https://development.avalara.net/1.0/tax/get
+    uri: https://sandbox-rest.avatax.com/api/v2/transactions/createoradjust
     body:
       encoding: UTF-8
-      string: '{"DocCode":"R184932982","DocDate":"2019-03-20","Discount":"0.0","Commit":false,"DocType":"SalesOrder","Addresses":[{"AddressCode":"Orig","Line1":"34
-        Borgo degli Albizi","Line2":"","City":"Florence","Region":"","PostalCode":"50122","Country":"IT"},{"AddressCode":"Dest","Line1":"89
-        Nieuwendijk","Line2":"","City":"Amsterdam","Region":"","Country":"NL","PostalCode":"1012
-        MC"},{"AddressCode":"1","Line1":"34 Borgo degli Albizi","Line2":null,"City":"Florence","PostalCode":"50122","Country":"IT"}],"Lines":[{"LineNo":"1-LI","Description":"Product
-        #11 - 9169","TaxCode":"PC030000","ItemCode":"SKU-11","Qty":1,"Amount":19.99,"OriginCode":"1","DestinationCode":"Dest","CustomerUsageType":null,"Discounted":false,"TaxIncluded":true},{"LineNo":"1-FR","ItemCode":"Avalara
-        Ground","Qty":1,"Amount":10.0,"OriginCode":"1","DestinationCode":"Dest","CustomerUsageType":null,"Description":"Shipping
-        Charge","TaxCode":"FR000000","Discounted":false,"TaxIncluded":true}],"CustomerCode":1,"CompanyCode":"54321","CustomerUsageType":null,"ExemptionNo":null,"Client":"a0o33000004FH8l","ReferenceCode":"R184932982","DetailLevel":"Tax","CurrencyCode":"USD"}'
+      string: '{"createTransactionModel":{"code":"R923081324","date":"2019-03-29","discount":"0.0","commit":false,"type":"SalesOrder","lines":[{"number":"1-LI","description":"Product
+        #21 - 9665","taxCode":"PC030000","itemCode":"SKU-21","quantity":1,"amount":19.99,"discounted":false,"taxIncluded":true,"addresses":{"shipFrom":{"line1":"34
+        Borgo degli Albizi","line2":null,"city":"Florence","region":null,"country":"IT","postalCode":"50122"},"shipTo":{"line1":"89
+        Nieuwendijk","line2":"","city":"Amsterdam","region":null,"country":"NL","postalCode":"1012
+        MC"}},"customerUsageType":null,"businessIdentificationNo":null,"exemptionCode":null},{"number":"1-FR","itemCode":"Avalara
+        Ground","quantity":1,"amount":10.0,"description":"Shipping Charge","taxCode":"FR000000","discounted":false,"taxIncluded":true,"addresses":{"shipFrom":{"line1":"34
+        Borgo degli Albizi","line2":null,"city":"Florence","region":null,"country":"IT","postalCode":"50122"},"shipTo":{"line1":"89
+        Nieuwendijk","line2":"","city":"Amsterdam","region":null,"country":"NL","postalCode":"1012
+        MC"}},"customerUsageType":null,"businessIdentificationNo":null,"exemptionCode":null}],"customerCode":1,"companyCode":"54321","customerUsageType":null,"exemptionNo":null,"referenceCode":"R923081324","currencyCode":"USD","businessIdentificationNo":null}}'
     headers:
-      Accept:
-      - "*/*"
-      Accept-Encoding:
-      - gzip, deflate
+      X-Avalara-Uid:
+      - a0o33000004FH8l
       User-Agent:
-      - rest-client/2.0.2 (darwin16.7.0 x86_64) ruby/2.5.1p57
-      Authorization:
-      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      - Faraday v0.15.4
       Content-Type:
       - application/json
-      Content-Length:
-      - '1133'
-      Host:
-      - development.avalara.net
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
   response:
     status:
-      code: 200
-      message: OK
+      code: 201
+      message: Created
     headers:
       Date:
-      - Wed, 20 Mar 2019 18:27:13 GMT
+      - Fri, 29 Mar 2019 15:25:17 GMT
       Content-Type:
-      - text/json; charset=utf-8
-      Content-Length:
-      - '670'
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
       Connection:
       - keep-alive
-      Cache-Control:
-      - private
-      Content-Encoding:
-      - gzip
-      Vary:
-      - Accept-Encoding
+      Location:
+      - "/api/v2/companies/0/transactions/0"
       Server:
-      - Microsoft-IIS/8.5
-      X-Aspnet-Version:
-      - 4.0.30319
-      X-Powered-By:
-      - ASP.NET
+      - Kestrel
       X-Content-Type-Options:
       - nosniff
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
+      Serverduration:
+      - '00:00:00.0574152'
+      Databasecalls:
+      - '0'
+      Databaseduration:
+      - '00:00:00'
+      Serviceduration:
+      - '00:00:00.0550948'
+      X-Powered-By:
+      - ASP.NET
     body:
-      encoding: ASCII-8BIT
-      string: !binary |-
-        H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3mkuwdaUcjKasqgcplVmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZkAWz2zkrayZ4hgKrIHz9+fB8/In5x8tGrvFmX7Uk1yz96lH70ej2d5k3z0Sj56Gk1fZq1/Onezu7D7Z1723s7+OJNscibNluswq/e7B482nvwaHd//ODhwcGDg92f4sZVm5XHi2q9bLk5fXtgP39aNFPzjYDGp6fv8sWqLapl+PGb7F02KQWfAAp9gQ/vj/d2/c9OsnK6LmkEs+Db7F18VDRcQ4RXuwf7D+/tPTzYwxf0xvNimTf0zfcSIhj+eFHRXx/tbj8/0xbm1ZcnO/d26NGPs0lRFu01vmnrdY5Pn9CAZ1l9/Ty/zEt88VPF6j6+6A+7Tx5AFBLsfjq+z+i90tHs0ACpY9MOH90b7z/QP0NieF88zdusKO3gTtBfzQi/eI4mr/ILRUn+/s66Lpo31yvu07Q2nxsqSFOC/nWwZUgvsgW3e3H65tunr54fv3j6Gt9RU/PN6zYDHWcpg/wlyfeTX5KMaAT+9Dx7pS8ZxJ69oj7p0Y9/9qbnYLz3KT5i5OjvyHh3xw/29c9wdrwvfjiz8x7IMiAzBe83Od9PpM3xbFaTinECpR/Qnx8dPExfFPn6Kl/Oip9+C6D6pcH9KWkefHyi03a8aNq8nmUL/lAHTJ/LGF9WpKdK8+7uzu5e+sUJviA0hHRnTPG9nfs7Dx/iCx6feYGACE8pEvjs3n76pKovqnSWX5RFelxOih8UeFPbmHdZ2Rgsn5VVnS+nzGAekmdv8EGI5H1CkiUlhiLPSIAigQBlf0ny/wDbJQCiygUAAA==
+      encoding: UTF-8
+      string: '{"id":0,"code":"R923081324","companyId":0,"date":"2019-03-29","paymentDate":"2019-03-29","status":"Temporary","type":"SalesOrder","currencyCode":"USD","customerVendorCode":"1","customerCode":"1","reconciled":false,"referenceCode":"R923081324","totalAmount":24.78,"totalExempt":0.0,"totalDiscount":0.0,"totalTax":5.21,"totalTaxable":24.78,"totalTaxCalculated":5.21,"adjustmentReason":"NotAdjusted","locked":false,"version":1,"exchangeRateEffectiveDate":"2019-03-29","exchangeRate":1.0,"modifiedDate":"2019-03-29T15:25:07.0627667Z","modifiedUserId":38097,"taxDate":"2019-03-29T00:00:00","lines":[{"id":0,"transactionId":0,"lineNumber":"1-LI","description":"Product
+        #21 - 9665","discountAmount":0.0,"exemptAmount":0.0,"exemptCertId":0,"isItemTaxable":true,"itemCode":"SKU-21","lineAmount":16.52,"quantity":1.0,"reportingDate":"2019-03-29","tax":3.47,"taxableAmount":16.52,"taxCalculated":3.47,"taxCode":"PC030000","taxCodeId":8107,"taxDate":"2019-03-29","taxIncluded":true,"details":[{"id":0,"transactionLineId":0,"transactionId":0,"country":"NL","region":"NL","exemptAmount":0.0,"jurisCode":"NL","jurisName":"NETHERLANDS","stateAssignedNo":"","jurisType":"CNT","jurisdictionType":"Country","nonTaxableAmount":0.0,"rate":0.210000,"tax":3.47,"taxableAmount":16.52,"taxType":"Output","taxName":"Standard
+        Rate","taxAuthorityTypeId":45,"taxCalculated":3.47,"rateType":"Standard","rateTypeCode":"S","isNonPassThru":false}],"nonPassthroughDetails":[],"hsCode":"","costInsuranceFreight":0.0,"vatCode":"NLS-2100P--IT","vatNumberTypeId":0},{"id":0,"transactionId":0,"lineNumber":"1-FR","description":"Shipping
+        Charge","discountAmount":0.0,"exemptAmount":0.0,"exemptCertId":0,"isItemTaxable":true,"itemCode":"Avalara
+        Ground","lineAmount":8.26,"quantity":1.0,"reportingDate":"2019-03-29","tax":1.74,"taxableAmount":8.26,"taxCalculated":1.74,"taxCode":"FR000000","taxCodeId":8550,"taxDate":"2019-03-29","taxIncluded":true,"details":[{"id":0,"transactionLineId":0,"transactionId":0,"country":"NL","region":"NL","exemptAmount":0.0,"jurisCode":"NL","jurisName":"NETHERLANDS","stateAssignedNo":"","jurisType":"CNT","jurisdictionType":"Country","nonTaxableAmount":0.0,"rate":0.210000,"tax":1.74,"taxableAmount":8.26,"taxType":"Output","taxName":"Standard
+        Rate","taxAuthorityTypeId":45,"taxCalculated":1.74,"rateType":"Standard","rateTypeCode":"S","isNonPassThru":false}],"nonPassthroughDetails":[],"hsCode":"","costInsuranceFreight":0.0,"vatCode":"NLS-2100F--IT","vatNumberTypeId":0}],"addresses":[{"id":0,"transactionId":0,"boundaryLevel":"Zip5","line1":"89
+        Nieuwendijk","line2":"","line3":"","city":"Amsterdam","region":"","postalCode":"1012
+        MC","country":"NL","taxRegionId":205099,"latitude":"0","longitude":"0"},{"id":0,"transactionId":0,"boundaryLevel":"Zip5","line1":"34
+        Borgo degli Albizi","line2":"","line3":"","city":"Florence","region":"","postalCode":"50122","country":"IT","taxRegionId":205090,"latitude":"0","longitude":"0"}],"summary":[{"country":"NL","region":"NL","jurisType":"Country","jurisCode":"NL","jurisName":"NETHERLANDS","taxAuthorityType":45,"stateAssignedNo":"","taxType":"Output","taxName":"Standard
+        Rate","rateType":"Standard","taxable":24.78,"rate":0.210000,"tax":5.21,"taxCalculated":5.21,"nonTaxable":0.0,"exemption":0.0}]}'
     http_version: 
-  recorded_at: Wed, 20 Mar 2019 18:27:13 GMT
+  recorded_at: Fri, 29 Mar 2019 15:25:15 GMT
 - request:
     method: post
-    uri: https://development.avalara.net/1.0/tax/get
+    uri: https://sandbox-rest.avatax.com/api/v2/transactions/createoradjust
     body:
       encoding: UTF-8
-      string: '{"DocCode":"R184932982","DocDate":"2019-03-20","Discount":"0.0","Commit":false,"DocType":"SalesOrder","Addresses":[{"AddressCode":"Orig","Line1":"34
-        Borgo degli Albizi","Line2":"","City":"Florence","Region":"","PostalCode":"50122","Country":"IT"},{"AddressCode":"Dest","Line1":"89
-        Nieuwendijk","Line2":"","City":"Amsterdam","Region":"","Country":"NL","PostalCode":"1012
-        MC"},{"AddressCode":"1","Line1":"34 Borgo degli Albizi","Line2":null,"City":"Florence","PostalCode":"50122","Country":"IT"}],"Lines":[{"LineNo":"1-LI","Description":"Product
-        #11 - 9169","TaxCode":"PC030000","ItemCode":"SKU-11","Qty":1,"Amount":19.99,"OriginCode":"1","DestinationCode":"Dest","CustomerUsageType":null,"Discounted":false,"TaxIncluded":true},{"LineNo":"1-FR","ItemCode":"Avalara
-        Ground","Qty":1,"Amount":10.0,"OriginCode":"1","DestinationCode":"Dest","CustomerUsageType":null,"Description":"Shipping
-        Charge","TaxCode":"FR000000","Discounted":false,"TaxIncluded":true}],"CustomerCode":1,"CompanyCode":"54321","CustomerUsageType":null,"ExemptionNo":null,"Client":"a0o33000004FH8l","ReferenceCode":"R184932982","DetailLevel":"Tax","CurrencyCode":"USD","BusinessIdentificationNo":"123456789"}'
+      string: '{"createTransactionModel":{"code":"R923081324","date":"2019-03-29","discount":"0.0","commit":false,"type":"SalesOrder","lines":[{"number":"1-LI","description":"Product
+        #21 - 9665","taxCode":"PC030000","itemCode":"SKU-21","quantity":1,"amount":19.99,"discounted":false,"taxIncluded":true,"addresses":{"shipFrom":{"line1":"34
+        Borgo degli Albizi","line2":null,"city":"Florence","region":null,"country":"IT","postalCode":"50122"},"shipTo":{"line1":"89
+        Nieuwendijk","line2":"","city":"Amsterdam","region":null,"country":"NL","postalCode":"1012
+        MC"}},"customerUsageType":null,"businessIdentificationNo":"123456789","exemptionCode":null},{"number":"1-FR","itemCode":"Avalara
+        Ground","quantity":1,"amount":10.0,"description":"Shipping Charge","taxCode":"FR000000","discounted":false,"taxIncluded":true,"addresses":{"shipFrom":{"line1":"34
+        Borgo degli Albizi","line2":null,"city":"Florence","region":null,"country":"IT","postalCode":"50122"},"shipTo":{"line1":"89
+        Nieuwendijk","line2":"","city":"Amsterdam","region":null,"country":"NL","postalCode":"1012
+        MC"}},"customerUsageType":null,"businessIdentificationNo":"123456789","exemptionCode":null}],"customerCode":1,"companyCode":"54321","customerUsageType":null,"exemptionNo":null,"referenceCode":"R923081324","currencyCode":"USD","businessIdentificationNo":"123456789"}}'
     headers:
-      Accept:
-      - "*/*"
-      Accept-Encoding:
-      - gzip, deflate
+      X-Avalara-Uid:
+      - a0o33000004FH8l
       User-Agent:
-      - rest-client/2.0.2 (darwin16.7.0 x86_64) ruby/2.5.1p57
-      Authorization:
-      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      - Faraday v0.15.4
       Content-Type:
       - application/json
-      Content-Length:
-      - '1172'
-      Host:
-      - development.avalara.net
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
   response:
     status:
-      code: 200
-      message: OK
+      code: 201
+      message: Created
     headers:
       Date:
-      - Wed, 20 Mar 2019 18:27:15 GMT
+      - Fri, 29 Mar 2019 15:25:18 GMT
       Content-Type:
-      - text/json; charset=utf-8
-      Content-Length:
-      - '898'
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
       Connection:
       - keep-alive
-      Cache-Control:
-      - private
-      Content-Encoding:
-      - gzip
-      Vary:
-      - Accept-Encoding
+      Location:
+      - "/api/v2/companies/0/transactions/0"
       Server:
-      - Microsoft-IIS/8.5
-      X-Aspnet-Version:
-      - 4.0.30319
-      X-Powered-By:
-      - ASP.NET
+      - Kestrel
       X-Content-Type-Options:
       - nosniff
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
+      Serverduration:
+      - '00:00:00.0587967'
+      Databasecalls:
+      - '0'
+      Databaseduration:
+      - '00:00:00'
+      Serviceduration:
+      - '00:00:00.0562785'
+      X-Powered-By:
+      - ASP.NET
     body:
-      encoding: ASCII-8BIT
-      string: !binary |-
-        H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3mkuwdaUcjKasqgcplVmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZkAWz2zkrayZ4hgKrIHz9+fB8/In5x8tGrvFmX7Uk1yz96lH70ej2d5k3z0Sj56Av6mV3kDX38vYQavl4vFll9TX9+dLa8rIppnqamTXpe1Wk7z9O2zpZNNm2LagkYT/M2K0qA+OgX/77mNX3pi6xp8/p50bS/70ePvkdf6+dAhT7ZGdlP6K/f96MXVZqtVmUxzSZlni74m2J5oT0XTVoWy3z8+370S0Y9ULsdUGdLQnP79Kv09ZogXqfVefp5Vc2aNGvSVV6nx3U7TnfvHaTU5CeP36RPizqnIV3m6d7Ozqe/793d3T3q5/sENRyRN5Y32bvnhM+Liv7+fT/a3X5+9vt+RO21ocGLce02ffYq0nTnl3z/l4Cgr/PLvC5angVvrl5X63rKE3h8mZVZnY3pJwEev87rS0KwGdMfH/2S5PsJNX5aTZ9mLbfe29l9uL1zb3tvB1DeFETWNluswq/e7B482nvwaPfT8b0He/ce7Bz8FDeu2qw8XlTrZcvNH44fPrSfPy2aqflGQOPT03f5YsWsEXxMqGFO8WEIhb7Ah0HLk6ycrktCf+a+yt7Fx0MDBfnwxavdg/2H9/YeHuzhC3oDJAdfMmvjjxcV/UXkf36mLcyrL0927u3Qox9nk6LUCWjrdY5Pn9BQZyQaz2lySnzxU8XqPr7oD7hPGECUwe+awb/S0eyMqVt68Bm144/09wEyWHHjYZ2gJ5XYN2jyKr9QZOTv76zronlzveLeTGvzuRm/NCXo740ng3mRLbjR2Zvj578PPqUW5rOfyusqZShgzV+SjAhpfy6evdIXDC7PXlE39OjHP4tzwR8wavTX0ADp95/TieDubkKSYRiK32YWWEnQ98ezWU36xYmJfkB/fnTwMH1R5OurfDkrfvotAOqXBtmnpEnw8YnOz/EC2n6WLfhDHSF9/uI5PnhZkd4pzbu7O7t76Rcn+ILQEFqdMX33du7vCO/xqMwLBESYR5HAZ/f20ydVfVGls/yiLNLjclL8oMCb2sa8u4vPDJbPyqrOl6RJ8ZlDUigfInmfkDTKpIeiI7xpTiBA2V+S/D97zQGZcwcAAA==
+      encoding: UTF-8
+      string: '{"id":0,"code":"R923081324","companyId":0,"date":"2019-03-29","paymentDate":"2019-03-29","status":"Temporary","type":"SalesOrder","currencyCode":"USD","customerVendorCode":"1","customerCode":"1","reconciled":false,"referenceCode":"R923081324","totalAmount":29.99,"totalExempt":0.0,"totalDiscount":0.0,"totalTax":0.0,"totalTaxable":29.99,"totalTaxCalculated":0.0,"adjustmentReason":"NotAdjusted","locked":false,"version":1,"exchangeRateEffectiveDate":"2019-03-29","exchangeRate":1.0,"modifiedDate":"2019-03-29T15:25:07.8435589Z","modifiedUserId":38097,"taxDate":"2019-03-29T00:00:00","lines":[{"id":0,"transactionId":0,"lineNumber":"1-LI","description":"Product
+        #21 - 9665","discountAmount":0.0,"exemptAmount":0.0,"exemptCertId":0,"isItemTaxable":true,"itemCode":"SKU-21","lineAmount":19.99,"quantity":1.0,"reportingDate":"2019-03-29","tax":0.0,"taxableAmount":19.99,"taxCalculated":0.0,"taxCode":"PC030000","taxCodeId":8107,"taxDate":"2019-03-29","taxIncluded":true,"details":[{"id":0,"transactionLineId":0,"transactionId":0,"country":"IT","region":"IT","exemptAmount":0.0,"jurisCode":"IT","jurisName":"ITALY","stateAssignedNo":"","jurisType":"CNT","jurisdictionType":"Country","nonTaxableAmount":0.0,"rate":0.000000,"tax":0.0,"taxableAmount":19.99,"taxType":"Output","taxName":"Zero
+        Rate","taxAuthorityTypeId":45,"taxCalculated":0.0,"rateType":"Zero","rateTypeCode":"Z","isNonPassThru":false}],"nonPassthroughDetails":[],"hsCode":"","costInsuranceFreight":0.0,"vatCode":"ITS-0000P--IT","vatNumberTypeId":0},{"id":0,"transactionId":0,"lineNumber":"1-FR","description":"Shipping
+        Charge","discountAmount":0.0,"exemptAmount":0.0,"exemptCertId":0,"isItemTaxable":true,"itemCode":"Avalara
+        Ground","lineAmount":10.0,"quantity":1.0,"reportingDate":"2019-03-29","tax":0.0,"taxableAmount":10.0,"taxCalculated":0.0,"taxCode":"FR000000","taxCodeId":8550,"taxDate":"2019-03-29","taxIncluded":true,"details":[{"id":0,"transactionLineId":0,"transactionId":0,"country":"IT","region":"IT","exemptAmount":0.0,"jurisCode":"IT","jurisName":"ITALY","stateAssignedNo":"","jurisType":"CNT","jurisdictionType":"Country","nonTaxableAmount":0.0,"rate":0.000000,"tax":0.0,"taxableAmount":10.0,"taxType":"Output","taxName":"Zero
+        Rate","taxAuthorityTypeId":45,"taxCalculated":0.0,"rateType":"Zero","rateTypeCode":"Z","isNonPassThru":false}],"nonPassthroughDetails":[],"hsCode":"","costInsuranceFreight":0.0,"vatCode":"ITS-0000F--IT","vatNumberTypeId":0}],"addresses":[{"id":0,"transactionId":0,"boundaryLevel":"Zip5","line1":"89
+        Nieuwendijk","line2":"","line3":"","city":"Amsterdam","region":"","postalCode":"1012
+        MC","country":"NL","taxRegionId":205099,"latitude":"0","longitude":"0"},{"id":0,"transactionId":0,"boundaryLevel":"Zip5","line1":"34
+        Borgo degli Albizi","line2":"","line3":"","city":"Florence","region":"","postalCode":"50122","country":"IT","taxRegionId":205090,"latitude":"0","longitude":"0"}],"summary":[{"country":"IT","region":"IT","jurisType":"Country","jurisCode":"IT","jurisName":"ITALY","taxAuthorityType":45,"stateAssignedNo":"","taxType":"Output","taxName":"Zero
+        Rate","rateType":"Zero","taxable":29.99,"rate":0.000000,"tax":0.0,"taxCalculated":0.0,"nonTaxable":0.0,"exemption":0.0}],"messages":[{"summary":"Invoice  Messages
+        for the transaction","details":"{\"InvoiceMessageMasterList\":[{\"MessageCode\":0,\"Message\":\"No
+        applicable messaging for this line.\"},{\"MessageCode\":1,\"Message\":\"Intra-EU
+        Supply of Goods as per Art. 138 EU VAT Directive 2006/112\"}],\"InvoiceMessageList\":[{\"TaxLineNo\":\"1-LI\",\"MessageCode\":1},{\"TaxLineNo\":\"1-FR\",\"MessageCode\":0}]}","refersTo":"","severity":"Success","source":"Avalara.AvaTax.Services.Tax"}],"invoiceMessages":[{"content":"No
+        applicable messaging for this line.","lineNumbers":["1-FR"]},{"content":"Intra-EU
+        Supply of Goods as per Art. 138 EU VAT Directive 2006/112","lineNumbers":["1-LI"]}]}'
     http_version: 
-  recorded_at: Wed, 20 Mar 2019 18:27:15 GMT
+  recorded_at: Fri, 29 Mar 2019 15:25:17 GMT
 recorded_with: VCR 4.0.0

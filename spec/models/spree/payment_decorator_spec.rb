@@ -89,7 +89,7 @@ RSpec.describe Spree::Payment, :vcr do
       end
 
       it 'should recieve error message' do
-        expect(subject['ResultCode']).to eq('Error')
+        expect(subject['error']).to be_present
       end
     end
 
@@ -100,7 +100,7 @@ RSpec.describe Spree::Payment, :vcr do
       end
 
       it 'should receive result of success' do
-        expect(subject['ResultCode']).to eq('Success')
+        expect(subject['status']).to eq('Cancelled')
       end
     end
   end

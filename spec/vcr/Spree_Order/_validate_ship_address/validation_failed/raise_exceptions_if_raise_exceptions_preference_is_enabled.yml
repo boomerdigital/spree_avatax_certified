@@ -1,0 +1,58 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://sandbox-rest.avatax.com/api/v2/addresses/resolve
+    body:
+      encoding: UTF-8
+      string: '{"line1":null,"line2":"","city":null,"region":"AL","country":"US","postalCode":null}'
+    headers:
+      X-Avalara-Uid:
+      - a0o33000004FH8l
+      User-Agent:
+      - Faraday v0.15.4
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 400
+      message: Bad Request
+    headers:
+      Date:
+      - Fri, 29 Mar 2019 15:29:18 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Server:
+      - Kestrel
+      X-Content-Type-Options:
+      - nosniff
+      Serverduration:
+      - '00:00:00.0004439'
+      Databasecalls:
+      - '0'
+      Databaseduration:
+      - '00:00:00'
+      Serviceduration:
+      - '00:00:00'
+      X-Powered-By:
+      - ASP.NET
+    body:
+      encoding: UTF-8
+      string: '{"error":{"code":"InvalidAddress","message":"The address value was
+        incomplete.","target":"IncorrectData","details":[{"code":"InvalidAddress","number":309,"message":"The
+        address value was incomplete.","description":"The address value NULL was incomplete.
+        You must provide either a valid postal code, line1 + city + region, or line1
+        + postal code.","faultCode":"Client","helpLink":"http://developer.avalara.com/avatax/errors/InvalidAddress","severity":"Error"}]}}'
+    http_version: 
+  recorded_at: Fri, 29 Mar 2019 15:29:17 GMT
+recorded_with: VCR 4.0.0

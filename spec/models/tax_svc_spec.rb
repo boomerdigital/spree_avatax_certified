@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe TaxSvc, :vcr do
+RSpec.describe TaxSvc, :vcr do
   let(:taxsvc) { TaxSvc.new }
-  let(:request_hash) { build(:avatax_request_hash) }
+  let(:request_hash) { build(:request_hash) }
 
   describe '#get_tax' do
     subject { taxsvc.get_tax(request_hash) }
@@ -12,12 +12,16 @@ describe TaxSvc, :vcr do
     end
 
     context 'error response' do
+      before do
+        Spree::Config.avatax_raise_exceptions = false
+      end
+
       it 'returns error when no params are given' do
         expect(taxsvc.get_tax({}).tax_result.keys.first).to eq('error')
       end
 
       it 'returns error when taxCode is too long' do
-        req = build(:avatax_request_hash)
+        req = build(:request_hash)
         req[:createTransactionModel][:lines][0][:taxCode] = 'sdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdf'
         result = taxsvc.get_tax(req).tax_result
 
@@ -25,7 +29,7 @@ describe TaxSvc, :vcr do
       end
 
       it 'returns error when no lines are given' do
-        req = build(:avatax_request_hash)
+        req = build(:request_hash)
         req[:createTransactionModel][:lines] = []
         result = taxsvc.get_tax(req).tax_result
 
@@ -36,7 +40,7 @@ describe TaxSvc, :vcr do
 
   describe '#cancel_tax' do
     let(:request_hash) {
-      req = build(:avatax_request_hash)
+      req = build(:request_hash)
       req[:createTransactionModel][:commit] = true
       req[:createTransactionModel][:date] = Date.today.strftime('%F')
       req[:createTransactionModel][:type] = 'SalesInvoice'

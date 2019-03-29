@@ -2,126 +2,134 @@
 http_interactions:
 - request:
     method: post
-    uri: https://development.avalara.net/1.0/tax/get
+    uri: https://sandbox-rest.avatax.com/api/v2/transactions/createoradjust
     body:
       encoding: UTF-8
-      string: '{"DocCode":"R818946407","DocDate":"2019-03-20","Discount":"0.0","Commit":false,"DocType":"SalesOrder","Addresses":[{"AddressCode":"Orig","Line1":"34
-        Borgo degli Albizi","Line2":"","City":"Florence","Region":"","PostalCode":"50122","Country":"IT"},{"AddressCode":"Dest","Line1":"34
-        Borgo degli Albizi","Line2":"","City":"Florence","Region":"","Country":"IT","PostalCode":"50122"},{"AddressCode":"1","Line1":"34
-        Borgo degli Albizi","Line2":null,"City":"Florence","PostalCode":"50122","Country":"IT"}],"Lines":[{"LineNo":"1-LI","Description":"Product
-        #2 - 5685","TaxCode":"PC030000","ItemCode":"SKU-2","Qty":1,"Amount":19.99,"OriginCode":"1","DestinationCode":"Dest","CustomerUsageType":null,"Discounted":false,"TaxIncluded":true},{"LineNo":"1-FR","ItemCode":"Avalara
-        Ground","Qty":1,"Amount":10.0,"OriginCode":"1","DestinationCode":"Dest","CustomerUsageType":null,"Description":"Shipping
-        Charge","TaxCode":"FR000000","Discounted":false,"TaxIncluded":true}],"CustomerCode":1,"CompanyCode":"54321","CustomerUsageType":null,"ExemptionNo":null,"Client":"a0o33000004FH8l","ReferenceCode":"R818946407","DetailLevel":"Tax","CurrencyCode":"USD"}'
+      string: '{"createTransactionModel":{"code":"R687216803","date":"2019-03-29","discount":"0.0","commit":false,"type":"SalesOrder","lines":[{"number":"1-LI","description":"Product
+        #12 - 843","taxCode":"PC030000","itemCode":"SKU-12","quantity":1,"amount":19.99,"discounted":false,"taxIncluded":true,"addresses":{"shipFrom":{"line1":"34
+        Borgo degli Albizi","line2":null,"city":"Florence","region":null,"country":"IT","postalCode":"50122"},"shipTo":{"line1":"34
+        Borgo degli Albizi","line2":"","city":"Florence","region":null,"country":"IT","postalCode":"50122"}},"customerUsageType":null,"businessIdentificationNo":null,"exemptionCode":null},{"number":"1-FR","itemCode":"Avalara
+        Ground","quantity":1,"amount":10.0,"description":"Shipping Charge","taxCode":"FR000000","discounted":false,"taxIncluded":true,"addresses":{"shipFrom":{"line1":"34
+        Borgo degli Albizi","line2":null,"city":"Florence","region":null,"country":"IT","postalCode":"50122"},"shipTo":{"line1":"34
+        Borgo degli Albizi","line2":"","city":"Florence","region":null,"country":"IT","postalCode":"50122"}},"customerUsageType":null,"businessIdentificationNo":null,"exemptionCode":null}],"customerCode":1,"companyCode":"54321","customerUsageType":null,"exemptionNo":null,"referenceCode":"R687216803","currencyCode":"USD","businessIdentificationNo":null}}'
     headers:
-      Accept:
-      - "*/*"
-      Accept-Encoding:
-      - gzip, deflate
+      X-Avalara-Uid:
+      - a0o33000004FH8l
       User-Agent:
-      - rest-client/2.0.2 (darwin16.7.0 x86_64) ruby/2.5.1p57
-      Authorization:
-      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      - Faraday v0.15.4
       Content-Type:
       - application/json
-      Content-Length:
-      - '1135'
-      Host:
-      - development.avalara.net
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
   response:
     status:
-      code: 200
-      message: OK
+      code: 201
+      message: Created
     headers:
       Date:
-      - Wed, 20 Mar 2019 18:26:40 GMT
+      - Fri, 29 Mar 2019 15:24:41 GMT
       Content-Type:
-      - text/json; charset=utf-8
-      Content-Length:
-      - '612'
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
       Connection:
       - keep-alive
-      Cache-Control:
-      - private
-      Content-Encoding:
-      - gzip
-      Vary:
-      - Accept-Encoding
+      Location:
+      - "/api/v2/companies/0/transactions/0"
       Server:
-      - Microsoft-IIS/8.5
-      X-Aspnet-Version:
-      - 4.0.30319
-      X-Powered-By:
-      - ASP.NET
+      - Kestrel
       X-Content-Type-Options:
       - nosniff
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
+      Serverduration:
+      - '00:00:00.0581135'
+      Databasecalls:
+      - '0'
+      Databaseduration:
+      - '00:00:00'
+      Serviceduration:
+      - '00:00:00.0556805'
+      X-Powered-By:
+      - ASP.NET
     body:
-      encoding: ASCII-8BIT
-      string: !binary |-
-        H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3mkuwdaUcjKasqgcplVmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZkAWz2zkrayZ4hgKrIHz9+fB8/In5x8tGrvFmX7Uk1yz96lH70ej2d5k3z0Sj56Gk1fZq1/Onezu7D7Z1723s7+OJNscibNluswq/e7B482vv00f7u+MG9Tx88/PTTn+LGVZuVx4tqvWy5+f74/kP7+dOimZpvBDQ+PX2XL1ZtUS3Dj99k77JJKfgEUOgLfHh/vO9/dJKV03VJA5j5X2bv4mOiwRoSvDrYPXi4/+n+zgN8QW88L5Z5Q998LyFy4Y8XFf310e728zNtYV59ebJzb4ce/TibFGXRXuObtl7n+PQJDXeW1dfP88u8xBc/Vazu44v+oPvEAUQhwO6n43tMgFc6mp3x3h51bNrho3vjT/WvkBTu86d5mxWlHdoJeqsZ3bM3aPIqv1CE5O/vrOuieXO94h5Na/O5oYE0JehfA1cG9CJbcLOzN8fPfx98Sm3MZ6/bDOSbpQzrlyTfT35JMiLU/Vl59kpfMhg9e0Wd0aMf/+zNysF4D58wbvRnZJy74wP9K5wT9/kPZ05ujSmDMdS/7Yx8P5E2x7NZTcrECY9+QH9+dG8/fVLVF1U6yy/KIj0uJ8UPCsDWNgb1p6Rq8PGJTtmzsqrz5ZSnzQyXPpYRvqxIL5Xm1fs7u3s8TEJFyHbGxN7bub/zkMfKozPNCYQwk2KAz26L5S4++yGhCAr/P/FoQZq4BQAA
+      encoding: UTF-8
+      string: '{"id":0,"code":"R687216803","companyId":0,"date":"2019-03-29","paymentDate":"2019-03-29","status":"Temporary","type":"SalesOrder","currencyCode":"USD","customerVendorCode":"1","customerCode":"1","reconciled":false,"referenceCode":"R687216803","totalAmount":24.59,"totalExempt":0.0,"totalDiscount":0.0,"totalTax":5.4,"totalTaxable":24.59,"totalTaxCalculated":5.4,"adjustmentReason":"NotAdjusted","locked":false,"version":1,"exchangeRateEffectiveDate":"2019-03-29","exchangeRate":1.0,"modifiedDate":"2019-03-29T15:24:31.3866339Z","modifiedUserId":38097,"taxDate":"2019-03-29T00:00:00","lines":[{"id":0,"transactionId":0,"lineNumber":"1-LI","description":"Product
+        #12 - 843","discountAmount":0.0,"exemptAmount":0.0,"exemptCertId":0,"isItemTaxable":true,"itemCode":"SKU-12","lineAmount":16.39,"quantity":1.0,"reportingDate":"2019-03-29","tax":3.6,"taxableAmount":16.39,"taxCalculated":3.6,"taxCode":"PC030000","taxCodeId":8107,"taxDate":"2019-03-29","taxIncluded":true,"details":[{"id":0,"transactionLineId":0,"transactionId":0,"country":"IT","region":"IT","exemptAmount":0.0,"jurisCode":"IT","jurisName":"ITALY","stateAssignedNo":"","jurisType":"CNT","jurisdictionType":"Country","nonTaxableAmount":0.0,"rate":0.220000,"tax":3.6,"taxableAmount":16.39,"taxType":"Output","taxName":"Standard
+        Rate","taxAuthorityTypeId":45,"taxCalculated":3.6,"rateType":"Standard","rateTypeCode":"S","isNonPassThru":false}],"nonPassthroughDetails":[],"hsCode":"","costInsuranceFreight":0.0,"vatCode":"ITS-2200P--IT","vatNumberTypeId":0},{"id":0,"transactionId":0,"lineNumber":"1-FR","description":"Shipping
+        Charge","discountAmount":0.0,"exemptAmount":0.0,"exemptCertId":0,"isItemTaxable":true,"itemCode":"Avalara
+        Ground","lineAmount":8.2,"quantity":1.0,"reportingDate":"2019-03-29","tax":1.8,"taxableAmount":8.2,"taxCalculated":1.8,"taxCode":"FR000000","taxCodeId":8550,"taxDate":"2019-03-29","taxIncluded":true,"details":[{"id":0,"transactionLineId":0,"transactionId":0,"country":"IT","region":"IT","exemptAmount":0.0,"jurisCode":"IT","jurisName":"ITALY","stateAssignedNo":"","jurisType":"CNT","jurisdictionType":"Country","nonTaxableAmount":0.0,"rate":0.220000,"tax":1.8,"taxableAmount":8.2,"taxType":"Output","taxName":"Standard
+        Rate","taxAuthorityTypeId":45,"taxCalculated":1.8,"rateType":"Standard","rateTypeCode":"S","isNonPassThru":false}],"nonPassthroughDetails":[],"hsCode":"","costInsuranceFreight":0.0,"vatCode":"ITS-2200F--IT","vatNumberTypeId":0}],"addresses":[{"id":0,"transactionId":0,"boundaryLevel":"Zip5","line1":"34
+        Borgo degli Albizi","line2":"","line3":"","city":"Florence","region":"","postalCode":"50122","country":"IT","taxRegionId":205090,"latitude":"0","longitude":"0"}],"summary":[{"country":"IT","region":"IT","jurisType":"Country","jurisCode":"IT","jurisName":"ITALY","taxAuthorityType":45,"stateAssignedNo":"","taxType":"Output","taxName":"Standard
+        Rate","rateType":"Standard","taxable":24.59,"rate":0.220000,"tax":5.4,"taxCalculated":5.4,"nonTaxable":0.0,"exemption":0.0}]}'
     http_version: 
-  recorded_at: Wed, 20 Mar 2019 18:26:40 GMT
+  recorded_at: Fri, 29 Mar 2019 15:24:40 GMT
 - request:
     method: post
-    uri: https://development.avalara.net/1.0/tax/get
+    uri: https://sandbox-rest.avatax.com/api/v2/transactions/createoradjust
     body:
       encoding: UTF-8
-      string: '{"DocCode":"R818946407","DocDate":"2019-03-20","Discount":"0.0","Commit":false,"DocType":"SalesOrder","Addresses":[{"AddressCode":"Orig","Line1":"34
-        Borgo degli Albizi","Line2":"","City":"Florence","Region":"","PostalCode":"50122","Country":"IT"},{"AddressCode":"Dest","Line1":"34
-        Borgo degli Albizi","Line2":"","City":"Florence","Region":"","Country":"IT","PostalCode":"50122"},{"AddressCode":"1","Line1":"34
-        Borgo degli Albizi","Line2":null,"City":"Florence","PostalCode":"50122","Country":"IT"}],"Lines":[{"LineNo":"1-LI","Description":"Product
-        #2 - 5685","TaxCode":"PC030000","ItemCode":"SKU-2","Qty":1,"Amount":19.99,"OriginCode":"1","DestinationCode":"Dest","CustomerUsageType":null,"Discounted":false,"TaxIncluded":true},{"LineNo":"1-FR","ItemCode":"Avalara
-        Ground","Qty":1,"Amount":10.0,"OriginCode":"1","DestinationCode":"Dest","CustomerUsageType":null,"Description":"Shipping
-        Charge","TaxCode":"FR000000","Discounted":false,"TaxIncluded":true}],"CustomerCode":1,"CompanyCode":"54321","CustomerUsageType":null,"ExemptionNo":null,"Client":"a0o33000004FH8l","ReferenceCode":"R818946407","DetailLevel":"Tax","CurrencyCode":"USD"}'
+      string: '{"createTransactionModel":{"code":"R687216803","date":"2019-03-29","discount":"0.0","commit":false,"type":"SalesOrder","lines":[{"number":"1-LI","description":"Product
+        #12 - 843","taxCode":"PC030000","itemCode":"SKU-12","quantity":1,"amount":19.99,"discounted":false,"taxIncluded":true,"addresses":{"shipFrom":{"line1":"34
+        Borgo degli Albizi","line2":null,"city":"Florence","region":null,"country":"IT","postalCode":"50122"},"shipTo":{"line1":"34
+        Borgo degli Albizi","line2":"","city":"Florence","region":null,"country":"IT","postalCode":"50122"}},"customerUsageType":null,"businessIdentificationNo":null,"exemptionCode":null},{"number":"1-FR","itemCode":"Avalara
+        Ground","quantity":1,"amount":10.0,"description":"Shipping Charge","taxCode":"FR000000","discounted":false,"taxIncluded":true,"addresses":{"shipFrom":{"line1":"34
+        Borgo degli Albizi","line2":null,"city":"Florence","region":null,"country":"IT","postalCode":"50122"},"shipTo":{"line1":"34
+        Borgo degli Albizi","line2":"","city":"Florence","region":null,"country":"IT","postalCode":"50122"}},"customerUsageType":null,"businessIdentificationNo":null,"exemptionCode":null}],"customerCode":1,"companyCode":"54321","customerUsageType":null,"exemptionNo":null,"referenceCode":"R687216803","currencyCode":"USD","businessIdentificationNo":null}}'
     headers:
-      Accept:
-      - "*/*"
-      Accept-Encoding:
-      - gzip, deflate
+      X-Avalara-Uid:
+      - a0o33000004FH8l
       User-Agent:
-      - rest-client/2.0.2 (darwin16.7.0 x86_64) ruby/2.5.1p57
-      Authorization:
-      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      - Faraday v0.15.4
       Content-Type:
       - application/json
-      Content-Length:
-      - '1135'
-      Host:
-      - development.avalara.net
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
   response:
     status:
-      code: 200
-      message: OK
+      code: 201
+      message: Created
     headers:
       Date:
-      - Wed, 20 Mar 2019 18:26:41 GMT
+      - Fri, 29 Mar 2019 15:24:43 GMT
       Content-Type:
-      - text/json; charset=utf-8
-      Content-Length:
-      - '610'
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
       Connection:
       - keep-alive
-      Cache-Control:
-      - private
-      Content-Encoding:
-      - gzip
-      Vary:
-      - Accept-Encoding
+      Location:
+      - "/api/v2/companies/0/transactions/0"
       Server:
-      - Microsoft-IIS/8.5
-      X-Aspnet-Version:
-      - 4.0.30319
-      X-Powered-By:
-      - ASP.NET
+      - Kestrel
       X-Content-Type-Options:
       - nosniff
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains
+      Serverduration:
+      - '00:00:00.0523039'
+      Databasecalls:
+      - '0'
+      Databaseduration:
+      - '00:00:00'
+      Serviceduration:
+      - '00:00:00.0498594'
+      X-Powered-By:
+      - ASP.NET
     body:
-      encoding: ASCII-8BIT
-      string: !binary |-
-        H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3mkuwdaUcjKasqgcplVmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZkAWz2zkrayZ4hgKrIHz9+fB8/In5x8tGrvFmX7Uk1yz96lH70ej2d5k3z0Sj56Gk1fZq1/Onezu7D7Z1723s7+OJNscibNluswq/e7B482vv00f69MX22s//g/k9x46rNyuNFtV623Hx/fP+h/fxp0UzNNwIan56+yxertqiW4cdvsnfZpBR8Aij0BT68P973PzrJyum6pAHM/C+zd/Ex0WANCV4d7B483P90f+cBvqA3nhfLvKFvvpcQufDHi4r++mh3+/mZtjCvvjzZubdDj36cTYqyaK/xTVuvc3z6hIY7y+rr5/llXuKLnypW9/FFf9B94gCiEGD30/E9JsArHc3OeG+POjbt8NG98af6V0gK9/nTvM2K0g7tBL3VjO7ZGzR5lV8oQvL3d9Z10by5XnGPprX53NBAmhL0r4ErA3qRLbjZ2Zvj578PPqU25rPXbQbyzVKG9UuS7ye/JBkR6v6sPHulLxmMnr2izujRj3/2ZuVgvIdPGDf6MzLO3fGB/hXOifv8hzMnt8aUwRjq33ZGvp9Im+PZrCZl4oRHP6A/P7q3nz6p6osqneUXZZEel5PiBwVgaxuD+lNSNfj4RKfsWVnV+XLK02aGSx/LCF9WpJdK8+r9nd09HiahImQ7Y2Lv7dzfechj5dGZ5gRCmEkxwGe3xXIXn/2QUASF/x9LacuYuAUAAA==
+      encoding: UTF-8
+      string: '{"id":0,"code":"R687216803","companyId":0,"date":"2019-03-29","paymentDate":"2019-03-29","status":"Temporary","type":"SalesOrder","currencyCode":"USD","customerVendorCode":"1","customerCode":"1","reconciled":false,"referenceCode":"R687216803","totalAmount":24.59,"totalExempt":0.0,"totalDiscount":0.0,"totalTax":5.4,"totalTaxable":24.59,"totalTaxCalculated":5.4,"adjustmentReason":"NotAdjusted","locked":false,"version":1,"exchangeRateEffectiveDate":"2019-03-29","exchangeRate":1.0,"modifiedDate":"2019-03-29T15:24:32.9210548Z","modifiedUserId":38097,"taxDate":"2019-03-29T00:00:00","lines":[{"id":0,"transactionId":0,"lineNumber":"1-LI","description":"Product
+        #12 - 843","discountAmount":0.0,"exemptAmount":0.0,"exemptCertId":0,"isItemTaxable":true,"itemCode":"SKU-12","lineAmount":16.39,"quantity":1.0,"reportingDate":"2019-03-29","tax":3.6,"taxableAmount":16.39,"taxCalculated":3.6,"taxCode":"PC030000","taxCodeId":8107,"taxDate":"2019-03-29","taxIncluded":true,"details":[{"id":0,"transactionLineId":0,"transactionId":0,"country":"IT","region":"IT","exemptAmount":0.0,"jurisCode":"IT","jurisName":"ITALY","stateAssignedNo":"","jurisType":"CNT","jurisdictionType":"Country","nonTaxableAmount":0.0,"rate":0.220000,"tax":3.6,"taxableAmount":16.39,"taxType":"Output","taxName":"Standard
+        Rate","taxAuthorityTypeId":45,"taxCalculated":3.6,"rateType":"Standard","rateTypeCode":"S","isNonPassThru":false}],"nonPassthroughDetails":[],"hsCode":"","costInsuranceFreight":0.0,"vatCode":"ITS-2200P--IT","vatNumberTypeId":0},{"id":0,"transactionId":0,"lineNumber":"1-FR","description":"Shipping
+        Charge","discountAmount":0.0,"exemptAmount":0.0,"exemptCertId":0,"isItemTaxable":true,"itemCode":"Avalara
+        Ground","lineAmount":8.2,"quantity":1.0,"reportingDate":"2019-03-29","tax":1.8,"taxableAmount":8.2,"taxCalculated":1.8,"taxCode":"FR000000","taxCodeId":8550,"taxDate":"2019-03-29","taxIncluded":true,"details":[{"id":0,"transactionLineId":0,"transactionId":0,"country":"IT","region":"IT","exemptAmount":0.0,"jurisCode":"IT","jurisName":"ITALY","stateAssignedNo":"","jurisType":"CNT","jurisdictionType":"Country","nonTaxableAmount":0.0,"rate":0.220000,"tax":1.8,"taxableAmount":8.2,"taxType":"Output","taxName":"Standard
+        Rate","taxAuthorityTypeId":45,"taxCalculated":1.8,"rateType":"Standard","rateTypeCode":"S","isNonPassThru":false}],"nonPassthroughDetails":[],"hsCode":"","costInsuranceFreight":0.0,"vatCode":"ITS-2200F--IT","vatNumberTypeId":0}],"addresses":[{"id":0,"transactionId":0,"boundaryLevel":"Zip5","line1":"34
+        Borgo degli Albizi","line2":"","line3":"","city":"Florence","region":"","postalCode":"50122","country":"IT","taxRegionId":205090,"latitude":"0","longitude":"0"}],"summary":[{"country":"IT","region":"IT","jurisType":"Country","jurisCode":"IT","jurisName":"ITALY","taxAuthorityType":45,"stateAssignedNo":"","taxType":"Output","taxName":"Standard
+        Rate","rateType":"Standard","taxable":24.59,"rate":0.220000,"tax":5.4,"taxCalculated":5.4,"nonTaxable":0.0,"exemption":0.0}]}'
     http_version: 
-  recorded_at: Wed, 20 Mar 2019 18:26:42 GMT
+  recorded_at: Fri, 29 Mar 2019 15:24:42 GMT
 recorded_with: VCR 4.0.0

@@ -1,11 +1,16 @@
 require 'spec_helper'
 
-RSpec.describe Spree::AvalaraTransaction, :vcr do
+describe Spree::AvalaraTransaction, :vcr do
 
   let(:included_in_price) { false }
   let(:order) { create(:avalara_order, tax_included: included_in_price) }
 
   context 'captured orders' do
+    # 0.4 tax is for line item
+    # 0.2 is for shipment
+    before do
+      order.avalara_capture
+    end
 
     describe '#lookup_avatax' do
       subject do
@@ -13,7 +18,7 @@ RSpec.describe Spree::AvalaraTransaction, :vcr do
       end
 
       it 'should look up avatax' do
-        expect(subject['TotalTax']).to eq('0.6')
+        expect(subject['totalTax']).to eq(0.6)
       end
     end
 
@@ -23,76 +28,43 @@ RSpec.describe Spree::AvalaraTransaction, :vcr do
       end
 
       it 'should commit avatax' do
-        expect(subject['TotalTax']).to eq('0.6')
+        expect(subject['totalTax']).to eq(0.6)
       end
 
       context 'tax calculation disabled' do
-        let(:order) { create(:order_with_line_items, avalara_transaction: Spree::AvalaraTransaction.new) }
-
         it 'should respond with total tax of 0' do
           Spree::Config.avatax_tax_calculation = false
-          expect(order.avalara_transaction.commit_avatax('SalesOrder')[:TotalTax]).to eq('0.00')
+          expect(order.avalara_transaction.commit_avatax('SalesOrder')['totalTax']).to eq(0.0)
         end
       end
+    end
 
-      context 'promo' do
-        let(:promotion) { create(:promotion, :with_order_adjustment) }
+    context 'promo' do
+      let(:promotion) { create(:promotion, :with_order_adjustment) }
 
-        subject do
-          create(:adjustment, order: order, source: promotion.promotion_actions.first, adjustable: order)
-          order.update_with_updater!
-          order.avalara_transaction.commit_avatax('SalesOrder')
-        end
-
-        it 'applies discount' do
-          expect(subject['TotalDiscount']).to eq('10')
-        end
+      before do
+        create(:adjustment, order: order, source: promotion.promotion_actions.first, adjustable: order)
+        order.updater.update
       end
 
-      context 'included_in_price' do
-        let(:included_in_price) { true }
-
-        subject do
-          order.avalara_transaction.commit_avatax('SalesOrder')
-        end
-
-        it 'calculates the included tax amount from item total' do
-          expect(subject['TotalTax']).to eq('0.57')
-        end
+      subject do
+        order.avalara_transaction.commit_avatax('SalesOrder')
       end
 
-       context 'multiple stock locations', :vcr do
-        let!(:stock_loc_1) { create(:stock_location) }
-        let!(:stock_loc_2) { create(:stock_location) }
-        let!(:var1) {
-          variant = create(:variant)
-          variant.stock_items.destroy_all
-          variant.stock_items.create(stock_location_id: stock_loc_1.id, backorderable: true)
-          variant
-        }
-        let!(:var2) {
-          variant = create(:variant)
-          variant.stock_items.destroy_all
-          variant.stock_items.create(stock_location_id: stock_loc_2.id, backorderable: true)
-          variant
-        }
-        let(:line_item1) { create(:line_item, variant: var1) }
-        let(:line_item2) { create(:line_item, variant: var2) }
-        let(:order) { create(:order_with_line_items, line_items: [line_item1, line_item2]) }
+      it 'applies discount' do
+        expect(subject['lines'][0]['discountAmount']).to eq(10.0)
+      end
+    end
 
-        before do
-          order.create_proposed_shipments
-          order.reload
-          order.shipments.reload
-        end
+    context 'included_in_price' do
+      let(:included_in_price) { true }
 
-        it 'should have correct addresses' do
-          tax_addresses = order.avalara_capture['TaxAddresses'].map { |a| a['Address'] }
-          addresses = order.shipments.map { |s| s.stock_location.address1 }
-          addresses << JSON.parse(Spree::Config.avatax_origin)['Address1']
+      subject do
+        order.avalara_transaction.commit_avatax('SalesOrder')
+      end
 
-          expect(tax_addresses).to include(*addresses)
-        end
+      it 'calculates the included tax amount from item total' do
+        expect(subject['totalTax']).to eq(0.57)
       end
     end
 
@@ -102,7 +74,7 @@ RSpec.describe Spree::AvalaraTransaction, :vcr do
       end
 
       it 'should commit avatax final' do
-        expect(subject['TotalTax']).to eq('0.6')
+        expect(subject['totalTax']).to eq(0.6)
       end
 
       it 'should fail to commit to avatax if settings are false' do
@@ -112,11 +84,9 @@ RSpec.describe Spree::AvalaraTransaction, :vcr do
       end
 
       context 'tax calculation disabled' do
-        let(:order) { create(:order_with_line_items, avalara_transaction: Spree::AvalaraTransaction.new) }
-
         it 'should respond with total tax of 0' do
           Spree::Config.avatax_tax_calculation = false
-          expect(order.avalara_transaction.commit_avatax_final('SalesInvoice')[:TotalTax]).to eq('0.00')
+          expect(subject['totalTax']).to eq(0.0)
         end
       end
 
@@ -129,20 +99,25 @@ RSpec.describe Spree::AvalaraTransaction, :vcr do
         end
 
         it 'does not add additional tax' do
-          expect(subject['TotalTax']).to eq('0')
+          expect(subject['totalTax']).to eq(0)
         end
       end
     end
 
-    describe '#cancel_order' do
-      let(:order) { create(:completed_avalara_order) }
-      subject do
-        order.avalara_capture_finalize
-        order.avalara_transaction.cancel_order
-      end
 
-      it 'should receive ResultCode of Success' do
-        expect(subject['ResultCode']).to eq('Success')
+    describe '#cancel_order' do
+
+      describe 'when successful' do
+        let(:order) { create(:completed_avalara_order) }
+
+        subject do
+          order.avalara_capture_finalize
+          order.avalara_transaction.cancel_order
+        end
+
+        it 'should receive status of cancelled' do
+          expect(subject['status']).to eq('Cancelled')
+        end
       end
 
       context 'error' do
@@ -171,12 +146,12 @@ RSpec.describe Spree::AvalaraTransaction, :vcr do
         order.avalara_transaction.commit_avatax('ReturnOrder', refund)
       end
 
-      it 'should receive a ResultCode of Success' do
-        expect(subject['ResultCode']).to eq('Success')
+      it 'should receive totalTax key' do
+        expect(subject['totalTax']).to be_present
       end
 
-      it 'should have a TotalTax equal to additional_tax_total' do
-        expect(subject['TotalTax']).to eq("#{-order.additional_tax_total.to_f}")
+      it 'should have a totalTax equal to additional_tax_total' do
+        expect(subject['totalTax']).to eq(-order.additional_tax_total.to_f)
       end
     end
 
@@ -185,11 +160,9 @@ RSpec.describe Spree::AvalaraTransaction, :vcr do
         order.avalara_transaction.commit_avatax_final('ReturnOrder', refund)
       end
 
-
       it 'should commit avatax final' do
         expect(subject).to be_kind_of(Hash)
-        expect(subject['ResultCode']).to eq('Success')
-        expect(subject['TotalTax']).to eq("#{-order.additional_tax_total.to_f}")
+        expect(subject['totalTax']).to eq(-order.additional_tax_total.to_f)
       end
 
       it 'should receive post_order_to_avalara' do

@@ -48,7 +48,7 @@ class TaxSvc
       request = { 'error' => { 'message' => e } }
     end
 
-    response = SpreeAvataxCertified::Response::AddressValidation.new(request.body)
+    response = SpreeAvataxCertified::Response::AddressValidation.new(request)
     handle_response(response)
   end
 
@@ -58,12 +58,12 @@ class TaxSvc
     result = response.result
     begin
       if response.error?
-        raise response.result
+        raise SpreeAvataxCertified::RequestError.new(result)
       end
 
       logger.debug(result, response.description + ' Response')
 
-    rescue => e
+    rescue SpreeAvataxCertified::RequestError => e
       logger.error(e.message, response.description + ' Error')
       raise if raise_exceptions?
     end

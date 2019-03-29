@@ -10,7 +10,7 @@ module SpreeAvataxCertified
       @order = order
       @ship_address = order.ship_address
       @origin_address = JSON.parse(Spree::Config.avatax_origin)
-      @addresses = []
+      @addresses = {}
 
       build_addresses
     end

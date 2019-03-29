@@ -22,6 +22,7 @@ module SpreeAvataxCertified
         preference :avatax_log_to_stdout, :boolean, default: false
         preference :avatax_address_validation, :boolean, default: true
         preference :avatax_address_validation_enabled_countries, :array, default: ['United States', 'Canada']
+        preference :avatax_refuse_checkout_address_validation_error, :boolean, default: false
         preference :avatax_tax_calculation, :boolean, default: true
         preference :avatax_document_commit, :boolean, default: true
         preference :avatax_origin, :string, default: '{}'

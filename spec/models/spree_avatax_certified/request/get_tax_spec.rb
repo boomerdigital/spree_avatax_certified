@@ -10,16 +10,11 @@ RSpec.describe SpreeAvataxCertified::Request::GetTax, :vcr do
     end
 
     it 'Commit has value of false' do
-      expect(subject.generate[:Commit]).to be false
+      expect(subject.generate[:createTransactionModel][:commit]).to be false
     end
 
     it 'has ReferenceCode from base_tax_hash' do
-      expect(subject.generate[:ReferenceCode]).to eq(order.number)
-    end
-
-    it 'calls check_vat_id' do
-      expect(subject).to receive(:check_vat_id)
-      subject.generate
+      expect(subject.generate[:createTransactionModel][:referenceCode]).to eq(order.number)
     end
   end
 end

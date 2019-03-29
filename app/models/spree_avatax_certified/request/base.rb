@@ -6,7 +6,7 @@ module SpreeAvataxCertified
       def initialize(order, opts={})
         @order = order
         @doc_type = opts[:doc_type]
-        @commit = opts[:commit]
+        @commit = can_commit?(opts[:commit])
         @request = {}
       end
 
@@ -28,13 +28,6 @@ module SpreeAvataxCertified
         }
       end
 
-       # If there is a vat id, set BusinessIdentificationNo
-      def check_vat_id
-        if !business_id_no.blank?
-          @request[:BusinessIdentificationNo] = business_id_no
-        end
-      end
-
       def address_lines
         @address_lines ||= SpreeAvataxCertified::Address.new(order).addresses
       end
@@ -51,12 +44,13 @@ module SpreeAvataxCertified
         order.user.try(:vat_id)
       end
 
-      def customer_code
-        order.user ? order.user.id : order.email
+      def can_commit?(commit)
+        return commit unless order.can_commit?
+        true
       end
 
-      def avatax_client_version
-        AVATAX_CLIENT_VERSION || 'a0o33000004FH8l'
+      def customer_code
+        order.user ? order.user.id : order.email
       end
     end
   end

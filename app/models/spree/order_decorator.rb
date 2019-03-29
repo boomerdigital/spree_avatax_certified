@@ -49,21 +49,27 @@ Spree::Order.class_eval do
     ship_address.validation_enabled?
   end
 
-  def validate_ship_address
+    def validate_ship_address
     avatax_address = SpreeAvataxCertified::Address.new(self)
     response = avatax_address.validate
 
-    return response if response['ResultCode'] == 'Success'
+    return response.result if response.success?
+    return response if !Spree::Config.avatax_refuse_checkout_address_validation_error
 
-    messages = response['Messages'].each do |message|
-      errors.add(:address_validation_failure, message['Summary'])
+    response.summary_messages.each do |msg|
+      errors.add(:address_validation_failure, msg)
     end
+
    return false
   end
 
   # Bringing this over since it isn't in 2.4 or 3.0
   def update_with_updater!
     updater.update
+  end
+
+  def can_commit?
+    completed? && payments.completed.any?
   end
 
   private

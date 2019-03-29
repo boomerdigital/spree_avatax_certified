@@ -73,8 +73,8 @@ RSpec.describe Spree::Refund, :vcr do
     end
 
     it 'returns correct tax calculations' do
-      expect(subject['TotalAmount'].to_f.abs).to eq(order.total - order.additional_tax_total)
-      expect(subject['TotalTax'].to_f.abs).to eq(order.additional_tax_total)
+      expect(subject['totalAmount'].to_f.abs).to eq(order.total - order.additional_tax_total)
+      expect(subject['totalTax'].to_f.abs).to eq(order.additional_tax_total)
     end
   end
 end
