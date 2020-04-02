@@ -1,6 +1,8 @@
-Spree::Refund.class_eval do
-  has_one :avalara_transaction
-  after_create :avalara_capture_finalize, if: :avalara_tax_enabled?
+module Spree::RefundDecorator
+  def self.prepended(base)
+    base.has_one :avalara_transaction
+    base.after_create :avalara_capture_finalize, if: :avalara_tax_enabled?
+  end
 
   def avalara_tax_enabled?
     Spree::Config.avatax_tax_calculation
@@ -33,4 +35,7 @@ Spree::Refund.class_eval do
   def logger
     @logger ||= SpreeAvataxCertified::AvataxLog.new('Spree::Refund class', 'Start refund capture')
   end
+
+  Spree::Refund.prepend self
 end
+

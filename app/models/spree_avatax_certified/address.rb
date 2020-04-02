@@ -77,7 +77,7 @@ module SpreeAvataxCertified
     private
 
     def validation_response(address)
-      validator = TaxSvc.new
+      validator = Spree::TaxSvc.new
       validator.validate_address(address).validation_result
     end
 

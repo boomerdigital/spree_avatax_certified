@@ -9,9 +9,7 @@ describe Spree::AvalaraTransaction, :vcr do
 
     describe '#lookup_avatax' do
       subject do
-        VCR.use_cassette('order_capture', allow_playback_repeats: true) do
-          order.avalara_transaction.lookup_avatax
-        end
+        order.avalara_transaction.lookup_avatax
       end
 
       it 'should look up avatax' do
@@ -21,9 +19,7 @@ describe Spree::AvalaraTransaction, :vcr do
 
     describe '#commit_avatax' do
       subject do
-        VCR.use_cassette('order_capture', allow_playback_repeats: true) do
-          order.avalara_transaction.commit_avatax('SalesOrder')
-        end
+        order.avalara_transaction.commit_avatax('SalesOrder')
       end
 
       it 'should commit avatax' do
@@ -43,11 +39,9 @@ describe Spree::AvalaraTransaction, :vcr do
         let(:promotion) { create(:promotion, :with_order_adjustment) }
 
         subject do
-          VCR.use_cassette('order_capture_with_promo', allow_playback_repeats: true) do
-            create(:adjustment, order: order, source: promotion.promotion_actions.first, adjustable: order)
-            order.update_with_updater!
-            order.avalara_transaction.commit_avatax('SalesOrder')
-          end
+          create(:adjustment, order: order, source: promotion.promotion_actions.first, adjustable: order)
+          order.update_with_updater!
+          order.avalara_transaction.commit_avatax('SalesOrder')
         end
 
         it 'applies discount' do
@@ -59,9 +53,7 @@ describe Spree::AvalaraTransaction, :vcr do
         let(:included_in_price) { true }
 
         subject do
-          VCR.use_cassette('tax_included_order') do
-            order.avalara_transaction.commit_avatax('SalesOrder')
-          end
+          order.avalara_transaction.commit_avatax('SalesOrder')
         end
 
         it 'calculates the included tax amount from item total' do
@@ -106,9 +98,7 @@ describe Spree::AvalaraTransaction, :vcr do
 
     describe '#commit_avatax_final' do
       subject do
-        VCR.use_cassette('order_capture_finalize', allow_playback_repeats: true) do
-          order.avalara_transaction.commit_avatax_final('SalesInvoice')
-        end
+        order.avalara_transaction.commit_avatax_final('SalesInvoice')
       end
 
       it 'should commit avatax final' do
@@ -134,10 +124,8 @@ describe Spree::AvalaraTransaction, :vcr do
         let(:use_code) { create(:avalara_entity_use_code) }
 
         subject do
-          VCR.use_cassette('order_capture_with_customerusagetype', allow_playback_repeats: true) do
-            order.user.update_attributes(avalara_entity_use_code: use_code)
-            order.avalara_transaction.commit_avatax('SalesInvoice')
-          end
+          order.user.update_attributes(avalara_entity_use_code: use_code)
+          order.avalara_transaction.commit_avatax('SalesInvoice')
         end
 
         it 'does not add additional tax' do
@@ -149,10 +137,8 @@ describe Spree::AvalaraTransaction, :vcr do
     describe '#cancel_order' do
       let(:order) { create(:completed_avalara_order) }
       subject do
-        VCR.use_cassette('order_cancel', allow_playback_repeats: true) do
-          order.avalara_capture_finalize
-          order.avalara_transaction.cancel_order
-        end
+        order.avalara_capture_finalize
+        order.avalara_transaction.cancel_order
       end
 
       it 'should receive ResultCode of Success' do
@@ -176,17 +162,12 @@ describe Spree::AvalaraTransaction, :vcr do
     let(:refund) { build(:refund, payment: order.payments.first, amount: order.total.to_f) }
 
     before do
-      VCR.use_cassette('order_capture_finalize', allow_playback_repeats: true) do
-        order.avalara_capture_finalize
-        order.reload
-      end
+      order.avalara_capture_finalize
     end
 
     describe '#commit_avatax' do
       subject do
-        VCR.use_cassette('order_return_capture', allow_playback_repeats: true) do
-          order.avalara_transaction.commit_avatax('ReturnOrder', refund)
-        end
+        order.avalara_transaction.commit_avatax('ReturnOrder', refund)
       end
 
       it 'should receive a ResultCode of Success' do
@@ -200,9 +181,7 @@ describe Spree::AvalaraTransaction, :vcr do
 
     describe '#commit_avatax_final' do
       subject do
-        VCR.use_cassette('order_return_capture', allow_playback_repeats: true) do
-          order.avalara_transaction.commit_avatax_final('ReturnOrder', refund)
-        end
+        order.avalara_transaction.commit_avatax_final('ReturnOrder', refund)
       end
 
 

@@ -18,7 +18,7 @@ module Spree
       end
 
       def ping_my_service
-        mytax = TaxSvc.new
+        mytax = Spree::TaxSvc.new
         ping_result = mytax.ping
         if ping_result['ResultCode'] == 'Success'
           flash[:success] = 'Ping Successful'

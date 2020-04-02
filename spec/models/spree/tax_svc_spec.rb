@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-RSpec.describe TaxSvc, :vcr do
-  let(:taxsvc) { TaxSvc.new }
+RSpec.describe Spree::TaxSvc, :vcr do
+  let(:taxsvc) { Spree::TaxSvc.new }
   let(:request_hash) { attributes_for(:request_hash) }
 
   describe '#get_tax' do

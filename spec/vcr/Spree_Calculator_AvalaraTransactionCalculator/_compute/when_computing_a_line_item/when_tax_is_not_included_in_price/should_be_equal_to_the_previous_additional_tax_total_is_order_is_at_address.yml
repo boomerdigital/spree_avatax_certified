@@ -5,132 +5,258 @@ http_interactions:
     uri: https://development.avalara.net/1.0/tax/get
     body:
       encoding: UTF-8
-      string: '{"DocCode":"R656322639","DocDate":"2017-04-17","Discount":"0.0","Commit":false,"DocType":"SalesOrder","Addresses":[{"AddressCode":"Orig","Line1":"915
+      string: '{"DocCode":"R076265726","DocDate":"2020-04-02","Discount":"0.0","Commit":false,"DocType":"SalesOrder","Addresses":[{"AddressCode":"Orig","Line1":"915
         S Jackson St","Line2":"","City":"Montgomery","Region":"Alabama","PostalCode":"36104","Country":"United
         States"},{"AddressCode":"Dest","Line1":"915 S Jackson St","Line2":"","City":"Montgomery","Region":"Alabama","Country":"US","PostalCode":"36104"}],"Lines":[{"LineNo":"1-LI","Description":"Product
-        #7 - 5014","TaxCode":"PC030000","ItemCode":"SKU-7","Qty":1,"Amount":10.0,"OriginCode":"Orig","DestinationCode":"Dest","CustomerUsageType":null,"Discounted":false,"TaxIncluded":false}],"CustomerCode":1,"CompanyCode":"54321","CustomerUsageType":null,"ExemptionNo":null,"Client":"a0o33000004FH8l","ReferenceCode":"R656322639","DetailLevel":"Tax","CurrencyCode":"USD"}'
+        #37 - 9485","TaxCode":"PC030000","ItemCode":"SKU-39","Qty":1,"Amount":10.0,"OriginCode":"Orig","DestinationCode":"Dest","CustomerUsageType":null,"Discounted":false,"TaxIncluded":false}],"CustomerCode":1,"CompanyCode":"54321","CustomerUsageType":null,"ExemptionNo":null,"Client":"a0o33000004FH8l","ReferenceCode":"R076265726","DetailLevel":"Tax","CurrencyCode":"USD"}'
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
-      Accept-Encoding:
-      - gzip, deflate
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin18.7.0 x86_64) ruby/2.5.0p0
       Authorization:
       - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
       Content-Type:
       - application/json
       Content-Length:
-      - '812'
-      User-Agent:
-      - Ruby
+      - '814'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - development.avalara.net
   response:
     status:
       code: 200
       message: OK
     headers:
-      Cache-Control:
-      - private
+      Date:
+      - Thu, 02 Apr 2020 19:47:08 GMT
       Content-Type:
       - text/json; charset=utf-8
-      Content-Encoding:
-      - gzip
+      Content-Length:
+      - '561'
+      Connection:
+      - keep-alive
+      Server:
+      - Microsoft-IIS/8.5
+      Cache-Control:
+      - private
       Vary:
       - Accept-Encoding
       X-Aspnet-Version:
       - 4.0.30319
       X-Powered-By:
       - ASP.NET
-      Date:
-      - Mon, 17 Apr 2017 21:19:15 GMT
-      Content-Length:
-      - '552'
-      Set-Cookie:
-      - TS017f1821=01a8ddc44efb8c870ba6609a663f0879e4f91e803462513441da8de1ddd33d39f92e5b7e7ac9a68ca2d3b72f7bd4ab00dc27b218e3;
-        Path=/
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
-      string: !binary |-
-        H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3m
-        kuwdaUcjKasqgcplVmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZk
-        AWz2zkrayZ4hgKrIHz9+fB8/In5x8tGrvFmX7Uk1yz96lH70ej2d5k3z0Sj5
-        6Gk1fZq1/Onezu6D7Z397d0H+OJNscibNluswq/e7O0+2n34aPf++MHDTx/s
-        79z/KW5ctVl5vKjWyxbNd3fsh0+LZmo+dp+evssXq7aoluHHb7J32aRkZDwQ
-        9Ck+2Rnv+x+dZOV0XRLqM//L7F18NDRMM/hXn97/9N7e3qf3HuILeuN5scwb
-        +uZ7CREKf7yo6K+Pdrefn2kL8+rLk517O/Tox9mkKIv2Gt+09TrHp09orLOs
-        vn6eX+YlvjiezWoldX/QfeIAqE+AVzqanfHOPnXMn1Ej+cgMeZAUeZsVpR3a
-        CbqqGd2vXqPJq/xCsTl+jr+/s66L5s31int83RJA+6mhwM4uPiLY74smQ3mR
-        LbjZ8fPjJ8dfHONzauU+TV+/OX5zmr45/r0/+iXJ9xP8X5ooFd006QcGrafE
-        qoB24xAJlnx0xrTa27m/9+AhMwIjaODt7O7u7N7f1ZFoZ/ji4e799HX6nWz6
-        tqmW6WvpVHngi2rZXlSLnPqnT19WJD2lAXjv092dfRrUqI/7l3VxgRf+X487
-        JuT/AVnSoAdLBAAA
-    http_version: 
-  recorded_at: Mon, 17 Apr 2017 21:19:15 GMT
+      string: |
+        {
+        "DocCode": "R076265726",
+        "DocDate": "2020-04-02",
+        "Timestamp": "2020-04-02T19:47:03.1383521Z",
+        "TotalAmount": "10",
+        "TotalDiscount": "0",
+        "TotalExemption": "0",
+        "TotalTaxable": "10",
+        "TotalTax": "0.4",
+        "TotalTaxCalculated": "0.4",
+        "TaxLines": [
+        {
+        "LineNo": "1-LI",
+        "TaxCode": "PC030000",
+        "Taxability": "true",
+        "BoundaryLevel": "Address",
+        "Exemption": "0",
+        "Discount": "0",
+        "Taxable": "10",
+        "Rate": "0.040000",
+        "Tax": "0.4",
+        "TaxCalculated": "0.4",
+        "TaxDetails": [
+        {
+        "Country": "US",
+        "Region": "AL",
+        "JurisType": "State",
+        "JurisCode": "01",
+        "Taxable": "10",
+        "Rate": "0.040000",
+        "Tax": "0.4",
+        "JurisName": "ALABAMA",
+        "TaxName": "AL STATE TAX"}
+        ]
+        }
+        ]
+        ,
+        "TaxAddresses": [
+        {
+        "Address": "915 S Jackson St",
+        "AddressCode": "Dest",
+        "City": "Montgomery",
+        "Country": "US",
+        "PostalCode": "36104",
+        "Region": "AL",
+        "TaxRegionId": "2052799",
+        "JurisCode": "0110151000"}
+        ,{
+        "Address": "915 S Jackson St",
+        "AddressCode": "Orig",
+        "City": "Montgomery",
+        "Country": "US",
+        "PostalCode": "36104",
+        "Region": "AL",
+        "TaxRegionId": "2052799",
+        "JurisCode": "0110151000"}
+        ]
+        ,
+        "TaxDate": "2020-04-02",
+        "ResultCode": "Success"}
+    http_version: null
+  recorded_at: Thu, 02 Apr 2020 19:47:09 GMT
 - request:
     method: post
     uri: https://development.avalara.net/1.0/tax/get
     body:
       encoding: UTF-8
-      string: '{"DocCode":"R656322639","DocDate":"2017-04-17","Discount":"0.0","Commit":false,"DocType":"SalesOrder","Addresses":[{"AddressCode":"Orig","Line1":"915
+      string: '{"DocCode":"R076265726","DocDate":"2020-04-02","Discount":"0.0","Commit":false,"DocType":"SalesOrder","Addresses":[{"AddressCode":"Orig","Line1":"915
         S Jackson St","Line2":"","City":"Montgomery","Region":"Alabama","PostalCode":"36104","Country":"United
         States"},{"AddressCode":"Dest","Line1":"915 S Jackson St","Line2":"","City":"Montgomery","Region":"Alabama","Country":"US","PostalCode":"36104"},{"AddressCode":"2","Line1":"1600
         Pennsylvania Ave NW","Line2":null,"City":"Washington","PostalCode":"20500","Country":"US"}],"Lines":[{"LineNo":"1-LI","Description":"Product
-        #7 - 5014","TaxCode":"PC030000","ItemCode":"SKU-7","Qty":1,"Amount":10.0,"OriginCode":"2","DestinationCode":"Dest","CustomerUsageType":null,"Discounted":false,"TaxIncluded":false},{"LineNo":"1-FR","ItemCode":"Avalara
+        #37 - 9485","TaxCode":"PC030000","ItemCode":"SKU-39","Qty":1,"Amount":10.0,"OriginCode":"2","DestinationCode":"Dest","CustomerUsageType":null,"Discounted":false,"TaxIncluded":false},{"LineNo":"1-FR","ItemCode":"Avalara
         Ground","Qty":1,"Amount":100.0,"OriginCode":"2","DestinationCode":"Dest","CustomerUsageType":null,"Description":"Shipping
-        Charge","TaxCode":"FR000000","Discounted":false,"TaxIncluded":false}],"CustomerCode":1,"CompanyCode":"54321","CustomerUsageType":null,"ExemptionNo":null,"Client":"a0o33000004FH8l","ReferenceCode":"R656322639","DetailLevel":"Tax","CurrencyCode":"USD"}'
+        Charge","TaxCode":"FR000000","Discounted":false,"TaxIncluded":false}],"CustomerCode":1,"CompanyCode":"54321","CustomerUsageType":null,"ExemptionNo":null,"Client":"a0o33000004FH8l","ReferenceCode":"R076265726","DetailLevel":"Tax","CurrencyCode":"USD"}'
     headers:
       Accept:
-      - "*/*; q=0.5, application/xml"
-      Accept-Encoding:
-      - gzip, deflate
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin18.7.0 x86_64) ruby/2.5.0p0
       Authorization:
       - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
       Content-Type:
       - application/json
       Content-Length:
-      - '1161'
-      User-Agent:
-      - Ruby
+      - '1163'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - development.avalara.net
   response:
     status:
       code: 200
       message: OK
     headers:
-      Cache-Control:
-      - private
+      Date:
+      - Thu, 02 Apr 2020 19:47:10 GMT
       Content-Type:
       - text/json; charset=utf-8
-      Content-Encoding:
-      - gzip
+      Content-Length:
+      - '674'
+      Connection:
+      - keep-alive
+      Server:
+      - Microsoft-IIS/8.5
+      Cache-Control:
+      - private
       Vary:
       - Accept-Encoding
       X-Aspnet-Version:
       - 4.0.30319
       X-Powered-By:
       - ASP.NET
-      Date:
-      - Mon, 17 Apr 2017 21:19:16 GMT
-      Content-Length:
-      - '666'
-      Set-Cookie:
-      - TS017f1821=01a8ddc44e2c002962b7359b870b1a6ec87f843bf6c49241f7b42a9f6ae486853db656106ebe0b62acab5d52b783f50f570da67da5;
-        Path=/
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
     body:
       encoding: ASCII-8BIT
-      string: !binary |-
-        H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3m
-        kuwdaUcjKasqgcplVmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZk
-        AWz2zkrayZ4hgKrIHz9+fB8/In5x8tGrvFmX7Uk1yz96lH70ej2d5k3z0Sj5
-        6Gk1fZq1/Onezu6D7Z397d0H+OJNscibNluswq/e7O0+2n34aPfT8f7D+w/3
-        Pt3/KW5ctVl5vKjWyxbNd3d37KdPi2ZqPnefnr7LF6u2qJbhx2+yd9mkZGx8
-        GPQxPtof7/sfnWTldF0S8jP/y+xdfDw0UDP8V5/e//Te3t6n9x7iC3rjebHM
-        G/rmewmRCn+8qOivj3a3n59pC/Pqy5Odezv06MfZpCiL9hrftPU6x6dPaLCz
-        rL5+nl/mJb44ns1qJXZ/1H3qAKhSgD94paPZGe/sU8f8GTWSj8yQQ1K4z5/m
-        bVaUdmgn6KpmdL96jSav8gvF5vg5/v7Oui6aN9cr7vF1SwDtp4YCO7v4iGC/
-        L5oM5UW24GbHz4+fHH9xjM+plfs0ff3m+M1p+ub49/7olyTfT35JMiK0/Rl5
-        9krfMfg8e0W90aMf/yzPCH+yYaw8Uvo9nBDz6Q9nOhifm3BkII7ut5yN7yfS
-        RCnohEY/MFg9JdUBaDeOkGDJR2dMqL2d+3sPHrJYMoIG3g5pg937NDQeh3aG
-        Lx7u3k9fp9/Jpm+bapm+lk51/r+olu1Ftcipf/r0ZUXarDQA7326u7NPgwJ7
-        KTjz1R5ab0D86Qn+7iDOeAUoE8b64Cvtg7/4dGcnfZkvl811eZktiyw9vszT
-        F99FM4P6d7NmXiwvWuqRPg1RJxoRTMzFL0n+H7wYrB7aBQAA
-    http_version: 
-  recorded_at: Mon, 17 Apr 2017 21:19:16 GMT
-recorded_with: VCR 3.0.3
+      string: |
+        {
+        "DocCode": "R076265726",
+        "DocDate": "2020-04-02",
+        "Timestamp": "2020-04-02T19:47:04.7007663Z",
+        "TotalAmount": "110",
+        "TotalDiscount": "0",
+        "TotalExemption": "0",
+        "TotalTaxable": "110",
+        "TotalTax": "4.4",
+        "TotalTaxCalculated": "4.4",
+        "TaxLines": [
+        {
+        "LineNo": "1-LI",
+        "TaxCode": "PC030000",
+        "Taxability": "true",
+        "BoundaryLevel": "Address",
+        "Exemption": "0",
+        "Discount": "0",
+        "Taxable": "10",
+        "Rate": "0.040000",
+        "Tax": "0.4",
+        "TaxCalculated": "0.4",
+        "TaxDetails": [
+        {
+        "Country": "US",
+        "Region": "AL",
+        "JurisType": "State",
+        "JurisCode": "01",
+        "Taxable": "10",
+        "Rate": "0.040000",
+        "Tax": "0.4",
+        "JurisName": "ALABAMA",
+        "TaxName": "AL STATE TAX"}
+        ]
+        }
+        ,{
+        "LineNo": "1-FR",
+        "TaxCode": "FR000000",
+        "Taxability": "true",
+        "BoundaryLevel": "Address",
+        "Exemption": "0",
+        "Discount": "0",
+        "Taxable": "100",
+        "Rate": "0.040000",
+        "Tax": "4",
+        "TaxCalculated": "4",
+        "TaxDetails": [
+        {
+        "Country": "US",
+        "Region": "AL",
+        "JurisType": "State",
+        "JurisCode": "01",
+        "Taxable": "100",
+        "Rate": "0.040000",
+        "Tax": "4",
+        "JurisName": "ALABAMA",
+        "TaxName": "AL STATE TAX"}
+        ]
+        }
+        ]
+        ,
+        "TaxAddresses": [
+        {
+        "Address": "915 S Jackson St",
+        "AddressCode": "Dest",
+        "City": "Montgomery",
+        "Country": "US",
+        "PostalCode": "36104",
+        "Region": "AL",
+        "TaxRegionId": "2052799",
+        "JurisCode": "0110151000"}
+        ,{
+        "Address": "1600 Pennsylvania Ave NW",
+        "AddressCode": "2",
+        "City": "Washington",
+        "Country": "US",
+        "PostalCode": "20500",
+        "Region": "DC",
+        "TaxRegionId": "949",
+        "JurisCode": "1100000000"}
+        ]
+        ,
+        "TaxDate": "2020-04-02",
+        "ResultCode": "Success"}
+    http_version: null
+  recorded_at: Thu, 02 Apr 2020 19:47:10 GMT
+recorded_with: VCR 5.1.0
