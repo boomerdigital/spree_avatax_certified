@@ -8,6 +8,14 @@ script:
   - bundle exec rake spec
 
 env:
+  global:
+  - AVATAX_COMPANY_CODE=test_company
+  - AVATAX_ACCOUNT=test_account
+  - AVATAX_LICENSE_KEY=test_license_key
+  - AVATAX_ENDPOINT=https://development.avalara.net
+  - RAILS_ENV=test
+  - RACK_ENV=test
+-  matrix:
   - DB=mysql
   - DB=postgres
 
