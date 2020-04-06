@@ -1,10 +1,11 @@
 sudo: required
 dist: trusty
 
-before_script: "bundle install"
-script:
-  - bundle exec rake test_app
-  - bundle exec rake spec
+language: ruby
+
+addons:
+  chrome: stable
+  postgresql: 9.4
 
 env:
   global:
@@ -15,20 +16,21 @@ env:
     - RAILS_ENV=test
     - RACK_ENV=test
   matrix:
-    - DB=mysql
     - DB=postgres
-
-language: ruby
-
-rvm:
-  - 2.5.1
-  - 2.4.4
+    - DB=mysql
 
 gemfile:
   - gemfiles/spree_3_7.gemfile
   - gemfiles/spree_4_0.gemfile
   - gemfiles/spree_4_1.gemfile
   - gemfiles/spree_master.gemfile
+
+script:
+  - bundle exec rake test_app
+  - bundle exec rake spec
+
+rvm:
+  - 2.5.1
 
 matrix:
   allow_failures:
@@ -41,4 +43,3 @@ before_install:
   - rm ~/chromedriver_linux64.zip
   - sudo mv -f ~/chromedriver /usr/local/share/
   - sudo chmod +x /usr/local/share/chromedriver
-  - sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
