@@ -32,13 +32,13 @@ describe Spree::Address, :vcr do
 
   describe '#validation_enabled_countries' do
     it 'returns an array' do
-      expect(Spree::Address.validation_enabled_countries).to be_kind_of(Array)
+      expect(address.validation_enabled_countries).to be_kind_of(Array)
     end
 
     it 'includes United States' do
       Spree::Config.avatax_address_validation_enabled_countries = ['United States', 'Canada']
 
-      expect(Spree::Address.validation_enabled_countries).to include('United States')
+      expect(address.validation_enabled_countries).to include('United States')
     end
   end
 end

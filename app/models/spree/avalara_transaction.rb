@@ -53,7 +53,7 @@ module Spree
 
       request = SpreeAvataxCertified::Request::CancelTax.new(order, doc_type: doc_type).generate
 
-      mytax = TaxSvc.new
+      mytax = Spree::TaxSvc.new
       mytax.cancel_tax(request).tax_result
     end
 
@@ -62,7 +62,7 @@ module Spree
 
       request = SpreeAvataxCertified::Request::GetTax.new(order, commit: commit, doc_type: doc_type).generate
 
-      mytax = TaxSvc.new
+      mytax = Spree::TaxSvc.new
       response = mytax.get_tax(request)
 
       return { TotalTax: '0.00' } if response.error?
@@ -74,7 +74,7 @@ module Spree
 
       request = SpreeAvataxCertified::Request::ReturnTax.new(order, commit: commit, doc_type: doc_type, refund: refund).generate
 
-      mytax = TaxSvc.new
+      mytax = Spree::TaxSvc.new
       response = mytax.get_tax(request)
 
       return { TotalTax: '0.00' } if response.error?

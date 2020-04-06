@@ -1,4 +1,4 @@
-Spree::LineItem.class_eval do
+module Spree::LineItemDecorator
   def to_hash
     {
       'Index' => id,
@@ -22,4 +22,6 @@ Spree::LineItem.class_eval do
   def avatax_line_code
     'LI'
   end
+
+  Spree::LineItem.prepend self
 end

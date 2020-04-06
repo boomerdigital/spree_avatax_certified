@@ -1,0 +1,405 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://development.avalara.net/1.0/tax/get
+    body:
+      encoding: UTF-8
+      string: '{"DocCode":"R693189186","DocDate":"2020-04-02","Discount":"0.0","Commit":false,"DocType":"SalesOrder","Addresses":[{"AddressCode":"Orig","Line1":"915
+        S Jackson St","Line2":"","City":"Montgomery","Region":"Alabama","PostalCode":"36104","Country":"United
+        States"},{"AddressCode":"Dest","Line1":"915 S Jackson St","Line2":"","City":"Montgomery","Region":"Alabama","Country":"US","PostalCode":"36104"}],"Lines":[{"LineNo":"1-LI","Description":"Product
+        #11 - 1259","TaxCode":"PC030000","ItemCode":"SKU-13","Qty":1,"Amount":10.0,"OriginCode":"Orig","DestinationCode":"Dest","CustomerUsageType":null,"Discounted":false,"TaxIncluded":false}],"CustomerCode":1,"CompanyCode":"54321","CustomerUsageType":null,"ExemptionNo":null,"Client":"a0o33000004FH8l","ReferenceCode":"R693189186","DetailLevel":"Tax","CurrencyCode":"USD"}'
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin18.7.0 x86_64) ruby/2.5.0p0
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '814'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - development.avalara.net
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 02 Apr 2020 19:44:23 GMT
+      Content-Type:
+      - text/json; charset=utf-8
+      Content-Length:
+      - '559'
+      Connection:
+      - keep-alive
+      Server:
+      - Microsoft-IIS/8.5
+      Cache-Control:
+      - private
+      Vary:
+      - Accept-Encoding
+      X-Aspnet-Version:
+      - 4.0.30319
+      X-Powered-By:
+      - ASP.NET
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        {
+        "ResultCode": "Success",
+        "DocCode": "R693189186",
+        "DocDate": "2020-04-02",
+        "Timestamp": "2020-04-02T19:44:28.6563918Z",
+        "TotalAmount": "10",
+        "TotalDiscount": "0",
+        "TotalExemption": "0",
+        "TotalTaxable": "10",
+        "TotalTax": "0.4",
+        "TotalTaxCalculated": "0.4",
+        "TaxLines": [
+        {
+        "LineNo": "1-LI",
+        "TaxCode": "PC030000",
+        "Taxability": "true",
+        "BoundaryLevel": "Address",
+        "Exemption": "0",
+        "Discount": "0",
+        "Taxable": "10",
+        "Rate": "0.040000",
+        "Tax": "0.4",
+        "TaxCalculated": "0.4",
+        "TaxDetails": [
+        {
+        "Country": "US",
+        "Region": "AL",
+        "JurisType": "State",
+        "JurisCode": "01",
+        "Taxable": "10",
+        "Rate": "0.040000",
+        "Tax": "0.4",
+        "JurisName": "ALABAMA",
+        "TaxName": "AL STATE TAX"}
+        ]
+        }
+        ]
+        ,
+        "TaxAddresses": [
+        {
+        "Address": "915 S Jackson St",
+        "AddressCode": "Dest",
+        "City": "Montgomery",
+        "Country": "US",
+        "PostalCode": "36104",
+        "Region": "AL",
+        "TaxRegionId": "2052799",
+        "JurisCode": "0110151000"}
+        ,{
+        "Address": "915 S Jackson St",
+        "AddressCode": "Orig",
+        "City": "Montgomery",
+        "Country": "US",
+        "PostalCode": "36104",
+        "Region": "AL",
+        "TaxRegionId": "2052799",
+        "JurisCode": "0110151000"}
+        ]
+        ,
+        "TaxDate": "2020-04-02"}
+    http_version: null
+  recorded_at: Thu, 02 Apr 2020 19:44:23 GMT
+- request:
+    method: post
+    uri: https://development.avalara.net/1.0/tax/get
+    body:
+      encoding: UTF-8
+      string: '{"DocCode":"R693189186","DocDate":"2020-04-02","Discount":"0.0","Commit":false,"DocType":"SalesOrder","Addresses":[{"AddressCode":"Orig","Line1":"915
+        S Jackson St","Line2":"","City":"Montgomery","Region":"Alabama","PostalCode":"36104","Country":"United
+        States"},{"AddressCode":"Dest","Line1":"915 S Jackson St","Line2":"","City":"Montgomery","Region":"Alabama","Country":"US","PostalCode":"36104"},{"AddressCode":"2","Line1":"1600
+        Pennsylvania Ave NW","Line2":null,"City":"Washington","PostalCode":"20500","Country":"US"}],"Lines":[{"LineNo":"1-LI","Description":"Product
+        #11 - 1259","TaxCode":"PC030000","ItemCode":"SKU-13","Qty":1,"Amount":10.0,"OriginCode":"2","DestinationCode":"Dest","CustomerUsageType":null,"Discounted":false,"TaxIncluded":false},{"LineNo":"1-FR","ItemCode":"Avalara
+        Ground","Qty":1,"Amount":5.0,"OriginCode":"2","DestinationCode":"Dest","CustomerUsageType":null,"Description":"Shipping
+        Charge","TaxCode":"FR000000","Discounted":false,"TaxIncluded":false}],"CustomerCode":1,"CompanyCode":"54321","CustomerUsageType":null,"ExemptionNo":null,"Client":"a0o33000004FH8l","ReferenceCode":"R693189186","DetailLevel":"Tax","CurrencyCode":"USD"}'
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin18.7.0 x86_64) ruby/2.5.0p0
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '1161'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - development.avalara.net
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 02 Apr 2020 19:44:25 GMT
+      Content-Type:
+      - text/json; charset=utf-8
+      Content-Length:
+      - '674'
+      Connection:
+      - keep-alive
+      Server:
+      - Microsoft-IIS/8.5
+      Cache-Control:
+      - private
+      Vary:
+      - Accept-Encoding
+      X-Aspnet-Version:
+      - 4.0.30319
+      X-Powered-By:
+      - ASP.NET
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        {
+        "ResultCode": "Success",
+        "DocCode": "R693189186",
+        "DocDate": "2020-04-02",
+        "Timestamp": "2020-04-02T19:44:28.3924684Z",
+        "TotalAmount": "15",
+        "TotalDiscount": "0",
+        "TotalExemption": "0",
+        "TotalTaxable": "15",
+        "TotalTax": "0.6",
+        "TotalTaxCalculated": "0.6",
+        "TaxLines": [
+        {
+        "LineNo": "1-LI",
+        "TaxCode": "PC030000",
+        "Taxability": "true",
+        "BoundaryLevel": "Address",
+        "Exemption": "0",
+        "Discount": "0",
+        "Taxable": "10",
+        "Rate": "0.040000",
+        "Tax": "0.4",
+        "TaxCalculated": "0.4",
+        "TaxDetails": [
+        {
+        "Country": "US",
+        "Region": "AL",
+        "JurisType": "State",
+        "JurisCode": "01",
+        "Taxable": "10",
+        "Rate": "0.040000",
+        "Tax": "0.4",
+        "JurisName": "ALABAMA",
+        "TaxName": "AL STATE TAX"}
+        ]
+        }
+        ,{
+        "LineNo": "1-FR",
+        "TaxCode": "FR000000",
+        "Taxability": "true",
+        "BoundaryLevel": "Address",
+        "Exemption": "0",
+        "Discount": "0",
+        "Taxable": "5",
+        "Rate": "0.040000",
+        "Tax": "0.2",
+        "TaxCalculated": "0.2",
+        "TaxDetails": [
+        {
+        "Country": "US",
+        "Region": "AL",
+        "JurisType": "State",
+        "JurisCode": "01",
+        "Taxable": "5",
+        "Rate": "0.040000",
+        "Tax": "0.2",
+        "JurisName": "ALABAMA",
+        "TaxName": "AL STATE TAX"}
+        ]
+        }
+        ]
+        ,
+        "TaxAddresses": [
+        {
+        "Address": "915 S Jackson St",
+        "AddressCode": "Dest",
+        "City": "Montgomery",
+        "Country": "US",
+        "PostalCode": "36104",
+        "Region": "AL",
+        "TaxRegionId": "2052799",
+        "JurisCode": "0110151000"}
+        ,{
+        "Address": "1600 Pennsylvania Ave NW",
+        "AddressCode": "2",
+        "City": "Washington",
+        "Country": "US",
+        "PostalCode": "20500",
+        "Region": "DC",
+        "TaxRegionId": "949",
+        "JurisCode": "1100000000"}
+        ]
+        ,
+        "TaxDate": "2020-04-02"}
+    http_version: null
+  recorded_at: Thu, 02 Apr 2020 19:44:25 GMT
+- request:
+    method: post
+    uri: https://development.avalara.net/1.0/tax/get
+    body:
+      encoding: UTF-8
+      string: '{"DocCode":"R693189186","DocDate":"2020-04-02","Discount":"0.0","Commit":true,"DocType":"SalesInvoice","Addresses":[{"AddressCode":"Orig","Line1":"915
+        S Jackson St","Line2":"","City":"Montgomery","Region":"Alabama","PostalCode":"36104","Country":"United
+        States"},{"AddressCode":"Dest","Line1":"915 S Jackson St","Line2":"","City":"Montgomery","Region":"Alabama","Country":"US","PostalCode":"36104"},{"AddressCode":"2","Line1":"1600
+        Pennsylvania Ave NW","Line2":null,"City":"Washington","PostalCode":"20500","Country":"US"}],"Lines":[{"LineNo":"1-LI","Description":"Product
+        #11 - 1259","TaxCode":"PC030000","ItemCode":"SKU-13","Qty":1,"Amount":10.0,"OriginCode":"2","DestinationCode":"Dest","CustomerUsageType":null,"Discounted":false,"TaxIncluded":false},{"LineNo":"1-FR","ItemCode":"Avalara
+        Ground","Qty":1,"Amount":5.0,"OriginCode":"2","DestinationCode":"Dest","CustomerUsageType":null,"Description":"Shipping
+        Charge","TaxCode":"FR000000","Discounted":false,"TaxIncluded":false}],"CustomerCode":1,"CompanyCode":"54321","CustomerUsageType":null,"ExemptionNo":null,"Client":"a0o33000004FH8l","ReferenceCode":"R693189186","DetailLevel":"Tax","CurrencyCode":"USD"}'
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin18.7.0 x86_64) ruby/2.5.0p0
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '1162'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - development.avalara.net
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 02 Apr 2020 19:44:26 GMT
+      Content-Type:
+      - text/json; charset=utf-8
+      Content-Length:
+      - '674'
+      Connection:
+      - keep-alive
+      Server:
+      - Microsoft-IIS/8.5
+      Cache-Control:
+      - private
+      Vary:
+      - Accept-Encoding
+      X-Aspnet-Version:
+      - 4.0.30319
+      X-Powered-By:
+      - ASP.NET
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        {
+        "ResultCode": "Success",
+        "DocCode": "R693189186",
+        "DocDate": "2020-04-02",
+        "Timestamp": "2020-04-02T19:44:26.3777063Z",
+        "TotalAmount": "15",
+        "TotalDiscount": "0",
+        "TotalExemption": "0",
+        "TotalTaxable": "15",
+        "TotalTax": "0.6",
+        "TotalTaxCalculated": "0.6",
+        "TaxLines": [
+        {
+        "LineNo": "1-LI",
+        "TaxCode": "PC030000",
+        "Taxability": "true",
+        "BoundaryLevel": "Address",
+        "Exemption": "0",
+        "Discount": "0",
+        "Taxable": "10",
+        "Rate": "0.040000",
+        "Tax": "0.4",
+        "TaxCalculated": "0.4",
+        "TaxDetails": [
+        {
+        "Country": "US",
+        "Region": "AL",
+        "JurisType": "State",
+        "JurisCode": "01",
+        "Taxable": "10",
+        "Rate": "0.040000",
+        "Tax": "0.4",
+        "JurisName": "ALABAMA",
+        "TaxName": "AL STATE TAX"}
+        ]
+        }
+        ,{
+        "LineNo": "1-FR",
+        "TaxCode": "FR000000",
+        "Taxability": "true",
+        "BoundaryLevel": "Address",
+        "Exemption": "0",
+        "Discount": "0",
+        "Taxable": "5",
+        "Rate": "0.040000",
+        "Tax": "0.2",
+        "TaxCalculated": "0.2",
+        "TaxDetails": [
+        {
+        "Country": "US",
+        "Region": "AL",
+        "JurisType": "State",
+        "JurisCode": "01",
+        "Taxable": "5",
+        "Rate": "0.040000",
+        "Tax": "0.2",
+        "JurisName": "ALABAMA",
+        "TaxName": "AL STATE TAX"}
+        ]
+        }
+        ]
+        ,
+        "TaxAddresses": [
+        {
+        "Address": "915 S Jackson St",
+        "AddressCode": "Dest",
+        "City": "Montgomery",
+        "Country": "US",
+        "PostalCode": "36104",
+        "Region": "AL",
+        "TaxRegionId": "2052799",
+        "JurisCode": "0110151000"}
+        ,{
+        "Address": "1600 Pennsylvania Ave NW",
+        "AddressCode": "2",
+        "City": "Washington",
+        "Country": "US",
+        "PostalCode": "20500",
+        "Region": "DC",
+        "TaxRegionId": "949",
+        "JurisCode": "1100000000"}
+        ]
+        ,
+        "TaxDate": "2020-04-02"}
+    http_version: null
+  recorded_at: Thu, 02 Apr 2020 19:44:26 GMT
+recorded_with: VCR 5.1.0

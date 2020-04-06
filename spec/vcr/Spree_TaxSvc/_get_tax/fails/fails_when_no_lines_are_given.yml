@@ -1,0 +1,67 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://development.avalara.net/1.0/tax/get
+    body:
+      encoding: UTF-8
+      string: '{"Commit":false,"CustomerCode":"1","DocDate":"2014-11-03","CompanyCode":"54321","CustomerUsageType":"","ExemptionNo":null,"Client":"a0o33000004FH8l","DocCode":"R731071205","ReferenceCode":"R731071205","DetailLevel":"Tax","DocType":"SalesOrder","Discount":"0.00","Addresses":[{"AddressCode":"9","Line1":"31
+        South St","City":"Morristown","PostalCode":"07960","Country":"US"},{"AddressCode":"Dest","Line1":"73
+        Glenmere Drive","Line2":"","City":"Chatham","Region":"NJ","Country":"US","PostalCode":"07928"},{"AddressCode":"Orig","Line1":"73
+        Glenmere Drive","City":"Chatham","PostalCode":"07928","Country":"United States"}],"Lines":[]}'
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin18.7.0 x86_64) ruby/2.5.0p0
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '629'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - development.avalara.net
+  response:
+    status:
+      code: 500
+      message: Internal Server Error
+    headers:
+      Date:
+      - Thu, 02 Apr 2020 19:48:13 GMT
+      Content-Type:
+      - text/json; charset=utf-8
+      Content-Length:
+      - '183'
+      Connection:
+      - keep-alive
+      Server:
+      - Microsoft-IIS/8.5
+      Cache-Control:
+      - private
+      X-Aspnet-Version:
+      - 4.0.30319
+      X-Powered-By:
+      - ASP.NET
+      X-Content-Type-Options:
+      - nosniff
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+    body:
+      encoding: UTF-8
+      string: |
+        {
+        "ResultCode": "Error",
+        "Messages": [
+        {
+        "Summary": "Lines is expected to be between 1 and 15000.",
+        "RefersTo": "Lines",
+        "Severity": "Error",
+        "Source": "Avalara.AvaTax.Services"}
+        ]
+        }
+    http_version: null
+  recorded_at: Thu, 02 Apr 2020 19:48:13 GMT
+recorded_with: VCR 5.1.0

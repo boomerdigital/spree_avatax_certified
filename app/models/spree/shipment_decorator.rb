@@ -1,4 +1,4 @@
-Spree::Shipment.class_eval do
+module Spree::ShipmentDecorator
   def avatax_cache_key
     key = ['Spree::Shipment']
     key << id
@@ -24,4 +24,6 @@ Spree::Shipment.class_eval do
   def tax_category
     selected_shipping_rate.try(:tax_rate).try(:tax_category) || shipping_method.try(:tax_category)
   end
+
+  Spree::Shipment.prepend self
 end

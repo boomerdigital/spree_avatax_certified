@@ -1,6 +1,8 @@
-Spree::Payment.class_eval do
-  self.state_machine.before_transition to: :completed, do: :avalara_finalize
-  self.state_machine.after_transition to: :void, do: :cancel_avalara
+module Spree::PaymentDecorator
+  def self.prepended(base)
+    base.state_machine.before_transition to: :completed, do: :avalara_finalize
+    base.state_machine.after_transition to: :void, do: :cancel_avalara
+  end
 
   def avalara_tax_enabled?
     Spree::Config.avatax_tax_calculation
@@ -19,4 +21,6 @@ Spree::Payment.class_eval do
 
     order.avalara_capture_finalize
   end
+
+  Spree::Payment.prepend self
 end

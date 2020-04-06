@@ -1,12 +1,14 @@
-Spree::Order.class_eval do
-  has_one :avalara_transaction, dependent: :destroy
+module Spree::OrderDecorator
+  def self.prepended(base)
+    base.has_one :avalara_transaction, dependent: :destroy
+    base.state_machine.before_transition :to => :canceled,
+                                        :do => :cancel_avalara,
+                                        :if => :avalara_tax_enabled?
+    base.state_machine.before_transition :to => :delivery,
+                                        :do => :validate_ship_address,
+                                        :if => :address_validation_enabled?
+  end
 
-  self.state_machine.before_transition :to => :canceled,
-                                      :do => :cancel_avalara,
-                                      :if => :avalara_tax_enabled?
-  self.state_machine.before_transition :to => :delivery,
-                                      :do => :validate_ship_address,
-                                      :if => :address_validation_enabled?
   def avalara_tax_enabled?
     Spree::Config.avatax_tax_calculation
   end
@@ -71,4 +73,7 @@ Spree::Order.class_eval do
   def logger
     @logger ||= SpreeAvataxCertified::AvataxLog.new('Spree::Order class', 'Start order processing')
   end
+
+
+  Spree::Order.prepend self
 end

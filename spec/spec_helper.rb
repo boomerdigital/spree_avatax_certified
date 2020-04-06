@@ -36,6 +36,7 @@ RSpec.configure do |config|
   config.include Spree::TestingSupport::AuthorizationHelpers
   config.include Spree::TestingSupport::ControllerRequests, type: :controller
   config.include FactoryBot::Syntax::Methods
+  config.include Devise::Test::ControllerHelpers, type: :controller
 
   config.mock_with :rspec
 
