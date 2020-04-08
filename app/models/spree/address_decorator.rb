@@ -1,4 +1,8 @@
 module Spree::AddressDecorator
+  def self.prepended(base)
+    base.include ToAvataxHash
+  end
+
   def validation_enabled?
     Spree::Config.avatax_address_validation && country_validation_enabled?
   end
