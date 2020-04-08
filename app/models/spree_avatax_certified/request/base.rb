@@ -55,10 +55,6 @@ module SpreeAvataxCertified
       def customer_code
         order.user ? order.user.id : order.email
       end
-
-      def avatax_client_version
-        AVATAX_CLIENT_VERSION || 'a0o33000004FH8l'
-      end
     end
   end
 end

@@ -1,3 +1,5 @@
 require 'spree_core'
 require 'spree_extension'
 require 'spree_avatax_certified/engine'
+require 'spree_avatax_certified/exceptions'
+require 'avatax'
