@@ -53,9 +53,7 @@ describe Spree::Refund, :vcr do
 
   describe '#avalara_capture_finalize' do
     subject do
-      VCR.use_cassette('order_return_capture') do
-        refund.save
-      end
+      refund.save
     end
 
     it 'should recieve avalara_capture_finalize and return hash' do
@@ -65,8 +63,8 @@ describe Spree::Refund, :vcr do
   end
 
 
-  context 'full refund', :vcr do
-    let(:order) { create(:completed_avalara_order, shipment_cost: 10) }
+  context 'full refund' do
+    let!(:order) { create(:completed_avalara_order, shipment_cost: 10) }
     let(:refund) { build(:refund, payment: order.payments.first, amount: order.total.to_f) }
 
     subject do
@@ -75,8 +73,8 @@ describe Spree::Refund, :vcr do
     end
 
     it 'returns correct tax calculations' do
-      expect(subject['TotalAmount'].to_f.abs).to eq(order.total - order.additional_tax_total)
-      expect(subject['TotalTax'].to_f.abs).to eq(order.additional_tax_total)
+      expect(subject['totalAmount'].to_f.abs).to eq(order.total - order.additional_tax_total)
+      expect(subject['totalTax'].to_f.abs).to eq(order.additional_tax_total)
     end
   end
 end

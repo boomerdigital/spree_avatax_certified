@@ -1,0 +1,53 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://sandbox-rest.avatax.com/api/v2/transactions/createoradjust
+    body:
+      encoding: UTF-8
+      string: '{"createTransactionModel":{"code":"R250707809","date":"2017-05-31","discount":"0.0","commit":false,"type":"SalesOrder","lines":[],"customerCode":1,"companyCode":"54321","customerUsageType":null,"exemptionNo":null,"referenceCode":"R250707809","currencyCode":"USD"}}'
+    headers:
+      X-Avalara-Uid:
+      - a0o33000004FH8l
+      User-Agent:
+      - Faraday v1.0.1
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 400
+      message: Bad Request
+    headers:
+      Date:
+      - Mon, 13 Apr 2020 22:49:14 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '450'
+      Connection:
+      - keep-alive
+      X-Content-Type-Options:
+      - nosniff
+      Serverduration:
+      - '00:00:00.0004828'
+      Databasecalls:
+      - '0'
+      Databaseduration:
+      - '00:00:00'
+      Serviceduration:
+      - '00:00:00'
+    body:
+      encoding: UTF-8
+      string: '{"error":{"code":"MissingLine","message":"Transactions must have at
+        least one line.","target":"HttpRequestHeaders","details":[{"code":"MissingLine","number":311,"message":"Transactions
+        must have at least one line.","description":"The CreateTransactionModel object
+        must have an element called ''lines'', with at least one valid line record.","faultCode":"Client","helpLink":"http://developer.avalara.com/avatax/errors/MissingLine","severity":"Error"}]}}'
+    http_version: null
+  recorded_at: Mon, 13 Apr 2020 22:49:14 GMT
+recorded_with: VCR 5.1.0

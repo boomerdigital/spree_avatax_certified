@@ -1,0 +1,52 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://sandbox-rest.avatax.com/api/v2/companies/54321/transactions/R526730450/void
+    body:
+      encoding: UTF-8
+      string: '{"code":"DocVoided"}'
+    headers:
+      X-Avalara-Uid:
+      - a0o33000004FH8l
+      User-Agent:
+      - Faraday v1.0.1
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Date:
+      - Mon, 13 Apr 2020 22:48:57 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '370'
+      Connection:
+      - keep-alive
+      X-Content-Type-Options:
+      - nosniff
+      Serverduration:
+      - '00:00:00.0016361'
+      Databasecalls:
+      - '1'
+      Databaseduration:
+      - '00:00:00.0010000'
+      Serviceduration:
+      - '00:00:00'
+    body:
+      encoding: UTF-8
+      string: '{"error":{"code":"EntityNotFoundError","message":"Document not found.","target":"HttpRequest","details":[{"code":"EntityNotFoundError","number":4,"message":"Document
+        not found.","description":"The Document with code ''54321:R526730450'' was
+        not found.","faultCode":"Client","helpLink":"http://developer.avalara.com/avatax/errors/EntityNotFoundError","severity":"Error"}]}}'
+    http_version: null
+  recorded_at: Mon, 13 Apr 2020 22:48:57 GMT
+recorded_with: VCR 5.1.0

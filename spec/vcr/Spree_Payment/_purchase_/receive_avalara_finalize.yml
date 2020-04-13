@@ -1,0 +1,60 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://sandbox-rest.avatax.com/api/v2/transactions/createoradjust
+    body:
+      encoding: UTF-8
+      string: '{"createTransactionModel":{"code":"R558918331","date":"2020-04-13","discount":"0.0","commit":true,"type":"SalesInvoice","lines":[{"number":"1-LI","description":"Product
+        #49 - 2309","taxCode":"PC030000","itemCode":"SKU-49","quantity":1,"amount":10.0,"discounted":false,"taxIncluded":null,"addresses":{"shipFrom":{"line1":"1600
+        Pennsylvania Ave NW","line2":null,"city":"Washington","region":"AL","country":"US","postalCode":"20500"},"shipTo":{"line1":"915
+        S Jackson St","line2":"","city":"Montgomery","region":"AL","country":"US","postalCode":"36104"}},"customerUsageType":null,"businessIdentificationNo":null,"exemptionCode":null}],"customerCode":1,"companyCode":"54321","customerUsageType":null,"exemptionNo":null,"referenceCode":"R558918331","currencyCode":"USD","businessIdentificationNo":null}}'
+    headers:
+      X-Avalara-Uid:
+      - a0o33000004FH8l
+      User-Agent:
+      - Faraday v1.0.1
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Mon, 13 Apr 2020 22:48:51 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '4063'
+      Connection:
+      - keep-alive
+      Location:
+      - "/api/v2/companies/236180/transactions/6000040695656"
+      X-Content-Type-Options:
+      - nosniff
+      Serverduration:
+      - '00:00:00.0871524'
+      Databasecalls:
+      - '1'
+      Databaseduration:
+      - '00:00:00.0010000'
+      Serviceduration:
+      - '00:00:00'
+    body:
+      encoding: UTF-8
+      string: '{"id":6000040695656,"code":"R558918331","companyId":236180,"date":"2020-04-13","paymentDate":"1900-01-01","status":"Committed","type":"SalesInvoice","batchCode":"","currencyCode":"USD","customerUsageType":"","entityUseCode":"","customerVendorCode":"1","customerCode":"1","exemptNo":"","reconciled":false,"locationCode":"","reportingLocationCode":"","purchaseOrderNo":"","referenceCode":"R558918331","salespersonCode":"","taxOverrideType":"None","taxOverrideAmount":0.0,"taxOverrideReason":"","totalAmount":10.0,"totalExempt":0.0,"totalDiscount":0.0,"totalTax":0.4000,"totalTaxable":10.0,"totalTaxCalculated":0.4000,"adjustmentReason":"NotAdjusted","adjustmentDescription":"","locked":false,"region":"AL","country":"US","version":1,"softwareVersion":"20.2.0.26","originAddressId":0,"destinationAddressId":0,"exchangeRateEffectiveDate":"2020-04-13","exchangeRate":1.0,"isSellerImporterOfRecord":false,"description":"","email":"","businessIdentificationNo":"","modifiedDate":"2020-04-13T22:48:50.9579942Z","modifiedUserId":38097,"taxDate":"2020-04-13T00:00:00Z","lines":[{"id":5000076558944,"transactionId":6000040695656,"lineNumber":"1-LI","boundaryOverrideId":0,"customerUsageType":"","entityUseCode":"","description":"Product
+        #49 - 2309","destinationAddressId":5000063648351,"originAddressId":6000063648352,"discountAmount":0.0,"discountTypeId":0,"exemptAmount":0.0,"exemptCertId":0,"exemptNo":"","isItemTaxable":true,"isSSTP":false,"itemCode":"SKU-49","lineAmount":10.0,"quantity":1.0,"ref1":"","ref2":"","reportingDate":"2020-04-13","revAccount":"","sourcing":"Destination","tax":0.4000,"taxableAmount":10.0,"taxCalculated":0.4000,"taxCode":"PC030000","taxCodeId":8107,"taxDate":"2020-04-13","taxEngine":"","taxOverrideType":"None","businessIdentificationNo":"","taxOverrideAmount":0.0,"taxOverrideReason":"","taxIncluded":false,"details":[{"id":2000146415620,"transactionLineId":5000076558944,"transactionId":6000040695656,"addressId":5000063648351,"country":"US","region":"AL","countyFIPS":"","stateFIPS":"01","exemptAmount":0.0,"exemptReasonId":4,"inState":false,"jurisCode":"01","jurisName":"ALABAMA","jurisdictionId":1,"signatureCode":"AAKB","stateAssignedNo":"","jurisType":"STA","jurisdictionType":"State","nonTaxableAmount":0.0,"nonTaxableRuleId":0,"nonTaxableType":"RateRule","rate":0.040000,"rateRuleId":1039993,"rateSourceId":3,"serCode":"","sourcing":"Destination","tax":0.4000,"taxableAmount":10.0,"taxType":"Sales","taxSubTypeId":"S","taxTypeGroupId":"SalesAndUse","taxName":"AL
+        STATE TAX","taxAuthorityTypeId":45,"taxRegionId":2052799,"taxCalculated":0.4000,"taxOverride":0.0,"rateType":"General","rateTypeCode":"G","taxableUnits":10.0,"nonTaxableUnits":0.0,"exemptUnits":0.0,"unitOfBasis":"PerCurrencyUnit","isNonPassThru":false,"isFee":false}],"nonPassthroughDetails":[],"lineLocationTypes":[{"documentLineLocationTypeId":11000032975298,"documentLineId":5000076558944,"documentAddressId":6000063648352,"locationTypeCode":"ShipFrom"},{"documentLineLocationTypeId":8971717514,"documentLineId":5000076558944,"documentAddressId":5000063648351,"locationTypeCode":"ShipTo"}],"hsCode":"","costInsuranceFreight":0.0,"vatCode":"","vatNumberTypeId":0}],"addresses":[{"id":5000063648351,"transactionId":6000040695656,"boundaryLevel":"Address","line1":"915
+        S Jackson St","line2":"","line3":"","city":"Montgomery","region":"AL","postalCode":"36104-5732","country":"US","taxRegionId":2052799,"latitude":"32.365962","longitude":"-86.296069"},{"id":6000063648352,"transactionId":6000040695656,"boundaryLevel":"Address","line1":"1600
+        Pennsylvania Ave Nw","line2":"","line3":"","city":"Washington","region":"DC","postalCode":"20500-0003","country":"US","taxRegionId":949,"latitude":"38.898664","longitude":"-77.036543"}],"locationTypes":[],"summary":[{"country":"US","region":"AL","jurisType":"State","jurisCode":"01","jurisName":"ALABAMA","taxAuthorityType":45,"stateAssignedNo":"","taxType":"Sales","taxSubType":"S","taxName":"AL
+        STATE TAX","rateType":"General","taxable":10.0,"rate":0.040000,"tax":0.40,"taxCalculated":0.40,"nonTaxable":0.0,"exemption":0.0}]}'
+    http_version: null
+  recorded_at: Mon, 13 Apr 2020 22:48:51 GMT
+recorded_with: VCR 5.1.0

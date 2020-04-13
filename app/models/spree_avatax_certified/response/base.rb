@@ -1,20 +1,24 @@
 module SpreeAvataxCertified
   module Response
     class Base
-      attr_accessor :result
-      # To Do
-      # 1. Create way to display errors cleanly
+      attr_accessor :result, :faraday
 
-      def initialize(result)
-        @result = result
+      def initialize(faraday)
+        @faraday = faraday
+      end
+
+      def result
+        @result ||= faraday.body
       end
 
       def success?
-        result['ResultCode'] == 'Success'
+        faraday.success?
       end
 
       def error?
-        !success? rescue true
+        !success?
+      rescue StandardError
+        true
       end
 
       def description

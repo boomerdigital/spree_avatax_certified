@@ -55,12 +55,13 @@ module Spree::OrderDecorator
     avatax_address = SpreeAvataxCertified::Address.new(self)
     response = avatax_address.validate
 
-    return response if response['ResultCode'] == 'Success'
+    return response.result if response.success?
 
-    messages = response['Messages'].each do |message|
-      errors.add(:address_validation_failure, message['Summary'])
+    response.summary_messages.each do |msg|
+      errors.add(:address_validation_failure, msg)
     end
-   return false
+
+    false
   end
 
   # Bringing this over since it isn't in 2.4 or 3.0
@@ -68,12 +69,15 @@ module Spree::OrderDecorator
     updater.update
   end
 
+  def can_commit?
+    completed? && payments.completed.any?
+  end
+
   private
 
   def logger
     @logger ||= SpreeAvataxCertified::AvataxLog.new('Spree::Order class', 'Start order processing')
   end
-
 
   Spree::Order.prepend self
 end

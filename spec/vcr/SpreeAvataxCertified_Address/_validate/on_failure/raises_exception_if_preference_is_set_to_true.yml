@@ -1,0 +1,54 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://sandbox-rest.avatax.com/api/v2/addresses/resolve
+    body:
+      encoding: UTF-8
+      string: '{"line1":"915 S Jackson St","line2":"","city":null,"region":"AL","country":"US","postalCode":null}'
+    headers:
+      X-Avalara-Uid:
+      - a0o33000004FH8l
+      User-Agent:
+      - Faraday v1.0.1
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 400
+      message: Bad Request
+    headers:
+      Date:
+      - Mon, 13 Apr 2020 22:49:24 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '461'
+      Connection:
+      - keep-alive
+      X-Content-Type-Options:
+      - nosniff
+      Serverduration:
+      - '00:00:00.0003416'
+      Databasecalls:
+      - '0'
+      Databaseduration:
+      - '00:00:00'
+      Serviceduration:
+      - '00:00:00'
+    body:
+      encoding: UTF-8
+      string: '{"error":{"code":"InvalidAddress","message":"The address value was
+        incomplete.","target":"IncorrectData","details":[{"code":"InvalidAddress","number":309,"message":"The
+        address value was incomplete.","description":"The address value NULL was incomplete.
+        You must provide either a valid postal code, line1 + city + region, or line1
+        + postal code.","faultCode":"Client","helpLink":"http://developer.avalara.com/avatax/errors/InvalidAddress","severity":"Error"}]}}'
+    http_version: null
+  recorded_at: Mon, 13 Apr 2020 22:49:24 GMT
+recorded_with: VCR 5.1.0

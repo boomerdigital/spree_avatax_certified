@@ -1,0 +1,56 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://sandbox-rest.avatax.com/api/v2/transactions/createoradjust
+    body:
+      encoding: UTF-8
+      string: '{"createTransactionModel":{"code":"R250707809","date":"2017-05-31","discount":"0.0","commit":false,"type":"SalesOrder","lines":[{"number":"1-LI","description":"Product
+        #1 - 1825","taxCode":"sdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdf","itemCode":"SKU-1","quantity":1,"amount":10.0,"customerUsageType":null,"discounted":false,"taxIncluded":false,"addresses":{"shipFrom":{"line1":"1600
+        Pennsylvania Ave NW","line2":null,"city":"Washington","region":"DC","country":"US","postalCode":"20500"},"shipTo":{"line1":"915
+        S Jackson St","line2":null,"city":"Montgomery","region":"AL","country":"US","postalCode":"36104"}}}],"customerCode":1,"companyCode":"54321","customerUsageType":null,"exemptionNo":null,"referenceCode":"R250707809","currencyCode":"USD"}}'
+    headers:
+      X-Avalara-Uid:
+      - a0o33000004FH8l
+      User-Agent:
+      - Faraday v1.0.1
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 400
+      message: Bad Request
+    headers:
+      Date:
+      - Mon, 13 Apr 2020 22:49:12 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '414'
+      Connection:
+      - keep-alive
+      X-Content-Type-Options:
+      - nosniff
+      Serverduration:
+      - '00:00:00.0002690'
+      Databasecalls:
+      - '0'
+      Databaseduration:
+      - '00:00:00'
+      Serviceduration:
+      - '00:00:00'
+    body:
+      encoding: UTF-8
+      string: '{"error":{"code":"ModelStateInvalid","message":"Field ''taxCode'' has
+        an invalid length.","target":"HttpRequest","details":[{"code":"MaxStringLengthError","number":14,"message":"Field
+        ''taxCode'' has an invalid length.","description":"Field ''taxCode'' must
+        be no more than 25 characters in length.","faultCode":"Client","helpLink":"http://developer.avalara.com/avatax/errors/MaxStringLengthError","severity":"Error"}]}}'
+    http_version: null
+  recorded_at: Mon, 13 Apr 2020 22:49:13 GMT
+recorded_with: VCR 5.1.0

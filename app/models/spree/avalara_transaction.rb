@@ -21,7 +21,7 @@ module Spree
           post_order_to_avalara(false, doc_type)
         end
       else
-        { TotalTax: '0.00' }
+        { 'totalTax' => 0.0 }
       end
     end
 
@@ -34,7 +34,7 @@ module Spree
             post_order_to_avalara(true, doc_type)
           end
         else
-          { TotalTax: '0.00' }
+          { 'totalTax' => 0.0 }
         end
       else
         logger.info 'Avalara Document Committing Disabled'
@@ -43,18 +43,16 @@ module Spree
     end
 
     def cancel_order
-      cancel_order_to_avalara('SalesInvoice') if tax_calculation_enabled?
+      cancel_order_to_avalara if tax_calculation_enabled?
     end
 
     private
 
-    def cancel_order_to_avalara(doc_type = 'SalesInvoice')
+    def cancel_order_to_avalara
       logger.info "Begin cancel order #{order.number} to avalara..."
 
-      request = SpreeAvataxCertified::Request::CancelTax.new(order, doc_type: doc_type).generate
-
-      mytax = Spree::TaxSvc.new
-      mytax.cancel_tax(request).tax_result
+      mytax = TaxSvc.new
+      mytax.cancel_tax(order.number).tax_result
     end
 
     def post_order_to_avalara(commit = false, doc_type = nil)
@@ -65,7 +63,7 @@ module Spree
       mytax = Spree::TaxSvc.new
       response = mytax.get_tax(request)
 
-      return { TotalTax: '0.00' } if response.error?
+      return { 'totalTax' => 0.0 } if response.error?
       response.tax_result
     end
 
@@ -77,7 +75,7 @@ module Spree
       mytax = Spree::TaxSvc.new
       response = mytax.get_tax(request)
 
-      return { TotalTax: '0.00' } if response.error?
+      return { 'totalTax' => 0.0 } if response.error?
       response.tax_result
     end
 
