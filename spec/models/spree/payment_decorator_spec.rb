@@ -44,10 +44,8 @@ describe Spree::Payment, :vcr do
 
   describe "#purchase!" do
     subject do
-      VCR.use_cassette('order_capture_finalize', allow_playback_repeats: true) do
-        order.avalara_capture_finalize
-        payment.purchase!
-      end
+      order.avalara_capture_finalize
+      payment.purchase!
     end
 
     it "receive avalara_finalize" do
@@ -58,10 +56,8 @@ describe Spree::Payment, :vcr do
 
   describe '#avalara_finalize' do
     subject do
-      VCR.use_cassette('order_capture_finalize', allow_playback_repeats: true) do
-        order.avalara_capture_finalize
-        payment.avalara_finalize
-      end
+      order.avalara_capture_finalize
+      payment.avalara_finalize
     end
 
     it 'should update the amount to be the order total' do
@@ -89,26 +85,24 @@ describe Spree::Payment, :vcr do
 
     context 'uncommitted order' do
       subject do
-        VCR.use_cassette('order_cancel_error', allow_playback_repeats: true) do
-          payment.cancel_avalara
-        end
+        payment.cancel_avalara
       end
 
       it 'should recieve error message' do
-        expect(subject['ResultCode']).to eq('Error')
+        expect { subject['error'] }.to raise_error(SpreeAvataxCertified::RequestError)
       end
     end
 
     context 'committed order' do
       subject do
-        VCR.use_cassette('order_cancel', allow_playback_repeats: true) do
-          order.avalara_capture_finalize
-          payment.cancel_avalara
-        end
+        order.avalara_capture_finalize
+        payment.cancel_avalara
       end
 
-      it 'should receive result of success' do
-        expect(subject['ResultCode']).to eq('Success')
+      describe 'should be successful' do
+        it 'status returns Cancelled' do
+          expect(subject['status']).to eq('Cancelled')
+        end
       end
     end
   end

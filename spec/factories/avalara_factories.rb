@@ -1,19 +1,53 @@
 FactoryBot.define do
   factory :request_hash, class: Hash do
-    Commit { false }
-    CustomerCode { '1' }
-    DocDate { '2014-11-03' }
-    CompanyCode { '54321' }
-    CustomerUsageType { '' }
-    ExemptionNo { nil }
-    Client { AVATAX_CLIENT_VERSION }
-    DocCode { 'R731071205' }
-    ReferenceCode { 'R731071205' }
-    DetailLevel { 'Tax' }
-    DocType { 'SalesOrder' }
-    Discount { '0.00' }
-    Addresses { [{:AddressCode=>'9', :Line1=>'31 South St', :City=>'Morristown', :PostalCode=>'07960', :Country=>'US'},{:AddressCode=>'Dest', :Line1=>'73 Glenmere Drive', :Line2=>'', :City=>'Chatham', :Region=>'NJ', :Country=>'US', :PostalCode=>'07928'},{:AddressCode=>'Orig', :Line1=>'73 Glenmere Drive', :City=>'Chatham', :PostalCode=>'07928', :Country=>'United States'}] }
-    Lines { [{:LineNo=>'1-LI', :ItemCode=>'ROR-00013', :Qty=>3, :Amount=>62.97, :OriginCode=>'9', :DestinationCode=>'Dest', :Description=>'Ruby on Rails Jr. Spaghetti', :TaxCode=>'P0000000', :Discounted=>false}] }
+     createTransactionModel {
+      {
+        code: 'R250707809',
+        date: '2017-05-31',
+        discount: '0.0',
+        commit: false,
+        type: 'SalesOrder',
+        lines: [
+          {
+            number: '1-LI',
+            description: 'Product #1 - 1825',
+            taxCode: 'PC030000',
+            itemCode: 'SKU-1',
+            quantity: 1,
+            amount: 10.0,
+            customerUsageType: nil,
+            discounted: false,
+            taxIncluded: false,
+            addresses: {
+              shipFrom: {
+                line1: '1600 Pennsylvania Ave NW',
+                line2: nil,
+                city: 'Washington',
+                region: 'DC',
+                country: 'US',
+                postalCode: '20500'
+              },
+              shipTo: {
+                line1: '915 S Jackson St',
+                line2: nil,
+                city: 'Montgomery',
+                region: 'AL',
+                country: 'US',
+                postalCode: '36104'
+              }
+            }
+          }
+        ],
+        customerCode: 1,
+        companyCode: '54321',
+        customerUsageType: nil,
+        exemptionNo: nil,
+        referenceCode: 'R250707809',
+        currencyCode: 'USD'
+      }
+    }
+
+    initialize_with { attributes.deep_symbolize_keys }
   end
 
   factory :avalara_transaction_calculator, class: Spree::Calculator::AvalaraTransactionCalculator do
@@ -71,5 +105,14 @@ FactoryBot.modify do
     iso { 'US' }
     iso3 { 'USA' }
     numcode { 840 }
+  end
+
+  factory :state, class: Spree::State do
+    sequence(:name) { "Alabama" }
+    sequence(:abbr) { "AL" }
+    country do |country|
+      usa = Spree::Country.find_by(numcode: 840)
+      usa.present? ? usa : country.association(:country)
+    end
   end
 end

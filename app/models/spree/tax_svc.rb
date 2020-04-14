@@ -8,71 +8,43 @@ require 'logging'
 
 module Spree
   class TaxSvc
-    AVALARA_OPEN_TIMEOUT = ENV.fetch('AVALARA_OPEN_TIMEOUT', 2).to_i
-    AVALARA_READ_TIMEOUT = ENV.fetch('AVALARA_READ_TIMEOUT', 6).to_i
-    AVALARA_RETRY        = ENV.fetch('AVALARA_RETRY', 2).to_i
-    ERRORS_TO_RETRY = [Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED, EOFError,
-                       Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError].freeze
-
     def get_tax(request_hash)
       log(__method__, request_hash)
-      RestClient.log = logger.logger
 
-      response = SpreeAvataxCertified::Response::GetTax.new(request('get', request_hash))
+      req = client.transactions.create_or_adjust(request_hash)
 
-      handle_response(response)
-    end
-
-    def cancel_tax(request_hash)
-      log(__method__, request_hash)
-
-      response = SpreeAvataxCertified::Response::CancelTax.new(request('cancel', request_hash))
+      response = SpreeAvataxCertified::Response::GetTax.new(req)
 
       handle_response(response)
     end
 
-    def estimate_tax(coordinates, sale_amount)
-      if tax_calculation_enabled?
-        log(__method__)
+    def cancel_tax(transaction_code)
+      log(__method__, transaction_code)
 
-        return nil if coordinates.nil?
-        sale_amount = 0 if sale_amount.nil?
-        coor = coordinates[:latitude].to_s + ',' + coordinates[:longitude].to_s
+      req = client.transactions.void(company_code, transaction_code)
+      response = SpreeAvataxCertified::Response::CancelTax.new(req)
 
-        uri = URI(service_url + coor + '/get?saleamount=' + sale_amount.to_s)
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = true
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        http.open_timeout = 1
-        http.read_timeout = 1
-
-        res = http.get(uri.request_uri, 'Authorization' => credential, 'Content-Type' => 'application/json')
-        JSON.parse(res.body)
-      end
-    rescue => e
-      logger.error e, 'Estimate Tax Error'
-      'Estimate Tax Error'
+      handle_response(response)
     end
 
     def ping
       logger.info 'Ping Call'
-      estimate_tax({ latitude: '40.714623', longitude: '-74.006605' }, 0)
+
+      # Testing if configuration is set up properly, ping will fail if it is not
+      client.tax_rates.get(:by_postal_code, country: 'US', postalCode: '07801')
     end
+
 
     def validate_address(address)
       begin
-        uri = URI(address_service_url + address.to_query)
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = true
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        http.open_timeout = 1
-        http.read_timeout = 1
-        request = http.get(uri.request_uri, 'Authorization' => credential)
-      rescue => e
+        request = client.addresses.validate(address)
+      rescue StandardError => e
         logger.error(e)
+
+        request = { 'error' => { 'message' => e } }
       end
 
-      response = SpreeAvataxCertified::Response::AddressValidation.new(request.body)
+      response = SpreeAvataxCertified::Response::AddressValidation.new(request)
       handle_response(response)
     end
 
@@ -82,13 +54,13 @@ module Spree
       result = response.result
       begin
         if response.error?
-          raise response.result
+          raise SpreeAvataxCertified::RequestError, result
         end
 
         logger.debug(result, response.description + ' Response')
-
-      rescue => e
+      rescue SpreeAvataxCertified::RequestError => e
         logger.error(e.message, response.description + ' Error')
+        raise if raise_exceptions?
       end
 
       response
@@ -124,26 +96,25 @@ module Spree
       Spree::Config.avatax_account
     end
 
-    def request(uri, request_hash)
-      tries ||= AVALARA_RETRY
-      res = RestClient::Request.execute(method: :post,
-                                        open_timeout: AVALARA_OPEN_TIMEOUT,
-                                        read_timeout: AVALARA_READ_TIMEOUT,
-                                        url: service_url + uri,
-                                        payload:  JSON.generate(request_hash),
-                                        headers: {
-                                          authorization: credential,
-                                          content_type: 'application/json'
-                                        }) do |response, _request, _result|
-        response
-      end
+    def company_code
+      Spree::Config.avatax_company_code
+    end
 
-      JSON.parse(res)
-    rescue *(ERRORS_TO_RETRY + [RestClient::ExceptionWithResponse,
-                                RestClient::ServerBrokeConnection,
-                                RestClient::SSLCertificateNotVerified]) => e
-      retry unless (tries -= 1).zero?
-      logger.error e, 'Avalara Request Error'
+    def environment
+      Rails.env.production? ? :production : :sandbox
+    end
+
+    def raise_exceptions?
+      Spree::Config.avatax_raise_exceptions
+    end
+
+    def client
+      @client ||= Avatax::Client.new(
+        username: account_number,
+        password: license_key,
+        env: environment,
+        headers: AVATAX_HEADERS
+      )
     end
 
     def log(method, request_hash = nil)

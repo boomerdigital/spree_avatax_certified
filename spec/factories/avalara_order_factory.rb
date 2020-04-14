@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :avalara_order, class: Spree::Order do
     user
@@ -17,16 +19,13 @@ FactoryBot.define do
       tax_included { false }
     end
 
-    before(:create) do |order, evaluator|
+    before(:create) do |_order, evaluator|
       if Spree::Country.count == 0
         create(:country)
       end
-      if Spree::Zone.find_by(name: 'GlobalZone').present?
-        Spree::Zone.find_by(name: 'GlobalZone').update_attributes(default_tax: true)
-      else
-        create(:global_zone, default_tax: true)
+      if Spree::Zone.find_by(name: 'GlobalZone').nil?
+        create(:global_zone)
       end
-
       if Spree::TaxCategory.first.nil?
         create(:clothing_tax_rate, tax_category: create(:tax_category), included_in_price: evaluator.tax_included)
       else
@@ -35,11 +34,7 @@ FactoryBot.define do
     end
 
     after(:create) do |order, evaluator|
-      create_list(:line_item, evaluator.line_items_count,
-                  order: order,
-                  price: evaluator.line_items_price,
-                  tax_category: evaluator.tax_category || Spree::TaxCategory.first,
-                  quantity: evaluator.line_items_quantity)
+      create_list(:line_item, evaluator.line_items_count, order: order, price: evaluator.line_items_price, tax_category: evaluator.tax_category, quantity: evaluator.line_items_quantity)
       order.line_items.reload
 
       create(:avalara_shipment, order: order, cost: evaluator.shipment_cost, tax_included: evaluator.tax_included)

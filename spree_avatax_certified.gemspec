@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'spree_core', spree_version
   s.add_runtime_dependency 'spree_backend', spree_version
   s.add_runtime_dependency 'spree_extension'
+  s.add_dependency 'avatax-ruby'
   s.add_dependency 'json'
   s.add_dependency 'addressable'
   s.add_dependency 'rest-client'

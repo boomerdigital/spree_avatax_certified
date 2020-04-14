@@ -1,18 +1,18 @@
 class SpreeAvataxCertified::Request::GetTax < SpreeAvataxCertified::Request::Base
   def generate
-    @request = {
-      DocCode: order.number,
-      DocDate: doc_date,
-      Discount: order.all_adjustments.promotion.eligible.sum(:amount).abs.to_s,
-      Commit: @commit,
-      DocType: @doc_type ? @doc_type : 'SalesOrder',
-      Addresses: address_lines,
-      Lines: sales_lines
-    }.merge(base_tax_hash)
+    promotion_discount = order.all_adjustments.promotion.eligible.sum(:amount).abs
+    manual_discount = order.all_adjustments.where('amount < 0').where(source: nil).eligible.sum(:amount).abs
 
-    check_vat_id
-
-    @request
+    {
+      createTransactionModel: {
+        code: order.number,
+        date: doc_date,
+        discount: (promotion_discount + manual_discount).to_s,
+        commit: @commit,
+        type: @doc_type || 'SalesOrder',
+        lines: sales_lines
+      }.merge(base_tax_hash)
+    }
   end
 
   protected

@@ -1,0 +1,48 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://sandbox-rest.avatax.com/api/v2/taxrates/bypostalcode?country=US&postalCode=07801
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      X-Avalara-Uid:
+      - a0o33000004FH8l
+      User-Agent:
+      - Faraday v1.0.1
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 13 Apr 2020 22:49:18 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '87'
+      Connection:
+      - keep-alive
+      X-Content-Type-Options:
+      - nosniff
+      Serverduration:
+      - '00:00:00.0216549'
+      Databasecalls:
+      - '0'
+      Databaseduration:
+      - '00:00:00'
+      Serviceduration:
+      - '00:00:00'
+    body:
+      encoding: UTF-8
+      string: '{"totalRate":0.066250,"rates":[{"rate":0.066250,"name":"NJ STATE TAX","type":"State"}]}'
+    http_version: null
+  recorded_at: Mon, 13 Apr 2020 22:49:18 GMT
+recorded_with: VCR 5.1.0
