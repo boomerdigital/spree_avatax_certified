@@ -1,0 +1,135 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://sandbox-rest.avatax.com/api/v2/transactions/createoradjust
+    body:
+      encoding: UTF-8
+      string: '{"createTransactionModel":{"code":"R828260715","date":"2020-04-27","discount":"0.0","commit":false,"type":"SalesOrder","lines":[{"number":"1-LI","description":"Product
+        #9 - 4812","taxCode":"PC030000","itemCode":"SKU-9","quantity":1,"amount":19.99,"discounted":false,"taxIncluded":true,"addresses":{"shipFrom":{"line1":"150
+        Piccadilly","line2":null,"city":"Florence","region":null,"country":"IT","postalCode":"50122"},"shipTo":{"line1":"89
+        Nieuwendijk","line2":"","city":"Amsterdam","region":null,"country":"NL","postalCode":"1012
+        MC"}},"customerUsageType":null,"businessIdentificationNo":null,"exemptionCode":null},{"number":"1-FR","itemCode":"Avalara
+        Ground","quantity":1,"amount":10.0,"description":"Shipping Charge","taxCode":"FR000000","discounted":false,"taxIncluded":true,"addresses":{"shipFrom":{"line1":"150
+        Piccadilly","line2":null,"city":"Florence","region":null,"country":"IT","postalCode":"50122"},"shipTo":{"line1":"89
+        Nieuwendijk","line2":"","city":"Amsterdam","region":null,"country":"NL","postalCode":"1012
+        MC"}},"customerUsageType":null,"businessIdentificationNo":null,"exemptionCode":null}],"customerCode":1,"companyCode":"54321","customerUsageType":null,"exemptionNo":null,"referenceCode":"R828260715","currencyCode":"USD","businessIdentificationNo":null}}'
+    headers:
+      X-Avalara-Uid:
+      - a0o33000004FH8l
+      User-Agent:
+      - Faraday v1.0.1
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Mon, 27 Apr 2020 18:41:23 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '3377'
+      Connection:
+      - keep-alive
+      Location:
+      - "/api/v2/companies/236180/transactions/0"
+      X-Content-Type-Options:
+      - nosniff
+      Serverduration:
+      - '00:00:00.0483044'
+      Databasecalls:
+      - '0'
+      Databaseduration:
+      - '00:00:00'
+      Serviceduration:
+      - '00:00:00'
+    body:
+      encoding: UTF-8
+      string: '{"id":0,"code":"R828260715","companyId":236180,"date":"2020-04-27","paymentDate":"2020-04-27","status":"Temporary","type":"SalesOrder","currencyCode":"USD","customerVendorCode":"1","customerCode":"1","reconciled":false,"referenceCode":"R828260715","totalAmount":24.78,"totalExempt":0.0,"totalDiscount":0.0,"totalTax":5.21,"totalTaxable":24.78,"totalTaxCalculated":5.21,"adjustmentReason":"NotAdjusted","locked":false,"version":1,"exchangeRateEffectiveDate":"2020-04-27","exchangeRate":1.0,"modifiedDate":"2020-04-27T18:41:23.7898342Z","modifiedUserId":38097,"taxDate":"2020-04-27T00:00:00","lines":[{"id":0,"transactionId":0,"lineNumber":"1-LI","description":"Product
+        #9 - 4812","discountAmount":0.0,"exemptAmount":0.0,"exemptCertId":0,"isItemTaxable":true,"itemCode":"SKU-9","lineAmount":16.52,"quantity":1.0,"reportingDate":"2020-04-27","tax":3.47,"taxableAmount":16.52,"taxCalculated":3.47,"taxCode":"PC030000","taxCodeId":8107,"taxDate":"2020-04-27","taxIncluded":true,"details":[{"id":0,"transactionLineId":0,"transactionId":0,"country":"NL","region":"NL","exemptAmount":0.0,"jurisCode":"NL","jurisName":"NETHERLANDS","stateAssignedNo":"","jurisType":"CNT","jurisdictionType":"Country","nonTaxableAmount":0.0,"rate":0.210000,"tax":3.47,"taxableAmount":16.52,"taxType":"Output","taxSubTypeId":"O","taxName":"Standard
+        Rate","taxAuthorityTypeId":45,"taxCalculated":3.47,"rateType":"Standard","rateTypeCode":"S","unitOfBasis":"PerCurrencyUnit","isNonPassThru":false,"isFee":false}],"nonPassthroughDetails":[],"hsCode":"","costInsuranceFreight":0.0,"vatCode":"NLS-2100P--IT","vatNumberTypeId":0},{"id":0,"transactionId":0,"lineNumber":"1-FR","description":"Shipping
+        Charge","discountAmount":0.0,"exemptAmount":0.0,"exemptCertId":0,"isItemTaxable":true,"itemCode":"Avalara
+        Ground","lineAmount":8.26,"quantity":1.0,"reportingDate":"2020-04-27","tax":1.74,"taxableAmount":8.26,"taxCalculated":1.74,"taxCode":"FR000000","taxCodeId":8550,"taxDate":"2020-04-27","taxIncluded":true,"details":[{"id":0,"transactionLineId":0,"transactionId":0,"country":"NL","region":"NL","exemptAmount":0.0,"jurisCode":"NL","jurisName":"NETHERLANDS","stateAssignedNo":"","jurisType":"CNT","jurisdictionType":"Country","nonTaxableAmount":0.0,"rate":0.210000,"tax":1.74,"taxableAmount":8.26,"taxType":"Output","taxSubTypeId":"O","taxName":"Standard
+        Rate","taxAuthorityTypeId":45,"taxCalculated":1.74,"rateType":"Standard","rateTypeCode":"S","unitOfBasis":"PerCurrencyUnit","isNonPassThru":false,"isFee":false}],"nonPassthroughDetails":[],"hsCode":"","costInsuranceFreight":0.0,"vatCode":"NLS-2100F--IT","vatNumberTypeId":0}],"addresses":[{"id":0,"transactionId":0,"boundaryLevel":"Zip5","line1":"89
+        Nieuwendijk","line2":"","line3":"","city":"Amsterdam","region":"","postalCode":"1012
+        MC","country":"NL","taxRegionId":205099,"latitude":"0","longitude":"0"},{"id":0,"transactionId":0,"boundaryLevel":"Zip5","line1":"150
+        Piccadilly","line2":"","line3":"","city":"Florence","region":"","postalCode":"50122","country":"IT","taxRegionId":205090,"latitude":"0","longitude":"0"}],"summary":[{"country":"NL","region":"NL","jurisType":"Country","jurisCode":"NL","jurisName":"NETHERLANDS","taxAuthorityType":45,"stateAssignedNo":"","taxType":"Output","taxSubType":"O","taxName":"Standard
+        Rate","rateType":"Standard","taxable":24.78,"rate":0.210000,"tax":5.21,"taxCalculated":5.21,"nonTaxable":0.0,"exemption":0.0}]}'
+    http_version: null
+  recorded_at: Mon, 27 Apr 2020 18:41:23 GMT
+- request:
+    method: post
+    uri: https://sandbox-rest.avatax.com/api/v2/transactions/createoradjust
+    body:
+      encoding: UTF-8
+      string: '{"createTransactionModel":{"code":"R828260715","date":"2020-04-27","discount":"0.0","commit":false,"type":"SalesOrder","lines":[{"number":"1-LI","description":"Product
+        #9 - 4812","taxCode":"PC030000","itemCode":"SKU-9","quantity":1,"amount":19.99,"discounted":false,"taxIncluded":true,"addresses":{"shipFrom":{"line1":"150
+        Piccadilly","line2":null,"city":"Florence","region":null,"country":"IT","postalCode":"50122"},"shipTo":{"line1":"89
+        Nieuwendijk","line2":"","city":"Amsterdam","region":null,"country":"NL","postalCode":"1012
+        MC"}},"customerUsageType":null,"businessIdentificationNo":null,"exemptionCode":null},{"number":"1-FR","itemCode":"Avalara
+        Ground","quantity":1,"amount":10.0,"description":"Shipping Charge","taxCode":"FR000000","discounted":false,"taxIncluded":true,"addresses":{"shipFrom":{"line1":"150
+        Piccadilly","line2":null,"city":"Florence","region":null,"country":"IT","postalCode":"50122"},"shipTo":{"line1":"89
+        Nieuwendijk","line2":"","city":"Amsterdam","region":null,"country":"NL","postalCode":"1012
+        MC"}},"customerUsageType":null,"businessIdentificationNo":null,"exemptionCode":null}],"customerCode":1,"companyCode":"54321","customerUsageType":null,"exemptionNo":null,"referenceCode":"R828260715","currencyCode":"USD","businessIdentificationNo":null}}'
+    headers:
+      X-Avalara-Uid:
+      - a0o33000004FH8l
+      User-Agent:
+      - Faraday v1.0.1
+      Content-Type:
+      - application/json
+      Authorization:
+      - Basic MTEwMDExMzA5NjoxRDEzRURBMkRDQ0M3RTRB
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Mon, 27 Apr 2020 18:41:25 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '3377'
+      Connection:
+      - keep-alive
+      Location:
+      - "/api/v2/companies/236180/transactions/0"
+      X-Content-Type-Options:
+      - nosniff
+      Serverduration:
+      - '00:00:00.0507011'
+      Databasecalls:
+      - '0'
+      Databaseduration:
+      - '00:00:00'
+      Serviceduration:
+      - '00:00:00'
+    body:
+      encoding: UTF-8
+      string: '{"id":0,"code":"R828260715","companyId":236180,"date":"2020-04-27","paymentDate":"2020-04-27","status":"Temporary","type":"SalesOrder","currencyCode":"USD","customerVendorCode":"1","customerCode":"1","reconciled":false,"referenceCode":"R828260715","totalAmount":24.78,"totalExempt":0.0,"totalDiscount":0.0,"totalTax":5.21,"totalTaxable":24.78,"totalTaxCalculated":5.21,"adjustmentReason":"NotAdjusted","locked":false,"version":1,"exchangeRateEffectiveDate":"2020-04-27","exchangeRate":1.0,"modifiedDate":"2020-04-27T18:41:25.3366077Z","modifiedUserId":38097,"taxDate":"2020-04-27T00:00:00","lines":[{"id":0,"transactionId":0,"lineNumber":"1-LI","description":"Product
+        #9 - 4812","discountAmount":0.0,"exemptAmount":0.0,"exemptCertId":0,"isItemTaxable":true,"itemCode":"SKU-9","lineAmount":16.52,"quantity":1.0,"reportingDate":"2020-04-27","tax":3.47,"taxableAmount":16.52,"taxCalculated":3.47,"taxCode":"PC030000","taxCodeId":8107,"taxDate":"2020-04-27","taxIncluded":true,"details":[{"id":0,"transactionLineId":0,"transactionId":0,"country":"NL","region":"NL","exemptAmount":0.0,"jurisCode":"NL","jurisName":"NETHERLANDS","stateAssignedNo":"","jurisType":"CNT","jurisdictionType":"Country","nonTaxableAmount":0.0,"rate":0.210000,"tax":3.47,"taxableAmount":16.52,"taxType":"Output","taxSubTypeId":"O","taxName":"Standard
+        Rate","taxAuthorityTypeId":45,"taxCalculated":3.47,"rateType":"Standard","rateTypeCode":"S","unitOfBasis":"PerCurrencyUnit","isNonPassThru":false,"isFee":false}],"nonPassthroughDetails":[],"hsCode":"","costInsuranceFreight":0.0,"vatCode":"NLS-2100P--IT","vatNumberTypeId":0},{"id":0,"transactionId":0,"lineNumber":"1-FR","description":"Shipping
+        Charge","discountAmount":0.0,"exemptAmount":0.0,"exemptCertId":0,"isItemTaxable":true,"itemCode":"Avalara
+        Ground","lineAmount":8.26,"quantity":1.0,"reportingDate":"2020-04-27","tax":1.74,"taxableAmount":8.26,"taxCalculated":1.74,"taxCode":"FR000000","taxCodeId":8550,"taxDate":"2020-04-27","taxIncluded":true,"details":[{"id":0,"transactionLineId":0,"transactionId":0,"country":"NL","region":"NL","exemptAmount":0.0,"jurisCode":"NL","jurisName":"NETHERLANDS","stateAssignedNo":"","jurisType":"CNT","jurisdictionType":"Country","nonTaxableAmount":0.0,"rate":0.210000,"tax":1.74,"taxableAmount":8.26,"taxType":"Output","taxSubTypeId":"O","taxName":"Standard
+        Rate","taxAuthorityTypeId":45,"taxCalculated":1.74,"rateType":"Standard","rateTypeCode":"S","unitOfBasis":"PerCurrencyUnit","isNonPassThru":false,"isFee":false}],"nonPassthroughDetails":[],"hsCode":"","costInsuranceFreight":0.0,"vatCode":"NLS-2100F--IT","vatNumberTypeId":0}],"addresses":[{"id":0,"transactionId":0,"boundaryLevel":"Zip5","line1":"89
+        Nieuwendijk","line2":"","line3":"","city":"Amsterdam","region":"","postalCode":"1012
+        MC","country":"NL","taxRegionId":205099,"latitude":"0","longitude":"0"},{"id":0,"transactionId":0,"boundaryLevel":"Zip5","line1":"150
+        Piccadilly","line2":"","line3":"","city":"Florence","region":"","postalCode":"50122","country":"IT","taxRegionId":205090,"latitude":"0","longitude":"0"}],"summary":[{"country":"NL","region":"NL","jurisType":"Country","jurisCode":"NL","jurisName":"NETHERLANDS","taxAuthorityType":45,"stateAssignedNo":"","taxType":"Output","taxSubType":"O","taxName":"Standard
+        Rate","rateType":"Standard","taxable":24.78,"rate":0.210000,"tax":5.21,"taxCalculated":5.21,"nonTaxable":0.0,"exemption":0.0}]}'
+    http_version: null
+  recorded_at: Mon, 27 Apr 2020 18:41:25 GMT
+recorded_with: VCR 5.1.0

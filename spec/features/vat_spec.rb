@@ -1,159 +1,155 @@
-# require 'spec_helper'
+# frozen_string_literal: true
 
-# describe "VAT", :vcr do
-#   let!(:us) { create(:country, iso: 'US', name: 'United States') }
-#   let!(:it) { create(:country, iso: 'IT', name: 'Italy', iso_name: 'ITALY') }
-#   let!(:nl) { create(:country, iso: 'NL', name: 'Netherlands', iso_name: 'NETHERLANDS') }
-#   let!(:fr) { create(:country, iso: 'FR', name: 'France', iso_name: 'FRANCE') }
-#   let!(:cr) { create(:country, iso: 'CR', name: 'Costa Rica', iso_name: 'COSTA RICA') }
-#   let!(:seller_location) { create(:stock_location, address1: '34 Borgo degli Albizi', city: 'Florence', zipcode: '50122', country: it) }
+require 'spec_helper'
 
-#   let(:res) {
-#     res = avalara_order.avalara_capture
-#     puts res
-#     res
-#   }
+describe "VAT", :vcr do
+  let!(:us) { create(:country, iso: 'US') }
+  let!(:it) { create(:country, iso: 'IT', iso_name: 'ITALY', name: 'Italy', iso3: 'ITA') }
+  let!(:nl) { create(:country, iso: 'NL', iso_name: 'NETHERLANDS', name: 'Netherlands', iso3: 'NLD') }
+  let!(:fr) { create(:country, iso: 'FR', iso_name: 'FRANCE', name: 'France', iso3: 'FRA') }
+  let!(:cr) { create(:country, iso: 'CR', iso_name: 'COSTA RICA', name: 'Costa Rica', iso3: 'CRI') }
+  let!(:seller_location) { create(:stock_location, address1: '34 Borgo degli Albizi', city: 'Florence', zipcode: '50122', country: it) }
 
-#   context 'Seller in EU country; Buyer in same EU country' do
-#     let(:it_address) { create(:address, address1: '34 Borgo degli Albizi', city: 'Florence', zipcode: '50122', country: it, state_name: '') }
-#     let!(:avalara_order) { create(:avalara_order, tax_included: true, ship_address: it_address, state: 'address') }
-#     before { prep_avalara_order }
+  let(:it_address) { create(:address, address1: '34 Borgo degli Albizi', city: 'Florence', zipcode: '50122', country: it, state: nil, state_name: '') }
+  let(:res) { avalara_order.avalara_capture }
 
-#     it 'TotalTax is equal to order included_tax_total' do
-#       expect(avalara_order.included_tax_total.to_f).to eq(res['TotalTax'].to_f)
-#     end
+  context 'Seller in EU country; Buyer in same EU country' do
+    let!(:avalara_order) { create(:avalara_order, tax_included: true, ship_address: it_address, state: 'address') }
 
-#     it 'tax detail country equals to IT' do
-#       tax_detail_country = res['TaxLines'][0]['TaxDetails'][0]['Country']
+    before { prep_avalara_order }
 
-#       expect(tax_detail_country).to eq('IT')
-#     end
-#   end
+    it 'TotalTax is equal to order included_tax_total' do
+      expect(avalara_order.included_tax_total.to_f).to eq(res['totalTax'].to_f)
+    end
 
-#   context 'Seller in EU country, Buyer is outside EU' do
+    it 'tax detail country equals to IT' do
+      tax_detail_country = res['lines'][0]['details'][0]['country']
 
-#     context 'Seller does not have Nexus Jurisdition registered' do
-#       let(:cr_address) { create(:address, address1: '350 Av Central', city: 'Tamarindo', zipcode: '50309', state_name: '', country: cr) }
-#       let!(:avalara_order) { create(:avalara_order, tax_included: true, state: 'address', ship_address: cr_address, bill_address: cr_address) }
+      expect(tax_detail_country).to eq('IT')
+    end
+  end
 
-#       let(:res) { avalara_order.avalara_capture }
-#       before { prep_avalara_order }
+  context 'Seller in EU country, Buyer is outside EU' do
+    context 'Seller does not have Nexus Jurisdition registered' do
+      let(:cr_address) { create(:address, address1: '350 Av Central', city: 'Tamarindo', zipcode: '50309', state: nil, state_name: '', country: cr) }
+      let!(:avalara_order) { create(:avalara_order, tax_included: true, state: 'address', ship_address: cr_address) }
 
-#       it 'tax detail country equals to IT' do
-#         tax_detail_country = res['TaxLines'][0]['TaxDetails'][0]['Country']
+      let(:res) { avalara_order.avalara_capture }
 
-#         expect(tax_detail_country).to eq('IT')
-#       end
+      before { prep_avalara_order }
 
-#       it 'TotalTax is equal to order included_tax_total' do
-#         expect(avalara_order.included_tax_total.to_f).to eq(res['TotalTax'].to_f)
-#       end
+      it 'tax detail country equals to IT' do
+        tax_detail_country = res['lines'][0]['details'][0]['country']
 
-#       it 'total tax is 0 since utah is not in jurisdiction' do
-#         expect(res['TotalTax'].to_f).to eq(0)
-#       end
+        expect(tax_detail_country).to eq('IT')
+      end
 
-#       context 'with BusinessIdentificationNo' do
-#         before do
-#           avalara_order.user.update_attributes(vat_id: '123456789')
-#         end
+      it 'TotalTax is equal to order included_tax_total' do
+        expect(avalara_order.included_tax_total.to_f).to eq(res['totalTax'].to_f)
+      end
 
-#         it 'origin country zero rate is returned' do
-#           tax_detail_country = res['TaxLines'][0]['TaxDetails'][0]['Country']
+      it 'total tax is 0 since utah is not in jurisdiction' do
+        expect(res['totalTax'].to_f).to eq(0)
+      end
 
-#           expect(tax_detail_country).to eq('IT')
-#           expect(res['TotalTax']).to eq('0')
-#         end
-#       end
-#     end
+      context 'with BusinessIdentificationNo' do
+        before do
+          avalara_order.user.update(vat_id: '123456789')
+        end
 
-#     context 'Seller has Nexus Jurisdiction Registered' do
-#       let!(:avalara_order) { create(:avalara_order, tax_included: true, state: 'address') }
-#       before { prep_avalara_order }
+        it 'origin country zero rate is returned' do
+          tax_detail_country = res['summary'][0]['country']
 
-#       it 'tax detail country equals to US' do
-#         tax_detail_country = res['TaxLines'][0]['TaxDetails'][0]['Country']
+          expect(tax_detail_country).to eq('IT')
+          expect(res['totalTax']).to eq(0)
+        end
+      end
+    end
 
-#         expect(tax_detail_country).to eq('US')
-#       end
+    context 'Seller has Nexus Jurisdiction Registered' do
+      let!(:avalara_order) { create(:avalara_order, tax_included: true, state: 'address') }
 
-#       it 'TotalTax is equal to order included_tax_total' do
-#         expect(avalara_order.included_tax_total.to_f).to eq(res['TotalTax'].to_f)
-#       end
-#     end
-#   end
+      before { prep_avalara_order }
 
-#   context 'Seller in EU country, Buyer in another EU country' do
+      it 'tax detail region equals to IT' do
+        tax_detail_region = res['lines'][0]['details'][0]['region']
 
-#     context 'Seller has Nexus Jurisdition Registered' do
-#       let(:nl_address) { create(:address, address1: '89 Nieuwendijk', city: 'Amsterdam', zipcode: '1012 MC', country: nl, state_name: '') }
-#       let!(:avalara_order) { create(:avalara_order, tax_included: true, state: 'address', ship_address: nl_address) }
-#       before { prep_avalara_order }
+        expect(tax_detail_region).to eq('IT')
+      end
 
-#       it 'destination country tax is returned' do
-#         tax_detail_country = res['TaxLines'][0]['TaxDetails'][0]['Country']
+      it 'TotalTax is equal to order included_tax_total' do
+        expect(avalara_order.included_tax_total.to_f).to eq(res['totalTax'].to_f)
+      end
+    end
+  end
 
-#         expect(tax_detail_country).to eq('NL')
-#       end
+  context 'Seller in EU country, Buyer in another EU country' do
+    context 'Seller has Nexus Jurisdition Registered' do
+      let(:nl_address) { create(:address, address1: '89 Nieuwendijk', city: 'Amsterdam', zipcode: '1012 MC', country: nl, state_name: '', state: nil) }
+      let(:avalara_order) { create(:avalara_order, tax_included: true, state: 'address', ship_address: nl_address) }
 
-#       it 'TotalTax is equal to order included_tax_total' do
-#         expect(avalara_order.included_tax_total.to_f).to eq(res['TotalTax'].to_f)
-#       end
+      before { prep_avalara_order }
 
-#       context 'with BusinessIdentificationNo' do
-#         before do
-#           avalara_order.user.update_attributes(vat_id: '123456789')
-#         end
+      it 'destination country tax is returned' do
+        tax_detail_country = res['lines'][0]['details'][0]['country']
 
-#         it 'origin country zero rate is returned' do
-#           tax_detail_country = res['TaxLines'][0]['TaxDetails'][0]['Country']
+        expect(tax_detail_country).to eq('NL')
+      end
 
-#           expect(tax_detail_country).to eq('IT')
-#           expect(res['TotalTax']).to eq('0')
-#         end
-#       end
-#     end
+      it 'TotalTax is equal to order included_tax_total' do
+        expect(avalara_order.included_tax_total.to_f).to eq(res['totalTax'].to_f)
+      end
 
-#     context 'Seller does not have Nexus Jurisdition Registered' do
-#       let(:fr_address) { create(:address, address1: '8 Boulevard du Palais', city: 'Paris', zipcode: '75001', country: fr, state_name: '') }
-#       let!(:avalara_order) { create(:avalara_order, tax_included: true, state: 'address', ship_address: fr_address) }
-#       before { prep_avalara_order }
+      context 'with BusinessIdentificationNo' do
+        let(:avalara_order) { create(:avalara_order, tax_included: true, state: 'address', ship_address: nl_address, user: create(:user, vat_id: '123456789')) }
 
-#       it 'origin country tax is returned' do
-#         tax_detail_country = res['TaxLines'][0]['TaxDetails'][0]['Country']
-#         expect(tax_detail_country).to eq('IT')
-#       end
+        it 'origin country zero rate is returned' do
+          tax_detail_country = res['summary'][0]['country']
 
-#       it 'TotalTax is equal to order included_tax_total' do
-#         expect(avalara_order.included_tax_total.to_f).to eq(res['TotalTax'].to_f)
-#       end
+          expect(tax_detail_country).to eq('IT')
+          expect(res['totalTax']).to eq(0)
+        end
+      end
+    end
 
-#       context 'with BusinessIdentificationNo' do
-#         before do
-#           avalara_order.user.update_attributes(vat_id: '123456789')
-#         end
+    context 'Seller does not have Nexus Jurisdition Registered' do
+      let(:fr_address) { create(:address, address1: '8 Boulevard du Palais', city: 'Paris', zipcode: '75001', country: fr, state_name: '', state: nil) }
+      let!(:avalara_order) { create(:avalara_order, tax_included: true, state: 'address', ship_address: fr_address) }
 
-#         it 'origin country zero rate is returned' do
-#           tax_detail_country = res['TaxLines'][0]['TaxDetails'][0]['Country']
+      before { prep_avalara_order }
 
-#           expect(tax_detail_country).to eq('IT')
-#           expect(res['TotalTax']).to eq('0')
-#         end
-#       end
-#     end
-#   end
+      it 'origin country tax is returned' do
+        tax_detail_country = res['summary'][0]['country']
+        expect(tax_detail_country).to eq('IT')
+      end
 
+      it 'TotalTax is equal to order included_tax_total' do
+        expect(avalara_order.included_tax_total.to_f).to eq(res['totalTax'].to_f)
+      end
 
-#   def set_seller_location
-#     Spree::Config.avatax_origin = "{\"Address1\":\"34 Borgo degli Albizi\",\"Address2\":\"\",\"City\":\"Florence\",\"Region\":\"\",\"Zip5\":\"50122\",\"Zip4\":\"\",\"Country\":\"IT\"}"
-#     Spree::TaxRate.update_all(included_in_price: true)
-#     Spree::StockLocation.update_all(address1: '34 Borgo degli Albizi', city: 'Florence', country_id: it.id)
-#   end
+      context 'with BusinessIdentificationNo' do
+        before do
+          avalara_order.user.update(vat_id: '123456789')
+        end
 
-#   def prep_avalara_order
-#     avalara_order.reload
-#     set_seller_location
-#     avalara_order.next!
-#   end
-# end
+        it 'origin country zero rate is returned' do
+          tax_detail_country = res['summary'][0]['country']
 
+          expect(tax_detail_country).to eq('IT')
+          expect(res['totalTax']).to eq(0)
+        end
+      end
+    end
+  end
+
+  def set_seller_location
+    Spree::Config.avatax_origin = "{\"line1\":\"34 Borgo degli Albizi\",\"city\":\"Florence\",\"region\":\"\",\"postalCode\":\"50122\",\"country\":\"IT\"}"
+    Spree::StockLocation.update_all(address1: '150 Piccadilly', city: 'Florence', country_id: it.id, state_id: nil)
+  end
+
+  def prep_avalara_order
+    avalara_order.reload
+    set_seller_location
+    avalara_order.next!
+  end
+end
