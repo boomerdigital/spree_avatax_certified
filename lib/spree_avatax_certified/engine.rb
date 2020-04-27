@@ -26,6 +26,8 @@ module SpreeAvataxCertified
         preference :avatax_document_commit, :boolean, default: true
         preference :avatax_origin, :string, default: '{}'
         preference :avatax_raise_exceptions, :boolean, default: false
+        preference :avatax_refuse_checkout_address_validation_error, :boolean, default: false
+        preference :avatax_customer_can_validate, :boolean, default: false
       end
     end
 

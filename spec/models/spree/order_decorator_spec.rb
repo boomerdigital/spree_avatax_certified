@@ -108,16 +108,34 @@ describe Spree::Order, :vcr do
   end
 
   describe '#validate_ship_address' do
-    it 'returns the response if validation is success' do
+    before do
       Spree::Config.avatax_address_validation = true
+    end
+
+    it 'returns the response if validation is success' do
+      response = order.validate_ship_address
+
+      expect(response['error']).not_to be_present
+    end
+
+    it 'returns the response if refuse checkout on address validation is disabled' do
+      Spree::Config.avatax_refuse_checkout_address_validation_error = false
       response = order.validate_ship_address
 
       expect(response['error']).not_to be_present
     end
 
     context 'validation failed' do
+      it 'returns false' do
+        Spree::Config.avatax_raise_exceptions = false
+        Spree::Config.avatax_refuse_checkout_address_validation_error = true
+        order.ship_address.update(zipcode: nil, city: nil, address1: nil)
+        response = order.validate_ship_address
+
+        expect(response).to eq(false)
+      end
+
       it 'raise exceptions if raise_exceptions preference is enabled' do
-        Spree::Config.avatax_address_validation = true
         Spree::Config.avatax_raise_exceptions = true
         order.ship_address.update(zipcode: nil, city: nil, address1: nil)
 
