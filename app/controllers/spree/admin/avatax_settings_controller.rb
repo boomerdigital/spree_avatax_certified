@@ -20,7 +20,8 @@ module Spree
       def ping_my_service
         mytax = Spree::TaxSvc.new
         ping_result = mytax.ping
-        if ping_result['ResultCode'] == 'Success'
+
+        if ping_result.success?
           flash[:success] = 'Ping Successful'
         else
           flash[:error] = 'Ping Error'
