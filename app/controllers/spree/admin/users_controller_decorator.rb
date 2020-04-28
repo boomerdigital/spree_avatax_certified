@@ -1,4 +1,4 @@
-Spree::Admin::UsersController.class_eval do
+module Spree::Admin::UsersControllerDecorator
   def avalara_information
     if request.put?
       if @user.update_attributes(user_params)
@@ -9,3 +9,5 @@ Spree::Admin::UsersController.class_eval do
     render :avalara_information
   end
 end
+
+Spree::Admin::UsersController.prepend Spree::Admin::UsersControllerDecorator
