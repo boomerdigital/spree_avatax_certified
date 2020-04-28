@@ -41,8 +41,9 @@ matrix:
 
 before_install:
   - mysql -u root -e "GRANT ALL ON *.* TO 'travis'@'%';"
-  - wget http://chromedriver.storage.googleapis.com/2.38/chromedriver_linux64.zip
-  - unzip chromedriver_linux64.zip
-  - sudo apt-get install libnss3
-  - sudo cp chromedriver /usr/local/bin/
-  - sudo chmod +x /usr/local/bin/chromedriver
+  - wget -N https://chromedriver.storage.googleapis.com/2.35/chromedriver_linux64.zip -P ~/
+  - unzip ~/chromedriver_linux64.zip -d ~/
+  - rm ~/chromedriver_linux64.zip
+  - sudo mv -f ~/chromedriver /usr/local/share/
+  - sudo chmod +x /usr/local/share/chromedriver
+  - sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
