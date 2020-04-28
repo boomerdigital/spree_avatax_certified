@@ -56,13 +56,35 @@
     </fieldset>
 
     <fieldset>
+      <legend><%= t('avatax_raise_exceptions') %></legend>
+      <p>
+        <label><%= t('enable_avatax_raise_exceptions') %></label><br />
+        <%= check_box_tag('settings[avatax_raise_exceptions]', true, Spree::Config.avatax_raise_exceptions, class: 'avatax') %>
+      </p>
+    </fieldset>
+
+    <fieldset>
       <legend><%= t('avatax_address_validation') %></legend>
       <p>
         <label><%= t('enable_avatax_address_validation') %></label><br />
         <%= check_box_tag('settings[avatax_address_validation]', true, Spree::Config.avatax_address_validation, class: 'avatax') %>
       </p>
     </fieldset>
-      <fieldset>
+    <fieldset>
+      <legend><%= t('avatax_refuse_checkout_address_validation_error') %></legend>
+      <p>
+        <label><%= t('enable_avatax_refuse_checkout_address_validation_error') %></label><br />
+        <%= check_box_tag('settings[avatax_refuse_checkout_address_validation_error]', true, Spree::Config.avatax_refuse_checkout_address_validation_error, class: 'avatax') %>
+      </p>
+    </fieldset>
+    <fieldset>
+      <legend><%= t('avatax_customer_can_validate') %></legend>
+      <p>
+        <label><%= t('enable_avatax_customer_can_validate') %></label><br />
+        <%= check_box_tag('settings[avatax_customer_can_validate]', true, Spree::Config.avatax_customer_can_validate, class: 'avatax') %>
+      </p>
+    </fieldset>
+    <fieldset>
       <legend><%= t('avatax_address_validation_enabled_countries') %></legend>
       <p>
         <% current_countries = Spree::Country.where(name: Spree::Config.avatax_address_validation_enabled_countries) %>

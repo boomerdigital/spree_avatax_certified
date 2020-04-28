@@ -41,9 +41,21 @@
     <th scope="row"><%= t("log_to_stdout") %>:</th>
     <td><%= Spree::Config.avatax_log_to_stdout %></td>
   </tr>
+   <tr>
+    <th scope="row"><%= t("enable_avatax_raise_exceptions") %>:</th>
+    <td><%= Spree::Config.avatax_raise_exceptions %></td>
+  </tr>
   <tr>
     <th scope="row"><%= t("enable_avatax_address_validation") %>:</th>
     <td><%= Spree::Config.avatax_address_validation %></td>
+  </tr>
+   <tr>
+    <th scope="row">Refuse Checkout if Address Validation Fails:</th>
+    <td><%= Spree::Config.avatax_refuse_checkout_address_validation_error %></td>
+  </tr>
+  <tr>
+    <th scope="row">Customer can Validate Address in Checkout</th>
+    <td><%= Spree::Config.avatax_customer_can_validate %></td>
   </tr>
   <tr>
     <th scope="row"><%= t("avatax_address_validation_enabled_countries") %>:</th>
