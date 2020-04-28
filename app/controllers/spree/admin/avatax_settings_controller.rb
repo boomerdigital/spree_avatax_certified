@@ -37,13 +37,12 @@ module Spree
         pref = params[:settings]
 
         Spree::Config.avatax_origin = {
-          Address1:  origin['avatax_address1'],
-          Address2: origin['avatax_address2'],
-          City: origin['avatax_city'],
-          Region: origin['avatax_region'],
-          Zip5: origin['avatax_zip5'],
-          Zip4: origin['avatax_zip4'],
-          Country: origin['avatax_country']
+          line1: origin['avatax_address1'],
+          line2: origin['avatax_address2'],
+          city: origin['avatax_city'],
+          region: origin['avatax_region'],
+          country: origin['avatax_country'],
+          postalCode: origin['avatax_zipcode']
         }.to_json
 
         Spree::Config.avatax_api_username = pref['avatax_api_username']
