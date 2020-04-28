@@ -20,6 +20,7 @@ require 'rspec/rails'
 require 'database_cleaner'
 require 'ffaker'
 require 'shoulda/matchers'
+require 'webdrivers'
 
 require 'spree/testing_support/preferences'
 require 'spree/testing_support/url_helpers'
