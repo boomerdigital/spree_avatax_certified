@@ -20,7 +20,8 @@ module Spree
       def ping_my_service
         mytax = Spree::TaxSvc.new
         ping_result = mytax.ping
-        if ping_result['ResultCode'] == 'Success'
+
+        if ping_result.success?
           flash[:success] = 'Ping Successful'
         else
           flash[:error] = 'Ping Error'
@@ -36,13 +37,12 @@ module Spree
         pref = params[:settings]
 
         Spree::Config.avatax_origin = {
-          Address1:  origin['avatax_address1'],
-          Address2: origin['avatax_address2'],
-          City: origin['avatax_city'],
-          Region: origin['avatax_region'],
-          Zip5: origin['avatax_zip5'],
-          Zip4: origin['avatax_zip4'],
-          Country: origin['avatax_country']
+          line1: origin['avatax_address1'],
+          line2: origin['avatax_address2'],
+          city: origin['avatax_city'],
+          region: origin['avatax_region'],
+          country: origin['avatax_country'],
+          postalCode: origin['avatax_zipcode']
         }.to_json
 
         Spree::Config.avatax_api_username = pref['avatax_api_username']
@@ -52,7 +52,10 @@ module Spree
         Spree::Config.avatax_license_key = pref['avatax_license_key']
         Spree::Config.avatax_log = pref['avatax_log'] || false
         Spree::Config.avatax_log_to_stdout = pref['avatax_log_to_stdout'] || false
+        Spree::Config.avatax_raise_exceptions = pref['avatax_raise_exceptions'] || false
         Spree::Config.avatax_address_validation = pref['avatax_address_validation'] || false
+        Spree::Config.avatax_refuse_checkout_address_validation_error = pref['avatax_refuse_checkout_address_validation_error'] || false
+        Spree::Config.avatax_customer_can_validate = pref['avatax_customer_can_validate'] || false
         Spree::Config.avatax_tax_calculation = pref['avatax_tax_calculation'] || false
         Spree::Config.avatax_document_commit = pref['avatax_document_commit'] || false
         Spree::Config.avatax_address_validation_enabled_countries = pref['avatax_address_validation_enabled_countries']

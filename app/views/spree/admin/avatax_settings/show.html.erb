@@ -41,9 +41,21 @@
     <th scope="row"><%= t("log_to_stdout") %>:</th>
     <td><%= Spree::Config.avatax_log_to_stdout %></td>
   </tr>
+   <tr>
+    <th scope="row"><%= t("enable_avatax_raise_exceptions") %>:</th>
+    <td><%= Spree::Config.avatax_raise_exceptions %></td>
+  </tr>
   <tr>
     <th scope="row"><%= t("enable_avatax_address_validation") %>:</th>
     <td><%= Spree::Config.avatax_address_validation %></td>
+  </tr>
+   <tr>
+    <th scope="row">Refuse Checkout if Address Validation Fails:</th>
+    <td><%= Spree::Config.avatax_refuse_checkout_address_validation_error %></td>
+  </tr>
+  <tr>
+    <th scope="row">Customer can Validate Address in Checkout</th>
+    <td><%= Spree::Config.avatax_customer_can_validate %></td>
   </tr>
   <tr>
     <th scope="row"><%= t("avatax_address_validation_enabled_countries") %>:</th>
@@ -71,13 +83,12 @@
     <th scope="row"><%= t("business_address") %>:</th>
 
     <td><table>
-      <tr><td><%= Spree.t("address1") %>: <%= origin["Address1"]  %> </td></tr>
-      <tr><td><%= Spree.t("address2") %>: <%= origin["Address2"]  %></td></tr>
-      <tr><td><%= Spree.t("city") %>: <%= origin["City"]  %></td></tr>
-      <tr><td><%= Spree.t("state") %>: <%= origin["Region"]  %></td></tr>
-      <tr><td><%= Spree.t("zipcode") %>: <%= origin["Zip5"]  %></td></tr>
-      <tr><td><%= t("zip_plus_4") %>: <%= origin["Zip4"] %></td></tr>
-      <tr><td><%= t("country_code") %>: <%= origin["Country"] %></td></tr>
+      <tr><td><%= Spree.t("address1") %>: <%= origin["line1"]  %> </td></tr>
+      <tr><td><%= Spree.t("address2") %>: <%= origin["line2"]  %></td></tr>
+      <tr><td><%= Spree.t("city") %>: <%= origin["city"]  %></td></tr>
+      <tr><td><%= Spree.t("state") %>: <%= origin["region"]  %></td></tr>
+      <tr><td><%= Spree.t("zipcode") %>: <%= origin["postalCode"]  %></td></tr>
+      <tr><td><%= t("country_code") %>: <%= origin["country"] %></td></tr>
     </table></td>
   </tr>
 

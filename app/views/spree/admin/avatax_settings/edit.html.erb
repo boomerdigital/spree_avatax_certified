@@ -56,13 +56,35 @@
     </fieldset>
 
     <fieldset>
+      <legend><%= t('avatax_raise_exceptions') %></legend>
+      <p>
+        <label><%= t('enable_avatax_raise_exceptions') %></label><br />
+        <%= check_box_tag('settings[avatax_raise_exceptions]', true, Spree::Config.avatax_raise_exceptions, class: 'avatax') %>
+      </p>
+    </fieldset>
+
+    <fieldset>
       <legend><%= t('avatax_address_validation') %></legend>
       <p>
         <label><%= t('enable_avatax_address_validation') %></label><br />
         <%= check_box_tag('settings[avatax_address_validation]', true, Spree::Config.avatax_address_validation, class: 'avatax') %>
       </p>
     </fieldset>
-      <fieldset>
+    <fieldset>
+      <legend><%= t('avatax_refuse_checkout_address_validation_error') %></legend>
+      <p>
+        <label><%= t('enable_avatax_refuse_checkout_address_validation_error') %></label><br />
+        <%= check_box_tag('settings[avatax_refuse_checkout_address_validation_error]', true, Spree::Config.avatax_refuse_checkout_address_validation_error, class: 'avatax') %>
+      </p>
+    </fieldset>
+    <fieldset>
+      <legend><%= t('avatax_customer_can_validate') %></legend>
+      <p>
+        <label><%= t('enable_avatax_customer_can_validate') %></label><br />
+        <%= check_box_tag('settings[avatax_customer_can_validate]', true, Spree::Config.avatax_customer_can_validate, class: 'avatax') %>
+      </p>
+    </fieldset>
+    <fieldset>
       <legend><%= t('avatax_address_validation_enabled_countries') %></legend>
       <p>
         <% current_countries = Spree::Country.where(name: Spree::Config.avatax_address_validation_enabled_countries) %>
@@ -90,31 +112,31 @@
       <legend><%= t('business_address') %></legend>
       <p>
         <label><%= Spree.t('address1') %></label><br />
-        <%= text_field_tag('address[avatax_address1]', origin["Address1"], size: 46, maxlength: 256, class: 'avatax') %>
+        <%= text_field_tag('address[avatax_address1]', origin["line1"], size: 46, maxlength: 256, class: 'avatax') %>
       </p>
       <p>
         <label><%= Spree.t('address2') %></label><br />
-        <%= text_field_tag('address[avatax_address2]', origin["Address2"], size: 46, maxlength: 256, class: 'avatax') %>
+        <%= text_field_tag('address[avatax_address2]', origin["line2"], size: 46, maxlength: 256, class: 'avatax') %>
       </p>
       <p>
         <label><%= Spree.t('city') %></label><br />
-        <%= text_field_tag('address[avatax_city]', origin["City"], size: 46, maxlength: 256, class: 'avatax') %>
+        <%= text_field_tag('address[avatax_city]', origin["city"], size: 46, maxlength: 256, class: 'avatax') %>
       </p>
       <p>
         <label><%= Spree.t('state') %></label><br />
-        <%= text_field_tag('address[avatax_region]', origin["Region"], size: 46, maxlength: 256, class: 'avatax') %>
+        <%= text_field_tag('address[avatax_region]', origin["region"], size: 46, maxlength: 256, class: 'avatax') %>
       </p>
       <p>
         <label><%= Spree.t('zipcode') %></label><br />
-        <%= text_field_tag('address[avatax_zip5]', origin["Zip5"], size: 46, maxlength: 256, class: 'avatax') %>
-      </p>
-      <p>
-        <label><%= t('zip_plus_4') %></label><br />
-        <%= text_field_tag('address[avatax_zip4]', origin["Zip4"], size: 46, maxlength: 256, class: 'avatax') %>
+        <%= text_field_tag('address[avatax_zipcode]', origin["postalCode"], size: 46, maxlength: 256, class: 'avatax') %>
       </p>
       <p>
         <label><%= t('country_code') %></label><br />
-        <%= text_field_tag('address[avatax_country]', origin["Country"], size: 46, maxlength: 256, class: 'avatax') %>
+        <span id="<%= "scountry-selection" %>" class="d-block position-relative">
+          <% curr_country = Spree::Country.find_by(iso: origin["country"]) ||  Spree::Country.find_by(iso: 'US') %>
+        <span id="scountry">
+          <%= select_tag 'address[avatax_country]', options_from_collection_for_select(available_countries, 'iso', 'name', curr_country.try(:iso)), {:class => 'select2 avatax', id: 'country'} %>
+        </span>
       </p>
 
     </fieldset>

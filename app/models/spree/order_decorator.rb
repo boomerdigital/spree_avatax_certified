@@ -56,6 +56,7 @@ module Spree::OrderDecorator
     response = avatax_address.validate
 
     return response.result if response.success?
+    return response if !Spree::Config.avatax_refuse_checkout_address_validation_error
 
     response.summary_messages.each do |msg|
       errors.add(:address_validation_failure, msg)

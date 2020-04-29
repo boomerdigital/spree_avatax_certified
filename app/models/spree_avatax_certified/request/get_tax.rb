@@ -10,7 +10,8 @@ class SpreeAvataxCertified::Request::GetTax < SpreeAvataxCertified::Request::Bas
         discount: (promotion_discount + manual_discount).to_s,
         commit: @commit,
         type: @doc_type || 'SalesOrder',
-        lines: sales_lines
+        lines: sales_lines,
+        addresses: address_lines
       }.merge(base_tax_hash)
     }
   end

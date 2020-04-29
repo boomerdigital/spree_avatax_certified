@@ -17,18 +17,27 @@ module SpreeAvataxCertified
 
     def build_addresses
       origin_address
+      stock_location_address
       order_ship_address unless @ship_address.nil?
     end
 
     def origin_address
-      addresses[:pointOfOrderAcceptance] = {
-        line1: @origin_address['line1'],
-        line2: @origin_address['line2'],
-        city: @origin_address['city'],
-        region: @origin_address['region'],
-        country: @origin_address['country'],
-        postalCode: @origin_address['postalCode']
-      }
+      if @origin_address['country'] === 'US'
+        addresses[:pointOfOrderAcceptance] = {
+          line1: @origin_address['line1'],
+          line2: @origin_address['line2'],
+          city: @origin_address['city'],
+          region: @origin_address['region'],
+          country: @origin_address['country'],
+          postalCode: @origin_address['postalCode']
+        }
+      end
+    end
+
+    def stock_location_address
+      if @order.shipments.any?
+        addresses[:shipFrom] = @order.shipments.map(&:stock_location).first.to_avatax_hash
+      end
     end
 
     def order_ship_address

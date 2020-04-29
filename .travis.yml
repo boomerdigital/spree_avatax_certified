@@ -3,6 +3,9 @@ dist: trusty
 
 language: ruby
 
+before_script:
+ - export DISPLAY=:99.0 && sh -e /etc/init.d/xvfb start && sleep 3
+
 addons:
   chrome: stable
   postgresql: 9.4
@@ -43,3 +46,4 @@ before_install:
   - rm ~/chromedriver_linux64.zip
   - sudo mv -f ~/chromedriver /usr/local/share/
   - sudo chmod +x /usr/local/share/chromedriver
+  - sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver

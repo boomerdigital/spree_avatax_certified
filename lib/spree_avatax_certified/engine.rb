@@ -26,6 +26,8 @@ module SpreeAvataxCertified
         preference :avatax_document_commit, :boolean, default: true
         preference :avatax_origin, :string, default: '{}'
         preference :avatax_raise_exceptions, :boolean, default: false
+        preference :avatax_refuse_checkout_address_validation_error, :boolean, default: false
+        preference :avatax_customer_can_validate, :boolean, default: false
       end
     end
 
@@ -36,7 +38,7 @@ module SpreeAvataxCertified
     end
 
     def self.activate
-      Dir.glob(File.join(File.dirname(__FILE__), '../../app/models/**/*.rb')) do |c|
+      Dir.glob(File.join(File.dirname(__FILE__), '../../app/**/*_decorator*.rb')) do |c|
         Rails.configuration.cache_classes ? require(c) : load(c)
       end
     end
